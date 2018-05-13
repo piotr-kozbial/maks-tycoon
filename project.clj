@@ -17,7 +17,11 @@
                  [com.stuartsierra/component "0.3.2"]
                  [org.danielsz/system "0.4.1"]
                  [org.clojure/tools.namespace "0.2.11"]
-                 [rum "0.11.2"]]
+                 [rum "0.11.2"]
+
+
+                 [gamebase "0.1.1-SNAPSHOT"]
+                 ]
 
   :plugins [[lein-cljsbuild "1.1.7"]
             [lein-environ "1.1.0"]]
