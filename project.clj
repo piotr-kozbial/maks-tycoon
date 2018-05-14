@@ -19,8 +19,9 @@
                  [org.clojure/tools.namespace "0.2.11"]
                  [rum "0.11.2"]
 
-
-                 [gamebase "0.1.1-SNAPSHOT"]
+                 ;; TYMCZASOWO rozwijam gamebase tutaj, zamiast w osobnym projekcie
+                 ;; (bo mam jakies straszne problemy ze zapakowaniem tego jako biblioteka, zeby sie dobrze wczytywalo
+                 ;; [gamebase "0.1.1-SNAPSHOT"]
                  ]
 
   :plugins [[lein-cljsbuild "1.1.7"]
