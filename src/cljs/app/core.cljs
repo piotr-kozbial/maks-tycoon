@@ -1,7 +1,7 @@
 (ns app.core
   (:require [rum.core :as rum]
 
-            ;;[gamebase.events]
+            [gamebase.events]
             ))
 
 (enable-console-print!)

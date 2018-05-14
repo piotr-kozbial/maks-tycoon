@@ -24,10 +24,10 @@
                    :oncontextmenu "return false;"}
 
             (or custom-html [:div {:id "app"}])
-            ;;[:script {:src "gamebase/p5.js" :type "text/javascript"}]
+            [:script {:src "gamebase/p5.js" :type "text/javascript"}]
             [:script {:src "app.js" :type "text/javascript"}]
 
-            [:script {:type "text/javascript"} "app.system.go();"]
+            ;;[:script {:type "text/javascript"} "app.system.go();"]
             [:script
              (str "function setup() { app.system.go(); //" main "();\n }\n")
 
