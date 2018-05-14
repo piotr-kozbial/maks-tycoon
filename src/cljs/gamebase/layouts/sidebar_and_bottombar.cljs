@@ -2,6 +2,42 @@
   (:require
    [gamebase.events :as events]))
 
+(defn mk-html [& [splash-image]]
+  [:div {}
+   [:div {:id "gamebase/canvas-holder"
+          :style {:position "absolute"
+                  :backgroundColor "#888888"}}]
+   [:div
+    {:id "gamebase/bottom-bar"
+     :style {:position "absolute"
+             :backgroundColor "#BBA415"}}]
+   [:div
+    {:id "gamebase/side-bar"
+     :style {:position "absolute"
+             :backgroundColor "#C6AF20"}}]
+   [:div
+    {:id "gamebase/fullpage"
+     :style {:position "absolute"
+             :left 0
+             :top 0
+             :backgroundColor "#C6AF20"
+             :width "100%"
+             :height "100%"}}]
+   (when splash-image
+     [:div
+      {:id "gamebase/splash"
+       :style {:position "absolute"
+               :zIndex 200
+               :width "100%"
+               :height "100%"}}
+      [:img
+       {:src "loading.png"
+        :style {:position "absolute"
+                :width "100%"
+                :height "100%"}}]])])
+
+
+
 ;; TODO:
 ;;  - the layout must also control canvas itself, resize it etc.
 ;;  - as for positioning *content* inside the layout (which depends on particular game logic)
