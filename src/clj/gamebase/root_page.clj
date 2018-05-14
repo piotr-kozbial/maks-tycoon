@@ -23,12 +23,13 @@
            [:body {:id "body" :style "width:100%; height:100%"
                    :oncontextmenu "return false;"}
 
-            (or custom-html [:div])
-            [:script {:src "gamebase/p5.js" :type "text/javascript"}]
+            (or custom-html [:div {:id "app"}])
+            ;;[:script {:src "gamebase/p5.js" :type "text/javascript"}]
             [:script {:src "app.js" :type "text/javascript"}]
 
+            [:script {:type "text/javascript"} "app.system.go();"]
             [:script
-             (str "function setup() { " main "(); }\n")
+             (str "function setup() { app.system.go(); //" main "();\n }\n")
 
              "function draw()          { gamebase.events.callback(\"draw\"); }\n"
 

@@ -27,10 +27,13 @@
   {:host "127.0.0.1"
    :http-port 10555
    :root-page #(gamebase.root-page/mk-root-page
-                :app-js "js/compiled/app.js"
-                :custom-html my-html
-                :main "app.core.main")})
+                ;;:custom-html my-html
+                :main "app.core.main")
+   ;; TODO - jak to ustawic?
+   :dev? true
+   })
 
 (defn home-routes [_]
   (gamebase.local-redis-saveload-server/build-handler config)
   )
+

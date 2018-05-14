@@ -22,6 +22,11 @@
                  ;; TYMCZASOWO rozwijam gamebase tutaj, zamiast w osobnym projekcie
                  ;; (bo mam jakies straszne problemy ze zapakowaniem tego jako biblioteka, zeby sie dobrze wczytywalo
                  ;; [gamebase "0.1.1-SNAPSHOT"]
+                 ;; AND THESE ARE ALSO FOR gamebase:
+                 [org.clojure/data.xml "0.2.0-alpha2"]
+                 [hiccup "1.0.5"]
+                 [com.taoensso/carmine "2.16.0"]
+
                  ]
 
   :plugins [[lein-cljsbuild "1.1.7"]

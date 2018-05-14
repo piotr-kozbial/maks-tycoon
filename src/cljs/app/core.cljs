@@ -1,5 +1,8 @@
 (ns app.core
-  (:require [rum.core :as rum]))
+  (:require [rum.core :as rum]
+
+            ;;[gamebase.events]
+            ))
 
 (enable-console-print!)
 
@@ -10,3 +13,9 @@
 
 (defn render []
   (rum/mount (greeting) (. js/document (getElementById "app"))))
+
+
+(defn main [& _]
+
+  (.log js/console "To jest main.")
+  )
