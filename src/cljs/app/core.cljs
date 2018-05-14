@@ -1,7 +1,7 @@
 (ns app.core
   (:require [rum.core :as rum]
 
-            [gamebase.events]
+            [gamebase.events :as events]
             [gamebase.canvas-control :as canvas-control]
             [gamebase.layouts.sidebar-and-bottombar :as our-layout]
             ))
@@ -16,6 +16,13 @@
 (defn render []
   (rum/mount (main-component)
              (. js/document (getElementById "app"))))
+
+
+(defn draw []
+  (js/clear)
+  (js/noSmooth)
+)
+
 
 (defn main [& _]
 
@@ -38,5 +45,6 @@
 
   (our-layout/initialize)
 
+  (events/add-handler :draw draw)
 
   )
