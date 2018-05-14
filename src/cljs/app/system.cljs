@@ -22,5 +22,8 @@
   (start))
 
 (defn reset []
-  (stop)
-  (go))
+  ;; (stop)
+  ;; (go)
+
+
+  )
