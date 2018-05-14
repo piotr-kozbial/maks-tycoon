@@ -15,14 +15,14 @@
     {:id "gamebase/side-bar"
      :style {:position "absolute"
              :backgroundColor "#C6AF20"}}]
-   [:div
-    {:id "gamebase/fullpage"
-     :style {:position "absolute"
-             :left 0
-             :top 0
-             :backgroundColor "#C6AF20"
-             :width "100%"
-             :height "100%"}}]
+   ;; [:div
+   ;;  {:id "gamebase/fullpage"
+   ;;   :style {:position "absolute"
+   ;;           :left 0
+   ;;           :top 0
+   ;;           :backgroundColor "#C6AF20"
+   ;;           :width "100%"
+   ;;           :height "100%"}}]
    (when splash-image
      [:div
       {:id "gamebase/splash"

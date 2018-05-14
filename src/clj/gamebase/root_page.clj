@@ -31,7 +31,8 @@
             [:script
              (str "function setup() { app.system.go(); " main "();\n }\n")
 
-             "function draw()          { gamebase.events.callback(\"draw\"); }\n"
+             "function draw()          {
+ gamebase.events.callback(\"draw\"); }\n"
 
              "function mousePressed()  { gamebase.events.callback(\"canvas-mouse-pressed\");  return false; }\n"
              "function mouseMoved()    { gamebase.events.callback(\"canvas-mouse-moved\");    return false; }\n"

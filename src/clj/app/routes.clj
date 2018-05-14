@@ -20,8 +20,8 @@
 ;;          (assoc :headers {"Content-Type" "text/html; charset=utf-8"})))
 ;;    (resources "/")))
 
-(def my-html
-  (our-layout/mk-html))
+;; (def my-html
+;;   (our-layout/mk-html))
 
 (def config
   {:host "127.0.0.1"

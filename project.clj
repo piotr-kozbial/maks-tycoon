@@ -54,7 +54,8 @@
               [{:id "app"
                 :source-paths ["src/cljs" "src/cljc" "dev"]
 
-                :figwheel {:on-jsload "app.system/reset"}
+                :figwheel {;;:on-jsload "app.dev/on-jsload"
+                           }
 
                 :compiler {:main cljs.user
                            :asset-path "js/compiled/out"

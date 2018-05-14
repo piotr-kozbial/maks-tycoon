@@ -2,6 +2,7 @@
   (:require [com.stuartsierra.component :as component]
             [app.core :refer [render]]))
 
+
 (defrecord UIComponent []
   component/Lifecycle
   (start [component]
