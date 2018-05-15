@@ -1,6 +1,14 @@
 (ns gamebase.canvas-control
   (:require
-   [gamebase.events :as events]))
+   [gamebase.events :as events]
+   [gamebase.ecs :as ecs]))
+
+
+
+(defn mk-system []
+  {:ecs/kind :system
+   :ecs/system-id ::canvas-control
+   })
 
 
 (defonce conf (atom {}))

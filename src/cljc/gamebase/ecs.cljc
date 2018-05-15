@@ -49,6 +49,7 @@ nil
 
 (def sComponent
   {::kind (s-literal :component)
+   ;; ::type s/Any
    ::system-id s/Any
    ::entity-id s/Any
    ::component-key s/Any
@@ -56,6 +57,7 @@ nil
 
 (def sEntity
   {::kind (s-literal :entity)
+   ;; ::type s/Any
    ::entity-id s/Any
    ::components {s/Any sComponent}
    s/Any s/Any})
@@ -129,6 +131,17 @@ nil
      insert-object
      world
      new-objects)))
+
+
+
+;;;;; Predefined events
+
+(def predefined-events
+
+  ;; Just to notify that maybe some time has passed.
+  ::time
+
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;; p r i v a t e ;;;;;;;;;;;;;;;;;;;;;;;;;;
 nil
