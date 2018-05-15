@@ -4,12 +4,19 @@
 
 (declare my-swap!)
 
-(defn event-queue [root-atom ks]
-  (let [q {:root-atom root-atom :ks ks}]
-    (my-swap! q (fn [_] {:set_ #{}
-                      :sq 0
-                        :n 0}))
-    q))
+;; (defn event-queue [root-atom ks]
+;;   (let [q {:root-atom root-atom :ks ks}]
+;;     (my-swap! q (fn [_] {:set_ #{}
+;;                       :sq 0
+;;                         :n 0}))
+;;     q))
+
+
+;; (initialize {:root-atom root-atom, :ks ks})
+(defn initialize [q]
+  (my-swap! q (fn [_] {:set_ #{}
+                       :sq 0
+                       :n 0})))
 
 (defn my-swap! [{:keys [root-atom ks]} f]
   (swap! root-atom

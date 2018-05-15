@@ -2,6 +2,8 @@
   (:require [rum.core :as rum]
 
             [gamebase.events :as events]
+            [gamebase.event-queue :as eq]
+            [gamebase.ecs :as ecs]
             [gamebase.canvas-control :as canvas-control]
             [gamebase.layouts.sidebar-and-bottombar :as our-layout]
             ))
@@ -16,9 +18,11 @@
 
     }))
 
+(def event-queue {:root-atom app-state :ks [:event-queue]})
+(defonce _eq_init (eq/initialize event-queue))
+
 (rum/defc main-component < rum/reactive []
   (our-layout/mk-html))
-
 
 
 (defn render []
