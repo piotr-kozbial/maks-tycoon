@@ -13,7 +13,7 @@
             ))
 
 
-(enable-console-print!)
+;;(enable-console-print!)
 
 (defonce app-state
   (atom
@@ -40,6 +40,7 @@
       true)))
 
 (defn start-event-loop []
+  ;;(print "start-event-loop\n")
   ;; handle pending events
   (while (maybe-handle-one-event)
     ;;(print "event executed\n")
@@ -52,16 +53,21 @@
             (<= delay 0) 1
             (> delay 300) 300
             :else delay)]
-      ;;(print (str "timeout za " delay-fixed "ms"))
-      ;;(print (:event-queue @app-state))
-      (.setTimeout js/window
-                   (fn [_] (start-event-loop))
-                   delay-fixed))
+      ;;(print (str "setting timeout za " delay-fixed "ms"))
+      ;;(print (:virtual-timer @app-state))
+      (vt/set-timeout-after
+       virtual-timer
+       delay-fixed
+       start-event-loop))
     (do
-      ;;(print (str "timeout (x) za 300 ms"))
-      (.setTimeout js/window
-                   (fn [_] (start-event-loop))
-                   300))))
+      ;;(print (str "setting timeout (x) za 300 ms"))
+      (vt/set-timeout-after
+       virtual-timer
+       300
+       start-event-loop)
+      ;;(print (:virtual-timer @app-state))
+
+      )))
 
 (defonce _event_loop_start
   (start-event-loop))
@@ -155,7 +161,7 @@
    event-queue
    (assoc event1
           ::eq/time
-          (* 200 1000)
+          (+ 5000 (vt/get-time virtual-timer))
           ))
 
 
