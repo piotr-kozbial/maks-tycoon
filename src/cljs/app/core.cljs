@@ -76,7 +76,7 @@
     (let [delay (- soonest-time (js/millis))
           delay-fixed
           (cond
-            (< delay 0) 1
+            (<= delay 0) 1
             (> delay 300) 300
             :else delay)]
       ;;(print (str "timeout za " delay-fixed "ms"))
