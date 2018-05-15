@@ -1,6 +1,9 @@
 (ns app.core
   (:require [rum.core :as rum]
 
+
+            [ecs.systems.my-test-entities :as te]
+
             [gamebase.events :as events]
             [gamebase.event-queue :as eq]
             [gamebase.ecs :as ecs]
@@ -20,6 +23,46 @@
 
 (def event-queue {:root-atom app-state :ks [:event-queue]})
 (defonce _eq_init (eq/initialize event-queue))
+
+;; return true if executed an event
+;; return nil if alert set
+(defn maybe-handle-one-event []
+  (when-let [world (:world @app-state)]
+    (when-let [event (eq/pop-soonest-event-until
+                      event-queue
+                      (js/millis))]
+
+      (ecs/do-handle-event world event)
+      true)))
+
+(defn start-event-loop []
+  ;; handle pending events
+  (while (maybe-handle-one-event)
+    ;;(print "event executed\n")
+    )
+  ;; set timeout for the soonest event in the future
+  (if-let [soonest-time (eq/soonest-time event-queue)]
+    (let [delay (- soonest-time (js/millis))
+          delay-fixed
+          (cond
+            (< delay 0) 1
+            (> delay 300) 300
+            :else delay)]
+      ;;(print (str "timeout za " delay-fixed "ms"))
+      ;;(print (:event-queue @app-state))
+      (.setTimeout js/window
+                   (fn [_] (start-event-loop))
+                   delay-fixed))
+    (do
+      ;;(print (str "timeout (x) za 300 ms"))
+      (.setTimeout js/window
+                   (fn [_] (start-event-loop))
+                   300))))
+
+(defonce _event_loop_start
+  (start-event-loop))
+
+
 
 (rum/defc main-component < rum/reactive []
   (our-layout/mk-html))
@@ -70,3 +113,50 @@
 
 
   )
+
+
+(comment ;; test
+
+  (do
+    (def w (ecs/mk-world))
+    (def s (te/mk-system))
+    (def e1 (ecs/mk-entity :my-entity :my-type))
+    (def e2 (ecs/mk-entity :my-entity-2 :my-type))
+    (def c1 (te/mk-component e1 "pierwszy"))
+    (def c2 (te/mk-component e1 "drugi"))
+    (def c3 (te/mk-component e2 "trzeci"))
+    (def w' (-> w
+                (ecs/insert-object s)
+                (ecs/insert-object e1)
+                (ecs/insert-object e2)
+                (ecs/insert-object c1)
+                (ecs/insert-object c2)
+                (ecs/insert-object c3))))
+
+
+  (swap! app-state
+         assoc :world w')
+
+
+  (def event1 (ecs/mk-event s ::ecs/time))
+
+  (eq/put-event!
+   event-queue
+   (assoc event1
+          ::eq/time
+          20
+          ))
+
+  (eq/put-event!
+   event-queue
+   (assoc event1
+          ::eq/time
+          (* 220 1000)
+          ))
+
+
+  (eq/initialize event-queue)
+
+
+  )
+
