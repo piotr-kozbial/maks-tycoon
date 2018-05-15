@@ -3,7 +3,7 @@
    [gamebase.events :as events]))
 
 
-(def conf (atom {}))
+(defonce conf (atom {}))
 
 (defn- correct-top-left [top-left-x top-left-y]
   (let [scale ((:get-scale @conf))
@@ -46,11 +46,24 @@
                                        (assoc st :top-left-x new-top-left-x
                                               :top-left-y new-top-left-y)))))))))
 
+(defn draw []
+  (js/clear)
+  (js/noSmooth)
+
+  (js/scale ((:get-scale @conf)))
+  ((:draw @conf)))
+
+
+
 ;; API
 
 (defn setup [config]
   (reset! conf config)
-  (setup-drag-event))
+  (setup-drag-event)
+
+
+  (events/add-handler :draw #'draw)
+  )
 
 (defn mk-canvas-resize-handler [_]
   (fn [] (after-canvas-resize)))

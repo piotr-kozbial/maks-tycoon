@@ -9,7 +9,12 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:text "Hello Chestnut!"}))
+(defonce app-state
+  (atom
+   {:text "Hello Chestnut!"
+    :canvas-control {:scale 0.2}
+
+    }))
 
 (rum/defc main-component < rum/reactive []
   (our-layout/mk-html))
@@ -23,13 +28,10 @@
 
 (defn draw []
 
-  (js/clear)
-  (js/noSmooth)
-
   (doseq [x (range 13)]
     (doseq [y (range 6)]
       (do
-        (js/fill (js/color (* 20 x) (* 40 y) 100))
+        (js/fill (js/color (* 20 x) (* 40 y) 0))
         (js/rect (* 100  x) (* 100 y) 100 100)))
 
     )
@@ -43,11 +45,12 @@
   (.log js/console "-----> main")
 
   (let [l-config
-        {:state-atom app-state
+        {:draw #'draw
+         :state-atom app-state
          :state-kvs [:canvas-control]
          :get-world-width (fn [] 3000)
          :get-world-height (fn [] 2000)
-         :get-scale (fn [] 1.0)
+         :get-scale (fn [] (-> @app-state :canvas-control :scale))
          :get-canvas-width (fn [] 1300)
          :get-canvas-height (fn [] 600)}]
 
@@ -61,6 +64,5 @@
 
   (our-layout/initialize)
 
-  (events/add-handler :draw #'draw)
 
   )
