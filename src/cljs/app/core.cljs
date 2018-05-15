@@ -22,11 +22,21 @@
 
     }))
 
-(def event-queue {:root-atom app-state :ks [:event-queue]})
-(defonce _eq_init (eq/initialize event-queue))
+(declare start-event-loop)
+
+(def event-queue {:root-atom app-state :ks [:event-queue]
+                  :on-adding-to-empty
+                  (fn []
+                    ;;(print "on empty :)\n")
+                    (start-event-loop))})
+(defonce _eq_init (do
+                    (eq/initialize event-queue)
+                    nil))
 
 (def virtual-timer {:root-atom app-state :ks [:virtual-timer]})
-(defonce _vt_init (vt/initialize virtual-timer))
+(defonce _vt_init (do
+                    (vt/initialize virtual-timer)
+                    nil))
 
 ;; return true if executed an event
 ;; return nil if alert set
@@ -61,27 +71,24 @@
        start-event-loop))
     (do
       ;;(print (str "setting timeout (x) za 300 ms"))
-      (vt/set-timeout-after
-       virtual-timer
-       300
-       start-event-loop)
+      ;; (vt/set-timeout-after
+      ;;  virtual-timer
+      ;;  300
+      ;;  start-event-loop)
       ;;(print (:virtual-timer @app-state))
 
+      ;;(print "NO MORE EVENTS")
       )))
 
 (defonce _event_loop_start
   (start-event-loop))
 
-
-
 (rum/defc main-component < rum/reactive []
   (our-layout/mk-html))
-
 
 (defn render []
   (rum/mount (main-component)
              (. js/document (getElementById "app"))))
-
 
 (defn draw []
 
@@ -94,7 +101,6 @@
     )
 
 )
-
 
 (defn main [& _]
 
@@ -121,6 +127,7 @@
 
   (our-layout/initialize)
 
+  (vt/resume virtual-timer)
 
   )
 

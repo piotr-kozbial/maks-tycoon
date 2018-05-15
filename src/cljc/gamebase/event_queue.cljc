@@ -12,7 +12,7 @@
 ;;     q))
 
 
-;; (initialize {:root-atom root-atom, :ks ks})
+;; (initialize {:root-atom root-atom, :ks ks, :on-adding-to-empty})
 (defn initialize [q]
   (my-swap! q (fn [_] {:set_ #{}
                        :sq 0
@@ -27,13 +27,16 @@
 
 
 (defn put-event! [qa event]
-  (my-swap!
-   qa
-   (fn [{:keys [set_ sq n] :as q}]
-     (assoc q
-            :set_ (conj set_ (assoc event :sq sq))
-            :sq (inc sq)
-            :n (inc n)))))
+  (let [was-empty (= 0 (:n (my-deref qa)))]
+    (my-swap!
+     qa
+     (fn [{:keys [set_ sq n] :as q}]
+       (assoc q
+              :set_ (conj set_ (assoc event :sq sq))
+              :sq (inc sq)
+              :n (inc n))))
+    (when (and was-empty (:on-adding-to-empty qa))
+      ((:on-adding-to-empty qa)))))
 
 (defn take-event! [qa]
   (my-swap!
