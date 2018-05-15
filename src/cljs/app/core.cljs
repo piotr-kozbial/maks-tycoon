@@ -1,34 +1,3 @@
-
-;; TODO
-;;
-;; 1. relative time in events and event queue
-;; kiedy jest wlaczona pauza i potem odpuszczona,
-;; to trzeba policzyc delay jaki byl
-;; i taki delay zawsze dodawac do (js/millis) przy wyciaganiu
-;; eventow z kolejki
-;; OGOLNIE trzeba taki jakis zegar enkapsulowac
-;; no bo z kolei nastepne eventy bylyby juz wpisywane
-;; z wlasciwym zegarem
-;; TO MOZE RACZEJ
-;; zrobic szybka procedure przepisania calej kolejki
-;; z dodaniem delaya?
-;;
-;; BTW, (js/millis) jest ulamkowe. Moze zaokroglac do pelnych ms?
-;; A co z kolejnoscia zdarzen w tej samej milisekundzie? wazne?
-;; Moze nie.
-;;
-;; A przy SAVE GAME / LOAD GAME tez tak? Tez.
-;;
-;; A przy replay - cala dluga kolejka zdarzen do przepisania?
-;; A to sie bedziemy martwic kiedy indziej.
-;;
-;; ALE JEDNAK FAJNIE BYLOBY ENKAPSULOWAC ZEGAR
-;; Nie tylko koleja by brala z tego zegara,
-;; ale tez kod, ktory ustawia eventy czasowe.
-;;
-;; DESIGN:
-;;
-
 (ns app.core
   (:require [rum.core :as rum]
 
@@ -38,6 +7,7 @@
             [gamebase.events :as events]
             [gamebase.event-queue :as eq]
             [gamebase.ecs :as ecs]
+            [gamebase.virtual-timer :as vt]
             [gamebase.canvas-control :as canvas-control]
             [gamebase.layouts.sidebar-and-bottombar :as our-layout]
             ))
@@ -55,13 +25,16 @@
 (def event-queue {:root-atom app-state :ks [:event-queue]})
 (defonce _eq_init (eq/initialize event-queue))
 
+(def virtual-timer {:root-atom app-state :ks [:virtual-timer]})
+(defonce _vt_init (vt/initialize virtual-timer))
+
 ;; return true if executed an event
 ;; return nil if alert set
 (defn maybe-handle-one-event []
   (when-let [world (:world @app-state)]
     (when-let [event (eq/pop-soonest-event-until
                       event-queue
-                      (js/millis))]
+                      (vt/get-time virtual-timer))]
 
       (ecs/do-handle-event world event)
       true)))
@@ -73,7 +46,7 @@
     )
   ;; set timeout for the soonest event in the future
   (if-let [soonest-time (eq/soonest-time event-queue)]
-    (let [delay (- soonest-time (js/millis))
+    (let [delay (- soonest-time (vt/get-time virtual-timer))
           delay-fixed
           (cond
             (<= delay 0) 1
