@@ -2,6 +2,15 @@
   (:require
    [gamebase.events :as events]))
 
+
+
+;; TODO
+;;
+;; uporzadkowac i uruchomic:
+;;   1. full page
+;;   2. splash
+
+
 (defn mk-html [& [splash-image]]
   [:div {}
    [:div {:id "gamebase/canvas-holder"

@@ -21,7 +21,40 @@
    {}))
 
 ;; event queue and event loop
+;;
+;; HOW DO WE HANDLE IT?
+;;
+;; we need to:
+;;   1. (re)start
+;;   2. stop
+;;   3. clear
+;;
+;; scenarios:
+;;
+;; In general, when we want to start new game:
+;;     1. pause timer
+;;     2. clear queue
+;;     3. reset timer
+;;     4. create/load game state
+;;     5. resume timer
+
+
+PLAN:
+- najpierw uruchomic jakiegos sprite'a, tak jak jest, na wiecznie chodzacej kolejce
+   - system "movement"
+   - w nim komponent test-mover, jezdzacy jakos gdzies w kolko
+   - rozkminic zagadnienie "update", w odroznieniu od eventow (?)
+       (a moze to byc tez event, ale obslugiwany poza kolejka,
+          calkowicie priorytetowo)
+       TAK, chyba mozemy taki event wysylac recznie, tam w (draw),
+       gdzie pobieramy eventy z kolejki
+   - rozkminic rysowanie, tzn. dla entity jaki obrazek ma byc - czy to tez system?
+- potem na tej podstawie zorganizowac new game, load game (ale tylko w kodzie, z value)
+- potem dorzucic w UI new game
+
+
 (do
+
   (declare start-event-loop)
 
   (def event-queue {:root-atom app-state :ks [:event-queue]
@@ -48,6 +81,25 @@
 
         (ecs/do-handle-event world event)
         true)))
+
+
+
+  ;; TODO - nie tak !!!!!!!!!!!!!!!!!
+  ;; Eventy trzeba obslugiwac w (draw)
+  ;; A moze nie?
+  ;; Ale do tej pory tak robilem.
+  ;; W (draw) pobieramy wszystkie zalegle eventy (do chwili obecnej),
+  ;; obslugujemy je,
+  ;; A potem nalezaloby zsyntetyzowac i obsluzyc event "update".
+  ;; A na koncu rysowanie.
+
+  ;; Bo moze tak na timerach byloby wydajniej, zwlaszcza gdybysmy chcieli
+  ;; ograniczyc ilosc klatek/sek (p5 chyba to ma).
+  ;; To pomiedzy klatkami moglyby sie liczyc biezace eventy.
+
+  ;; Ale dobra, to kiedy indziej.
+
+  ;; Teraz wepchnijmy do (draw).
 
   (defn start-event-loop []
     ;;(print "start-event-loop\n")
