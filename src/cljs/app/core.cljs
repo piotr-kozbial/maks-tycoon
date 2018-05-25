@@ -12,6 +12,7 @@
             [gamebase.layouts.sidebar-and-bottombar :as our-layout]
             ))
 
+
 ;;(enable-console-print!)
 
 ;; app state
@@ -88,7 +89,10 @@
     (doseq [y (range 6)]
       (do
         (js/fill (js/color (* 20 x) (* 40 y) 0))
-        (js/rect (* 100  x) (* 100 y) 100 100)))
+        ;;(js/rect (* 100  x) (* 100 y) 100 100)
+        (js/rect 0 0  10 10)
+
+        ))
 
     )
 
@@ -107,20 +111,25 @@
 
     (.log js/console "-----> main")
 
-    (our-layout/mk-layout
+    ;; (our-layout/mk-layout
+    ;;  app-state [:layout]
+    ;;  {:bottom-bar-height 150
+    ;;   :after-canvas-resize
+    ;;   #() ;; TODO - call readjust in canvas-control
+    ;;   })
+
+    (our-layout/initialize
      app-state [:layout]
      {:bottom-bar-height 150
       :after-canvas-resize
-      #() ;; TODO - call readjust in canvas-control
-      })
-
-    (our-layout/initialize)
+      #(;;.log js/console "ACR callback"
+        )})
 
     (canvas-control/initialize
      {:state-atom app-state
       :state-kvs [:canvas-control]
       :draw #'draw
-      :get-canvas-size #(vector 688 591) ;; TODO
+      :get-canvas-size our-layout/get-canvas-size ;; TODO
       :get-world-size #(vector 2000 1000) ;; TODO
       })
 

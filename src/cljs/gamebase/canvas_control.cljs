@@ -79,6 +79,30 @@
                          :translation-x tr-x
                          :translation-y tr-y)))))
 
+(defn center-on
+  "set translation in such a way that the center point
+   of the viewport matches given world point"
+
+  [world-p]
+
+  (let [{:keys [state-atom state-kvs]} @conf
+        proj-conf (make-proj-conf)
+
+        ;; view coords of the given world point
+        [xw yw] (proj/view-coords proj-conf world-p)
+        _ (println [xw yw])
+        _ (println proj-conf)
+        ;; view coords of view center
+        [xc yc] (proj/view-coords proj-conf (proj/Vc proj-conf))
+        _ (println [xc yc])
+        ;; translation we have to do to match the above
+        tr-x (- xc xw)
+        tr-y (- yc yw)]
+    (swap! state-atom update-in state-kvs
+           (fn [s] (assoc s
+                         :translation-x tr-x
+                         :translation-y tr-y)))))
+
 ;; TODO
 ;; this will need to use :get-world-size from conf
 (defn readjust

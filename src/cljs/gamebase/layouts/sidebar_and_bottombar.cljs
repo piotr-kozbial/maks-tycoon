@@ -36,13 +36,6 @@
                 :width "100%"
                 :height "100%"}}]])])
 
-
-
-;; TODO:
-;;  - the layout must also control canvas itself, resize it etc.
-;;  - as for positioning *content* inside the layout (which depends on particular game logic)
-;;    it must be passed as callbacks to game logic
-
 (declare -setup-events update-canvas-size show-canvas)
 
 ;; This is the "constant" part of the state of the layout.
@@ -52,16 +45,13 @@
 
 ;; API
 
-(defn mk-layout [base-atom kvs opts]
+(defn initialize [base-atom kvs opts]
   (reset! state (assoc opts
                        :base-atom base-atom
                        :kvs kvs))
   (-setup-events)
-  (swap! base-atom update-in kvs (constantly {})))
-
-(defn initialize []
-  (let [{:keys [base-atom kvs]} @state
-        cnv (js/createCanvas 600 400)]
+  (swap! base-atom update-in kvs (constantly {}))
+  (let [cnv (js/createCanvas 600 400)]
     (.parent cnv "gamebase/canvas-holder")
     (update-canvas-size)
     (show-canvas)
@@ -97,6 +87,11 @@
       [[canvas-x canvas-y]
        [(+ canvas-x canvas-width) (+ canvas-y canvas-height)]]
       [[0 0] [0 0]])))
+(defn get-canvas-size []
+  (let [{:keys [base-atom kvs]} @state
+        {:keys [canvas-width canvas-height]}
+        ,   (get-in @base-atom kvs)]
+    [canvas-width canvas-height]))
 
 ;; PRIVATE
 
@@ -121,16 +116,17 @@
                       200 (- height bottom-bar-height)
                       (- width 200) bottom-bar-height)
     (js/resizeCanvas canvas-width canvas-height)
+    (.log js/console (str"w " canvas-width " h " canvas-height))
+    (.log js/console @base-atom)
     (swap! base-atom update-in kvs
-           assoc
-           :canvas-x 200
-           :canvas-y 0
-           :canvas-width canvas-width
-           :canvas-height canvas-height)
+           (fn [s] (assoc s
+                         :canvas-x 200
+                         :canvas-y 1
+                         :canvas-width canvas-width
+                         :canvas-height canvas-height)))
     (after-canvas-resize)))
 
 (defn -setup-events []
   (let [{:keys [base-atom kvs]} @state]
     (events/add-handler :window-resized
                         (fn [_] (update-canvas-size)))))
-
