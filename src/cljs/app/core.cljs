@@ -100,6 +100,7 @@
 
 ;; main
 (do
+
   (rum/defc main-component < rum/reactive []
     (our-layout/mk-html))
 
@@ -110,13 +111,6 @@
   (defn main [& _]
 
     (.log js/console "-----> main")
-
-    ;; (our-layout/mk-layout
-    ;;  app-state [:layout]
-    ;;  {:bottom-bar-height 150
-    ;;   :after-canvas-resize
-    ;;   #() ;; TODO - call readjust in canvas-control
-    ;;   })
 
     (our-layout/initialize
      app-state [:layout]

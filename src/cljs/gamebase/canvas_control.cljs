@@ -19,14 +19,27 @@
     ;; client draw
     ((:draw @conf))))
 
-;; TODO
+;; TODO SUMARY
+;; 1. params to draw function
+;; 2. dragging (panning)
+;; 3. readjust
+
+nil
+;; TODO DETAILS
+;; Ad 1.
 ;; client draw function should get some params,
 ;; first of all - the rectangle that is visible in viewport
 ;; (in world coordinates of course - the client draw function
 ;; doesn't know any other coord system)
+;;
+;; Ad 2.
+;; implement setup-drag-event WITH LIMITING TO WORLD
+;; possibly implement and use `readjust`
+;;
+;; Ad 3.
+;; think if there is a scenario when we need readjust anyway
 
-
-(declare setup-drag-event) ;; TODO
+(declare setup-drag-event)
 
 ;; public API
 (defn initialize [{:keys [state-atom state-kvs] :as config}]
@@ -35,7 +48,7 @@
          {:scale-factor 1.0
           :translation-x 0.0
           :translation-y 0.0})
-  (setup-drag-event) ;; TODO
+  (setup-drag-event)
   (events/add-handler :draw #'draw))
 
 (defn- make-proj-conf []
@@ -87,13 +100,15 @@
 
   (let [{:keys [state-atom state-kvs]} @conf
         proj-conf (make-proj-conf)
-
+        proj-conf0 (assoc proj-conf
+                          :tx 0
+                          :ty 0)
         ;; view coords of the given world point
-        [xw yw] (proj/view-coords proj-conf world-p)
+        [xw yw] (proj/view-coords proj-conf0 world-p)
         _ (println [xw yw])
         _ (println proj-conf)
         ;; view coords of view center
-        [xc yc] (proj/view-coords proj-conf (proj/Vc proj-conf))
+        [xc yc] (proj/view-coords proj-conf0 (proj/Vc proj-conf0))
         _ (println [xc yc])
         ;; translation we have to do to match the above
         tr-x (- xc xw)
@@ -103,18 +118,17 @@
                          :translation-x tr-x
                          :translation-y tr-y)))))
 
-;; TODO
+;; TODO 2, 3
 ;; this will need to use :get-world-size from conf
 (defn readjust
   "fix scale and/or translation after external change
   (such as canvas resize by layout or game state reloaded)"
   []
 
-  ;; TODO
 
   )
 
-;; TODO
+;; TODO 2
 (defn- setup-drag-event []
   ;; (events/add-handler :canvas-mouse-dragged
   ;;                     (fn [{:keys [button x y prev-x prev-y]}]
