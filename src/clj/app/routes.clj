@@ -1,14 +1,14 @@
 (ns app.routes
   (:require [clojure.java.io :as io]
-            [compojure.core :refer [ANY GET PUT POST DELETE routes]]
+            [compojure.core :refer [ANY GET PUT POST
+                                    DELETE routes]]
             [compojure.route :refer [resources]]
             [ring.util.response :refer [response]]
 
             [gamebase.local-redis-saveload-server]
             [gamebase.root-page]
             [gamebase.layouts.sidebar-and-bottombar
-             :as our-layout]
-            ))
+             :as our-layout]))
 
 ;; (defn home-routes [endpoint]
 ;;   (routes
@@ -36,4 +36,6 @@
 (defn home-routes [_]
   (gamebase.local-redis-saveload-server/build-handler config)
   )
+
+
 

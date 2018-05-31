@@ -53,15 +53,69 @@ PLAN:
 - potem dorzucic w UI new game
 
 
-(do
+(do ;; STANDALONE EVENT LOOP - DISABLED
 
   (declare start-event-loop)
 
   (def event-queue {:root-atom app-state :ks [:event-queue]
                     :on-adding-to-empty
-                    (fn []
-                      ;;(print "on empty :)\n")
-                      (start-event-loop))})
+                    (fn [] (start-event-loop))})
+  ;; (defonce _eq_init (do
+  ;;                     (eq/initialize event-queue)
+  ;;                     nil))
+
+  (def virtual-timer {:root-atom app-state :ks [:virtual-timer]})
+  ;; (defonce _vt_init (do
+  ;;                     (vt/initialize virtual-timer)
+  ;;                     nil))
+
+  ;; return true if executed an event
+  ;; return nil if alert set
+  (defn maybe-handle-one-event []
+    (when-let [world (:world @app-state)]
+      (when-let [event (eq/pop-soonest-event-until
+                        event-queue
+                        (vt/get-time virtual-timer))]
+
+        (ecs/do-handle-event world event)
+        true)))
+
+  (defn start-event-loop []
+    ;;(print "start-event-loop\n")
+    ;; handle pending events
+    (while (maybe-handle-one-event))
+    ;; set timeout for the soonest event in the future
+    (if-let [soonest-time (eq/soonest-time event-queue)]
+      (let [delay (- soonest-time (vt/get-time virtual-timer))
+            delay-fixed
+            (cond
+              (<= delay 0) 1
+              (> delay 300) 300
+              :else delay)]
+        (vt/set-timeout-after
+         virtual-timer
+         delay-fixed
+         start-event-loop))
+      (do
+        ;;(print "NO MORE EVENTS")
+        )))
+
+
+  ;; (defonce _event_loop_start
+  ;;   (start-event-loop))
+
+  )
+
+(do ;; DRAW-LOCKED EVENT LOOP
+
+  ;; Events are to be handled inside `draw`,
+  ;; which *doesn not* mean that they rely
+  ;; on a specific frame rate.
+
+  (declare start-event-loop)
+
+  (def event-queue {:root-atom app-state :ks [:event-queue]
+                    :on-adding-to-empty (fn [])})
   (defonce _eq_init (do
                       (eq/initialize event-queue)
                       nil))
