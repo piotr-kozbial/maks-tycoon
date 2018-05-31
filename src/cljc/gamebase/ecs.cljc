@@ -35,7 +35,9 @@ nil
 
 (defn to-system [system]
   {::kind :to-system
-   ::system-id (::system-id system)})
+   ::system-id (if (keyword? system)
+                 system
+                 (::system-id system))})
 
 (defn to-entity [entity]
   {::kind :to-entity
@@ -52,10 +54,16 @@ nil
       :world (to-world)
       :to-world (to-world)
       :system (to-system object-or-target-id)
+      :to-system (to-system object-or-target-id)
       :entity (to-entity object-or-target-id)
-      :component (to-component object-or-target-id))
+      :to-entity (to-entity object-or-target-id)
+      :component (to-component object-or-target-id)
+      :to-component (to-component object-or-target-id))
     object-or-target-id))
 
+
+(defn change-target [event target-id]
+  (assoc event ::target-id (to target-id)))
 
 ;;;;; Objects
 
@@ -206,6 +214,9 @@ nil
    world
    objects))
 
+(defn all-systems [world]
+  (vals (::systems world)))
+
 (defn all-components [world]
   (->> (vals (::entities world))
        (mapcat (comp vals ::components))))
@@ -214,6 +225,15 @@ nil
   (filter
    #(= (id system) (::system-id %))
    (all-components world)))
+
+
+(defn get-entity [world component]
+  (let [entity-id (::entity-id component)]
+    ((::entities world) entity-id)))
+
+
+(defn ck-kvs [component-key & kvs]
+  (into [::components component-key] kvs))
 
 ;;;;;;;;;;;;;;;;;;;;;; p r i v a t e ;;;;;;;;;;;;;;;;;;;;;;;;;;
 nil

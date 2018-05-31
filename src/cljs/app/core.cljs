@@ -4,6 +4,9 @@
 
             [ecs.systems.my-test-entities :as te]
 
+            [gamebase.systems.drawing :as sys-drawing]
+            [gamebase.systems.movement :as sys-move]
+
             [gamebase.events :as events]
             [gamebase.event-queue :as eq]
             [gamebase.ecs :as ecs]
@@ -133,12 +136,16 @@
       (->> (repeatedly #(eq/pop-soonest-event-until event-queue t))
            (take-while identity) ;; not nil
            (reduce
-            (fn [w] w)
+            (fn [w] w) ;; TODO
             world))))
 
   (defn handle-update [world]
-    (ecs/do-handle-event world
-                         (ecs/mk-event (ecs/to-world) :update)))
+    (ecs/do-handle-event
+     world
+
+     (assoc
+      (ecs/mk-event (ecs/to-world) :update)
+      ::eq/time (vt/get-time virtual-timer))))
 
   (defn handle-events [world]
     (-> world
@@ -151,27 +158,43 @@
   (defmethod ecs/handle-event [:to-world :update]
     [world event _]
     ;;(.log js/console "world update")
-    world))
+    (reduce
+     (fn [wrl sys]
+       (let [event' (ecs/retarget event sys)]
+         ;;(.log js/consol
+         (ecs/do-handle-event
+          wrl
+          event')))
+     world
+     (ecs/all-systems world))))
+
+(defn create-world []
+  (let [e (assoc (ecs/mk-entity :test-entity :test-type)
+                 :origin [0 0])
+        e-image (sys-drawing/mk-static-image-component
+                 e :img
+                 {:point-kvs (ecs/ck-kvs :move :position)
+                  :offset [-10 -10]})
+        e-move (sys-move/mk-test-diagonal-component e :move nil)]
+       (-> (ecs/mk-world)
+           (ecs/insert-object (sys-drawing/mk-system))
+           (ecs/insert-object (sys-move/mk-system))
+           (ecs/insert-object e)
+           (ecs/insert-object e-image)
+           (ecs/insert-object e-move))))
+
+(defonce _init-world
+  (swap! app-state assoc :world (create-world)))
+
 
 (defn draw []
-
-
-  (swap! app-state
-         (fn [{:keys [world] :as s}]
-           (assoc s :world (handle-events world))))
-
-  (doseq [x (range 13)]
-    (doseq [y (range 6)]
-      (do
-        (js/fill (js/color (* 20 x) (* 40 y) 0))
-        ;;(js/rect (* 100  x) (* 100 y) 100 100)
-        (js/rect 0 0  10 10)
-
-        ))
-
-    )
-
-  )
+  (let [world (:world @app-state)
+        world' (handle-events world)
+        world'' (ecs/do-handle-event
+                 world'
+                 (ecs/mk-event sys-drawing/to-system
+                               ::sys-drawing/draw))]
+    (swap! app-state assoc :world world'')))
 
 ;; main
 (do
@@ -241,9 +264,11 @@
                 (ecs/insert-object c3))))
 
 
+
+
   (swap! app-state
          assoc :world w')
-
+  
 
   (def event1 (ecs/mk-event s ::ecs/time))
 
