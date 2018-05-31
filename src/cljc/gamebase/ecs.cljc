@@ -50,6 +50,7 @@ nil
   (if (map? object-or-target-id)
     (case (::kind object-or-target-id)
       :world (to-world)
+      :to-world (to-world)
       :system (to-system object-or-target-id)
       :entity (to-entity object-or-target-id)
       :component (to-component object-or-target-id))

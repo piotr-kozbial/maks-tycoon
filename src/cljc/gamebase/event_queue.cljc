@@ -34,7 +34,7 @@
        (assoc q
               :set_ (conj set_ (assoc event :sq sq))
               :sq (inc sq)
-              :n (inc n))))
+             :n (inc n))))
     (when (and was-empty (:on-adding-to-empty qa))
       ((:on-adding-to-empty qa)))))
 
