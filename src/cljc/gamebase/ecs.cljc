@@ -189,6 +189,8 @@ nil
      new-objects)))
 
 
+;; TODO - event time should be already set here (to 0 by default)
+;; (now it is only defined in event-queue, but that is inconvenient)
 (defn mk-event [target-or-id msg]
   {::target-id (to target-or-id)
    ::msg msg})
@@ -210,7 +212,7 @@ nil
 (defn pass-event-through-all [world event objects]
   (reduce
    (fn [w o]
-     (handle-event w (retarget event o) o))
+     (do-handle-event w (retarget event o)))
    world
    objects))
 

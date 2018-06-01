@@ -17,6 +17,7 @@
 (defmulti precondition-for-event (fn [event-key] event-key))
 
 (defn ^:export callback [event-name]
+
   (let [event-key (keyword event-name)
         handlers (event-key @all-handlers)]
     (when (precondition-for-event event-key)

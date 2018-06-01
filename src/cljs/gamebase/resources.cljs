@@ -32,9 +32,9 @@
 
 (defmulti start-loading (fn [fname callback] (file-type fname)))
 (defmethod start-loading :img [fname callback]
-  (js/loadImage fname callback))
+  (js/loadImage (str "public/" fname) callback))
 (defmethod start-loading :tmx [fname callback]
-  (js/loadStrings fname callback))
+  (js/loadStrings (str "public/" fname) callback))
 
 (defmulti parse-and-store (fn [fname & args] (file-type fname)))
 (defmethod parse-and-store :img [fname img]

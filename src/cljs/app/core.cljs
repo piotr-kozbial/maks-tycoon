@@ -1,6 +1,7 @@
 (ns app.core
   (:require [rum.core :as rum]
 
+            [gamebase.resources :as resources]
 
             [ecs.systems.my-test-entities :as te]
 
@@ -124,19 +125,19 @@
   ;; return true if executed an event
   ;; return nil if alert set
 
-  ;; return new world or nil if no events
-  (defn maybe-handle-one-event [world]
-    (when-let [event (eq/pop-soonest-event-until
-                      event-queue
-                      (vt/get-time virtual-timer))]
-      (ecs/do-handle-event world event)))
+  ;; ;; return new world or nil if no events
+  ;; (defn maybe-handle-one-event [world]
+  ;;   (when-let [event (eq/pop-soonest-event-until
+  ;;                     event-queue
+  ;;                     (vt/get-time virtual-timer))]
+  ;;     (ecs/do-handle-event world event)))
 
   (defn handle-all-pending-events [world]
     (let [t (vt/get-time virtual-timer)]
       (->> (repeatedly #(eq/pop-soonest-event-until event-queue t))
            (take-while identity) ;; not nil
            (reduce
-            (fn [w] w) ;; TODO
+            (fn [wrl e] (ecs/do-handle-event wrl e))
             world))))
 
   (defn handle-update [world]
@@ -184,8 +185,71 @@
            (ecs/insert-object e-move))))
 
 (defonce _init-world
-  (swap! app-state assoc :world (create-world)))
+  (do
+    (swap! app-state assoc :world (create-world))
 
+    (eq/put-event!
+     event-queue
+     (assoc
+      (ecs/mk-event sys-drawing/to-system
+                    ::sys-drawing/clear-layers)
+      ::eq/time 0))
+
+    (eq/put-event!
+     event-queue
+     (assoc
+      (ecs/mk-event sys-drawing/to-system
+                    ::sys-drawing/add-layer)
+      ::eq/time 0
+      :layer-key :background
+      :layer-type :tmx
+      :layer-data {:resource-name "level1.tmx"
+                   :img-resource-name "background.png"
+                   :layer-key :background}))
+
+    (eq/put-event!
+     event-queue
+     (assoc
+      (ecs/mk-event sys-drawing/to-system
+                    ::sys-drawing/add-layer)
+      ::eq/time 0
+      :layer-key :terrain
+      :layer-type :tmx
+      :layer-data {:resource-name "level1.tmx"
+                   :img-resource-name "tiles.png"
+                   :layer-key :foreground}))
+
+    (comment let [level1 (resources/get-resource "level1.tmx")
+
+                  ]
+             (swap! global/app-state assoc
+                    :world
+                    {:background (:background level1)
+                     :terrain (:foreground level1)
+                     :above (:above level1)
+                     :game-name name
+                     :sprites {1 (load-sprite global/event-queue
+                                              1
+                                              loco/create
+                                              (js/millis) 1 99 :w)}
+                     :current-game-time 0
+                     :game-time-running? true
+                     :game-time-offset (- (double (* 0.001 (js/millis))))})
+
+             (save-game)
+
+             )
+    ;;(.log js/console (pr-str event-queue))
+
+    ;; (ecs/do-handle-event
+    ;;  (:world @app-state)
+    ;;  (assoc
+    ;;   (ecs/mk-event sys-drawing/to-system
+    ;;                 ::sys-drawing/clear-layers)
+    ;;   ::eq/time 0 ;;(vt/get-time virtual-timer)
+    ;;   ))
+
+    nil))
 
 (defn draw []
   (let [world (:world @app-state)
@@ -199,6 +263,8 @@
 ;; main
 (do
 
+
+
   (rum/defc main-component < rum/reactive []
     (our-layout/mk-html))
 
@@ -209,6 +275,18 @@
   (defn main [& _]
 
     (.log js/console "-----> main")
+
+    (doseq [fname ["background.png"
+                   "tiles.png"
+                   "loco1.png"
+                   "loco1-debug.png"
+                   "carriage1.png"
+                   "level1.tmx"]]
+      (resources/add-resource fname))
+
+    ;; (resources/set-on-all-loaded
+    ;;  #(do
+    ;;     (.log js/console "on all loaded")))
 
     (our-layout/initialize
      app-state [:layout]
