@@ -128,6 +128,11 @@ nil
    ::entity-id id
    ::components {}})
 
+(defn add-component-to-entity [e c]
+  (assoc-in e [::components (::entity-id e)])
+
+  )
+
 (defn mk-component [system-or-id entity-or-id key type]
   {::kind :component
    ::system-id (id system-or-id)

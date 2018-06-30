@@ -8,6 +8,8 @@
             [gamebase.systems.drawing :as sys-drawing]
             [gamebase.systems.movement :as sys-move]
 
+            [app.ecs.entities.locomotive :as locomotive]
+
             [gamebase.events :as events]
             [gamebase.event-queue :as eq]
             [gamebase.ecs :as ecs]
@@ -177,12 +179,13 @@
                  {:point-kvs (ecs/ck-kvs :move :position)
                   :offset [-10 -10]})
         e-move (sys-move/mk-test-diagonal-component e :move nil)]
-       (-> (ecs/mk-world)
-           (ecs/insert-object (sys-drawing/mk-system))
-           (ecs/insert-object (sys-move/mk-system))
-           (ecs/insert-object e)
-           (ecs/insert-object e-image)
-           (ecs/insert-object e-move))))
+    (-> (ecs/mk-world)
+        (ecs/insert-object (sys-drawing/mk-system))
+        (ecs/insert-object (sys-move/mk-system))
+        ;;(ecs/insert-object e)
+        (ecs/insert-object (locomotive/mk-entity :loc))
+        (ecs/insert-object e-image)
+        (ecs/insert-object e-move))))
 
 (defonce _init-world
   (do
@@ -204,8 +207,9 @@
       :layer-key :background
       :layer-type :tmx
       :layer-data {:resource-name "level1.tmx"
+                   :layer-key :background
                    :img-resource-name "background.png"
-                   :layer-key :background}))
+                   :tile-offset 401}))
 
     (eq/put-event!
      event-queue
@@ -216,29 +220,11 @@
       :layer-key :terrain
       :layer-type :tmx
       :layer-data {:resource-name "level1.tmx"
+                   :layer-key :foreground
                    :img-resource-name "tiles.png"
-                   :layer-key :foreground}))
+                   :tile-offset 1}))
 
-    (comment let [level1 (resources/get-resource "level1.tmx")
 
-                  ]
-             (swap! global/app-state assoc
-                    :world
-                    {:background (:background level1)
-                     :terrain (:foreground level1)
-                     :above (:above level1)
-                     :game-name name
-                     :sprites {1 (load-sprite global/event-queue
-                                              1
-                                              loco/create
-                                              (js/millis) 1 99 :w)}
-                     :current-game-time 0
-                     :game-time-running? true
-                     :game-time-offset (- (double (* 0.001 (js/millis))))})
-
-             (save-game)
-
-             )
     ;;(.log js/console (pr-str event-queue))
 
     ;; (ecs/do-handle-event

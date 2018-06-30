@@ -45,7 +45,7 @@ nil
 (defn initialize [{:keys [state-atom state-kvs] :as config}]
   (reset! conf config)
   (swap! state-atom assoc-in state-kvs
-         {:scale-factor 1.0
+         {:scale-factor 2.0
           :translation-x 0.0
           :translation-y 0.0})
   (setup-drag-event)
@@ -90,7 +90,8 @@ nil
            (fn [s] (assoc s
                          :scale-factor scale-factor
                          :translation-x tr-x
-                         :translation-y tr-y)))))
+                         :translation-y tr-y))))
+  nil)
 
 (defn center-on
   "set translation in such a way that the center point

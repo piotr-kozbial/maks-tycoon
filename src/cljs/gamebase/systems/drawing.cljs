@@ -45,8 +45,7 @@
       world''
       ))
 
-  (defn- draw-tiled-layer [{:keys [data img-resource-name]}]
-    (.log js/console "draw tiled layer")
+  (defn- draw-tiled-layer [{:keys [data img-resource-name tile-offset]}]
     (when-let [img (resources/get-resource img-resource-name)]
       (doall
        (map-indexed
@@ -56,14 +55,16 @@
              (map-indexed
               (fn [x tile-number]
                 (when (> tile-number 0)
-                  (let [tile-x 0 ;(mod (- tile-number tile-offs) 20)
-                        tile-y 0 ;(quot (- tile-number tile-offs) 20)
+                  (let [tile-x
+                        (mod (- tile-number tile-offset) 20)
+                        tile-y
+                        (quot (- tile-number tile-offset) 20)
                         ]
                     (js/image img,
                               (- (* x 32) 0) (- (* y 32) 0) 32 32,
                               (* tile-x 32) (* tile-y 32) 32 32))))
               row))))
-        data))))
+        (:content data)))))
 
 
   (defn- maybe-draw-layers [world {:keys [layers] :as system}]
@@ -95,14 +96,15 @@
 
 
 (do ;; COMPONENT: static image
-  
+
 
   (defn mk-static-image-component
-    [entity-or-id key {:keys [point-kvs offset]}]
+    [entity-or-id key {:keys [point-kvs offset resource-name]}]
     (assoc
      (ecs/mk-component ::drawing entity-or-id key ::static-image)
      :point-kvs point-kvs
-     :offset offset))
+     :offset offset
+     :resource-name resource-name))
 
   (defmethod ecs/handle-event [:to-component ::static-image :update]
     [world event component]
@@ -110,26 +112,11 @@
     component)
 
   (defmethod ecs/handle-event [:to-component ::static-image ::draw]
-    [world event {:keys [point-kvs offset] :as component}]
+    [world event {:keys [point-kvs offset resource-name] :as component}]
     (let [entity (ecs/get-entity world component)
           [point-x point-y] (get-in entity point-kvs)
           [ofs-x ofs-y] offset]
-      (doseq [x (range 13)]
-        (doseq [y (range 6)]
-          (do
-            (js/fill (js/color (* 20 x) (* 40 y) 0))
-            (js/rect (+ point-x ofs-x) (+ point-y ofs-y)  20 20)
-
-            ))
-
-        ))
-
+      (when-let [img (resources/get-resource resource-name)]
+        (js/image img point-x point-y))) 
     component))
 
-(do ;; COMPONENT: tiled background
-
-  )
-
-;; ... a resources?
-;; MUSI BYC klucz do resources, bo przeciez nie jakas funkcja
-;; w stanie swiata

@@ -1,335 +1,405 @@
 (ns gamebase.geometry)
 
-(defn deg
-  "Create angle (in \"radians\") from given number of degrees"
-  [degrees]
-  (double (* degrees (/ Math/PI 180))))
-
-(def deg0 (deg 0))
-(def deg90 (deg 90))
-(def deg180 (deg 180))
-(def deg270 (deg 270))
-(def deg360 (deg 360))
-
-(defn to-deg [angle]
-  (double (* angle (/ 180 Math/PI))))
-
-(defn normalize-angle [angle]
-  (if (>= angle 0)
-    (let [n (int (/ angle (* 2 Math/PI)))]
-      (- angle (* n 2 Math/PI)))
-    (let [k (int (/ (- angle) (* 2 Math/PI)))]
-      (+ angle (* (inc k) 2 Math/PI)))))
-
-(defn arc [xcenter ycenter, radius, angle-start angle-end]
-  {:curve :arc
-   :xcenter xcenter
-   :ycenter ycenter
-   :radius radius
-   :angle-start angle-start
-   :angle-end angle-end})
-
-(defn segment [x1 y1 x2 y2]
-  {:curve :segment
-   :x1 x1
-   :y1 y1
-   :x2 x2
-   :y2 y2})
-
-(defn rev [curve]
-  (case (:curve curve)
-    :arc (assoc curve
-                :x1 (:x2 curve)
-                :y1 (:y2 curve)
-                :x2 (:x1 curve)
-                :y2 (:y1 curve))
-    :segment (assoc curve
-                    :angle-start (:angle-end curve)
-                    :angle-end (:angle-start curve))))
-
-(defn arc-length
-  ([radius angle]
-   (Math/abs (* 2 Math/PI radius (/ angle deg360))))
-  ([arc]
-   (arc-length (:radius arc)
-               (- (:angle-end arc) (:angle-start arc)))))
 
 
-;; Tile geometry
-;;
-;; L - length of a side of a tile
-;;
-;; 0,L---:n----L,L
-;;  |           |
-;;  |           |
-;; :w          :e
-;;  |           |
-;;  |           |
-;; 0,0---:s----L,0
 
-(def tile-side-length 32)
+;;;# Overview
+(do
+;;; This module defines some cartesian geometry
+;;; to the extent we think is useful in games.
+  )
 
-(def tile-circle-length
-  (Math/abs (* 2 Math/PI (/ tile-side-length 2))))
+;;;# Utilities
+(do
+;;; TODO: This should be dispatched between clj and cljs.
+  (defn sqrt [x] (Math/sqrt x))
 
-(def tile-arc-length
-  (Math/abs (* 0.5 Math/PI (/ tile-side-length 2))))
+  (defmacro examples [& body]
+    (let [triples (partition 3 3 nil body)]
+      (assert (every? #(= 3 (count %)) triples))
+      (assert (every? #(= '=> (second %)) triples))
+      (let [assertions (->> triples
+                            (map (fn [[a _ b]] (list '= a b)))
+                            (map #(list 'assert %)))]
+        `(do ~@assertions))))
 
-(defn tile-curve-length [from to]
-  (case [from to]
-    [:n :s] tile-side-length
-    [:s :n] tile-side-length
-    [:w :e] tile-side-length
-    [:e :w] tile-side-length
-    tile-arc-length))
+;; TODO: use real one (?)
+  (def pi 3.1415926)
 
-(defn tile-arc [from to]
-  (let [L tile-side-length]
-    (case [from to]
-      [:n :w] (arc 0 L, (/ L 2), deg0 (- deg90))
-      [:w :n] (arc 0 L, (/ L 2), (- deg90) deg0)
+  (def radian-to-degree-coeff (/ pi 180))
+  (def degree-to-radian-coeff (/ 180 pi))
+  )
 
-      [:n :e] (arc L L, (/ L 2), deg180 deg270)
-      [:e :n]  (arc L L, (/ L 2), deg270 deg180)
+;;;# Points
+(do
+;;; Not to complicate matters, we'll represent points
+;;; as sequences of x and y, e.g.:
+  [2 5]
+  '(2 5)
+;;; - both represent a point with x=2 and y=5.
+  )
 
-      [:s :w]  (arc 0 0, (/ L 2), deg0 deg90)
-      [:w :s]  (arc 0 0, (/ L 2), deg90 deg0)
+;;;# Angles
+(do
 
-      [:s :e]  (arc L 0, (/ L 2), deg180 deg90)
-      [:e :s]  (arc L 0, (/ L 2), deg90 deg180))))
+;;; We will represent angles in different ways:
 
-(defn tile-segment [from to]
-  (let [L tile-side-length]
-    (case [from to]
-      [:n :s] (segment (/ L 2) L (/ L 2) 0)
-      [:s :n] (segment (/ L 2) 0 (/ L 2) L)
+;;; - analytic (radians):
+  {:radians 3.14}
 
-      [:w :e] (segment 0 (/ L 2) L (/ L 2))
-      [:e :w] (segment L (/ L 2) 0 (/ L 2)))))
+;;; - degrees:
+  {:degrees 30}
 
-(defn tile-curve [from to]
-  (case [from to]
-    [:n :s] (tile-segment :n :s)
-    [:s :n] (tile-segment :s :n)
-    [:w :e] (tile-segment :w :e)
-    [:e :w] (tile-segment :e :w)
-    (tile-arc from to)))
+;;; - as slope (vector dx dy):
+  {:slope [2 1]}
 
-(def ne-arc (tile-arc :n :e)) (def en-arc (tile-arc :e :n))
-(def es-arc (tile-arc :e :s)) (def se-arc (tile-arc :s :e))
-(def sw-arc (tile-arc :s :w)) (def ws-arc (tile-arc :w :s))
-(def wn-arc (tile-arc :w :n)) (def nw-arc (tile-arc :n :w))
+;;; *Note. We might also want a representation as tangent/cotangent value,*
+;;; *but that is not as much useful, because of difficulties in encompassing*
+;;; *the whole circle (360 degrees).*
 
-(def ns-segment (tile-segment :n :s))
-(def sn-segment (tile-segment :s :n))
-(def we-segment (tile-segment :w :e))
-(def ew-segment (tile-segment :e :w))
+;;; The slope representation encompasses the whole 360 degrees, as it is
+;;; understood as a vector. So |{:slope [1 1]}| means 45 degrees,
+;;; while |{:slope [-1 -1]}| represents 225 degrees (45 + 180), or -135 degrees,
+;;; which is the same. In conversions, we will produce radian or degree values
+;;; between -180 degrees (inclusive) and 180 degrees (exclusive).
 
-(defn curve-section [curve start-ratio end-ratio]
-  (case (:curve curve)
-    :segment
-    (let [{:keys [x1 y1 x2 y2]} curve
-          dx (- x2 x1)
-          dy (- y2 y1)]
-      (assoc curve
-             :x1 (+ x1 (* dx start-ratio))
-             :x2 (+ x1 (* dx end-ratio))
-             :y1 (+ y1 (* dy start-ratio))
-             :y2 (+ y1 (* dy end-ratio))))
-    :arc
-    (let [{:keys [xcenter ycenter radius
-                  angle-start angle-end]} curve
-          dangle (- angle-end angle-start)]
-      (assoc curve
-             :angle-start (+ angle-start (* dangle start-ratio))
-             :angle-end (+ angle-start (* dangle end-ratio))))))
+;;; In contexts where an angle is expected but a number is given,
+;;; we will assume that *the number represents the angle in radians*.
 
-(defn point-on-curve [curve by value] ;; len
-  (case by
+;;; We will allow more than representation at the same time, e.g.
+  {:degrees 45, :slope [1 1]}
+;;; In such cases we will assume, *at the responsibility of the creator*
+;;; *of such a value*, that all representations describe the same angle
+;;; (with some approximation allowed of course).
 
-    :len
+;;;## Analytic representation (radians)
+  (do
+;;; To create the analytic representation of a given number of radians:
+    (defn radians [num]
+      {:radians num})
 
-    (case (:curve curve)
-      :segment
-      (let [{:keys [x1 y1 x2 y2]} curve
-            len value]
-        (cond
-          (= (double x1) (double x2)) (if (< y1 y2)
-                                        [x1 (+ y1 len) deg90]
-                                        [x1 (- y1 len) deg270])
-          (= (double y1) (double y2)) (if (< x1 x2)
-                                        [(+ x1 len) y1 deg0]
-                                        [(- x1 len) y1 deg180])
-          :else nil ;;(throw (Exception. (str "NOT IMPLEMENTED for " curve)))
+;;; To convert or augment any angle to the analytic representation:
+    (defn in-radians [angle]
+      (if (number? angle)
+        #_"bare number: convert to representation"
+        {:radians angle}
+        #_"otherwise: augment the representation with radians"
+        (let [{:keys [radians degrees slope]} angle]
+          (cond
+            radians angle #_"(radians already in representation: nothing to do)"
+            degrees (assoc angle :radians (* radian-to-degree-coeff degrees))
+            slope (let [[dx dy] slope]
+                    nil
+                    )))))
 
-          ))
-      :arc
-      (let [{:keys [xcenter ycenter radius angle-start angle-end]} curve
-            len value
-            angle (if (< angle-start angle-end)
-                    (+ angle-start (* 2 Math/PI (/ len tile-circle-length)))
-                    (- angle-start (* 2 Math/PI (/ len tile-circle-length))))]
-        [(+ xcenter (* radius (Math/cos angle)))
-         (+ ycenter (* radius (Math/sin angle)))
-         (normalize-angle
-          (if (< angle-start angle-end)
-            (+ angle (/ Math/PI 2))
-            (- angle (/ Math/PI 2))))]))
+;;; To get the number of radians (which also represents the angle
+;;; as bare number) from any angle:
+    (defn get-radians [angle]
+      (if (number? angle)
+        #_"bare number: it is the radians value itself"
+        angle
+        #_"otherwise: get or calculate the value from representation"
+        (let [{:keys [radians degrees slope]} angle]
+          (cond
+            radians radians #_"(radians are in representation: just get it)"
+            degrees (* radian-to-degree-coeff degrees)))))
 
-    :rlen
-    (let [[x y angle]
-          (case (:curve curve)
-            :segment
-            (let [{:keys [x1 y1 x2 y2]} curve]
-              (point-on-curve {:curve :segment, :x1 x2 :y1 y2 :x2 x1 :y2 y1} :len value))
-            :arc
-            (let [{:keys [xcenter ycenter radius angle-start angle-end]} curve
-                  len value
-                  angle (if (< angle-start angle-end)
-                          (+ angle-start (* 2 Math/PI (/ len tile-circle-length)))
-                          (- angle-start (* 2 Math/PI (/ len tile-circle-length))))]
-              (point-on-curve
-               {:curve :arc, :xcenter xcenter, :ycenter ycenter, :radius radius, :angle-start angle-end, :angle-end angle-start}
-               :len
-               value)))]
-      [x y (normalize-angle (+ Math/PI angle))])
+;;; For example,
+    (examples
+;;;
+     (radians 3.14) => {:radians 3.14}
+;;;
+     (in-radians 3.14) => {:radians 3.14}
+     (in-radians {:radians 3.14}) => {:radians 3.14}
+     (in-radians {:degrees 90}) => {:degrees 90, :radians 1.5707963}
+;;;
+     (get-radians 3.14) => 3.14
+     (get-radians {:radians 3.14}) => 3.14
+     (get-radians {:degrees 180}) => 3.1415926
+     (get-radians {:degrees 180, :radians 3.146}) => 3.146))
 
-    :ratio
+;;;## Degrees
+  (do
 
-    (case (:curve curve)
-      :segment
-      (let [{:keys [x1 y1 x2 y2]} curve
-            ratio value]
-        (cond
-          (= (double x1) (double x2)) (let [len (Math/abs (- y2 y1))]
-                                          (if (< y1 y2)
-                                            [x1 (+ y1 (* ratio len)) deg90]
-                                            [x1 (- y1 (* ratio len)) deg270]))
-          (= (double y1) (double y2)) (let [len (Math/abs (- x2 x1))]
-                                        (if (< x1 x2)
-                                          [(+ x1 (* ratio len)) y1 deg0]
-                                          [(- x1 (* ratio len)) y1 deg180]))
-          :else nil ;;(throw (Exception. (str "NOT IMPLEMENTED for " curve)))
-          ))
-      :arc
-      (let [{:keys [xcenter ycenter radius angle-start angle-end]} curve
-            ratio value
-            angle (if (< angle-start angle-end)
-                    (+ angle-start (* 0.5 Math/PI ratio))
-                    (- angle-start (* 0.5 Math/PI ratio)))]
-        [(+ xcenter (* radius (Math/cos angle)))
-         (+ ycenter (* radius (Math/sin angle)))
-         (normalize-angle
-          (if (< angle-start angle-end)
-            (+ angle (/ Math/PI 2))
-            (- angle (/ Math/PI 2))))]))))
+;;; Create:
+    (defn degrees [num]
+      {:degrees num})
 
-;; Multi-Path Length calculations (for tile curves)
-;;
-;; a multi-path is: a sequence of elements, each of each is one of:
-;;   - a tile curve [from to]
-;;   - a triple [curve :len length]
-;;   - a triple [curve :rlen length]
-;;   - a triple [curve :ratio ratio]
-;;   - a triple [curve :rratio ratio]
-;;
-;; (:rlen and :rratio mean "from this len/ratio to curve end")
-;;
-;; we need to be able to:
-;;   - calculate total length of a multi-path
-;;   - reverse a multi-path
-;;   - find the point at a given distance from the start of a multi-path
-;;     (return the sequential number of the multi-path element
-;;     and length/ratio inside it)
+;;; Convert/augment:
+    (defn in-degrees [angle]
+      (if (number? angle)
+        {:degrees (* degree-to-radian-coeff angle)}
+        (let [{:keys [radians degrees slope]} angle]
+          (cond
+            degrees angle
+            radians (assoc angle :degrees (* degree-to-radian-coeff radians))))))
 
-(defn multi-path-element-length [element]
-  (let [calculate-for-curve
-        (fn [[from to]] (tile-curve-length from to))
-        calculate-for-len
-        (fn [[curve _ len]] (Math/abs len))
-        calculate-for-ratio
-        (fn [[[from to] _ ratio]] (* (Math/abs ratio) (tile-curve-length from to)))]
-    (case (count element)
-      2 (calculate-for-curve element)
-      3 (case (second element)
-          :len (calculate-for-len element)
-          :rlen (calculate-for-len element)
-          :ratio (calculate-for-ratio element)
-          :rratio (calculate-for-ratio element)))))
+;;; Get numeric value:
+    (defn get-degrees [angle]
+      (if (number? angle)
+        (* degree-to-radian-coeff angle)
+        (let [{:keys [radians degrees slope]} angle]
+          (cond
+            degrees degrees
+            radians (* degree-to-radian-coeff radians)))))
 
-(defn multi-path-length [path]
-  (->> path
-       (map multi-path-element-length)
-       (reduce + 0)))
+;;; For example,
+    (examples
+;;;
+     (in-degrees 3.1415926) => {:degrees 180.0} #_"- bare number is always radians!"
+     (in-degrees {:degrees 180}) => {:degrees 180}
+     (in-degrees {:radians 3.1415926}) => {:radians 3.1415926, :degrees 180.0}
+;;;
+     (get-degrees 3.1415926) => 180.0 #_"- bare number is always radians!"
+     (get-degrees {:degrees 180}) => 180
+     (get-degrees {:radians 3.1415926}) => 180.0
+     (get-degrees {:radians 3, :degrees 180}) => 180))
 
-;; For example:
-(assert
- (= (multi-path-length
-     [[:e :w]
-      [:e :w]
-      [:e :w]
-      [[:e :w] :ratio 0.25]])
-    104.0))
+;;;## Slope
+  (do
 
-(defn reverse-multi-path-element [element]
-  (case (count element)
-    2 (let [[x y] element] [y x])
-    3 (let [[[from to] op val] element]
-        (case op
-          :len [[to from] :rlen val]
-          :rlen [[to from] :len val]
-          :ratio [[to from] :rratio val]
-          :rratio [[to from] :ratio val]))))
+;;; Create:
+    (defn slope [dx dy]
+      {:slope [dx dy]})
 
-(defn reverse-multi-path [path]
-  (->> path
-       (reverse)
-       (map reverse-multi-path-element)))
+;;; Convert/augment:
 
-;; For example:
-(assert
- (= (apply vector
-      (reverse-multi-path
-       [[:e :w]
-        [:e :w]
-        [:e :n]
-        [[:s :n] :ratio 0.2]]))
-    [[[:n :s] :rratio 0.2]
-     [:n :e]
-     [:w :e]
-     [:w :e]]))
+;;; We'll define inverted tangent (ATAN) for our purposes in the codomain
+;;; of -45 to 45 degrees (the following is the cartesian geometry plane):
 
-;; return [path-number-0-based, len-inside-last-elem]
-;; or nil if total-len too big
-(defn find-point-on-multi-path-by-length [path total-len]
-  (loop [path-left path
-         len-left (double total-len)
-         n 0]
-    (if (empty? path-left)
-      nil
-      (let [len (multi-path-element-length (first path-left))]
-        (if (<= len-left len)
-          [n len-left]
-          (recur (rest path-left) (- len-left len) (inc n)))))))
+    ;;                                        45 deg
+    ;;                              y       / dy/dx=1
+    ;;                              ^     /#
+    ;;                          \   |   /###
+    ;;                            \ | /#####
+    ;;                           ---X----->x
+    ;;                            / | \#####
+    ;;                          /       \###
+    ;;                                    \#
+    ;;                                      \ -45 deg
+    ;;                                        dy/dx=-1
 
-;; For example:
-(assert
- (= (find-point-on-multi-path-by-length
-     [[:e :w]
-      [:e :w]
-      [:e :w]
-      [[:e :w] :ratio 0.25]]
-     102)
-    [3 6.0]))
-(assert
- (= (find-point-on-multi-path-by-length
-     [[[:e :w] :rratio 0.25]
-      [:e :w]
-      [:e :w]
-      [:e :w]]
-     102)
-    [3 30.0]))
-(assert
- (=
-  (find-point-on-multi-path-by-length [[:e :w] [:e :w]] 148)
-  nil))
+;;; and so ATAN goes from -45 degrees for dy/dx=-1, through 0 degrees for dy/dx=0
+;;; to 45 degrees for dy/dx=1. So the plot of our ATAN is as follows (only the
+;;; asterisks are in our domain):
+
+    ;;                              angle [degrees]
+    ;;                                 ^
+    ;;                                 |     .-'''' ATAN
+    ;;                             135-+ - *'
+    ;;                            -1   | * |
+    ;;                       ------+---*---+---------> dy/dx
+    ;;                             | * |   1
+    ;;                            .* - +-45
+    ;;                      ....-'     |
+    ;;                                 |
+    ;;
+
+;;; In this domain and codomain we define our atan function. The standard Java function suffices:
+    (defn atan [dy-to-dx]
+      (Math/atan dy-to-dx))
+
+;;; Similarly we'll define inverted cotangent (ACOTAN) for our purposes in the codomain
+;;; of 45 to 135 degrees (the following is the cartesian geometry plane):
+
+    ;;                      135 deg          45 deg
+    ;;                      dx/dy=-1         dx/dy=1
+    ;;                          \       y       /
+    ;;                            \#####^#####/
+    ;;                              \###|###/
+    ;;                                \#|#/
+    ;;                               ---X--->x
+    ;;                                / | \
+    ;;                              /       \
+
+;;; and so ACOTAN goes from 135 degrees for dx/dy=-1, through 90 degrees for dx/dy=0
+;;; to 45 degrees for dx/dy=1. So the plot of our ACOTAN is as follows (only the
+;;; asterisks are in our domain):
+
+    ;;                              angle [degrees]
+    ;;                                 ^
+    ;;               ACOTAN ''''-.     |
+    ;;                            '* - +-135
+    ;;                             | * |
+    ;;                             |   *-90
+    ;;                             |   | *
+    ;;                             |45-+   *.
+    ;;                             |   |   | '-....
+    ;;                       ------+---X---+---------> dx/dy
+    ;;                            -1   |   1
+    ;;                                 |
+    ;;
+
+;;; In this domain and codomain we define our acotan function. As we can see from the plots
+;;; of ACOTAN and ATAN, we can see that ACOTAN = - ATAN + 90 degrees.
+;;; The fact that we labelled the argument axes in our plots dy/dx or dx/dy doesn't matter
+;;; for the function itself: it just marks their intended usage in context of geometry.
+
+    (defn acotan [dx-to-dy]
+      (- (/ pi 2) (Math/atan dx-to-dy)))
+
+;;; Now we can define functions to convert slopes (dx, dy) to radians.
+
+    ;;                      \  |dy|>|dx| and dy>0   /
+    ;;                        \                   /
+    ;;                          \ ACOTAN(dx/dy) /
+    ;;                            \           /
+    ;; |dy|<|dx| and dx<0           \   ^   /     |dy|<|dx| and dx>0
+    ;;                                \ | /
+    ;; ATAN(dy/dx) + 180 deg         ---X--->     ATAN(dy/dx)
+    ;; and normalize to [-180,180)    / | \
+    ;;                              /   |   \
+    ;;                            /           \
+    ;;                          /ACOTAN(dx/dy)  \
+    ;;                        / +180 deg and norm.\
+    ;;                      /                       \
+    ;;                    /    |dy|>|dx| and dy>0     \
+
+    (defn- -normalize-radians [radians]
+
+      radians ;; TODO
+      )
+
+    (defn- -slope-to-radians [dx dy]
+      (if (<= (Math/abs dy) (Math/abs dx))
+        (if (>= dx 0)
+          (atan (/ dy dx))
+          (-normalize-radians (+ (atan (/ dy dx)) pi)))
+        (if (>= dy 0)
+          (acotan (/ dx dy))
+          (-normalize-radians (+ (acotan (/ dx dy)) pi)))))
+
+    )
+
+  )
+
+;;;# Paths
+(do
+;;; Paths are lines, curves, segmented lines etc.
+;;; Their main purpose in gamebase is for game objects to move
+;;; along them.
+
+;;; They'll be maps with the |::path-type| value, specific
+;;; for different kinds of paths:
+  {::path-type :example-type
+   ;; ...
+   }
+;;;
+  )
+
+;;;# Operation declarations
+(do
+
+;;; Operations on will be declared as multimethods
+;;; dispatching on object types.
+
+;;;## Operations on paths
+  (do
+
+;;;### Lengths etc.
+    (do
+
+;;; We'll want to know the length of a path:
+      (defmulti path-length (fn [path] (::path-type path)))
+
+;;; Also, to calculate coordinates of the point at given length from start:
+      (defmulti path-point-at-length
+        (fn [path length] (::path-type path)))
+
+;;; and from end:
+      (defmulti path-point-at-length
+        (fn [path length] (::path-type path)))
+
+      )
+
+
+
+
+    )
+
+
+  )
+
+;;;# Line segments
+(do
+;;; A line segment is a section of a straight line
+;;; extending from one point to another:
+
+  (defn mk-line-segment [p1 p2]
+    {::path-type :line-segment
+     :p1 p1
+     :p2 p2})
+
+;;; E.g.
+  (assert (= (mk-line-segment [2 3] [4 -1])
+             {::path-type :line-segment
+              :p1 [2 3]
+              :p2 [4 -1]}))
+
+;;; The length of a line segment:
+
+  (defmethod path-length :line-segment
+    [{[x1 y1] :p1, [x2 y2] :p2}]
+    (let [dx (- x2 x1), dy (- y2 y1)]
+      (sqrt (+ (* dx dx) (* dy dy)))))
+
+;;; E.g.
+  (assert (= (path-length (mk-line-segment [0 0] [3 4]))
+             5.0))
+  (assert (= (path-length (mk-line-segment [-2 5] [1 9]))
+             5.0))
+
+;;; At length:
+
+  (defmethod path-point-at-length :line-segment
+    [{[x1 y1] :p1, [x2 y2] :p2 :as segment}, length]
+    (let [dx (- x2 x1), dy (- y2 y1)
+          full-length (path-length segment)
+          x-factor (/ dx full-length)
+          y-factor (/ dy full-length)]
+      [(+ x1 (* length x-factor))
+       (+ y1 (* length y-factor))]))
+
+;;; E.g.:
+  
+  (assert
+   (= (let [my-path (mk-line-segment [-2 5] [1 9])]
+        (path-point-at-length
+         my-path
+         (/ (path-length my-path) 2)))
+      [-0.5 7.0]))
+
+;;; *NOTE*
+
+;;; Nie sprawdzamy, czy nie wyjechalismy poza segment.
+;;; Zrobic z tego jakas polityke?
+;;; Ze np. jesli malo wyjechalismy, to powinnismy
+;;; tez malo wyjechac na wyniku.
+;;; - to bedzie bezpieczenstwo na rozne bledy zaokraglen.
+
+;;; TODO
+
+;;; Drogie rzeczy robic pre-computed!
+;;; Czyli juz przy mk-line-segment
+;;; wpisywac do mapki:
+;;; - length
+;;; - x-factor
+;;; - y-factor
+
+;;; moze jakos opcjonalnie
+
+
+;;; Mozna potem bedzie robic taka sztuczke:
+
+;;; 1. krzywe torow zdefiniowac raz, zero-based
+
+;;; 2. a potem w kazdym realnym kafelku, czy moze w trakcie gry
+;;; w lokomotywie, mozna miec krzywa "nested"
+;;;`  {::path-type :translated
+;;;`   :path (tutaj "nested" krzywa)
+;;;`   :dx
+;;;`   :dy
+;;;
+  )
+
+
