@@ -1,8 +1,5 @@
 (ns gamebase.geometry)
 
-
-
-
 ;;;# Overview
 (do
 ;;; This module defines some cartesian geometry
@@ -42,16 +39,18 @@
 ;;;# Angles
 (do
 
+;;;## Representations
+  (do
 ;;; We will represent angles in different ways:
 
 ;;; - analytic (radians):
-  {:radians 3.14}
+    {:radians 3.14}
 
 ;;; - degrees:
-  {:degrees 30}
+    {:degrees 30}
 
 ;;; - as slope (vector dx dy):
-  {:slope [2 1]}
+    {:slope [2 1]}
 
 ;;; *Note. We might also want a representation as tangent/cotangent value,*
 ;;; *but that is not as much useful, because of difficulties in encompassing*
@@ -67,10 +66,129 @@
 ;;; we will assume that *the number represents the angle in radians*.
 
 ;;; We will allow more than representation at the same time, e.g.
-  {:degrees 45, :slope [1 1]}
+    {:degrees 45, :slope [1 1]}
+
 ;;; In such cases we will assume, *at the responsibility of the creator*
 ;;; *of such a value*, that all representations describe the same angle
 ;;; (with some approximation allowed of course).
+    )
+
+;;;## Trigonometry preparations
+  (do
+;;; We'll need some trigonometry to define conversions between radians or degrees and slopes.
+
+;;;### Reverse tangent function
+    (do
+;;; We'll define inverted tangent (ATAN) for our purposes in the codomain
+;;; of -45 to 45 degrees (the following is the cartesian geometry plane):
+
+      ;;                                        45 deg
+      ;;                              y       / dy/dx=1
+      ;;                              ^     /#
+      ;;                          \   |   /###
+      ;;                            \ | /#####
+      ;;                           ---X----->x
+      ;;                            / | \#####
+      ;;                          /       \###
+      ;;                                    \#
+      ;;                                      \ -45 deg
+      ;;                                        dy/dx=-1
+
+;;; and so ATAN goes from -45 degrees for dy/dx=-1, through 0 degrees for dy/dx=0
+;;; to 45 degrees for dy/dx=1. So the plot of our ATAN is as follows (only the
+;;; asterisks are in our domain):
+
+      ;;                              angle [degrees]
+      ;;                                 ^
+      ;;                                 |     .-'''' ATAN
+      ;;                             135-+ - *'
+      ;;                            -1   | * |
+      ;;                       ------+---*---+---------> dy/dx
+      ;;                             | * |   1
+      ;;                            .* - +-45
+      ;;                      ....-'     |
+      ;;                                 |
+      ;;
+
+;;; In this domain and codomain we define our atan function. The standard Java function suffices:
+      (defn atan [dy-to-dx]
+        (Math/atan dy-to-dx)))
+
+;;;### Reverse cotangent function
+    (do
+;;; Similarly we'll define inverted cotangent (ACOTAN) for our purposes in the codomain
+;;; of 45 to 135 degrees (the following is the cartesian geometry plane):
+
+      ;;                      135 deg          45 deg
+      ;;                      dx/dy=-1         dx/dy=1
+      ;;                          \       y       /
+      ;;                            \#####^#####/
+      ;;                              \###|###/
+      ;;                                \#|#/
+      ;;                               ---X--->x
+      ;;                                / | \
+      ;;                              /       \
+
+;;; and so ACOTAN goes from 135 degrees for dx/dy=-1, through 90 degrees for dx/dy=0
+;;; to 45 degrees for dx/dy=1. So the plot of our ACOTAN is as follows (only the
+;;; asterisks are in our domain):
+
+      ;;                              angle [degrees]
+      ;;                                 ^
+      ;;               ACOTAN ''''-.     |
+      ;;                            '* - +-135
+      ;;                             | * |
+      ;;                             |   *-90
+      ;;                             |   | *
+      ;;                             |45-+   *.
+      ;;                             |   |   | '-....
+      ;;                       ------+---X---+---------> dx/dy
+      ;;                            -1   |   1
+      ;;                                 |
+      ;;
+
+;;; In this domain and codomain we define our acotan function. As we can see from the plots
+;;; of ACOTAN and ATAN, we can see that ACOTAN = - ATAN + 90 degrees.
+;;; The fact that we labelled the argument axes in our plots dy/dx or dx/dy doesn't matter
+;;; for the function itself: it just marks their intended usage in context of geometry.
+
+      (defn acotan [dx-to-dy]
+        (- (/ pi 2) (Math/atan dx-to-dy))))
+
+;;;### Conversions
+    (do
+;;; Now we can define functions to convert slopes (dx, dy) to radians.
+
+      ;;                      \  |dy|>|dx| and dy>0   /
+      ;;                        \                   /
+      ;;                          \ ACOTAN(dx/dy) /
+      ;;                            \           /
+      ;; |dy|<|dx| and dx<0           \   ^   /     |dy|<|dx| and dx>0
+      ;;                                \ | /
+      ;; ATAN(dy/dx) + 180 deg         ---X--->     ATAN(dy/dx)
+      ;; and normalize to [-180,180)    / | \
+      ;;                              /   |   \
+      ;;                            /           \
+      ;;                          /ACOTAN(dx/dy)  \
+      ;;                        / +180 deg and norm.\
+      ;;                      /                       \
+      ;;                    /    |dy|>|dx| and dy>0     \
+
+;;;
+      (defn- -normalize-radians [radians]
+        (loop [out radians]
+          (if (>= out pi)
+            (recur (- out (* 2 pi)))
+            out)))
+
+      (defn- -slope-to-radians [dx dy]
+        (if (<= (Math/abs dy) (Math/abs dx))
+          (if (> dx 0)
+            (atan (/ dy dx))
+            (-normalize-radians (+ (atan (/ dy dx)) pi)))
+          (if (> dy 0)
+            (acotan (/ dx dy))
+            (-normalize-radians (+ (acotan (/ dx dy)) pi)))))))
 
 ;;;## Analytic representation (radians)
   (do
@@ -164,110 +282,6 @@
 
 ;;; Convert/augment:
 
-;;; We'll define inverted tangent (ATAN) for our purposes in the codomain
-;;; of -45 to 45 degrees (the following is the cartesian geometry plane):
-
-    ;;                                        45 deg
-    ;;                              y       / dy/dx=1
-    ;;                              ^     /#
-    ;;                          \   |   /###
-    ;;                            \ | /#####
-    ;;                           ---X----->x
-    ;;                            / | \#####
-    ;;                          /       \###
-    ;;                                    \#
-    ;;                                      \ -45 deg
-    ;;                                        dy/dx=-1
-
-;;; and so ATAN goes from -45 degrees for dy/dx=-1, through 0 degrees for dy/dx=0
-;;; to 45 degrees for dy/dx=1. So the plot of our ATAN is as follows (only the
-;;; asterisks are in our domain):
-
-    ;;                              angle [degrees]
-    ;;                                 ^
-    ;;                                 |     .-'''' ATAN
-    ;;                             135-+ - *'
-    ;;                            -1   | * |
-    ;;                       ------+---*---+---------> dy/dx
-    ;;                             | * |   1
-    ;;                            .* - +-45
-    ;;                      ....-'     |
-    ;;                                 |
-    ;;
-
-;;; In this domain and codomain we define our atan function. The standard Java function suffices:
-    (defn atan [dy-to-dx]
-      (Math/atan dy-to-dx))
-
-;;; Similarly we'll define inverted cotangent (ACOTAN) for our purposes in the codomain
-;;; of 45 to 135 degrees (the following is the cartesian geometry plane):
-
-    ;;                      135 deg          45 deg
-    ;;                      dx/dy=-1         dx/dy=1
-    ;;                          \       y       /
-    ;;                            \#####^#####/
-    ;;                              \###|###/
-    ;;                                \#|#/
-    ;;                               ---X--->x
-    ;;                                / | \
-    ;;                              /       \
-
-;;; and so ACOTAN goes from 135 degrees for dx/dy=-1, through 90 degrees for dx/dy=0
-;;; to 45 degrees for dx/dy=1. So the plot of our ACOTAN is as follows (only the
-;;; asterisks are in our domain):
-
-    ;;                              angle [degrees]
-    ;;                                 ^
-    ;;               ACOTAN ''''-.     |
-    ;;                            '* - +-135
-    ;;                             | * |
-    ;;                             |   *-90
-    ;;                             |   | *
-    ;;                             |45-+   *.
-    ;;                             |   |   | '-....
-    ;;                       ------+---X---+---------> dx/dy
-    ;;                            -1   |   1
-    ;;                                 |
-    ;;
-
-;;; In this domain and codomain we define our acotan function. As we can see from the plots
-;;; of ACOTAN and ATAN, we can see that ACOTAN = - ATAN + 90 degrees.
-;;; The fact that we labelled the argument axes in our plots dy/dx or dx/dy doesn't matter
-;;; for the function itself: it just marks their intended usage in context of geometry.
-
-    (defn acotan [dx-to-dy]
-      (- (/ pi 2) (Math/atan dx-to-dy)))
-
-;;; Now we can define functions to convert slopes (dx, dy) to radians.
-
-    ;;                      \  |dy|>|dx| and dy>0   /
-    ;;                        \                   /
-    ;;                          \ ACOTAN(dx/dy) /
-    ;;                            \           /
-    ;; |dy|<|dx| and dx<0           \   ^   /     |dy|<|dx| and dx>0
-    ;;                                \ | /
-    ;; ATAN(dy/dx) + 180 deg         ---X--->     ATAN(dy/dx)
-    ;; and normalize to [-180,180)    / | \
-    ;;                              /   |   \
-    ;;                            /           \
-    ;;                          /ACOTAN(dx/dy)  \
-    ;;                        / +180 deg and norm.\
-    ;;                      /                       \
-    ;;                    /    |dy|>|dx| and dy>0     \
-
-    (defn- -normalize-radians [radians]
-
-      radians ;; TODO
-      )
-
-    (defn- -slope-to-radians [dx dy]
-      (if (<= (Math/abs dy) (Math/abs dx))
-        (if (>= dx 0)
-          (atan (/ dy dx))
-          (-normalize-radians (+ (atan (/ dy dx)) pi)))
-        (if (>= dy 0)
-          (acotan (/ dx dy))
-          (-normalize-radians (+ (acotan (/ dx dy)) pi)))))
 
     )
 
