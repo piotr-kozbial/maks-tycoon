@@ -20,8 +20,7 @@
                             (map #(list 'assert %)))]
         `(do ~@assertions))))
 
-;; TODO: use real one (?)
-  (def pi 3.1415926)
+  (def pi Math/PI)
 
   (def radian-to-degree-coeff (/ pi 180))
   (def degree-to-radian-coeff (/ 180 pi))
@@ -230,14 +229,14 @@
 ;;;
      (in-radians 3.14) => {:radians 3.14}
      (in-radians {:radians 3.14}) => {:radians 3.14}
-     (in-radians {:degrees 90}) => {:degrees 90, :radians 1.5707963}
-     (in-radians {:slope [-1 0]}) => {:slope [-1 0], :radians -3.1415926}
+     (in-radians {:degrees 90}) => {:degrees 90, :radians (/ pi 2)}
+     (in-radians {:slope [-1 0]}) => {:slope [-1 0], :radians (- pi)}
 ;;;
      (get-radians 3.14) => 3.14
      (get-radians {:radians 3.14}) => 3.14
-     (get-radians {:degrees 180}) => 3.1415926
+     (get-radians {:degrees 180}) => pi
      (get-radians {:degrees 180, :radians 3.146}) => 3.146
-     (get-radians {:slope [-1 0]}) => -3.1415926))
+     (get-radians {:slope [-1 0]}) => (- pi)))
 
 ;;;## Degrees
   (do
@@ -272,14 +271,14 @@
 ;;; For example,
     (examples
 ;;;
-     (in-degrees 3.1415926) => {:degrees 180.0} #_"- bare number is always radians!"
+     (in-degrees pi) => {:degrees 180.0} #_"- bare number is always radians!"
      (in-degrees {:degrees 180}) => {:degrees 180}
-     (in-degrees {:radians 3.1415926}) => {:radians 3.1415926, :degrees 180.0}
+     (in-degrees {:radians pi}) => {:radians pi, :degrees 180.0}
      (in-degrees {:slope [-2 0]}) => {:slope [-2 0], :degrees -180.0}
 ;;;
-     (get-degrees 3.1415926) => 180.0 #_"- bare number is always radians!"
+     (get-degrees pi) => 180.0 #_"- bare number is always radians!"
      (get-degrees {:degrees 180}) => 180
-     (get-degrees {:radians 3.1415926}) => 180.0
+     (get-degrees {:radians pi}) => 180.0
      (get-degrees {:radians 3, :degrees 180}) => 180
      (get-degrees {:slope [-2 0]}) => -180.0))
 
