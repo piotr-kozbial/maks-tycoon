@@ -8,7 +8,7 @@
 
 ;;;# Utilities
 (do
-;;; TODO: This should be dispatched between clj and cljs.
+
   (defn sqrt [x] (Math/sqrt x))
 
   (defmacro examples [& body]
@@ -324,7 +324,7 @@
    (get-slope {:radians 0, :slope [2.1 0.1]}) => [2.1 0.1]
    (get-slope {:slope [-2 0]}) => [-2 0]))
 
-;;;# Paths
+;;;# Paths in general
 (do
 ;;; Paths are lines, curves, segmented lines etc.
 ;;; Their main purpose in gamebase is for game objects to move
@@ -336,38 +336,25 @@
    ;; ...
    }
 ;;;
-  )
-
-;;;# Operation declarations
-(do
 
 ;;; Operations on will be declared as multimethods
 ;;; dispatching on object types.
 
-;;;## Operations on paths
+
+;;;## Lengths etc.
+
   (do
 
-;;;### Lengths etc.
-    (do
-
 ;;; We'll want to know the length of a path:
-      (defmulti path-length (fn [path] (::path-type path)))
+    (defmulti path-length (fn [path] (::path-type path)))
 
 ;;; Also, to calculate coordinates of the point at given length from start:
-      (defmulti path-point-at-length
-        (fn [path length] (::path-type path)))
+    (defmulti path-point-at-length
+      (fn [path length] (::path-type path)))
 
 ;;; and from end:
-      (defmulti path-point-at-length
-        (fn [path length] (::path-type path)))
-
-      )
-
-
-
-
-    )
-
+    (defmulti path-point-at-length
+      (fn [path length] (::path-type path))))
 
   )
 
