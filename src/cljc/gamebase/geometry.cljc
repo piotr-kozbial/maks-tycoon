@@ -286,18 +286,44 @@
 ;;;## Slope
   (do
 
-    RADIANS i DEGREES JUZ CHYBA GOTOWE
-
 ;;; Create:
     (defn slope [dx dy]
       {:slope [dx dy]})
 
 ;;; Convert/augment:
+    (defn in-slope [angle]
+      (if (number? angle)
+        {:slope [(Math/cos angle) (Math/sin angle)]}
+        (let [{:keys [radians degrees slope]} angle]
+          (cond
+            slope angle
+            radians (assoc angle :slope [(Math/cos radians) (Math/sin radians)])
+            degrees (let [radians (* radian-to-degree-coeff degrees)]
+                      (assoc angle :slope [(Math/cos radians) (Math/sin radians)]))))))
 
+;;; Get numeric values:
+    (defn get-slope [angle]
+      (if (number? angle)
+        [(Math/cos angle) (Math/sin angle)]
+        (let [{:keys [radians degrees slope]} angle]
+          (cond
+            slope slope
+            radians [(Math/cos radians) (Math/sin radians)]
+            degrees (let [radians (* radian-to-degree-coeff degrees)]
+                      [(Math/cos radians) (Math/sin radians)]))))))
 
-    )
-
-  )
+  (examples
+;;;
+   (in-slope 0) => {:slope [1.0 0.0]} #_"- bare number is always radians!"
+   (in-slope {:degrees 0}) => {:degrees 0, :slope [1.0 0.0]}
+   (in-slope {:radians 0}) => {:radians 0, :slope [1.0 0.0]}
+   (in-slope {:slope [-2 0]}) => {:slope [-2 0]}
+;;;
+   (get-slope 0) => [1.0 0.0] #_"- bare number is always radians!"
+   (get-slope {:degrees 0}) => [1.0 0.0]
+   (get-slope {:radians 0}) => [1.0 0.0]
+   (get-slope {:radians 0, :slope [2.1 0.1]}) => [2.1 0.1]
+   (get-slope {:slope [-2 0]}) => [-2 0]))
 
 ;;;# Paths
 (do
