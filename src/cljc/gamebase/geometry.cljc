@@ -192,6 +192,7 @@
 
 ;;;## Analytic representation (radians)
   (do
+
 ;;; To create the analytic representation of a given number of radians:
     (defn radians [num]
       {:radians num})
@@ -207,8 +208,7 @@
             radians angle #_"(radians already in representation: nothing to do)"
             degrees (assoc angle :radians (* radian-to-degree-coeff degrees))
             slope (let [[dx dy] slope]
-                    nil
-                    )))))
+                    (assoc angle :radians (-slope-to-radians dx dy)))))))
 
 ;;; To get the number of radians (which also represents the angle
 ;;; as bare number) from any angle:
@@ -220,7 +220,8 @@
         (let [{:keys [radians degrees slope]} angle]
           (cond
             radians radians #_"(radians are in representation: just get it)"
-            degrees (* radian-to-degree-coeff degrees)))))
+            degrees (* radian-to-degree-coeff degrees)
+            slope (let [[dx dy] slope] (-slope-to-radians dx dy))))))
 
 ;;; For example,
     (examples
@@ -230,11 +231,13 @@
      (in-radians 3.14) => {:radians 3.14}
      (in-radians {:radians 3.14}) => {:radians 3.14}
      (in-radians {:degrees 90}) => {:degrees 90, :radians 1.5707963}
+     (in-radians {:slope [-1 0]}) => {:slope [-1 0], :radians -3.1415926}
 ;;;
      (get-radians 3.14) => 3.14
      (get-radians {:radians 3.14}) => 3.14
      (get-radians {:degrees 180}) => 3.1415926
-     (get-radians {:degrees 180, :radians 3.146}) => 3.146))
+     (get-radians {:degrees 180, :radians 3.146}) => 3.146
+     (get-radians {:slope [-1 0]}) => -3.1415926))
 
 ;;;## Degrees
   (do
@@ -250,7 +253,10 @@
         (let [{:keys [radians degrees slope]} angle]
           (cond
             degrees angle
-            radians (assoc angle :degrees (* degree-to-radian-coeff radians))))))
+            radians (assoc angle :degrees (* degree-to-radian-coeff radians))
+            slope (let [[dx dy] slope]
+                    (assoc angle :degrees
+                           (* degree-to-radian-coeff (-slope-to-radians dx dy))))))))
 
 ;;; Get numeric value:
     (defn get-degrees [angle]
@@ -259,7 +265,9 @@
         (let [{:keys [radians degrees slope]} angle]
           (cond
             degrees degrees
-            radians (* degree-to-radian-coeff radians)))))
+            radians (* degree-to-radian-coeff radians)
+            slope (let [[dx dy] slope]
+                    (* degree-to-radian-coeff (-slope-to-radians dx dy)))))))
 
 ;;; For example,
     (examples
@@ -267,14 +275,18 @@
      (in-degrees 3.1415926) => {:degrees 180.0} #_"- bare number is always radians!"
      (in-degrees {:degrees 180}) => {:degrees 180}
      (in-degrees {:radians 3.1415926}) => {:radians 3.1415926, :degrees 180.0}
+     (in-degrees {:slope [-2 0]}) => {:slope [-2 0], :degrees -180.0}
 ;;;
      (get-degrees 3.1415926) => 180.0 #_"- bare number is always radians!"
      (get-degrees {:degrees 180}) => 180
      (get-degrees {:radians 3.1415926}) => 180.0
-     (get-degrees {:radians 3, :degrees 180}) => 180))
+     (get-degrees {:radians 3, :degrees 180}) => 180
+     (get-degrees {:slope [-2 0]}) => -180.0))
 
 ;;;## Slope
   (do
+
+    RADIANS i DEGREES JUZ CHYBA GOTOWE
 
 ;;; Create:
     (defn slope [dx dy]
