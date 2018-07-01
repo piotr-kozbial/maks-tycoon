@@ -1,7 +1,8 @@
 (ns gamebase.systems.movement
   (:require
    [gamebase.ecs :as ecs]
-   [gamebase.event-queue :as eq]))
+   [gamebase.event-queue :as eq]
+   [gamebase.geometry :as g]))
 
 (defn mk-system []
   (ecs/mk-system ::movement))
@@ -44,17 +45,25 @@
 
 (defn mk-path-follower
   [entity-or-id key _]
-  (ecs/mk-component ::movement entity-or-id key ::path-follower))
+  (assoc
+   (ecs/mk-component ::movement entity-or-id key ::path-follower)
+   :speed 0.003))
 
 (defmethod ecs/handle-event [:to-component ::path-follower :update]
-  [world event component]
+  [world event {:keys [path path-start-time path-start-length speed] :as component}]
+  (when path
+    (let [time-of-travel (- (::eq/time event) path-start-time)
+          length-traveled (* time-of-travel speed)
+          [x y] (g/path-point-at-length path length-traveled)]
+      ;;(println (str "FOLLOWER UPDATE: (" length-traveled ") " x " " y))
+      (assoc component :position [x y])
+      ))
   ;;(println (pr-str event))
-  (assoc component
-         :position [200 100]))
+)
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::set-path]
   [world {:keys [path] :as event} component]
-  (println "SET PATH!")
+  (println (str "SET PATH! " (pr-str path)))
   (assoc component
          :path path
          :path-start-length 0

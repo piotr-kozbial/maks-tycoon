@@ -1,5 +1,6 @@
 (ns gamebase.ecs
   (:require [gamebase.event-queue :as eq]) ;; only or ::eq/time)
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;; P U B L I C ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 nil
@@ -172,6 +173,17 @@ nil
         ;; to which component belongs
         :to-component
         ,   [:to-component (::type object) (::msg event)]))))
+
+(defmethod handle-event :default
+  [_ _ _]
+
+  ;; TODO - this ignores all unknown events
+  ;; Maybe there should be a warning at least
+  ;; or maybe we should examine the kind of event.
+  ;; Maybe there should be a list of events that objects are allowed to ignore
+  ;; (i.e. not define a method for it).
+  [])
+
 
 (declare resolve-target-id ;; private
          insert-object)    ;; private

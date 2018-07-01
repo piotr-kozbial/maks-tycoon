@@ -3,7 +3,8 @@
    [gamebase.ecs :as ecs]
    [gamebase.systems.drawing :as sys-drawing]
    [gamebase.systems.movement :as sys-move]
-   [gamebase.event-queue :as eq]))
+   [gamebase.event-queue :as eq]
+   [gamebase.geometry :as g]))
 
 (defn mk-entity [id]
   (let [e (ecs/mk-entity id ::locomotive)]
@@ -22,6 +23,11 @@
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ecs/init]
   [world event this]
-  ;;(println (str "LOCOMOTIVE INIT with move: " (pr-str (ecs/to-component (-> entity ::ecs/components :move)))))
-  (println (str "LOCOMOTIVE INIT with move: " (pr-str (-> this ::ecs/components :move))))
-  (ecs/mk-event (-> this ::ecs/components :move) ::ecs/init (::eq/time event)))
+  (println "LOCOMOTIVE INIT")
+  (assoc
+   (ecs/mk-event (-> this ::ecs/components :move)
+                 ::sys-move/set-path
+                 (::eq/time event))
+   :path (g/line-segment [100 100] [200 120])
+   )
+  )

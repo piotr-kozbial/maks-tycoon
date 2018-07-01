@@ -227,11 +227,15 @@
 
     ;; Send ::ecs/init to all entities
 
+    (doseq [c (ecs/all-components (:world @app-state))]
+      (eq/put-event!
+       event-queue
+       (ecs/mk-event c ::ecs/init 0)))
+
     (doseq [e (ecs/all-entities (:world @app-state))]
       (eq/put-event!
        event-queue
        (ecs/mk-event e ::ecs/init 0)))
-
 
 
     nil))
