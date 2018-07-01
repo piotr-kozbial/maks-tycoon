@@ -13,10 +13,14 @@
                           :requested-timeouts [] ;; of [vtime callback]
                           })))
 
+;; THIS MAKES TIME ALWAYS BE A WHOLE NUMBER OF MILLISECONDS
+(defn millis []
+  (int (js/millis)))
+
 (defn- get-time-impl [state]
   (let [{:keys [running? offset frozen-time]} state]
     (if running?
-      (+ (js/millis) offset)
+      (+ (millis) offset)
       frozen-time))
   )
 
@@ -32,7 +36,7 @@
        (assoc state
               :running? false
               :offset nil
-              :frozen-time (+ (js/millis) offset))
+              :frozen-time (+ (millis) offset))
        state))))
 
 (declare fire-pending-timeouts schedule-soonest-timeout)
@@ -46,7 +50,7 @@
        (my-swap! timer
                  (fn [_] (assoc state
                                :running? true
-                               :offset (- frozen-time (js/millis))
+                               :offset (- frozen-time (millis))
                                :frozen-time nil)))
        (fire-pending-timeouts timer)
        (schedule-soonest-timeout timer)))))
@@ -119,7 +123,7 @@
         (assoc state
                :running? false
                :offset nil
-               :frozen-time (+ (js/millis) offset))
+               :frozen-time (+ (millis) offset))
         state))
     :requested-timeout-vtime nil
     :hw-timeout-set-time nil)))

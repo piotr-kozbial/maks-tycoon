@@ -47,27 +47,39 @@
   [entity-or-id key _]
   (assoc
    (ecs/mk-component ::movement entity-or-id key ::path-follower)
-   :speed 0.003))
+   :speed 0.06))
 
 (defmethod ecs/handle-event [:to-component ::path-follower :update]
-  [world event {:keys [path path-start-time path-start-length speed] :as component}]
+  [world event {:keys [path path-start-time path-start-length path-end-time speed] :as component}]
   (when path
     (let [time-of-travel (- (::eq/time event) path-start-time)
-          length-traveled (* time-of-travel speed)
-          [x y] (g/path-point-at-length path length-traveled)]
-      ;;(println (str "FOLLOWER UPDATE: (" length-traveled ") " x " " y))
-      (assoc component :position [x y])
-      ))
-  ;;(println (pr-str event))
-)
+          length-on-path (+ path-start-length (* time-of-travel speed))
+          total-path-length (g/path-length path)
+          at-end? (= (::eq/time event) path-end-time)
+          after-end? (>= (::eq/time event) path-end-time)]
+      ;; (when at-end?
+      ;;   (println (str (::eq/time event) " FOLLOWER UPDATE: ("
+      ;;                 (if at-end? "AT END!" length-on-path))))
+      [(ecs/mk-event (ecs/get-entity world component) ::at-path-end (::eq/time event))
+       (assoc component :position
+              (g/path-point-at-length path (if after-end? total-path-length length-on-path)))])))
+
+(defn- -path-follower--calculate-path-end-time
+  [{:keys [path path-start-length path-start-time speed] :as component} time]
+  (when (> speed 0)
+    (int (+ time (/ (- (g/path-length path) path-start-length) speed)))))
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::set-path]
   [world {:keys [path] :as event} component]
-  (println (str "SET PATH! " (pr-str path)))
-  (assoc component
-         :path path
-         :path-start-length 0
-         :path-start-time (:gamebase.event-queue/time event)))
+  ;; (println (str "SET PATH! " (pr-str path)))
+  (let [component' (assoc component
+                          :path path
+                          :path-start-length 0
+                          :path-start-time (::eq/time event))
+        path-end-time (-path-follower--calculate-path-end-time component' (::eq/time event))]
+    [(assoc component' :path-end-time path-end-time)
+     ;; ensure we'll get an :update event exactly at the end of the path
+     (ecs/mk-event component :update path-end-time)]))
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::ecs/init]
   [world event component]
