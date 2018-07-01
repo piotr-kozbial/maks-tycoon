@@ -58,7 +58,7 @@
 ;;; The slope representation encompasses the whole 360 degrees, as it is
 ;;; understood as a vector. So |{:slope [1 1]}| means 45 degrees,
 ;;; while |{:slope [-1 -1]}| represents 225 degrees (45 + 180), or -135 degrees,
-;;; which is the same. In conversions, we will produce radian or degree values
+;;; which is the same. In conversions, we will produce radiW każdym raziean or degree values
 ;;; between -180 degrees (inclusive) and 180 degrees (exclusive).
 
 ;;; In contexts where an angle is expected but a number is given,
@@ -330,9 +330,15 @@
 ;;; Their main purpose in gamebase is for game objects to move
 ;;; along them.
 
-;;; They'll be maps with the |::path-type| value, specific
+;;; TODO ;;; *Napisac o tym, ze musi byc to linia ciagla.*
+;;; *A dlaczego?*
+;;; *No bo chcemy miec zasade, ze drobna niedokladnosc ze wzgledu na arytmetyke zmiennoprzecinkowa*
+;;; *nie bedzie powodowala, ze np. sprite przeskoczy gdzies w kosmos. Jesli taki skok jest zamierzony,*
+;;; *to raczej powinna go obsluzyc specyficzna logika w grze, uzywajac dwoch osobnych "paths".*
+
+;;; They'll be maps with the |:path-type| value, specific
 ;;; for different kinds of paths:
-  {::path-type :example-type
+  {:path-type :example-type
    ;; ...
    }
 ;;;
@@ -341,38 +347,55 @@
 ;;; dispatching on object types.
 
 
-;;;## Lengths etc.
+;;;## Lengths
 
   (do
 
 ;;; We'll want to know the length of a path:
-    (defmulti path-length (fn [path] (::path-type path)))
+    (defmulti path-length (fn [path] (:path-type path)))
 
 ;;; Also, to calculate coordinates of the point at given length from start:
     (defmulti path-point-at-length
-      (fn [path length] (::path-type path)))
+      (fn [path length] (:path-type path)))
 
 ;;; and from end:
     (defmulti path-point-at-length
-      (fn [path length] (::path-type path))))
+      (fn [path length] (:path-type path))))
 
-  )
+;;;## Angles
+  (do
+
+    (defmulti angle-at-length
+      (fn [path length] (:path-type path))))
+
+;;;## Precomputation
+
+  (do
+
+    (defmulti precomputed
+      (fn [path] (:path-type path)))))
 
 ;;;# Line segments
 (do
 ;;; A line segment is a section of a straight line
 ;;; extending from one point to another:
 
-  (defn mk-line-segment [p1 p2]
-    {::path-type :line-segment
+  (defn line-segment [p1 p2]
+    {:path-type :line-segment
      :p1 p1
      :p2 p2})
 
+;;; TODO !!! - zrobic to, wyliczac full-length, x-factor, y-factor.
+;;; Potem w funkcjach ponizej uzywac (precomputed path)
+;;; UWAGA. Jakis marker? Bo (precomputed (precomputed path)) nie powinno liczyc dwa razy.
+  (defmethod precomputed :line-segment [path] path)
+
 ;;; E.g.
-  (assert (= (mk-line-segment [2 3] [4 -1])
-             {::path-type :line-segment
-              :p1 [2 3]
-              :p2 [4 -1]}))
+  (examples
+
+   (line-segment [2 3] [4 -1]) => {:path-type :line-segment
+                                   :p1 [2 3]
+                                   :p2 [4 -1]})
 
 ;;; The length of a line segment:
 
@@ -382,10 +405,9 @@
       (sqrt (+ (* dx dx) (* dy dy)))))
 
 ;;; E.g.
-  (assert (= (path-length (mk-line-segment [0 0] [3 4]))
-             5.0))
-  (assert (= (path-length (mk-line-segment [-2 5] [1 9]))
-             5.0))
+  (examples
+   (path-length (line-segment [0 0] [3 4])) => 5.0
+   (path-length (line-segment [-2 5] [1 9])) => 5.0)
 
 ;;; At length:
 
@@ -398,14 +420,19 @@
       [(+ x1 (* length x-factor))
        (+ y1 (* length y-factor))]))
 
+;;; Angle:
+
+;;;  TODO !!! zaimplementowac
+
 ;;; E.g.:
-  
-  (assert
-   (= (let [my-path (mk-line-segment [-2 5] [1 9])]
-        (path-point-at-length
-         my-path
-         (/ (path-length my-path) 2)))
-      [-0.5 7.0]))
+
+  (examples
+   (let [my-path (line-segment [-2 5] [1 9])]
+     (path-point-at-length
+      my-path
+      (/ (path-length my-path) 2)))
+   =>
+   [-0.5 7.0])
 
 ;;; *NOTE*
 
@@ -418,7 +445,7 @@
 ;;; TODO
 
 ;;; Drogie rzeczy robic pre-computed!
-;;; Czyli juz przy mk-line-segment
+;;; Czyli juz przy line-segment
 ;;; wpisywac do mapki:
 ;;; - length
 ;;; - x-factor
@@ -427,17 +454,29 @@
 ;;; moze jakos opcjonalnie
 
 
+;; --  MOZE ZROBIC TAKA MULTIMETODE "precompute",
+;; --  KTORA DOWOLNY PATH BEDZIE WZBOGACALA O TAKIE RZECZY
+
 ;;; Mozna potem bedzie robic taka sztuczke:
 
 ;;; 1. krzywe torow zdefiniowac raz, zero-based
 
 ;;; 2. a potem w kazdym realnym kafelku, czy moze w trakcie gry
 ;;; w lokomotywie, mozna miec krzywa "nested"
-;;;`  {::path-type :translated
+;;;`  {:path-type :translated
 ;;;`   :path (tutaj "nested" krzywa)
 ;;;`   :dx
 ;;;`   :dy
 ;;;
   )
 
+
+;;; TODO - na poczatku (na koncu?) dac jakis "synopsis", pokazujacy struktury danych i funkcje
+;;; Moze na poczatku - i wtedy to bedzie zdefiniowana funkcja (synopsis), majaca w srodku asserty
+;;; (czy tez "examples"), a na samym koncu pliku wywolamy te funkcje, zeby sie upewnic,
+;;; ze wszystko tam jest prawda.
+
+
+;;; A W OGOLE ZROBIC DRUKOWANIE! Nie wiem czy automatem jakims html2pdf, czy zrobic osobny rendering np. do latexa.
+;;; BO MOZNA BY ZROBIC WYMUSZANE PAGE BREAKI np. przed rozdzialem, albo recznie wstawiane
 

@@ -105,6 +105,8 @@
 
 ;;   )
 
+(def virtual-timer {:root-atom app-state :ks [:virtual-timer]})
+
 (do ;; DRAW-LOCKED EVENT LOOP
 
   ;; Events are to be handled inside `draw`,
@@ -119,7 +121,8 @@
                       (eq/initialize event-queue)
                       nil))
 
-  (def virtual-timer {:root-atom app-state :ks [:virtual-timer]})
+ 
+
   (defonce _vt_init (do
                       (vt/initialize virtual-timer)
                       nil))
@@ -139,16 +142,14 @@
       (->> (repeatedly #(eq/pop-soonest-event-until event-queue t))
            (take-while identity) ;; not nil
            (reduce
-            (fn [wrl e] (ecs/do-handle-event wrl e))
+            (fn [wrl e] (ecs/do-handle-event wrl e #(eq/put-event! event-queue %)))
             world))))
 
   (defn handle-update [world]
     (ecs/do-handle-event
      world
-
-     (assoc
-      (ecs/mk-event (ecs/to-world) :update)
-      ::eq/time (vt/get-time virtual-timer))))
+     (ecs/mk-event (ecs/to-world) :update (vt/get-time virtual-timer))
+     #(eq/put-event! event-queue %)))
 
   (defn handle-events [world]
     (-> world
@@ -167,25 +168,29 @@
          ;;(.log js/consol
          (ecs/do-handle-event
           wrl
-          event')))
+          event'
+          #(eq/put-event! event-queue %))))
      world
      (ecs/all-systems world))))
 
 (defn create-world []
-  (let [e (assoc (ecs/mk-entity :test-entity :test-type)
-                 :origin [0 0])
-        e-image (sys-drawing/mk-static-image-component
-                 e :img
-                 {:point-kvs (ecs/ck-kvs :move :position)
-                  :offset [-10 -10]})
-        e-move (sys-move/mk-test-diagonal-component e :move nil)]
+  (let [x 0
+        ;; e (assoc (ecs/mk-entity :test-entity :test-type)
+        ;;          :origin [0 0])
+        ;; e-image (sys-drawing/mk-static-image-component
+        ;;          e :img
+        ;;          {:point-kvs (ecs/ck-kvs :move :position)
+        ;;           :offset [-10 -10]})
+        ;;e-move (sys-move/mk-test-diagonal-component e :move nil)
+        ]
     (-> (ecs/mk-world)
         (ecs/insert-object (sys-drawing/mk-system))
         (ecs/insert-object (sys-move/mk-system))
         ;;(ecs/insert-object e)
         (ecs/insert-object (locomotive/mk-entity :loc))
-        (ecs/insert-object e-image)
-        (ecs/insert-object e-move))))
+        ;;(ecs/insert-object e-image)
+        ;;(ecs/insert-object e-move)
+        )))
 
 (defonce _init-world
   (do
@@ -193,17 +198,13 @@
 
     (eq/put-event!
      event-queue
-     (assoc
-      (ecs/mk-event sys-drawing/to-system
-                    ::sys-drawing/clear-layers)
-      ::eq/time 0))
+     (ecs/mk-event sys-drawing/to-system ::sys-drawing/clear-layers 0))
 
     (eq/put-event!
      event-queue
      (assoc
       (ecs/mk-event sys-drawing/to-system
-                    ::sys-drawing/add-layer)
-      ::eq/time 0
+                    ::sys-drawing/add-layer 0)
       :layer-key :background
       :layer-type :tmx
       :layer-data {:resource-name "level1.tmx"
@@ -215,8 +216,7 @@
      event-queue
      (assoc
       (ecs/mk-event sys-drawing/to-system
-                    ::sys-drawing/add-layer)
-      ::eq/time 0
+                    ::sys-drawing/add-layer 0)
       :layer-key :terrain
       :layer-type :tmx
       :layer-data {:resource-name "level1.tmx"
@@ -225,15 +225,14 @@
                    :tile-offset 1}))
 
 
-    ;;(.log js/console (pr-str event-queue))
+    ;; Send ::ecs/init to all entities
 
-    ;; (ecs/do-handle-event
-    ;;  (:world @app-state)
-    ;;  (assoc
-    ;;   (ecs/mk-event sys-drawing/to-system
-    ;;                 ::sys-drawing/clear-layers)
-    ;;   ::eq/time 0 ;;(vt/get-time virtual-timer)
-    ;;   ))
+    (doseq [e (ecs/all-entities (:world @app-state))]
+      (eq/put-event!
+       event-queue
+       (ecs/mk-event e ::ecs/init 0)))
+
+
 
     nil))
 
@@ -243,7 +242,8 @@
         world'' (ecs/do-handle-event
                  world'
                  (ecs/mk-event sys-drawing/to-system
-                               ::sys-drawing/draw))]
+                               ::sys-drawing/draw (vt/get-time virtual-timer))
+                 #(eq/put-event! event-queue %))]
     (swap! app-state assoc :world world'')))
 
 ;; main

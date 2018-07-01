@@ -1,6 +1,5 @@
 (ns gamebase.ecs
-  ;(:require [schema.core :as s :include-macros true])
-  )
+  (:require [gamebase.event-queue :as eq]) ;; only or ::eq/time)
 
 ;;;;;;;;;;;;;;;;;;;;;; P U B L I C ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 nil
@@ -52,13 +51,14 @@ nil
   (if (map? object-or-target-id)
     (case (::kind object-or-target-id)
       :world (to-world)
-      :to-world (to-world)
+      :to-world object-or-target-id
       :system (to-system object-or-target-id)
-      :to-system (to-system object-or-target-id)
+      :to-system object-or-target-id
       :entity (to-entity object-or-target-id)
-      :to-entity (to-entity object-or-target-id)
+      :to-entity object-or-target-id
       :component (to-component object-or-target-id)
-      :to-component (to-component object-or-target-id))
+      :to-component object-or-target-id
+      )
     object-or-target-id))
 
 
@@ -128,10 +128,10 @@ nil
    ::entity-id id
    ::components {}})
 
-(defn add-component-to-entity [e c]
-  (assoc-in e [::components (::entity-id e)])
+;; (defn add-component-to-entity [e c]
+;;   (assoc-in e [::components (::entity-id e)] )
 
-  )
+;;   )
 
 (defn mk-component [system-or-id entity-or-id key type]
   {::kind :component
@@ -181,24 +181,49 @@ nil
 (
  ;; s/
  defn do-handle-event ;; :- sWorld
-  [world event]
+  [world event push-event-fn]
  (let [object (resolve-target-id world (::target-id event))
         ret (handle-event world event object)
-        new-objects
+        new-objects-or-events
         (if (map? ret)
           [ret] ;; single object - pack into vector to make it seqable
           ret)]
-    (reduce
-     insert-object
-     world
-     new-objects)))
+   (doseq [e (remove ::kind new-objects-or-events)]
+     (push-event-fn e))
+   (reduce
+    insert-object
+    world
+    (filter ::kind new-objects-or-events))))
+
+
+
+;; (
+;;  ;; s/
+;;  defn do-handle-event ;; :- sWorld
+;;  [world event]
+;;  (let [object (resolve-target-id world (::target-id event))
+;;        ret (handle-event world event object)
+;;        new-objects-or-events
+;;        (if (map? ret)
+;;          [ret] ;; single object - pack into vector to make it seqable
+;;          ret)]
+
+
+;;    (reduce
+;;     insert-object
+;;     world
+;;     new-objects)))
+
+
+
 
 
 ;; TODO - event time should be already set here (to 0 by default)
 ;; (now it is only defined in event-queue, but that is inconvenient)
-(defn mk-event [target-or-id msg]
+(defn mk-event [target-or-id msg time]
   {::target-id (to target-or-id)
-   ::msg msg})
+   ::msg msg
+   ::eq/time time})
 
 ;;;;; Predefined events
 
@@ -217,12 +242,15 @@ nil
 (defn pass-event-through-all [world event objects]
   (reduce
    (fn [w o]
-     (do-handle-event w (retarget event o)))
+     (do-handle-event w (retarget event o) (fn [_])))
    world
    objects))
 
 (defn all-systems [world]
   (vals (::systems world)))
+
+(defn all-entities [world]
+  (vals (::entities world)))
 
 (defn all-components [world]
   (->> (vals (::entities world))
@@ -241,6 +269,7 @@ nil
 
 (defn ck-kvs [component-key & kvs]
   (into [::components component-key] kvs))
+
 
 ;;;;;;;;;;;;;;;;;;;;;; p r i v a t e ;;;;;;;;;;;;;;;;;;;;;;;;;;
 nil
