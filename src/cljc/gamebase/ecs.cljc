@@ -175,8 +175,8 @@ nil
         ,   [:to-component (::type object) (::msg event)]))))
 
 (defmethod handle-event :default
-  [_ _ _]
-
+  [_ e _]
+  (println (str "UNHANDLED EVENT: " (pr-str e)))
   ;; TODO - this ignores all unknown events
   ;; Maybe there should be a warning at least
   ;; or maybe we should examine the kind of event.

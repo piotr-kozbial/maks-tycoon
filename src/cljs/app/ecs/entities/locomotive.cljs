@@ -17,13 +17,20 @@
       :img (sys-drawing/mk-static-image-component
             e :img
             {:point-kvs (ecs/ck-kvs :move :position)
-             :offset [-10 -10]
+             :angle-kvs (ecs/ck-kvs :move :angle)
+             :offset [-16 -16]
              :resource-name "loco1.png"
              })})))
 
-(def path1 (g/line-segment [100 100] [200 120]))
-(def path2 (g/line-segment [200 120] [300 70]))
-(def path3 (g/line-segment [300 70] [100 100]))
+(def path1 (g/circle-arc [100 100] 100 (g/degrees 0) (g/degrees 180) :positive)
+  ;;(g/line-segment [100 100] [200 120])
+  )
+(def path2 ;(g/line-segment [200 120] [300 70])
+  (g/line-segment [0 100] [100 100])
+  )
+(def path3 ;(g/line-segment [300 70] [100 100])
+  (g/line-segment [100 100] [200 100])
+  )
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ecs/init]
   [world event this]

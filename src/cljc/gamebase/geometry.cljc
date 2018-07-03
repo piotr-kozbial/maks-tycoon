@@ -10,6 +10,10 @@
 (do
 
   (defn sqrt [x] (Math/sqrt x))
+  (defn sin [x] (Math/sin x))
+  (defn cos [x] (Math/cos x))
+  ;; to prevent a warning in cljs
+  (declare =>)
 
   (defmacro examples [& body]
     ;; (let [triples (partition 3 3 nil body)]
@@ -427,6 +431,10 @@ nil
        (+ y1 (* length y-factor))]))
 
 ;;; Angle:
+  (defmethod angle-at-length :line-segment
+    [{[x1 y1] :p1, [x2 y2] :p2 :as segment}, length]
+    (let [dx (- x2 x1), dy (- y2 y1)]
+      (get-radians (slope dx dy))))
 
 ;;;  TODO !!! zaimplementowac
 
@@ -476,6 +484,69 @@ nil
 ;;;
   )
 
+;;;# Circle arcs
+(do
+  (defn circle-arc [center radius angle-start angle-end direction]
+    (assert (#{:positive :negative} direction))
+    {:path-type :circle-arc
+     :center center
+     :radius radius
+     :angle-start angle-start
+     :angle-end angle-end
+     :direction direction})
+
+
+  (defn normalize-to-2pi [radians]
+    (let [radians' (loop [r radians]
+                    (if (>= r (* 2 pi))
+                      (recur (- r (* 2 pi)))
+                      r))
+          radians'' (loop [r radians']
+                      (if (< r 0)
+                        (recur (+ r (* 2 pi)))
+                        r))]
+      radians''))
+
+  (defmethod precomputed :circle-arc [path] path)
+
+
+  (defmethod path-length :circle-arc
+    [{[xc yc] :center, :keys [radius angle-start angle-end direction]}]
+
+    ;; TODO
+    ;; ROBIMY TERAZ DLA :positive, potem jeszcze negative zrobimy
+    (assert (= direction :positive))
+
+    (let [st (normalize-to-2pi (get-radians angle-start))
+          en (let [en0 (normalize-to-2pi (get-radians angle-end))]
+               (if (> en0 st)
+                 en0
+                 (+ (* 2 pi) en0)))]
+
+      (* radius (- en st))))
+
+  (examples
+   (path-length (circle-arc [0 0] 1 (degrees 90) (degrees 180) :positive)) => (/ pi 2)
+   (path-length (circle-arc [0 0] 1 (degrees 270) (degrees 90) :positive)) => pi
+   (path-length (circle-arc [0 0] 1 (degrees (- 360 35)) (degrees 10) :positive))
+   ,                                                                      => (/ pi 4)
+   (path-length (circle-arc [0 0] 2 (degrees (- 360 35)) (degrees 10) :positive))
+   ,                                                                     => (/ pi 2))
+
+  (defmethod path-point-at-length :circle-arc
+    [{[xc yc] :center, :keys [radius angle-start angle-end direction] :as arc}, length]
+    (let [st (normalize-to-2pi (get-radians angle-start))
+          d-angle (/ length radius)
+          angle (+ st d-angle)]
+      [(+ xc (* radius (cos angle)))
+       (+ yc (* radius (sin angle)))]))
+
+  (defmethod angle-at-length :circle-arc
+    [{[xc yc] :center, :keys [radius angle-start angle-end direction] :as arc}, length]
+    (let [st (normalize-to-2pi (get-radians angle-start))
+          d-angle (/ length radius)
+          angle (+ st d-angle)]
+      (normalize-to-2pi (+ angle (/ pi 2))))))
 
 ;;; TODO - na poczatku (na koncu?) dac jakis "synopsis", pokazujacy struktury danych i funkcje
 ;;; Moze na poczatku - i wtedy to bedzie zdefiniowana funkcja (synopsis), majaca w srodku asserty
@@ -485,4 +556,5 @@ nil
 
 ;;; A W OGOLE ZROBIC DRUKOWANIE! Nie wiem czy automatem jakims html2pdf, czy zrobic osobny rendering np. do latexa.
 ;;; BO MOZNA BY ZROBIC WYMUSZANE PAGE BREAKI np. przed rozdzialem, albo recznie wstawiane
+
 

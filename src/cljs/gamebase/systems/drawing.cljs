@@ -1,7 +1,8 @@
 (ns gamebase.systems.drawing
   (:require
    [gamebase.ecs :as ecs]
-   [gamebase.resources :as resources]))
+   [gamebase.resources :as resources]
+   [gamebase.geometry :as g]))
 
 (do ;; SYSTEM
   
@@ -99,10 +100,11 @@
 
 
   (defn mk-static-image-component
-    [entity-or-id key {:keys [point-kvs offset resource-name]}]
+    [entity-or-id key {:keys [point-kvs angle-kvs offset resource-name]}]
     (assoc
      (ecs/mk-component ::drawing entity-or-id key ::static-image)
      :point-kvs point-kvs
+     :angle-kvs angle-kvs
      :offset offset
      :resource-name resource-name))
 
@@ -112,11 +114,15 @@
     component)
 
   (defmethod ecs/handle-event [:to-component ::static-image ::draw]
-    [world event {:keys [point-kvs offset resource-name] :as component}]
+    [world event {:keys [point-kvs angle-kvs offset resource-name] :as component}]
     (let [entity (ecs/get-entity world component)
           [point-x point-y] (get-in entity point-kvs)
-          [ofs-x ofs-y] offset]
+          [ofs-x ofs-y] offset
+          angle (get-in entity angle-kvs)]
       (when-let [img (resources/get-resource resource-name)]
-        (js/image img point-x point-y))) 
+        (js/translate point-x point-y)
+        (js/rotate angle)
+        (js/image img ofs-x ofs-y)
+        (js/resetMatrix)))
     component))
 
