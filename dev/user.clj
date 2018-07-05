@@ -8,7 +8,11 @@
             [ring.middleware.file :refer [wrap-file]]
             [system.components.middleware :refer [new-middleware]]
             [figwheel-sidecar.repl-api :as figwheel]
-            [app.config :refer [config]]))
+            [app.config :refer [config]]
+
+
+            [gamebase.ecsu] ;; without this it doesn't get compiled and loaded for cljs either
+            ))
 
 (defn dev-system []
   (let [config (config)]

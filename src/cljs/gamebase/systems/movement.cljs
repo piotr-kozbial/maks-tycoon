@@ -3,7 +3,9 @@
    [gamebase.ecs :as ecs]
    [gamebase.ecsu :as ecsu]
    [gamebase.event-queue :as eq]
-   [gamebase.geometry :as g]))
+   [gamebase.geometry :as g])
+
+  (:require-macros [gamebase.ecsu :as ecsu]))
 
 (defn mk-system []
   (ecs/mk-system ::movement))
