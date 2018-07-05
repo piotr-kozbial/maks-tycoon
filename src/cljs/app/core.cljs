@@ -67,7 +67,7 @@
 ;;   ;;                     nil))
 
 ;;   (def virtual-timer {:root-atom app-state :ks [:virtual-timer]})
-;;   ;; (defonce _vt_init (do
+;;   ;; (defonce _vt_i nit (do
 ;;   ;;                     (vt/initialize virtual-timer)
 ;;   ;;                     nil))
 
@@ -219,7 +219,7 @@
      event-queue
      (assoc
       (ecs/mk-event sys-drawing/to-system
-                    :sys-drawing/add-layer 0)
+                    ::sys-drawing/add-layer 0)
       :layer-key :terrain
       :layer-type :tmx
       :layer-data {:resource-name "level1.tmx"
