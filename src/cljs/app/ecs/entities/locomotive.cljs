@@ -22,14 +22,15 @@
              :resource-name "loco1.png"
              })})))
 
-(def path1 (g/circle-arc [100 100] 100 (g/degrees 0) (g/degrees 180) :positive)
+
+(def path1 (g/precomputed (g/circle-arc [100 100] 100 (g/degrees 180) (g/degrees 0) :negative))
   ;;(g/line-segment [100 100] [200 120])
   )
 (def path2 ;(g/line-segment [200 120] [300 70])
-  (g/line-segment [0 100] [100 100])
+  (g/precomputed (g/line-segment [0 100] [100 100]))
   )
 (def path3 ;(g/line-segment [300 70] [100 100])
-  (g/line-segment [100 100] [200 100])
+  (g/precomputed (g/line-segment [100 100] [200 100]))
   )
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ecs/init]
@@ -53,3 +54,4 @@
               (= path path1) path2
               (= path path2) path3
               (= path path3) path1))]))
+

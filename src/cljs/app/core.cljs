@@ -15,7 +15,10 @@
             [gamebase.ecs :as ecs]
             [gamebase.virtual-timer :as vt]
             [gamebase.canvas-control :as canvas-control]
-            [gamebase.layouts.sidebar-and-bottombar :as our-layout]))
+            [gamebase.layouts.sidebar-and-bottombar :as our-layout]
+
+            [gamebase.ecsu] ;; without this it doesn't get compiled and loaded for cljs either
+            ))
 
 ;;(enable-console-print!)
 
@@ -216,7 +219,7 @@
      event-queue
      (assoc
       (ecs/mk-event sys-drawing/to-system
-                    ::sys-drawing/add-layer 0)
+                    :sys-drawing/add-layer 0)
       :layer-key :terrain
       :layer-type :tmx
       :layer-data {:resource-name "level1.tmx"

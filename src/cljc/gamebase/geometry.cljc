@@ -382,8 +382,15 @@ nil
 
   (do
 
-    (defmulti precomputed
-      (fn [path] (:path-type path)))))
+    (defmulti precompute
+      (fn [path] (:path-type path)))
+
+    (defn precomputed [path]
+      (if (:precomputed? path)
+        path
+        (assoc
+         (precompute path)
+         :precomputed? true)))))
 
 ;;;# Line segments
 (do
@@ -398,7 +405,7 @@ nil
 ;;; TODO !!! - zrobic to, wyliczac full-length, x-factor, y-factor.
 ;;; Potem w funkcjach ponizej uzywac (precomputed path)
 ;;; UWAGA. Jakis marker? Bo (precomputed (precomputed path)) nie powinno liczyc dwa razy.
-  (defmethod precomputed :line-segment [path] path)
+  (defmethod precompute :line-segment [path] path)
 
 ;;; E.g.
   (examples
@@ -486,6 +493,32 @@ nil
 
 ;;;# Circle arcs
 (do
+
+;;;    positive direction:                           negative direction:
+;;;
+;;;                    ^                                           ^
+;;;                    |                                           |
+;;;               __.-----.__                                 __.-----.__
+;;;           |.-'           ''-._                         .-'           ''-._
+;;;     end   '-- __.-----.__     \                start  '   __.-----.__    _\|
+;;;         # .-''     |     ''-.    start              # .-''     |     ''-.  ' end
+;;;          #         |         \ #                     #         |         \ #
+;;;         / #        |          #                     / #        |          #
+;;;        /           |         # \                   /           |         # \
+;;;       |            |            |                 |            |            |
+;;;       |            |            |                 |            |            |
+;;;  -----|------------+------------|------->    -----|------------+------------|------->
+;;;       |            |            |                 |            |            |
+;;;       |            |            |                 |            |            |
+;;;        \           |           /                   \           |           /
+;;;         \          |          /                     \          |          /
+;;;          \         |         /                       \         |         /
+;;;           '-..__   |   __..-'                         '-..__   |   __..-'
+;;;                 '-----'                                     '-----'
+;;;                    |                                           |
+;;;                    |                                           |
+;;;                    |                                           |
+
   (defn circle-arc [center radius angle-start angle-end direction]
     (assert (#{:positive :negative} direction))
     {:path-type :circle-arc
@@ -494,7 +527,6 @@ nil
      :angle-start angle-start
      :angle-end angle-end
      :direction direction})
-
 
   (defn normalize-to-2pi [radians]
     (let [radians' (loop [r radians]
@@ -507,23 +539,33 @@ nil
                         r))]
       radians''))
 
-  (defmethod precomputed :circle-arc [path] path)
+  (defmethod precompute :circle-arc
+    [{[xc yc] :center, :keys [radius angle-start angle-end direction] :as path}]
 
+    (case direction
 
-  (defmethod path-length :circle-arc
-    [{[xc yc] :center, :keys [radius angle-start angle-end direction]}]
+      :positive
 
-    ;; TODO
-    ;; ROBIMY TERAZ DLA :positive, potem jeszcze negative zrobimy
-    (assert (= direction :positive))
+      (let [st (normalize-to-2pi (get-radians angle-start))
+            en0 (normalize-to-2pi (get-radians angle-end))
+            en (if (> en0 st) en0 (+ (* 2 pi) en0))]
+        (assoc path
+               :st st
+               :en en
+               :length (* radius (- en st))))
 
-    (let [st (normalize-to-2pi (get-radians angle-start))
-          en (let [en0 (normalize-to-2pi (get-radians angle-end))]
-               (if (> en0 st)
-                 en0
-                 (+ (* 2 pi) en0)))]
+      :negative
 
-      (* radius (- en st))))
+      (let [en (normalize-to-2pi (get-radians angle-end))
+            st0 (normalize-to-2pi (get-radians angle-start))
+            st (if (> st0 en) st0 (+ (* 2 pi) st0))]
+        (assoc path
+               :st st
+               :en en
+               :length (* radius (- en st))))))
+
+  (defmethod path-length :circle-arc [path]
+    (:length (precomputed path)))
 
   (examples
    (path-length (circle-arc [0 0] 1 (degrees 90) (degrees 180) :positive)) => (/ pi 2)
@@ -533,20 +575,21 @@ nil
    (path-length (circle-arc [0 0] 2 (degrees (- 360 35)) (degrees 10) :positive))
    ,                                                                     => (/ pi 2))
 
-  (defmethod path-point-at-length :circle-arc
-    [{[xc yc] :center, :keys [radius angle-start angle-end direction] :as arc}, length]
-    (let [st (normalize-to-2pi (get-radians angle-start))
-          d-angle (/ length radius)
-          angle (+ st d-angle)]
-      [(+ xc (* radius (cos angle)))
-       (+ yc (* radius (sin angle)))]))
+  (defmethod path-point-at-length :circle-arc [path length]
+    (let [{[xc yc] :center, :keys [radius st en direction]} (precomputed path)
+          angle (case direction
+                  :positive (+ st (/ length radius))
+                  :negative (- st (/ length radius)))]
+      (let [angle (+ st (/ length radius))]
+        [(+ xc (* radius (cos angle)))
+         (+ yc (* radius (sin angle)))])))
 
-  (defmethod angle-at-length :circle-arc
-    [{[xc yc] :center, :keys [radius angle-start angle-end direction] :as arc}, length]
-    (let [st (normalize-to-2pi (get-radians angle-start))
-          d-angle (/ length radius)
-          angle (+ st d-angle)]
-      (normalize-to-2pi (+ angle (/ pi 2))))))
+  (defmethod angle-at-length :circle-arc [path length]
+    (let [{[xc yc] :center, :keys [radius st direction]} (precomputed path)]
+      (normalize-to-2pi
+       (case direction
+         :positive (+ st (/ length radius) (/ pi 2))
+         :negative (- st (/ length radius) (/ pi 2)))))))
 
 ;;; TODO - na poczatku (na koncu?) dac jakis "synopsis", pokazujacy struktury danych i funkcje
 ;;; Moze na poczatku - i wtedy to bedzie zdefiniowana funkcja (synopsis), majaca w srodku asserty
