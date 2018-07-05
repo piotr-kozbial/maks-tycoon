@@ -125,8 +125,8 @@
                       200 (- height bottom-bar-height)
                       (- width 200) bottom-bar-height)
     (js/resizeCanvas canvas-width canvas-height)
-    (.log js/console (str"w " canvas-width " h " canvas-height))
-    (.log js/console @base-atom)
+    ;;(.log js/console (str"w " canvas-width " h " canvas-height))
+    ;;(.log js/console @base-atom)
     (swap! base-atom update-in kvs
            (fn [s] (assoc s
                          :canvas-x 200

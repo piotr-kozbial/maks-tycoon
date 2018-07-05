@@ -18,13 +18,12 @@
             e :img
             {:point-kvs (ecs/ck-kvs :move :position)
              :angle-kvs (ecs/ck-kvs :move :angle)
-             :offset [-16 -16]
-             :resource-name "loco1.png"
-             })})))
+             :center [16 8]
+             :resource-name "loco1.png"})})))
 
 
-(def path1 (g/precomputed (g/circle-arc [100 100] 100 (g/degrees 0) (g/degrees 180) :negative))
-  ;;(g/line-segment [100 100] [200 120])
+(def path1 ;;(g/precomputed (g/circle-arc [100 100] 100 (g/degrees 0) (g/degrees 180) :positive))
+  (g/line-segment [0 16] [200 16])
   )
 (def path2 ;(g/line-segment [200 120] [300 70])
   (g/precomputed (g/line-segment [0 100] [100 100]))
@@ -50,8 +49,11 @@
       (ecs/mk-event (-> this ::ecs/components :move)
                     ::sys-move/set-path
                     (::eq/time event))
-      :path (cond
-              (= path path1) path2
-              (= path path2) path3
-              (= path path3) path1))]))
+      :path path1
+      ;; (cond
+      ;;         (= path path1) path2
+      ;;         (= path path2) path3
+      ;;         (= path path3) path1)
+
+      )]))
 

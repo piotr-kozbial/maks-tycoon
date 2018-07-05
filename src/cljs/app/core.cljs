@@ -267,7 +267,7 @@
 
   (defn main [& _]
 
-    (.log js/console "-----> main")
+    ;; (.log js/console "-----> main")
 
     (doseq [fname ["background.png"
                    "tiles.png"

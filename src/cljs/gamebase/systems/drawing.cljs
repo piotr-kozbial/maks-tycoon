@@ -100,12 +100,12 @@
 
 
   (defn mk-static-image-component
-    [entity-or-id key {:keys [point-kvs angle-kvs offset resource-name]}]
+    [entity-or-id key {:keys [point-kvs angle-kvs center resource-name]}]
     (assoc
      (ecs/mk-component ::drawing entity-or-id key ::static-image)
      :point-kvs point-kvs
      :angle-kvs angle-kvs
-     :offset offset
+     :center center
      :resource-name resource-name))
 
   (defmethod ecs/handle-event [:to-component ::static-image :update]
@@ -114,15 +114,15 @@
     component)
 
   (defmethod ecs/handle-event [:to-component ::static-image ::draw]
-    [world event {:keys [point-kvs angle-kvs offset resource-name] :as component}]
+    [world event {:keys [point-kvs angle-kvs center resource-name] :as component}]
     (let [entity (ecs/get-entity world component)
           [point-x point-y] (get-in entity point-kvs)
-          [ofs-x ofs-y] offset
+          [center-x center-y] center
           angle (get-in entity angle-kvs)]
       (when-let [img (resources/get-resource resource-name)]
         (js/translate point-x point-y)
         (js/rotate angle)
-        (js/image img ofs-x ofs-y)
+        (js/image img (- center-x) (- center-y))
         (js/resetMatrix)))
     component))
 
