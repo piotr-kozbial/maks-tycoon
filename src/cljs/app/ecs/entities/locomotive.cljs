@@ -23,7 +23,7 @@
              })})))
 
 
-(def path1 (g/precomputed (g/circle-arc [100 100] 100 (g/degrees 180) (g/degrees 0) :negative))
+(def path1 (g/precomputed (g/circle-arc [100 100] 100 (g/degrees 0) (g/degrees 180) :negative))
   ;;(g/line-segment [100 100] [200 120])
   )
 (def path2 ;(g/line-segment [200 120] [300 70])

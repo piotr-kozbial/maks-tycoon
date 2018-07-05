@@ -562,7 +562,7 @@ nil
         (assoc path
                :st st
                :en en
-               :length (* radius (- en st))))))
+               :length (* radius (- st en))))))
 
   (defmethod path-length :circle-arc [path]
     (:length (precomputed path)))
@@ -580,9 +580,8 @@ nil
           angle (case direction
                   :positive (+ st (/ length radius))
                   :negative (- st (/ length radius)))]
-      (let [angle (+ st (/ length radius))]
-        [(+ xc (* radius (cos angle)))
-         (+ yc (* radius (sin angle)))])))
+      [(+ xc (* radius (cos angle)))
+       (+ yc (* radius (sin angle)))]))
 
   (defmethod angle-at-length :circle-arc [path length]
     (let [{[xc yc] :center, :keys [radius st direction]} (precomputed path)]

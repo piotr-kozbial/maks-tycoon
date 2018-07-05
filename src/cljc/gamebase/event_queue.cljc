@@ -27,6 +27,7 @@
 
 
 (defn put-event! [qa event]
+  (println (str "PUT-EVENT! " (pr-str event)))
   (let [was-empty (= 0 (:n (my-deref qa)))]
     (my-swap!
      qa
