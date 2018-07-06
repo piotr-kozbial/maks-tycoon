@@ -2,7 +2,8 @@
   (:require
    [gamebase.events :as events]
    [gamebase.ecs :as ecs]
-   [gamebase.projection :as proj]))
+   [gamebase.projection :as proj]
+   [gamebase.debug :as debug]))
 
 (defonce conf (atom nil))
 
@@ -19,8 +20,21 @@
     ;; flip vertical - this allows the client draw function
     ;; to use the standard coordinate system (y points upwards)
     (js/scale 1 -1)
+
+
     ;; client draw
-    ((:draw @conf))))
+    ((:draw @conf))
+
+    ;; draw coordinate system marker
+
+    (js/stroke 126)
+    (js/strokeWeight 5)
+    (js/line 0 0  30 0)
+    (js/line 30 0  30 30)
+    (js/line 30 30  0 30)
+    (js/line 0 30  0 0)
+
+    ))
 
 ;; TODO SUMARY
 ;; 1. params to draw function

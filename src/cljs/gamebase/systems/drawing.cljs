@@ -120,6 +120,7 @@
           [center-x center-y] center
           angle (get-in entity angle-kvs)]
       (when-let [img (resources/get-resource resource-name)]
+        (js/push)
         (js/translate point-x point-y)
         (js/rotate angle)
         ;; flip vertical, since images are placed by js/images
@@ -127,6 +128,6 @@
         ;; while we are using standard coordinate system
         (js/scale 1 -1)
         (js/image img (- center-x) (- center-y))
-        (js/resetMatrix)))
+        (js/pop)))
     component))
 
