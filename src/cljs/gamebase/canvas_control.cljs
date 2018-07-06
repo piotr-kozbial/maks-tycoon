@@ -16,6 +16,9 @@
           ,    (get-in @state-atom state-kvs)]
       (js/translate translation-x translation-y)
       (js/scale scale-factor))
+    ;; flip vertical - this allows the client draw function
+    ;; to use the standard coordinate system (y points upwards)
+    (js/scale 1 -1)
     ;; client draw
     ((:draw @conf))))
 
@@ -45,9 +48,9 @@ nil
 (defn initialize [{:keys [state-atom state-kvs] :as config}]
   (reset! conf config)
   (swap! state-atom assoc-in state-kvs
-         {:scale-factor 2.0
+         {:scale-factor 2
           :translation-x 0.0
-          :translation-y 0.0})
+          :translation-y 100.0})
   (setup-drag-event)
   (events/add-handler :draw #'draw))
 

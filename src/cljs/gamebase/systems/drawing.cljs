@@ -122,6 +122,10 @@
       (when-let [img (resources/get-resource resource-name)]
         (js/translate point-x point-y)
         (js/rotate angle)
+        ;; flip vertical, since images are placed by js/images
+        ;; in screen orientation (y increasing downwards),
+        ;; while we are using standard coordinate system
+        (js/scale 1 -1)
         (js/image img (- center-x) (- center-y))
         (js/resetMatrix)))
     component))
