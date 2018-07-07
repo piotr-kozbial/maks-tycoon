@@ -7,6 +7,27 @@
 
 (defonce conf (atom nil))
 
+
+(defn debug-draw-coord-system []
+
+  ;; x axis
+  (js/stroke 255 0 0)
+  (js/strokeWeight 4)
+  (js/line -32 0  32 0)
+  (js/line 32 0 28 5)
+  (js/line 32 0 28 -5)
+
+  ;; y axis
+  (js/stroke 0 0 255)
+  (js/strokeWeight 4)
+  (js/line 0 -32 0 32)
+  (js/line 0 32 -5 28)
+  (js/line 0 32 5 28)
+
+  (js/stroke 255 255 255)
+  (js/line 0 0 0 0))
+
+
 (defn- draw []
   ;; canvas clear and setup
   (js/clear)
@@ -17,7 +38,7 @@
           ,    (get-in @state-atom state-kvs)]
       (js/translate translation-x translation-y)
       (js/scale scale-factor))
-    ;; flip vertical - this allows the client draw function
+    ;; flip vertical - this allowws the client draw function
     ;; to use the standard coordinate system (y points upwards)
     (js/scale 1 -1)
 
@@ -26,15 +47,10 @@
     ((:draw @conf))
 
     ;; draw coordinate system marker
-
-    (js/stroke 126)
-    (js/strokeWeight 5)
-    (js/line 0 0  30 0)
-    (js/line 30 0  30 30)
-    (js/line 30 30  0 30)
-    (js/line 0 30  0 0)
-
-    ))
+    (when (-> @debug/settings
+              :canvas-control
+              :coordinate-system-marker)
+      (debug-draw-coord-system))))
 
 ;; TODO SUMARY
 ;; 1. params to draw function
@@ -58,13 +74,16 @@ nil
 
 (declare setup-drag-event)
 
+
+
+
 ;; public API
 (defn initialize [{:keys [state-atom state-kvs] :as config}]
   (reset! conf config)
   (swap! state-atom assoc-in state-kvs
          {:scale-factor 2
-          :translation-x 0.0
-          :translation-y 100.0})
+          :translation-x 100.0
+          :translation-y 300.0})
   (setup-drag-event)
   (events/add-handler :draw #'draw))
 

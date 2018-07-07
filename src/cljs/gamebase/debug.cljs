@@ -11,3 +11,15 @@
 
 
     }))
+
+(comment
+
+  ;; switch coord system on
+  (swap! gamebase.debug/settings assoc-in [:canvas-control :coordinate-system-marker] true)
+
+  ;; switch coord system off
+  (swap! gamebase.debug/settings assoc-in [:canvas-control :coordinate-system-marker] false)
+
+
+
+  )

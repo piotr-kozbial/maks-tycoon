@@ -47,6 +47,10 @@
       ))
 
   (defn- draw-tiled-layer [{:keys [data img-resource-name tile-offset]}]
+    (js/push)
+    ;; we could invert each tile separately, but inverting
+    ;; the whole thing is easier
+    (js/scale 1 -1)
     (when-let [img (resources/get-resource img-resource-name)]
       (doall
        (map-indexed
@@ -65,7 +69,8 @@
                               (- (* x 32) 0) (- (* y 32) 0) 32 32,
                               (* tile-x 32) (* tile-y 32) 32 32))))
               row))))
-        (:content data)))))
+        (:content data))))
+    (js/pop))
 
 
   (defn- maybe-draw-layers [world {:keys [layers] :as system}]
