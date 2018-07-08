@@ -1,3 +1,5 @@
+;;;;; STATUS: COMPLETE ;;;;;
+
 (ns gamebase.tmx
   (:require
    [clojure.data.xml :as xml]
@@ -94,7 +96,7 @@
 
 ;;; Let's now read what's left of the header (or rather root node): the dimensions:
 
-(defn read-dimensions [doc]
+(defn parse-dimensions [doc]
   (let [{:keys [width height tilewidth tileheight]} (:attrs doc)]
     {;; width of map, in tiles
      :width (parse-int width)
@@ -108,8 +110,8 @@
 ;;; In our case:
 
 (examples
- (read-dimensions example-doc) => {:width 5, :height 3
-                                   :tile-width 32, :tile-height 32})
+ (parse-dimensions example-doc) => {:width 5, :height 3
+                                    :tile-width 32, :tile-height 32})
 
 ;;; We now turn to parsing the tileset information. First, extract all tilesets
 ;;; as xml subtrees:
@@ -294,5 +296,53 @@
     :id-list
     (401 401 401 401 401 401 401 401 401 401 401 401 401 401 401)}})
 
+;;; Putting it all together:
 
+(defn parse-tmx [doc]
+  (verify-header doc)
+  (assoc
+   (parse-dimensions doc)
+   :tilesets (parse-tilesets doc)
+   :layers (parse-layers doc)))
 
+(examples
+
+ (parse-tmx example-doc)
+
+ =>
+
+ '{:width 5
+   :height 3
+   :tile-width 32
+   :tile-height 32
+   :tilesets {"background" {:name "background"
+                            :id-offset 401
+                            :tile-width 32
+                            :tile-height 32
+                            :tile-count 40
+                            :tile-columns 10
+                            :image-file-name "background.png"
+                            :image-file-width 320
+                            :image-file-height 128}
+              "kafelki"    {:name "kafelki"
+                            :id-offset 1
+                            :tile-width 32
+                            :tile-height 32
+                            :tile-count 400
+                            :tile-columns 20
+                            :image-file-name "tiles.png"
+                            :image-file-width 640
+                            :image-file-height 640}}
+   :layers {"foreground" {:name "foreground"
+                          :width 5
+                          :height 3
+                          :id-list (1 4 4 62 63 24 0 0 0 0 24 0 0 0 0)}
+            "above"      {:name "above"
+                          :width 5
+                          :height 3
+                          :id-list (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)}
+            "background" {:name "background"
+                          :width 5
+                          :height 3
+                          :id-list
+                          (401 401 401 401 401 401 401 401 401 401 401 401 401 401 401)}}})

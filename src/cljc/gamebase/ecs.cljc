@@ -1,3 +1,5 @@
+;;;;; STATUS: COMPLETE ;;;;;
+
 (ns gamebase.ecs
   (:require [gamebase.event-queue :as eq]) ;; only or ::eq/time)
   )

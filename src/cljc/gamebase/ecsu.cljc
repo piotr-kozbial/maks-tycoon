@@ -1,3 +1,5 @@
+;;;;; STATUS: ON HOLD ;;;;;
+
 (ns gamebase.ecsu
   (:require
    [gamebase.ecs :as ecs]

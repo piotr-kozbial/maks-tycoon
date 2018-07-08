@@ -1,3 +1,5 @@
+;;;;; STATUS: COMPLETE ;;;;;
+
 (ns gamebase.event-queue)
 
 (def EVENT-BUFFER-SIZE 100)
