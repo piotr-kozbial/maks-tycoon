@@ -5,12 +5,40 @@
    [gamebase.geometry :as g]))
 
 (do ;; SYSTEM
-  
+
   (defn mk-system []
     (ecs/mk-system ::drawing))
 
   (def to-system
     (ecs/to-system ::drawing))
+
+  (defmethod ecs/handle-event [:to-system ::drawing ::draw]
+    [world event system]
+    ;;(.log js/console "sys draw")
+    (-> world
+        (maybe-draw-layers system)
+        (#(ecs/pass-event-through-all
+           % event (ecs/all-components-of-system % system)))))
+
+  (defmethod ecs/handle-event [:to-system ::drawing ::clear-layers]
+    [world event system]
+    (assoc system :layers []))
+
+  (defmethod ecs/handle-event [:to-system ::drawing ::add-layer]
+    [world {:keys [layer-key layer-type layer-data]} system]
+    (update-in system [:layers]
+               conj {:layer-key layer-key
+                     :layer-type layer-type
+                     :layer-data layer-data})))
+
+;;;; TODO
+To jakos inaczej zrobic. Moze z boku zapodawac caly stack layerow i ten context co tam.
+Albo tylko zostawic tutaj narysowanie pojedynczego layera, a reszte zrobic w glownym
+(draw) w aplikacji.
+
+
+
+(do ;; Tiled layer drawing
 
   (defn- maybe-load-layer [{:keys [layer-data] :as layer}]
     (let [{:keys [resource-name layer-key data img]} layer-data]
@@ -72,37 +100,15 @@
         (:content data))))
     (js/pop))
 
-
   (defn- maybe-draw-layers [world {:keys [layers] :as system}]
     ;;(.log js/console (pr-str layers))
     (doseq [{:keys [layer-data]} layers]
       (when-let [data (:data layer-data)]
 
         (draw-tiled-layer layer-data)))
-    world)
-
-  (defmethod ecs/handle-event [:to-system ::drawing ::draw]
-    [world event system]
-    ;;(.log js/console "sys draw")
-    (-> world
-        (maybe-draw-layers system)
-        (#(ecs/pass-event-through-all
-           % event (ecs/all-components-of-system % system)))))
-
-  (defmethod ecs/handle-event [:to-system ::drawing ::clear-layers]
-    [world event system]
-    (assoc system :layers []))
-
-  (defmethod ecs/handle-event [:to-system ::drawing ::add-layer]
-    [world {:keys [layer-key layer-type layer-data]} system]
-    (update-in system [:layers]
-               conj {:layer-key layer-key
-                     :layer-type layer-type
-                     :layer-data layer-data})))
-
+    world))
 
 (do ;; COMPONENT: static image
-
 
   (defn mk-static-image-component
     [entity-or-id key {:keys [point-kvs angle-kvs center resource-name]}]
@@ -135,4 +141,3 @@
         (js/image img (- center-x) (- center-y))
         (js/pop)))
     component))
-

@@ -159,7 +159,6 @@
         (handle-all-pending-events)
         (handle-update))))
 
-
 (do ;; HANDLE :update EVENT ON WORLD LEVEL
 
   (defmethod ecs/handle-event [:to-world :update]
@@ -215,17 +214,17 @@
                    :img-resource-name "background.png"
                    :tile-offset 401}))
 
-    (eq/put-event!
-     event-queue
-     (assoc
-      (ecs/mk-event sys-drawing/to-system
-                    ::sys-drawing/add-layer 0)
-      :layer-key :terrain
-      :layer-type :tmx
-      :layer-data {:resource-name "level1.tmx"
-                   :layer-key :foreground
-                   :img-resource-name "tiles.png"
-                   :tile-offset 1}))
+    ;; (eq/put-event!
+    ;;  event-queue
+    ;;  (assoc
+    ;;   (ecs/mk-event sys-drawing/to-system
+    ;;                 ::sys-drawing/add-layer 0)
+    ;;   :layer-key :terrain
+    ;;   :layer-type :tmx
+    ;;   :layer-data {:resource-name "level1.tmx"
+    ;;                :layer-key :foreground
+    ;;                :img-resource-name "tiles.png"
+    ;;                :tile-offset 1}))
 
 
     ;; Send ::ecs/init to all entities
