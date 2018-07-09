@@ -12,6 +12,7 @@
 
 
             [gamebase.ecsu] ;; without this it doesn't get compiled and loaded for cljs either
+            [gamebase.helpers]
             ))
 
 (defn dev-system []
