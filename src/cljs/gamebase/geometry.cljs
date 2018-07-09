@@ -1,6 +1,7 @@
 ;;;;; STATUS: ON HOLD ;;;;;
 
-(ns gamebase.geometry)
+(ns gamebase.geometry
+  (:require-macros [gamebase.helpers :refer [examples]]))
 
 ;;;# Overview
 (do
@@ -16,17 +17,6 @@
   (defn cos [x] (Math/cos x))
   ;; to prevent a warning in cljs
   (declare =>)
-
-  (defmacro examples [& body]
-    ;; (let [triples (partition 3 3 nil body)]
-    ;;   (assert (every? #(= 3 (count %)) triples))
-    ;;   (assert (every? #(= '=> (second %)) triples))
-    ;;   (let [assertions (->> triples
-    ;;                         (map (fn [[a _ b]] (list '= a b)))
-    ;;                         (map #(list 'assert %)))]
-    ;;     `(do ~@assertions)))
-nil
-    )
 
   (def pi Math/PI)
 
