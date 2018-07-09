@@ -3,6 +3,7 @@
 (ns gamebase.geometry
   (:require-macros [gamebase.helpers :refer [examples]]))
 
+
 ;;;# Overview
 (do
 ;;; This module defines some cartesian geometry
