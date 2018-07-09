@@ -3,7 +3,7 @@
 
             [gamebase.resources :as resources]
 
-            [ecs.systems.my-test-entities :as te]
+            ;;[ecs.systems.my-test-entities :as te]
 
             [gamebase.systems.drawing :as sys-drawing]
             [gamebase.systems.movement :as sys-move]
