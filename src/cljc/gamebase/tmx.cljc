@@ -9,17 +9,17 @@
   #?(:clj (Integer. s)
      :cljs (js/parseInt s)))
 
-(defmacro examples [& body]
-  `(do)
-  ;; (let [triples (partition 3 3 nil body)]
-  ;;   (assert (every? #(= 3 (count %)) triples))
-  ;;   (assert (every? #(= '=> (second %)) triples))
-  ;;   (let [assertions (->> triples
-  ;;                         (map (fn [[a _ b]] (list '= a b)))
-  ;;                         (map #(list 'assert %)))]
-  ;;     `(do ~@assertions)))
+;; (defmacro examples [& body]
+;;   `(do)
+;;   ;; (let [triples (partition 3 3 nil body)]
+;;   ;;   (assert (every? #(= 3 (count %)) triples))
+;;   ;;   (assert (every? #(= '=> (second %)) triples))
+;;   ;;   (let [assertions (->> triples
+;;   ;;                         (map (fn [[a _ b]] (list '= a b)))
+;;   ;;                         (map #(list 'assert %)))]
+;;   ;;     `(do ~@assertions)))
 
-  )
+;;   )
 
 ;;; This is to parse a tmx tile-map file format.
 
@@ -94,8 +94,8 @@
 
 ;;; Our example looks good in these aspects:
 
-(examples
- (verify-header example-doc) => nil)
+;; (examples
+;;  (verify-header example-doc) => nil)
 
 ;;; Let's now read what's left of the header (or rather root node): the dimensions:
 
@@ -112,9 +112,9 @@
 
 ;;; In our case:
 
-(examples
- (parse-dimensions example-doc) => {:width 5, :height 3
-                                    :tile-width 32, :tile-height 32})
+;; (examples
+;;  (parse-dimensions example-doc) => {:width 5, :height 3
+;;                                     :tile-width 32, :tile-height 32})
 
 ;;; We now turn to parsing the tileset information. First, extract all tilesets
 ;;; as xml subtrees:
@@ -125,31 +125,31 @@
 
 ;;; It works like this:
 
-(examples
+;; (examples
 
- (get-tileset-subdocs example-doc)
+;;  (get-tileset-subdocs example-doc)
 
- =>
+;;  =>
 
- (list
+;;  (list
 
-  #xml/element{:tag :tileset
-               :attrs {:firstgid "1", :name "kafelki", :tilewidth "32", :tileheight "32"
-                       :tilecount "400", :columns "20"}
-               :content ["\n       "
-                         #xml/element{:tag :image
-                                      :attrs {:source "tiles.png"
-                                              :width "640", :height "640"}}
-                         "\n     "]}
+;;   #xml/element{:tag :tileset
+;;                :attrs {:firstgid "1", :name "kafelki", :tilewidth "32", :tileheight "32"
+;;                        :tilecount "400", :columns "20"}
+;;                :content ["\n       "
+;;                          #xml/element{:tag :image
+;;                                       :attrs {:source "tiles.png"
+;;                                               :width "640", :height "640"}}
+;;                          "\n     "]}
 
-  #xml/element{:tag :tileset
-               :attrs {:firstgid "401", :name "background", :tilewidth "32", :tileheight "32"
-                       :tilecount "40", :columns "10"}
-               :content ["\n       "
-                         #xml/element{:tag :image
-                                      :attrs {:source "background.png"
-                                              :width "320", :height "128"}}
-                         "\n     "]}))
+;;   #xml/element{:tag :tileset
+;;                :attrs {:firstgid "401", :name "background", :tilewidth "32", :tileheight "32"
+;;                        :tilecount "40", :columns "10"}
+;;                :content ["\n       "
+;;                          #xml/element{:tag :image
+;;                                       :attrs {:source "background.png"
+;;                                               :width "320", :height "128"}}
+;;                          "\n     "]}))
 
 ;;; And now the actual parsing of a single tileset element:
 
@@ -183,27 +183,27 @@
 
 ;;; Let's see the results:
 
-(examples
- (parse-tilesets example-doc)
- =>
- {"background" {:name "background"
-                :id-offset 401
-                :tile-width 32
-                :tile-height 32
-                :tile-count 40
-                :tile-columns 10
-                :image-file-name "background.png"
-                :image-file-width 320
-                :image-file-height 128}
-  "kafelki" {:name "kafelki"
-             :id-offset 1
-             :tile-width 32
-             :tile-height 32
-             :tile-count 400
-             :tile-columns 20
-             :image-file-name "tiles.png"
-             :image-file-width 640
-             :image-file-height 640}})
+;; (examples
+;;  (parse-tilesets example-doc)
+;;  =>
+;;  {"background" {:name "background"
+;;                 :id-offset 401
+;;                 :tile-width 32
+;;                 :tile-height 32
+;;                 :tile-count 40
+;;                 :tile-columns 10
+;;                 :image-file-name "background.png"
+;;                 :image-file-width 320
+;;                 :image-file-height 128}
+;;   "kafelki" {:name "kafelki"
+;;              :id-offset 1
+;;              :tile-width 32
+;;              :tile-height 32
+;;              :tile-count 400
+;;              :tile-columns 20
+;;              :image-file-name "tiles.png"
+;;              :image-file-width 640
+;;              :image-file-height 640}})
 
 ;;; And finally we need to parse the layers. First, extract all of them:
 
@@ -212,43 +212,43 @@
 
 ;; Let's try:
 
-(examples
+;; (examples
 
- (get-layer-subdocs example-doc)
+;;  (get-layer-subdocs example-doc)
 
- =>
+;;  =>
 
- '({:tag :layer
-    :attrs {:name "background", :width "5", :height "3"}
-    :content ("\n       "
-              {:tag :data
-               :attrs {:encoding "csv"}
-               :content ("
-         401,401,401,401,401,
-         401,401,401,401,401,
-         401,401,401,401,401\n       ")}
-              "\n     ")}
-   {:tag :layer
-    :attrs {:name "foreground", :width "5", :height "3"}
-    :content ("\n       "
-              {:tag :data,
-               :attrs {:encoding "csv"},
-               :content
-               ("
-         1,4,4,62,63,
-         24,0,0,0,0,
-         24,0,0,0,0\n       ")}
-              "\n     ")}
-   {:tag :layer
-    :attrs {:name "above", :width "5", :height "3"}
-    :content ("\n       "
-              {:tag :data
-               :attrs {:encoding "csv"}
-               :content ("
-         0,0,0,0,0,
-         0,0,0,0,0,
-         0,0,0,0,0\n       ")}
-              "\n     ")}))
+;;  '({:tag :layer
+;;     :attrs {:name "background", :width "5", :height "3"}
+;;     :content ("\n       "
+;;               {:tag :data
+;;                :attrs {:encoding "csv"}
+;;                :content ("
+;;          401,401,401,401,401,
+;;          401,401,401,401,401,
+;;          401,401,401,401,401\n       ")}
+;;               "\n     ")}
+;;    {:tag :layer
+;;     :attrs {:name "foreground", :width "5", :height "3"}
+;;     :content ("\n       "
+;;               {:tag :data,
+;;                :attrs {:encoding "csv"},
+;;                :content
+;;                ("
+;;          1,4,4,62,63,
+;;          24,0,0,0,0,
+;;          24,0,0,0,0\n       ")}
+;;               "\n     ")}
+;;    {:tag :layer
+;;     :attrs {:name "above", :width "5", :height "3"}
+;;     :content ("\n       "
+;;               {:tag :data
+;;                :attrs {:encoding "csv"}
+;;                :content ("
+;;          0,0,0,0,0,
+;;          0,0,0,0,0,
+;;          0,0,0,0,0\n       ")}
+;;               "\n     ")}))
 
 ;;; And now the actual parsing of a single layer element:
 
@@ -279,25 +279,25 @@
 
 ;;; In our case:
 
-(examples
- (parse-layers example-doc)
- =>
- '{"foreground"
-   {:name "foreground",
-    :width 5,
-    :height 3,
-    :id-list (1 4 4 62 63 24 0 0 0 0 24 0 0 0 0)},
-   "above"
-   {:name "above",
-    :width 5,
-    :height 3,
-    :id-list (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)},
-   "background"
-   {:name "background",
-    :width 5,
-    :height 3,
-    :id-list
-    (401 401 401 401 401 401 401 401 401 401 401 401 401 401 401)}})
+;; (examples
+;;  (parse-layers example-doc)
+;;  =>
+;;  '{"foreground"
+;;    {:name "foreground",
+;;     :width 5,
+;;     :height 3,
+;;     :id-list (1 4 4 62 63 24 0 0 0 0 24 0 0 0 0)},
+;;    "above"
+;;    {:name "above",
+;;     :width 5,
+;;     :height 3,
+;;     :id-list (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)},
+;;    "background"
+;;    {:name "background",
+;;     :width 5,
+;;     :height 3,
+;;     :id-list
+;;     (401 401 401 401 401 401 401 401 401 401 401 401 401 401 401)}})
 
 ;;; Putting it all together:
 
@@ -308,44 +308,44 @@
    :tilesets (parse-tilesets doc)
    :layers (parse-layers doc)))
 
-(examples
+;; (examples
 
- (parse-tmx example-doc)
+;;  (parse-tmx example-doc)
 
- =>
+;;  =>
 
- '{:width 5
-   :height 3
-   :tile-width 32
-   :tile-height 32
-   :tilesets {"background" {:name "background"
-                            :id-offset 401
-                            :tile-width 32
-                            :tile-height 32
-                            :tile-count 40
-                            :tile-columns 10
-                            :image-file-name "background.png"
-                            :image-file-width 320
-                            :image-file-height 128}
-              "kafelki"    {:name "kafelki"
-                            :id-offset 1
-                            :tile-width 32
-                            :tile-height 32
-                            :tile-count 400
-                            :tile-columns 20
-                            :image-file-name "tiles.png"
-                            :image-file-width 640
-                            :image-file-height 640}}
-   :layers {"foreground" {:name "foreground"
-                          :width 5
-                          :height 3
-                          :id-list (1 4 4 62 63 24 0 0 0 0 24 0 0 0 0)}
-            "above"      {:name "above"
-                          :width 5
-                          :height 3
-                          :id-list (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)}
-            "background" {:name "background"
-                          :width 5
-                          :height 3
-                          :id-list
-                          (401 401 401 401 401 401 401 401 401 401 401 401 401 401 401)}}})
+;;  '{:width 5
+;;    :height 3
+;;    :tile-width 32
+;;    :tile-height 32
+;;    :tilesets {"background" {:name "background"
+;;                             :id-offset 401
+;;                             :tile-width 32
+;;                             :tile-height 32
+;;                             :tile-count 40
+;;                             :tile-columns 10
+;;                             :image-file-name "background.png"
+;;                             :image-file-width 320
+;;                             :image-file-height 128}
+;;               "kafelki"    {:name "kafelki"
+;;                             :id-offset 1
+;;                             :tile-width 32
+;;                             :tile-height 32
+;;                             :tile-count 400
+;;                             :tile-columns 20
+;;                             :image-file-name "tiles.png"
+;;                             :image-file-width 640
+;;                             :image-file-height 640}}
+;;    :layers {"foreground" {:name "foreground"
+;;                           :width 5
+;;                           :height 3
+;;                           :id-list (1 4 4 62 63 24 0 0 0 0 24 0 0 0 0)}
+;;             "above"      {:name "above"
+;;                           :width 5
+;;                           :height 3
+;;                           :id-list (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)}
+;;             "background" {:name "background"
+;;                           :width 5
+;;                           :height 3
+;;                           :id-list
+;;                           (401 401 401 401 401 401 401 401 401 401 401 401 401 401 401)}}})

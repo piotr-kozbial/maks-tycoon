@@ -4,6 +4,10 @@
    [gamebase.resources :as resources]
    [gamebase.geometry :as g]))
 
+
+(declare maybe-draw-layers)
+
+
 (do ;; SYSTEM
 
   (defn mk-system []
@@ -31,10 +35,10 @@
                      :layer-type layer-type
                      :layer-data layer-data})))
 
-;;;; TODO
-To jakos inaczej zrobic. Moze z boku zapodawac caly stack layerow i ten context co tam.
-Albo tylko zostawic tutaj narysowanie pojedynczego layera, a reszte zrobic w glownym
-(draw) w aplikacji.
+;; ;;;; TODO
+;; To jakos inaczej zrobic. Moze z boku zapodawac caly stack layerow i ten context co tam.
+;; Albo tylko zostawic tutaj narysowanie pojedynczego layera, a reszte zrobic w glownym
+;; (draw) w aplikacji.
 
 
 
