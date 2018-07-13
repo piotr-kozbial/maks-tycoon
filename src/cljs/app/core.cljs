@@ -3,8 +3,6 @@
 
             [gamebase.resources :as resources]
 
-            ;;[ecs.systems.my-test-entities :as te]
-
             [gamebase.systems.drawing :as sys-drawing]
             [gamebase.systems.movement :as sys-move]
 
@@ -15,12 +13,11 @@
             [gamebase.ecs :as ecs]
             [gamebase.virtual-timer :as vt]
             [gamebase.canvas-control :as canvas-control]
-            [gamebase.layouts.sidebar-and-bottombar :as our-layout]
+            [gamebase.layouts.sidebar-and-bottombar
+             :as our-layout]
 
             [gamebase.ecsu] ;; without this it doesn't get compiled and loaded for cljs either
             ))
-
-;;(enable-console-print!)
 
 ;; app state
 (defonce app-state
@@ -113,54 +110,71 @@
         ;;(ecs/insert-object e-move)
         )))
 
-(;;defonce _init-world
- defn init-world []
-  (do
-    (swap! app-state assoc :world (create-world))
+(defn init-world []
 
-    (eq/put-event!
-     event-queue
-     (ecs/mk-event sys-drawing/to-system ::sys-drawing/clear-layers 0))
+  (swap! app-state assoc :world (create-world))
 
-    (eq/put-event!
-     event-queue
-     (assoc
-      (ecs/mk-event sys-drawing/to-system
-                    ::sys-drawing/add-layer 0)
-      :layer-key :background
-      :layer-type :tmx
-      :layer-data {:resource-name "level1.tmx"
-                   :layer-key :background
-                   :img-resource-name "background.png"
-                   :tile-offset 401}))
+  (eq/put-event!
+   event-queue
+   (ecs/mk-event sys-drawing/to-system
+                 ::sys-drawing/clear-layers 0))
 
-    (eq/put-event!
-     event-queue
-     (assoc
-      (ecs/mk-event sys-drawing/to-system
-                    ::sys-drawing/add-layer 0)
-      :layer-key :terrain
-      :layer-type :tmx
-      :layer-data {:resource-name "level1.tmx"
-                   :layer-key :foreground
-                   :img-resource-name "tiles.png"
-                   :tile-offset 1}))
+  (eq/put-event!
+   event-queue
+   (assoc
+    (ecs/mk-event sys-drawing/to-system
+                  ::sys-drawing/set-tiled-context 0)
+    :width 100
+    :height 100
+    :tile-width 32
+    :tile-height 32))
+
+  (eq/put-event!
+   event-queue
+   (assoc
+    (ecs/mk-event sys-drawing/to-system
+                  ::sys-drawing/set-all-tmx 0)
+    :tmx-fname "level1.tmx"))
+
+  ;; (eq/put-event!
+  ;;  event-queue
+  ;;  (assoc
+  ;;   (ecs/mk-event sys-drawing/to-system
+  ;;                 ::sys-drawing/add-layer 0)
+  ;;   :layer-key :background
+  ;;   :layer-type :tmx
+  ;;   :layer-data {:resource-name "level1.tmx"
+  ;;                :layer-key :background}))
+
+  ;; (eq/put-event!
+  ;;  event-queue
+  ;;  (assoc
+  ;;   (ecs/mk-event sys-drawing/to-system
+  ;;                 ::sys-drawing/add-layer 0)
+  ;;   :layer-key :terrain
+  ;;   :layer-type :tmx
+  ;;   :layer-data {:resource-name "level1.tmx"
+  ;;                :layer-key :foreground
+  ;;                ;;:img-resource-name "tiles.png"
+  ;;                ;;:tile-offset 1
+  ;;                }))
 
 
     ;; Send ::ecs/init to all entities
 
-    (doseq [c (ecs/all-components (:world @app-state))]
-      (eq/put-event!
-       event-queue
-       (ecs/mk-event c ::ecs/init 0)))
 
-    (doseq [e (ecs/all-entities (:world @app-state))]
-      (eq/put-event!
-       event-queue
-       (ecs/mk-event e ::ecs/init 0)))
+  (doseq [c (ecs/all-components (:world @app-state))]
+    (eq/put-event!
+     event-queue
+     (ecs/mk-event c ::ecs/init 0)))
+
+  (doseq [e (ecs/all-entities (:world @app-state))]
+    (eq/put-event!
+     event-queue
+     (ecs/mk-event e ::ecs/init 0)))
 
 
-    nil))
+   )
 
 (defn draw []
   (when-let [world (:world @app-state)]
@@ -212,7 +226,6 @@
       :after-canvas-resize
       #(;;.log js/console "ACR callback"
         )})
-
 
     ;; TODO
 

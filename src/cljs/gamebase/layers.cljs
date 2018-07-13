@@ -155,36 +155,37 @@
            (map (partial tmx-tile-id-to-our-id tmx-tileset-offset-list))
            (partition width)
            (map #(apply vector %))
+           (reverse)
            (apply vector)))
 
-    (examples
-     (id-list-to-tile-matrix
-      '(4 410 20, 302 500 1, 0 27 405)
-      3
-      (create-tmx-tileset-offset-list example-tmx))
+    ;; (examples
+    ;;  (id-list-to-tile-matrix
+    ;;   '(4 410 20, 302 500 1, 0 27 405)
+    ;;   3
+    ;;   (create-tmx-tileset-offset-list example-tmx))
 
-     =>
+    ;;  =>
 
-     [[[:kafelki 3]   [:background 9]  [:kafelki 19]]
-      [[:kafelki 301] [:background 99] [:kafelki 0]]
-      [nil            [:kafelki 26]    [:background 4]]])
+    ;;  [[[:kafelki 3]   [:background 9]  [:kafelki 19]]
+    ;;   [[:kafelki 301] [:background 99] [:kafelki 0]]
+    ;;   [nil            [:kafelki 26]    [:background 4]]])
 
     (defn- id-list-to-tiled-layer [id-list width tmx-tileset-offset-list]
       {:layer-type :tiled
        :data (id-list-to-tile-matrix id-list width tmx-tileset-offset-list)})
 
-    (examples
-     (id-list-to-tiled-layer
-      '(4 410 20, 302 500 1, 0 27 405)
-      3
-      (create-tmx-tileset-offset-list example-tmx))
+    ;; (examples
+    ;;  (id-list-to-tiled-layer
+    ;;   '(4 410 20, 302 500 1, 0 27 405)
+    ;;   3
+    ;;   (create-tmx-tileset-offset-list example-tmx))
 
-     =>
+    ;;  =>
 
-     {:layer-type :tiled
-      :data [[[:kafelki 3]   [:background 9]  [:kafelki 19]]
-             [[:kafelki 301] [:background 99] [:kafelki 0]]
-             [nil            [:kafelki 26]    [:background 4]]]})
+    ;;  {:layer-type :tiled
+    ;;   :data [[[:kafelki 3]   [:background 9]  [:kafelki 19]]
+    ;;          [[:kafelki 301] [:background 99] [:kafelki 0]]
+    ;;          [nil            [:kafelki 26]    [:background 4]]]})
 
 ;;; Our final function:
 
@@ -196,30 +197,30 @@
              (map (fn [{:keys [name id-list]}]
                     [(keyword name) (id-list-to-tiled-layer id-list width offset-list)])))))
 
-    (examples
+    ;; (examples
 
-     (get-all-layers-from-tmx example-tmx)
+    ;;  (get-all-layers-from-tmx example-tmx)
 
-     =>
+    ;;  =>
 
-     '([:foreground
-        {:layer-type :tiled,
-         :data
-         [[[:kafelki 0] [:kafelki 3] [:kafelki 3] [:kafelki 61] [:kafelki 62]]
-          [[:kafelki 23] nil nil nil nil]
-          [[:kafelki 23] nil nil nil nil]]}]
-       [:above
-        {:layer-type :tiled,
-         :data
-         [[nil nil nil nil nil]
-          [nil nil nil nil nil]
-          [nil nil nil nil nil]]}]
-       [:background
-        {:layer-type :tiled,
-         :data
-         [[[:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400]]
-          [[:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400]]
-          [[:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400]]]}]))
+    ;;  '([:foreground
+    ;;     {:layer-type :tiled,
+    ;;      :data
+    ;;      [[[:kafelki 0] [:kafelki 3] [:kafelki 3] [:kafelki 61] [:kafelki 62]]
+    ;;       [[:kafelki 23] nil nil nil nil]
+    ;;       [[:kafelki 23] nil nil nil nil]]}]
+    ;;    [:above
+    ;;     {:layer-type :tiled,
+    ;;      :data
+    ;;      [[nil nil nil nil nil]
+    ;;       [nil nil nil nil nil]
+    ;;       [nil nil nil nil nil]]}]
+    ;;    [:background
+    ;;     {:layer-type :tiled,
+    ;;      :data
+    ;;      [[[:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400]]
+    ;;       [[:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400]]
+    ;;       [[:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400]]]}]))
 
 ;;; In practice, some layer names may have special meaning to the game logic,
 ;;; but in general, a good practice would be to assume that they will be
@@ -297,8 +298,9 @@
       (let [{:keys [tilesets]} tmx-data]
         (->> tilesets
              (vals)
-             (mapcat (fn [{:keys [name image-file-name]}]
-                       [(keyword name) {:img image-file-name}]))
+             (mapcat (fn [{:keys [name image-file-name tile-columns]}]
+                       [(keyword name) {:img image-file-name
+                                        :width-in-tiles tile-columns}]))
              (apply hash-map))))
 
     (examples
@@ -307,8 +309,9 @@
 
      =>
 
-     {:background {:img "background.png"}
-      :kafelki {:img "tiles.png"}})
+     {:background {:img "background.png" :width-in-tiles 10}
+      :kafelki {:img "tiles.png" :width-in-tiles 20}}
+     )
 
 ;;; Now a function that will fetch all information required to render a tile.
 
@@ -366,184 +369,184 @@
 
 ;;;# Synopsis
 
-(examples
+;; (examples
 
-;;;## Basic operations
+;; ;;;## Basic operations
 
-;;; - create a tiled layer filled with one tile id:
+;; ;;; - create a tiled layer filled with one tile id:
 
- (clean-layer 5 3 [:kafelki 3])
- =>
- {:layer-type :tiled
-  :data [[[:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3]]
-         [[:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3]]
-         [[:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3]]]}
+;;  (clean-layer 5 3 [:kafelki 3])
+;;  =>
+;;  {:layer-type :tiled
+;;   :data [[[:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3]]
+;;          [[:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3]]
+;;          [[:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3]]]}
 
-;;; - substitute a single tile in layer
+;; ;;; - substitute a single tile in layer
 
- (set-tile-in-layer
-  {:layer-type :tiled
-   :data [[[:kafelki 0] [:kafelki 1] [:inny-set 5]]
-          [[:kafelki 1] [:kafelki 1] [:inny-set 5]]
-          [[:kafelki 2] [:kafelki 1] [:inny-set 5]]
-          [[:kafelki 3] [:kafelki 1] [:inny-set 5]]]}
-  1 3
-  [:ten-zmieniony 10])
- =>
- {:layer-type :tiled
-  :data [[[:kafelki 0] [:kafelki 1] [:inny-set 5]]
-         [[:kafelki 1] [:kafelki 1] [:inny-set 5]]
-         [[:kafelki 2] [:kafelki 1] [:inny-set 5]]
-         [[:kafelki 3] [:ten-zmieniony 10] [:inny-set 5]]]}
+;;  (set-tile-in-layer
+;;   {:layer-type :tiled
+;;    :data [[[:kafelki 0] [:kafelki 1] [:inny-set 5]]
+;;           [[:kafelki 1] [:kafelki 1] [:inny-set 5]]
+;;           [[:kafelki 2] [:kafelki 1] [:inny-set 5]]
+;;           [[:kafelki 3] [:kafelki 1] [:inny-set 5]]]}
+;;   1 3
+;;   [:ten-zmieniony 10])
+;;  =>
+;;  {:layer-type :tiled
+;;   :data [[[:kafelki 0] [:kafelki 1] [:inny-set 5]]
+;;          [[:kafelki 1] [:kafelki 1] [:inny-set 5]]
+;;          [[:kafelki 2] [:kafelki 1] [:inny-set 5]]
+;;          [[:kafelki 3] [:ten-zmieniony 10] [:inny-set 5]]]}
 
-;;; - get tile id from laer at given x, y position
+;; ;;; - get tile id from laer at given x, y position
 
- (get-tile-from-layer
-  {:layer-type :tiled
-   :data [[[:kafelki 0] [:kafelki 1] [:inny-set 5]]
-          [[:kafelki 1] [:kafelki 1] [:inny-set 55]]
-          [[:kafelki 2] [:kafelki 1] [:inny-set 5]]
-          [[:kafelki 3] [:kafelki 1] [:inny-set 5]]]}
-  2 1)
- =>
- [:inny-set 55]
+;;  (get-tile-from-layer
+;;   {:layer-type :tiled
+;;    :data [[[:kafelki 0] [:kafelki 1] [:inny-set 5]]
+;;           [[:kafelki 1] [:kafelki 1] [:inny-set 55]]
+;;           [[:kafelki 2] [:kafelki 1] [:inny-set 5]]
+;;           [[:kafelki 3] [:kafelki 1] [:inny-set 5]]]}
+;;   2 1)
+;;  =>
+;;  [:inny-set 55]
 
-;;;## Loading tiled layers from tmx files
+;; ;;;## Loading tiled layers from tmx files
 
- (get-all-layers-from-tmx
- '{:width 5
-        :height 3
-        :tile-width 32
-        :tile-height 32
-        :tilesets {"background" {:name "background"
-                                 :id-offset 401
-                                 :tile-width 32
-                                 :tile-height 32
-                                 :tile-count 40
-                                 :tile-columns 10
-                                 :image-file-name "background.png"
-                                 :image-file-width 320
-                                 :image-file-height 128}
-                   "kafelki"    {:name "kafelki"
-                                 :id-offset 1
-                                 :tile-width 32
-                                 :tile-height 32
-                                 :tile-count 400
-                                 :tile-columns 20
-                                 :image-file-name "tiles.png"
-                                 :image-file-width 640
-                                 :image-file-height 640}}
-        :layers {"foreground" {:name "foreground"
-                               :width 5
-                               :height 3
-                               :id-list (1 4 4 62 63 24 0 0 0 0 24 0 0 0 0)}
-                 "above"      {:name "above"
-                               :width 5
-                               :height 3
-                               :id-list (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)}
-                 "background" {:name "background"
-                               :width 5
-                               :height 3
-                               :id-list
-                               (401 401 401 401 401 401 401 401 401 401 401 401 401 401 401)}}})
- =>
- '([:foreground
-    {:layer-type :tiled,
-     :data
-     [[[:kafelki 0] [:kafelki 3] [:kafelki 3] [:kafelki 61] [:kafelki 62]]
-      [[:kafelki 23] nil nil nil nil]
-      [[:kafelki 23] nil nil nil nil]]}]
-   [:above
-    {:layer-type :tiled,
-     :data
-     [[nil nil nil nil nil]
-      [nil nil nil nil nil]
-      [nil nil nil nil nil]]}]
-   [:background
-    {:layer-type :tiled,
-     :data
-     [[[:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400]]
-      [[:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400]]
-      [[:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400]]]}])
+;;  (get-all-layers-from-tmx
+;;  '{:width 5
+;;         :height 3
+;;         :tile-width 32
+;;         :tile-height 32
+;;         :tilesets {"background" {:name "background"
+;;                                  :id-offset 401
+;;                                  :tile-width 32
+;;                                  :tile-height 32
+;;                                  :tile-count 40
+;;                                  :tile-columns 10
+;;                                  :image-file-name "background.png"
+;;                                  :image-file-width 320
+;;                                  :image-file-height 128}
+;;                    "kafelki"    {:name "kafelki"
+;;                                  :id-offset 1
+;;                                  :tile-width 32
+;;                                  :tile-height 32
+;;                                  :tile-count 400
+;;                                  :tile-columns 20
+;;                                  :image-file-name "tiles.png"
+;;                                  :image-file-width 640
+;;                                  :image-file-height 640}}
+;;         :layers {"foreground" {:name "foreground"
+;;                                :width 5
+;;                                :height 3
+;;                                :id-list (1 4 4 62 63 24 0 0 0 0 24 0 0 0 0)}
+;;                  "above"      {:name "above"
+;;                                :width 5
+;;                                :height 3
+;;                                :id-list (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)}
+;;                  "background" {:name "background"
+;;                                :width 5
+;;                                :height 3
+;;                                :id-list
+;;                                (401 401 401 401 401 401 401 401 401 401 401 401 401 401 401)}}})
+;;  =>
+;;  '([:foreground
+;;     {:layer-type :tiled,
+;;      :data
+;;      [[[:kafelki 0] [:kafelki 3] [:kafelki 3] [:kafelki 61] [:kafelki 62]]
+;;       [[:kafelki 23] nil nil nil nil]
+;;       [[:kafelki 23] nil nil nil nil]]}]
+;;    [:above
+;;     {:layer-type :tiled,
+;;      :data
+;;      [[nil nil nil nil nil]
+;;       [nil nil nil nil nil]
+;;       [nil nil nil nil nil]]}]
+;;    [:background
+;;     {:layer-type :tiled,
+;;      :data
+;;      [[[:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400]]
+;;       [[:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400]]
+;;       [[:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400] [:kafelki 400]]]}])
 
-;;;## Additional information for tiles
+;; ;;;## Additional information for tiles
 
- (get-tile-info-from-layer
-  #_"context"
-  {:tileset-map {:background {0 {:example-data "a"}}
-                 :kafelki {0 {:example-data "b"}
-                           3 {:example-data "c"}
-                           23 {:example-data "dd"}
-                           61 {:example-data "eee"}
-                           62 {:example-data "ffff"}}}}
-  #_"tiled layer"
-  {:layer-type :tiled
-   :data [[[:kafelki 0] [:kafelki 1] [:inny-set 5]]
-          [[:kafelki 1] [:kafelki 1] [:inny-set 55]]
-          [[:kafelki 2] [:kafelki 1] [:inny-set 5]]
-          [[:kafelki 3] [:kafelki 1] [:inny-set 5]]]}
+;;  (get-tile-info-from-layer
+;;   #_"context"
+;;   {:tileset-map {:background {0 {:example-data "a"}}
+;;                  :kafelki {0 {:example-data "b"}
+;;                            3 {:example-data "c"}
+;;                            23 {:example-data "dd"}
+;;                            61 {:example-data "eee"}
+;;                            62 {:example-data "ffff"}}}}
+;;   #_"tiled layer"
+;;   {:layer-type :tiled
+;;    :data [[[:kafelki 0] [:kafelki 1] [:inny-set 5]]
+;;           [[:kafelki 1] [:kafelki 1] [:inny-set 55]]
+;;           [[:kafelki 2] [:kafelki 1] [:inny-set 5]]
+;;           [[:kafelki 3] [:kafelki 1] [:inny-set 5]]]}
 
-  0 #_"x" 3 #_"y")
- =>
- {:example-data "c"}
+;;   0 #_"x" 3 #_"y")
+;;  =>
+;;  {:example-data "c"}
 
-;;;## Rendering information for tiles
+;; ;;;## Rendering information for tiles
 
-;;; - reading a tileset map from a tmx file: can be put into context
- (get-tileset-rendering-map-from-tmx
-  '{:width 5
-    :height 3
-    :tile-width 32
-    :tile-height 32
-    :tilesets {"background" {:name "background"
-                             :id-offset 401
-                             :tile-width 32
-                             :tile-height 32
-                             :tile-count 40
-                             :tile-columns 10
-                             :image-file-name "background.png"
-                             :image-file-width 320
-                             :image-file-height 128}
-               "kafelki"    {:name "kafelki"
-                             :id-offset 1
-                             :tile-width 32
-                             :tile-height 32
-                             :tile-count 400
-                             :tile-columns 20
-                             :image-file-name "tiles.png"
-                             :image-file-width 640
-                             :image-file-height 640}}
-    :layers {"foreground" {:name "foreground"
-                           :width 5
-                           :height 3
-                           :id-list (1 4 4 62 63 24 0 0 0 0 24 0 0 0 0)}
-             "above"      {:name "above"
-                           :width 5
-                           :height 3
-                           :id-list (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)}
-             "background" {:name "background"
-                           :width 5
-                           :height 3
-                           :id-list
-                           (401 401 401 401 401 401 401 401 401 401 401 401 401 401 401)}}})
- =>
- {:background {:img "background.png"}
-  :kafelki {:img "tiles.png"}}
+;; ;;; - reading a tileset map from a tmx file: can be put into context
+;;  (get-tileset-rendering-map-from-tmx
+;;   '{:width 5
+;;     :height 3
+;;     :tile-width 32
+;;     :tile-height 32
+;;     :tilesets {"background" {:name "background"
+;;                              :id-offset 401
+;;                              :tile-width 32
+;;                              :tile-height 32
+;;                              :tile-count 40
+;;                              :tile-columns 10
+;;                              :image-file-name "background.png"
+;;                              :image-file-width 320
+;;                              :image-file-height 128}
+;;                "kafelki"    {:name "kafelki"
+;;                              :id-offset 1
+;;                              :tile-width 32
+;;                              :tile-height 32
+;;                              :tile-count 400
+;;                              :tile-columns 20
+;;                              :image-file-name "tiles.png"
+;;                              :image-file-width 640
+;;                              :image-file-height 640}}
+;;     :layers {"foreground" {:name "foreground"
+;;                            :width 5
+;;                            :height 3
+;;                            :id-list (1 4 4 62 63 24 0 0 0 0 24 0 0 0 0)}
+;;              "above"      {:name "above"
+;;                            :width 5
+;;                            :height 3
+;;                            :id-list (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)}
+;;              "background" {:name "background"
+;;                            :width 5
+;;                            :height 3
+;;                            :id-list
+;;                            (401 401 401 401 401 401 401 401 401 401 401 401 401 401 401)}}})
+;;  =>
+;;  {:background {:img "background.png" :width-in-tiles 10}
+;;   :kafelki {:img "tiles.png" :width-in-tiles 20}}
 
-;;; - getting rendering information for given tile
+;; ;;; - getting rendering information for given tile
 
- (get-rendering-information-for-tile
-  #_"context"
-  {:tile-width 32
-   :tile-height 32
-   :world-width-in-tiles 0 ;; TODO
-   :word-height-in-tiles 0 ;; TODO
-   :tileset-rendering-map {:background {:img "background.png"
-                                        :width-in-tiles 5}
-                           :kafelki {:img "tiles.png"
-                                     :width-in-tiles 3}}}
-  #_"tile id"
-  [:kafelki 5])
- =>
- {:img "tiles.png", :x 64, :y 32, :w 32, :h 32})
+;;  (get-rendering-information-for-tile
+;;   #_"context"
+;;   {:tile-width 32
+;;    :tile-height 32
+;;    :world-width-in-tiles 0 ;; TODO
+;;    :word-height-in-tiles 0 ;; TODO
+;;    :tileset-rendering-map {:background {:img "background.png"
+;;                                         :width-in-tiles 5}
+;;                            :kafelki {:img "tiles.png"
+;;                                      :width-in-tiles 3}}}
+;;   #_"tile id"
+;;   [:kafelki 5])
+;;  =>
+;;  {:img "tiles.png", :x 64, :y 32, :w 32, :h 32})
 
