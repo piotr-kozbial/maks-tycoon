@@ -3,6 +3,7 @@
   (:require
    [gamebase.tmx :as tmx]
    [clojure.string :as str]
+   [clojure.data.xml :as xml]
 
    ;; [goog.dom :as gdom]
    )
@@ -43,7 +44,8 @@
     (@on-all-loaded)))
 (defmethod parse-and-store :tmx [fname lines]
   (let [text (str/join "\n" lines)]
-    (swap! resources assoc fname (tmx/read-tmx text)))
+    (swap! resources assoc fname (tmx/parse-tmx
+                                  (xml/parse-str text))))
   (when (all-resources-loaded?)
     (@on-all-loaded)))
 

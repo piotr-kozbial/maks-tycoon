@@ -27,87 +27,6 @@
   (atom
    {}))
 
-;; event queue and event loop
-;;
-;; HOW DO WE HANDLE IT?
-;;
-;; we need to:
-;;   1. (re)start
-;;   2. stop
-;;   3. clear
-;;
-;; scenarios:
-;;
-;; In general, when we want to start new game:
-;;     1. pause timer
-;;     2. clear queue
-;;     3. reset timer
-;;     4. create/load game state
-;;     5. resume timer
-;; 
-;; 
-;; PLAN:
-;; - najpierw uruchomic jakiegos sprite'a, tak jak jest, na wiecznie chodzacej kolejce
-;;    - system "movement"
-;;    - w nim komponent test-mover, jezdzacy jakos gdzies w kolko
-;;    - rozkminic rysowanie, tzn. dla entity jaki obrazek ma byc - czy to tez system?
-;; - potem na tej podstawie zorganizowac new game, load game (ale tylko w kodzie, z value)
-;; - potem dorzucic w UI new game
-
-
-;; (do ;; STANDALONE EVENT LOOP - DISABLED
-
-;;   (declare start-event-loop)
-
-;;   (def event-queue {:root-atom app-state :ks [:event-queue]
-;;                     :on-adding-to-empty
-;;                     (fn [] (start-event-loop))})
-;;   ;; (defonce _eq_init (do
-;;   ;;                     (eq/initialize event-queue)
-;;   ;;                     nil))
-
-;;   (def virtual-timer {:root-atom app-state :ks [:virtual-timer]})
-;;   ;; (defonce _vt_i nit (do
-;;   ;;                     (vt/initialize virtual-timer)
-;;   ;;                     nil))
-
-;;   ;; return true if executed an event
-;;   ;; return nil if alert set
-;;   (defn maybe-handle-one-event []
-;;     (when-let [world (:world @app-state)]
-;;       (when-let [event (eq/pop-soonest-event-until
-;;                         event-queue
-;;                         (vt/get-time virtual-timer))]
-
-;;         (ecs/do-handle-event world event)
-;;         true)))
-
-;;   (defn start-event-loop []
-;;     ;;(print "start-event-loop\n")
-;;     ;; handle pending events
-;;     (while (maybe-handle-one-event))
-;;     ;; set timeout for the soonest event in the future
-;;     (if-let [soonest-time (eq/soonest-time event-queue)]
-;;       (let [delay (- soonest-time (vt/get-time virtual-timer))
-;;             delay-fixed
-;;             (cond
-;;               (<= delay 0) 1
-;;               (> delay 300) 300
-;;               :else delay)]
-;;         (vt/set-timeout-after
-;;          virtual-timer
-;;          delay-fixed
-;;          start-event-loop))
-;;       (do
-;;         ;;(print "NO MORE EVENTS")
-;;         )))
-
-
-;;   ;; (defonce _event_loop_start
-;;   ;;   (start-event-loop))
-
-;;   )
-
 (def virtual-timer {:root-atom app-state :ks [:virtual-timer]})
 
 (do ;; DRAW-LOCKED EVENT LOOP
@@ -194,7 +113,8 @@
         ;;(ecs/insert-object e-move)
         )))
 
-(defonce _init-world
+(;;defonce _init-world
+ defn init-world []
   (do
     (swap! app-state assoc :world (create-world))
 
@@ -214,17 +134,17 @@
                    :img-resource-name "background.png"
                    :tile-offset 401}))
 
-    ;; (eq/put-event!
-    ;;  event-queue
-    ;;  (assoc
-    ;;   (ecs/mk-event sys-drawing/to-system
-    ;;                 ::sys-drawing/add-layer 0)
-    ;;   :layer-key :terrain
-    ;;   :layer-type :tmx
-    ;;   :layer-data {:resource-name "level1.tmx"
-    ;;                :layer-key :foreground
-    ;;                :img-resource-name "tiles.png"
-    ;;                :tile-offset 1}))
+    (eq/put-event!
+     event-queue
+     (assoc
+      (ecs/mk-event sys-drawing/to-system
+                    ::sys-drawing/add-layer 0)
+      :layer-key :terrain
+      :layer-type :tmx
+      :layer-data {:resource-name "level1.tmx"
+                   :layer-key :foreground
+                   :img-resource-name "tiles.png"
+                   :tile-offset 1}))
 
 
     ;; Send ::ecs/init to all entities
@@ -243,14 +163,14 @@
     nil))
 
 (defn draw []
-  (let [world (:world @app-state)
-        world' (handle-events world)
-        world'' (ecs/do-handle-event
-                 world'
-                 (ecs/mk-event sys-drawing/to-system
-                               ::sys-drawing/draw (vt/get-time virtual-timer))
-                 #(eq/put-event! event-queue %))]
-    (swap! app-state assoc :world world'')))
+  (when-let [world (:world @app-state)]
+    (let [world' (handle-events world)
+          world'' (ecs/do-handle-event
+                   world'
+                   (ecs/mk-event sys-drawing/to-system
+                                 ::sys-drawing/draw (vt/get-time virtual-timer))
+                   #(eq/put-event! event-queue %))]
+      (swap! app-state assoc :world world''))))
 
 ;; main
 (do
@@ -264,21 +184,27 @@
     (rum/mount (main-component)
                (. js/document (getElementById "app"))))
 
+  (def resource-fnames
+    ["background.png"
+     "tiles.png"
+     "loco1.png"
+     "loco1-debug.png"
+     "carriage1.png"
+     "level1.tmx"])
+
   (defn main [& _]
 
-    ;; (.log js/console "-----> main")
+    (.log js/console "-----> main")
 
-    (doseq [fname ["background.png"
-                   "tiles.png"
-                   "loco1.png"
-                   "loco1-debug.png"
-                   "carriage1.png"
-                   "level1.tmx"]]
+    (doseq [fname resource-fnames]
       (resources/add-resource fname))
 
-    ;; (resources/set-on-all-loaded
-    ;;  #(do
-    ;;     (.log js/console "on all loaded")))
+    (resources/set-on-all-loaded
+     #(do
+        (.log js/console "on all loaded")
+        (when (every? resources/get-resource resource-fnames)
+          (.log js/console "mozna odpalac")
+          (init-world))))
 
     (our-layout/initialize
      app-state [:layout]

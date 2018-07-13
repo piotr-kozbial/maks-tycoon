@@ -4,9 +4,7 @@
    [gamebase.resources :as resources]
    [gamebase.geometry :as g]))
 
-
 (declare maybe-draw-layers)
-
 
 (do ;; SYSTEM
 
@@ -18,16 +16,25 @@
 
   (defmethod ecs/handle-event [:to-system ::drawing ::draw]
     [world event system]
-    ;;(.log js/console "sys draw")
     (-> world
-        (maybe-draw-layers system)
         (#(ecs/pass-event-through-all
            % event (ecs/all-components-of-system % system)))))
 
+  (defmethod ecs/handle-event [:to-system ::drawing :update]
+    [world event system]
+    (let [world'
+          (ecs/pass-event-through-all
+           world
+           event
+           (ecs/all-components-of-system world system))] 
+      world'))
+
+  ;; TODO: DO WYWALENIA
   (defmethod ecs/handle-event [:to-system ::drawing ::clear-layers]
     [world event system]
     (assoc system :layers []))
 
+  ;; TODO: DO WYWALENIA
   (defmethod ecs/handle-event [:to-system ::drawing ::add-layer]
     [world {:keys [layer-key layer-type layer-data]} system]
     (update-in system [:layers]
@@ -44,6 +51,7 @@
 
 (do ;; Tiled layer drawing
 
+  ;; TODO: DO WYWALENIA
   (defn- maybe-load-layer [{:keys [layer-data] :as layer}]
     (let [{:keys [resource-name layer-key data img]} layer-data]
       (if data
@@ -54,6 +62,7 @@
                                     :data (resource layer-key)))
           layer))))
 
+  ;; TODO: DO WYWALENIA
   (defn- maybe-load-layers [world {:keys [layers] :as system}]
     (let [system'(assoc system
                         :layers
@@ -61,22 +70,6 @@
                              (map maybe-load-layer)
                              (apply vector)))]
       (ecs/insert-object world system')))
-
-  (defmethod ecs/handle-event [:to-system ::drawing :update]
-    [world event system]
-    (let [world' (maybe-load-layers world system)
-          world''
-
-          (ecs/pass-event-through-all
-           world'
-           event
-           (ecs/all-components-of-system world' system))
-          ]
-
-
-
-      world''
-      ))
 
   (defn- draw-tiled-layer [{:keys [data img-resource-name tile-offset]}]
     (js/push)
