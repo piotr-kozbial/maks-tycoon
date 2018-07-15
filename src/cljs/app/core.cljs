@@ -22,7 +22,7 @@
 ;; app state
 (defonce app-state
   (atom
-   {}))
+   {:frame-rate "???"}))
 
 (def virtual-timer {:root-atom app-state :ks [:virtual-timer]})
 
@@ -188,11 +188,13 @@
 ;; main
 (do
 
-
-
-
   (rum/defc main-component < rum/reactive []
-    (our-layout/mk-html))
+    (let [frame-rate (:frame-rate (rum/react app-state))]
+      (our-layout/mk-html
+       ;; sidebar
+       (str "FRAME RATE: " frame-rate)
+       ;; bottom bar
+       nil)))
 
   (defn render []
     (rum/mount (main-component)
@@ -209,6 +211,12 @@
   (defn main [& _]
 
     (.log js/console "-----> main")
+
+    (js/setInterval (fn []
+                      (let [rate (js/frameRate)
+                            rate-s (/ (int (* rate 10)) 10)]
+                        (swap! app-state assoc :frame-rate rate-s))
+                      ) 1000)
 
     (doseq [fname resource-fnames]
       (resources/add-resource fname))
@@ -252,6 +260,9 @@
       })
 
     (vt/resume virtual-timer)))
+
+
+
 
 ;; test
 (comment

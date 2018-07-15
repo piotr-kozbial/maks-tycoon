@@ -11,7 +11,7 @@
 ;;   2. splash
 
 
-(defn mk-html [& [splash-image]]
+(defn mk-html [sidebar-content bottombar-content & [splash-image]]
   [:div {}
    [:div {:id "gamebase/canvas-holder"
           :style {:position "absolute"
@@ -19,11 +19,13 @@
    [:div
     {:id "gamebase/bottom-bar"
      :style {:position "absolute"
-             :backgroundColor "#BBA415"}}]
+             :backgroundColor "#BBA415"}}
+    bottombar-content]
    [:div
     {:id "gamebase/side-bar"
      :style {:position "absolute"
-             :backgroundColor "#C6AF20"}}]
+             :backgroundColor "#C6AF20"}}
+    sidebar-content]
    ;; [:div
    ;;  {:id "gamebase/fullpage"
    ;;   :style {:position "absolute"
