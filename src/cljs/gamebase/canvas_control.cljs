@@ -33,18 +33,23 @@
   (js/clear)
   (js/noSmooth)
   ;; outermost scaling and translation
-  (when-let [{:keys [state-atom state-kvs]} @conf]
-    (let [{:keys [scale-factor translation-x translation-y]}
+  (when-let [{:keys [state-atom state-kvs get-canvas-size]} @conf]
+    (let [
+          {:keys [scale-factor translation-x translation-y]}
           ,    (get-in @state-atom state-kvs)]
       (js/translate translation-x translation-y)
-      (js/scale scale-factor))
-    ;; flip vertical - this allowws the client draw function
-    ;; to use the standard coordinate system (y points upwards)
-    (js/scale 1 -1)
+      (js/scale scale-factor)
+      ;; flip vertical - this allowws the client draw function
+      ;; to use the standard coordinate system (y points upwards)
+      (js/scale 1 -1)
 
-
-    ;; client draw
-    ((:draw @conf))
+      (let [[wc hc] (get-canvas-size)]
+        ;; client draw
+        ((:draw @conf)
+         {:min-x (/ (- translation-x) scale-factor)
+          :max-x (/ (- wc translation-x) scale-factor)
+          :min-y (/ (- translation-y) scale-factor)
+          :max-y (/ (- hc translation-y) scale-factor)})))
 
     ;; draw coordinate system marker
     (when (-> @debug/settings
@@ -53,17 +58,11 @@
       (debug-draw-coord-system))))
 
 ;; TODO SUMARY
-;; 1. params to draw function
 ;; 2. dragging (panning)
 ;; 3. readjust
 
 nil
 ;; TODO DETAILS
-;; Ad 1.
-;; client draw function should get some params,
-;; first of all - the rectangle that is visible in viewport
-;; (in world coordinates of course - the client draw function
-;; doesn't know any other coord system)
 ;;
 ;; Ad 2.
 ;; implement setup-drag-event WITH LIMITING TO WORLD
@@ -73,9 +72,6 @@ nil
 ;; think if there is a scenario when we need readjust anyway
 
 (declare setup-drag-event)
-
-
-
 
 ;; public API
 (defn initialize [{:keys [state-atom state-kvs] :as config}]

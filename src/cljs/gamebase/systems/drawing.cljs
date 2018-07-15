@@ -21,14 +21,20 @@
          (first)
          (second)))
 
-  (defn- -draw-layer [system layer]
+  (defn- -draw-layer [system layer {:keys [min-x max-x min-y max-y] :as context}]
     (js/push)
     (js/scale 1 -1)
     (let [{:keys [tile-width tile-height
                   world-width-in-tiles
-                  world-height-in-tiles] :as ctx} (:tile-context system)]
+                  world-height-in-tiles] :as ctx} (:tile-context system)
+          tx-min (max 0 (- (int (/ min-x tile-width)) 1))
+          tx-max (+ (int (/ max-x tile-width)) 2)
+          ty-min (max 0 (- (int (/ min-y tile-width)) 1))
+          ty-max (+ (int (/ max-y tile-height)) 2)
+          tx-range (range tx-min (inc tx-max))
+          ty-range (range ty-min (inc ty-max))]
       (doall
-       (for [tx (range world-width-in-tiles) ty (range world-height-in-tiles)]
+       (for [tx tx-range, ty ty-range]
          (let [tl (layers/get-tile-from-layer layer tx ty)
                {:keys [img x y w h] :as inf}
                ,  (layers/get-rendering-information-for-tile ctx tl)]
@@ -41,8 +47,8 @@
     (js/pop))
 
   (defmethod ecs/handle-event [:to-system ::drawing ::draw]
-    [world event system]
-
+    [world {:keys [context] :as event} system]
+    (.log js/console (pr-str context))
     ;; TODO!
     ;; To przez chwile moze byc tak (tylko zadbac, zeby tlo bylo *pod* fg).
     ;; Ale w przyszlosci ma byc tak, ze komponenty (razem z ich entities)
@@ -50,8 +56,8 @@
     ;; layerow z rysowaniem komponentow nad tymi layerami.
 
     ;; draw layers
-    (-draw-layer system (-get-layer system :background))
-    (-draw-layer system (-get-layer system :foreground))
+    (-draw-layer system (-get-layer system :background) context)
+    (-draw-layer system (-get-layer system :foreground) context)
 
     ;; draw components
     (-> world
@@ -64,7 +70,7 @@
           (ecs/pass-event-through-all
            world
            event
-           (ecs/all-components-of-system world system))] 
+           (ecs/all-components-of-system world system))]
       world'))
 
   (defmethod ecs/handle-event [:to-system ::drawing ::set-all-tmx]

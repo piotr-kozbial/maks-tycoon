@@ -175,15 +175,23 @@
 
    )
 
-(defn draw []
+(defn draw [{:keys [min-x max-x min-y max-y] :as context}]
   (when-let [world (:world @app-state)]
     (let [world' (handle-events world)
           world'' (ecs/do-handle-event
                    world'
-                   (ecs/mk-event sys-drawing/to-system
-                                 ::sys-drawing/draw (vt/get-time virtual-timer))
+                   (assoc
+                    (ecs/mk-event sys-drawing/to-system
+                                  ::sys-drawing/draw (vt/get-time virtual-timer))
+                    :context context)
                    #(eq/put-event! event-queue %))]
-      (swap! app-state assoc :world world''))))
+      (swap! app-state assoc :world world'')))
+  (js/stroke 255 255 255)
+  (js/strokeWeight 10)
+  (js/noFill)
+  (js/rect min-x min-y (- max-x min-x) (- max-y min-y))
+
+  )
 
 ;; main
 (do
