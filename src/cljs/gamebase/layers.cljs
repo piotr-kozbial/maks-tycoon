@@ -127,7 +127,7 @@
                            (sort-by second))]
         (->> (interleave base-list (concat (rest base-list) [nil]))
              (partition 2)
-             (map (fn [[[id offset] [_ offset']]]
+            (map (fn [[[id offset] [_ offset']]]
                     [id offset offset'])))))
 
     (examples
@@ -141,7 +141,7 @@
         nil
         (let [[tileset-id id-offset _]
               (first (filter
-                      (fn [[_ _ id-offset-next]] (or (nil? id-offset-next) (>= id-offset-next tmx-id)))
+                      (fn [[_ _ id-offset-next]] (or (nil? id-offset-next) (< tmx-id id-offset-next)))
                       tmx-tileset-offset-list))]
           [tileset-id (- tmx-id id-offset)])))
 

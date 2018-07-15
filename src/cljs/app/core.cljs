@@ -111,7 +111,6 @@
         )))
 
 (defn init-world []
-
   (swap! app-state assoc :world (create-world))
 
   (eq/put-event!
@@ -188,6 +187,7 @@
 
 ;; main
 (do
+
 
 
 

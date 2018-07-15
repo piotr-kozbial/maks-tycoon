@@ -15,6 +15,31 @@
   (def to-system
     (ecs/to-system ::drawing))
 
+  (defn- -get-layer [system layer-key]
+    (->> (:layers system)
+         (filter #(= (first %) layer-key))
+         (first)
+         (second)))
+
+  (defn- -draw-layer [system layer]
+    (js/push)
+    (js/scale 1 -1)
+    (let [{:keys [tile-width tile-height
+                  world-width-in-tiles
+                  world-height-in-tiles] :as ctx} (:tile-context system)]
+      (doall
+       (for [tx (range world-width-in-tiles) ty (range world-height-in-tiles)]
+         (let [tl (layers/get-tile-from-layer layer tx ty)
+               {:keys [img x y w h] :as inf}
+               ,  (layers/get-rendering-information-for-tile ctx tl)]
+           (when tl
+             (js/image (resources/get-resource img)
+                       ;; destination
+                       (* tile-width tx) (- (* -32 ty) tile-height) w h
+                       ;; source
+                       x y w h))))))
+    (js/pop))
+
   (defmethod ecs/handle-event [:to-system ::drawing ::draw]
     [world event system]
 
@@ -25,36 +50,9 @@
     ;; layerow z rysowaniem komponentow nad tymi layerami.
 
     ;; draw layers
-    (js/push)
-    (js/scale 1 -1)
-    (let [ls (:layers system)
-          ctx (:tile-context system)
-          ;; TODO - nie tylko ten layer!!
-          fg-layer (second (first ls))
-          tile0 (layers/get-tile-from-layer fg-layer 0 0)
-          {:keys [img x y w h] :as info0}
-          ,  (layers/get-rendering-information-for-tile ctx tile0)]
-      (doall
-       ;; TODO - iterowac po calej planszy
-       ;; (a w przyszlosci bedziemy ograniczac moze do
-       ;; widocznej czesci)
-       (for [tx [0 1 2 3 4] ty [0 1 2 3]]
-         (let [
-               tl (layers/get-tile-from-layer fg-layer tx ty)
-               {:keys [img x y w h] :as inf}
-               ,  (layers/get-rendering-information-for-tile ctx tl)]
-           (when tl
-             ;;(.log js/console (pr-str inf))
-             (js/image (resources/get-resource img)
-                       ;; destination
-                       ;; TODO - te 32 zamienic na cos
-                       ;; - niby mozna na w h, ale troche glupio,
-                       ;; bo to raczej trzeba wziac z globalnej
-                       ;; wielkosci kafelka
-                       (* 32 tx) (- (* -32 ty) h) w h
-                       ;; source
-                       x y w h))))))
-    (js/pop)
+    (-draw-layer system (-get-layer system :background))
+    (-draw-layer system (-get-layer system :foreground))
+
     ;; draw components
     (-> world
         (#(ecs/pass-event-through-all
@@ -74,13 +72,6 @@
     [world event system]
     (assoc system :layers []))
 
-  ;; ;; TODO: DO WYWALENIA
-  ;; (defmethod ecs/handle-event [:to-system ::drawing ::add-layer]
-  ;;   [world {:keys [layer-key layer-type layer-data]} system]
-  ;;   (update-in system [:layers]
-  ;;              conj {:layer-key layer-key
-  ;;                    :layer-type layer-type
-  ;;                    :layer-data layer-data}))
   )
 
 (defmethod ecs/handle-event [:to-system ::drawing ::set-all-tmx]
