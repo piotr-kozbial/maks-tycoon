@@ -48,7 +48,7 @@
 
   (defmethod ecs/handle-event [:to-system ::drawing ::draw]
     [world {:keys [context] :as event} system]
-    (.log js/console (pr-str context))
+
     ;; TODO!
     ;; To przez chwile moze byc tak (tylko zadbac, zeby tlo bylo *pod* fg).
     ;; Ale w przyszlosci ma byc tak, ze komponenty (razem z ich entities)

@@ -186,23 +186,38 @@
                     :context context)
                    #(eq/put-event! event-queue %))]
       (swap! app-state assoc :world world'')))
+
+  ;; TODO - this is for debugging, remove afterwards
   (js/stroke 255 255 255)
   (js/strokeWeight 10)
   (js/noFill)
   (js/rect min-x min-y (- max-x min-x) (- max-y min-y))
-
   )
 
 ;; main
 (do
 
+  (rum/defc sidebar-component < rum/reactive []
+
+    (let [{:keys [frame-rate]} (rum/react app-state)]
+      [:div
+       [:div (str "FRAME RATE: " frame-rate)]
+       [:div
+        "scale: " (canvas-control/get-scale) " "
+        [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 0.5))} "50%"] " "
+        [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 1.0))} "100%"] " "
+        [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 2.0))} "200%"]]]))
+
   (rum/defc main-component < rum/reactive []
-    (let [frame-rate (:frame-rate (rum/react app-state))]
-      (our-layout/mk-html
-       ;; sidebar
-       (str "FRAME RATE: " frame-rate)
-       ;; bottom bar
-       nil)))
+    (rum/react app-state)
+    (our-layout/mk-html
+     ;; sidebar
+     (sidebar-component)
+     ;; [[:div nil (str "FRAME RATE: " frame-rate)]
+     ;;  [:div nil "scale: "]]
+     ;; bottom bar
+     nil)
+)
 
   (defn render []
     (rum/mount (main-component)
@@ -223,8 +238,8 @@
     (js/setInterval (fn []
                       (let [rate (js/frameRate)
                             rate-s (/ (int (* rate 10)) 10)]
-                        (swap! app-state assoc :frame-rate rate-s))
-                      ) 1000)
+                        (swap! app-state assoc :frame-rate rate-s)))
+                    1000)
 
     (doseq [fname resource-fnames]
       (resources/add-resource fname))

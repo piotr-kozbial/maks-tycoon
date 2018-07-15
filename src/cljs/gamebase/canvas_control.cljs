@@ -96,6 +96,15 @@ nil
      wc
      hc)))
 
+
+(defn -get-state []
+  (when-let [{:keys [state-atom state-kvs]} @conf]
+    (get-in @state-atom state-kvs)))
+
+(defn get-scale []
+  (when-let [{:keys [scale-factor]} (-get-state)]
+    scale-factor))
+
 ;; public API
 (defn set-scale
   "set scale in such a way that the center point of the viewport
