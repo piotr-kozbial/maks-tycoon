@@ -67,58 +67,22 @@
            (ecs/all-components-of-system world system))] 
       world'))
 
-  ;; TODO: DO WYWALENIA
-  (defmethod ecs/handle-event [:to-system ::drawing ::clear-layers]
-    [world event system]
-    (assoc system :layers []))
-
-  )
-
-(defmethod ecs/handle-event [:to-system ::drawing ::set-all-tmx]
-  [world {:keys [tmx-fname]} system]
-  (.log js/console (str "LOADING ALL TMX " tmx-fname))
-  (let [ls (layers/get-all-layers-from-tmx
-            (resources/get-resource tmx-fname))
-        tileset-map (layers/get-tileset-rendering-map-from-tmx
-                     (resources/get-resource tmx-fname))
-        ctx {:tile-width 32
-             :tile-height 32
-             :world-width-in-tiles 100
-             :world-height-in-tiles 100
-             :tileset-rendering-map tileset-map}]
-    (assoc system
-           :layers ls
-           :tile-context ctx)))
-
-
-;; ;;;; TODO
-;; To jakos inaczej zrobic. Moze z boku zapodawac caly stack layerow i ten context co tam.
-;; Albo tylko zostawic tutaj narysowanie pojedynczego layera, a reszte zrobic w glownym
-;; (draw) w aplikacji.
-
-
+  (defmethod ecs/handle-event [:to-system ::drawing ::set-all-tmx]
+    [world {:keys [tmx-fname]} system]
+    (let [ls (layers/get-all-layers-from-tmx
+              (resources/get-resource tmx-fname))
+          tileset-map (layers/get-tileset-rendering-map-from-tmx
+                       (resources/get-resource tmx-fname))
+          ctx {:tile-width 32
+               :tile-height 32
+               :world-width-in-tiles 100
+               :world-height-in-tiles 100
+               :tileset-rendering-map tileset-map}]
+      (assoc system
+             :layers ls
+             :tile-context ctx))))
 
 (do ;; Tiled layer drawing
-
-  ;; TODO: DO WYWALENIA
-  (defn- maybe-load-layer [{:keys [layer-data] :as layer}]
-    (let [{:keys [resource-name layer-key data img]} layer-data]
-      (if data
-        layer
-        (if-let [resource (resources/get-resource resource-name)]
-          (assoc layer
-                 :layer-data (assoc layer-data
-                                    :data (resource layer-key)))
-          layer))))
-
-  ;; TODO: DO WYWALENIA
-  (defn- maybe-load-layers [world {:keys [layers] :as system}]
-    (let [system'(assoc system
-                        :layers
-                        (->> layers
-                             (map maybe-load-layer)
-                             (apply vector)))]
-      (ecs/insert-object world system')))
 
   (defn- draw-tiled-layer [{:keys [data img-resource-name tile-offset]}]
     (js/push)
@@ -150,7 +114,6 @@
     ;;(.log js/console (pr-str layers))
     (doseq [{:keys [layer-data]} layers]
       (when-let [data (:data layer-data)]
-
         (draw-tiled-layer layer-data)))
     world))
 
