@@ -90,11 +90,11 @@
                    #(eq/put-event! event-queue %))]
       (swap! app-state assoc :world world'')))
 
-  ;; TODO - this is for debugging, remove afterwards
-  (js/stroke 255 255 255)
-  (js/strokeWeight 10)
-  (js/noFill)
-  (js/rect min-x min-y (- max-x min-x) (- max-y min-y))
+  ;; ;; TODO - this is for debugging, remove afterwards
+  ;; (js/stroke 255 255 255)
+  ;; (js/strokeWeight 10)
+  ;; (js/noFill)
+  ;; (js/rect min-x min-y (- max-x min-x) (- max-y min-y))
   )
 
 ;; Initial world

@@ -34,17 +34,21 @@
   (js/noSmooth)
   ;; outermost scaling and translation
   (when-let [{:keys [state-atom state-kvs get-canvas-size]} @conf]
-    (let [
-          {:keys [scale-factor translation-x translation-y]}
-          ,    (get-in @state-atom state-kvs)]
-      (js/translate translation-x translation-y)
+    (let [{:keys [scale-factor translation-x translation-y]}
+          ,    (get-in @state-atom state-kvs)
+          ;; IMPORTANT!!! We must make translations integers, otherwise
+          ;; there will be unwanted artifacts (lines between tiles).
+          t-x (int translation-x)
+          t-y (int translation-y)]
+      (js/translate t-x t-y)
       (js/scale scale-factor)
       ;; flip vertical - this allowws the client draw function
       ;; to use the standard coordinate system (y points upwards)
       (js/scale 1 -1)
 
-      (let [rev-x #(/ (- % translation-x) scale-factor)
-            rev-y #(/ (- % translation-y) (- scale-factor))
+      ;; We keep use the integer translations here as well
+      (let [rev-x #(/ (- % t-x) scale-factor)
+            rev-y #(/ (- % t-y) (- scale-factor))
             [wc hc] (get-canvas-size)]
         ;; client draw
         ((:draw @conf)
@@ -152,7 +156,6 @@
 ;; TODO
 ;; this will need to use :get-world-size from conf
 ;; this will be called in setup-drag-event, set-scale etc.
-;; this should also correct the position so that it is at pixel boundary according to scale
 (defn readjust
   "fix translation after external change
   (such as canvas resize by layout or game state reloaded)
@@ -173,6 +176,5 @@
                 (fn [{:keys [translation-x translation-y] :as s}]
                   (assoc s
                          :translation-x (+ translation-x dx)
-                         :translation-y (+ translation-y dy)
-                         ))))))))
+                         :translation-y (+ translation-y dy)))))))))
 

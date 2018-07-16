@@ -39,6 +39,9 @@
            (when tl
              (js/image (resources/get-resource img)
                        ;; destination
+
+                       ;; TODO !!! - skad jest to -32 ponizej?
+
                        (* tile-width tx) (- (* -32 ty) tile-height) w h
                        ;; source
                        x y w h))))))
