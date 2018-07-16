@@ -146,7 +146,8 @@
     (swap! state-atom update-in state-kvs
            (fn [s] (assoc s
                          :translation-x tr-x
-                         :translation-y tr-y)))))
+                         :translation-y tr-y))))
+  nil)
 
 ;; TODO
 ;; this will need to use :get-world-size from conf
@@ -165,7 +166,6 @@
    :canvas-mouse-dragged
    (fn [{:keys [button x y prev-x prev-y]}]
      (when (= button js/RIGHT)
-       ;; (.log js/console (str prev-x "-" x ", " prev-y "-" y))
        (let [{:keys [state-atom state-kvs]} @conf
              dx (- x prev-x)
              dy (- y prev-y)]
