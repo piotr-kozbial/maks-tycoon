@@ -19,114 +19,108 @@
             [gamebase.ecsu] ;; without this it doesn't get compiled and loaded for cljs either
             ))
 
-;; app state
+;; App state
+
 (defonce app-state
   (atom
    {:frame-rate "???"}))
 
+;; Events are to be handled inside `draw`,
+;; which *does not* mean that they rely
+;; on a specific frame rate.
+
+;; Event queue
+
+(def event-queue {:root-atom app-state :ks [:event-queue]
+                  :on-adding-to-empty (fn [])})
+(defonce _eq_init (do (eq/initialize event-queue) nil))
+
+;; Virtual timer
+
 (def virtual-timer {:root-atom app-state :ks [:virtual-timer]})
+(defonce _vt_init (do (vt/initialize virtual-timer) nil))
 
-(do ;; DRAW-LOCKED EVENT LOOP
+;; Event handling
 
-  ;; Events are to be handled inside `draw`,
-  ;; which *doesn not* mean that they rely
-  ;; on a specific frame rate.
+(defn handle-all-pending-events [world]
+  (let [t (vt/get-time virtual-timer)]
+    (->> (repeatedly #(eq/pop-soonest-event-until event-queue t))
+         (take-while identity) ;; not nil
+         (reduce
+          (fn [wrl e] (ecs/do-handle-event wrl e #(eq/put-event! event-queue %)))
+          world))))
 
-  (declare start-event-loop)
+(defn handle-update [world]
+  (ecs/do-handle-event
+   world
+   (ecs/mk-event (ecs/to-world) :update (vt/get-time virtual-timer))
+   #(eq/put-event! event-queue %)))
 
-  (def event-queue {:root-atom app-state :ks [:event-queue]
-                    :on-adding-to-empty (fn [])})
-  (defonce _eq_init (do
-                      (eq/initialize event-queue)
-                      nil))
+(defn handle-events [world]
+  (-> world
+      (handle-all-pending-events)
+      (handle-update)))
 
- 
+;; :update EVENT HANDLER ON WORLD LEVEL
+;; This will pass the :update event through all systems.
 
-  (defonce _vt_init (do
-                      (vt/initialize virtual-timer)
-                      nil))
+(defmethod ecs/handle-event [:to-world :update]
+  [world event _]
+  (reduce
+   (fn [wrl sys]
+     (let [event' (ecs/retarget event sys)]
+       (ecs/do-handle-event
+        wrl
+        event'
+        #(eq/put-event! event-queue %))))
+   world
+   (ecs/all-systems world)))
 
-  ;; return true if executed an event
-  ;; return nil if alert set
+;; Drawing
 
-  ;; ;; return new world or nil if no events
-  ;; (defn maybe-handle-one-event [world]
-  ;;   (when-let [event (eq/pop-soonest-event-until
-  ;;                     event-queue
-  ;;                     (vt/get-time virtual-timer))]
-  ;;     (ecs/do-handle-event world event)))
+(defn draw [{:keys [min-x max-x min-y max-y] :as context}]
+  (when-let [world (:world @app-state)]
+    (let [world' (handle-events world)
+          world'' (ecs/do-handle-event
+                   world'
+                   (assoc
+                    (ecs/mk-event sys-drawing/to-system
+                                  ::sys-drawing/draw (vt/get-time virtual-timer))
+                    :context context)
+                   #(eq/put-event! event-queue %))]
+      (swap! app-state assoc :world world'')))
 
-  (defn handle-all-pending-events [world]
-    (let [t (vt/get-time virtual-timer)]
-      (->> (repeatedly #(eq/pop-soonest-event-until event-queue t))
-           (take-while identity) ;; not nil
-           (reduce
-            (fn [wrl e] (ecs/do-handle-event wrl e #(eq/put-event! event-queue %)))
-            world))))
+  ;; TODO - this is for debugging, remove afterwards
+  (js/stroke 255 255 255)
+  (js/strokeWeight 10)
+  (js/noFill)
+  (js/rect min-x min-y (- max-x min-x) (- max-y min-y))
+  )
 
-  (defn handle-update [world]
-    (ecs/do-handle-event
-     world
-     (ecs/mk-event (ecs/to-world) :update (vt/get-time virtual-timer))
-     #(eq/put-event! event-queue %)))
-
-  (defn handle-events [world]
-    (-> world
-        (handle-all-pending-events)
-        (handle-update))))
-
-(do ;; HANDLE :update EVENT ON WORLD LEVEL
-
-  (defmethod ecs/handle-event [:to-world :update]
-    [world event _]
-    ;;(.log js/console "world update")
-    (reduce
-     (fn [wrl sys]
-       (let [event' (ecs/retarget event sys)]
-         ;;(.log js/consol
-         (ecs/do-handle-event
-          wrl
-          event'
-          #(eq/put-event! event-queue %))))
-     world
-     (ecs/all-systems world))))
-
-(defn create-world []
-  (let [x 0
-        ;; e (assoc (ecs/mk-entity :test-entity :test-type)
-        ;;          :origin [0 0])
-        ;; e-image (sys-drawing/mk-static-image-component
-        ;;          e :img
-        ;;          {:point-kvs (ecs/ck-kvs :move :position)
-        ;;           :offset [-10 -10]})
-        ;;e-move (sys-move/mk-test-diagonal-component e :move nil)
-        ]
-    (-> (ecs/mk-world)
-        (ecs/insert-object (sys-drawing/mk-system))
-        (ecs/insert-object (sys-move/mk-system))
-        ;;(ecs/insert-object e)
-        (ecs/insert-object (locomotive/mk-entity :loc))
-        ;;(ecs/insert-object e-image)
-        ;;(ecs/insert-object e-move)
-        )))
+;; Initial world
 
 (defn init-world []
-  (swap! app-state assoc :world (create-world))
+
+  (swap! app-state assoc :world
+         (-> (ecs/mk-world)
+             (ecs/insert-object (sys-drawing/mk-system))
+             (ecs/insert-object (sys-move/mk-system))
+             (ecs/insert-object (locomotive/mk-entity :loc))))
 
   (eq/put-event!
    event-queue
    (ecs/mk-event sys-drawing/to-system
                  ::sys-drawing/clear-layers 0))
 
-  (eq/put-event!
-   event-queue
-   (assoc
-    (ecs/mk-event sys-drawing/to-system
-                  ::sys-drawing/set-tiled-context 0)
-    :width 100
-    :height 100
-    :tile-width 32
-    :tile-height 32))
+  ;; (eq/put-event!
+  ;;  event-queue
+  ;;  (assoc
+  ;;   (ecs/mk-event sys-drawing/to-system
+  ;;                 ::sys-drawing/set-tiled-context 0)
+  ;;   :width 100
+  ;;   :height 100
+  ;;   :tile-width 32
+  ;;   :tile-height 32))
 
   (eq/put-event!
    event-queue
@@ -159,7 +153,7 @@
   ;;                }))
 
 
-    ;; Send ::ecs/init to all entities
+  ;; Send ::ecs/init to all entities
 
 
   (doseq [c (ecs/all-components (:world @app-state))]
@@ -170,167 +164,97 @@
   (doseq [e (ecs/all-entities (:world @app-state))]
     (eq/put-event!
      event-queue
-     (ecs/mk-event e ::ecs/init 0)))
+     (ecs/mk-event e ::ecs/init 0))))
 
+;; UI
 
-   )
+(rum/defc sidebar-component < rum/reactive []
 
-(defn draw [{:keys [min-x max-x min-y max-y] :as context}]
-  (when-let [world (:world @app-state)]
-    (let [world' (handle-events world)
-          world'' (ecs/do-handle-event
-                   world'
-                   (assoc
-                    (ecs/mk-event sys-drawing/to-system
-                                  ::sys-drawing/draw (vt/get-time virtual-timer))
-                    :context context)
-                   #(eq/put-event! event-queue %))]
-      (swap! app-state assoc :world world'')))
+  (let [{:keys [frame-rate]} (rum/react app-state)]
+    [:div
+     [:div (str "FRAME RATE: " frame-rate)]
+     [:div
+      "scale: " (canvas-control/get-scale) " "
+      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 0.5))} "50%"] " "
+      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 1.0))} "100%"] " "
+      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 2.0))} "200%"]]]))
 
-  ;; TODO - this is for debugging, remove afterwards
-  (js/stroke 255 255 255)
-  (js/strokeWeight 10)
-  (js/noFill)
-  (js/rect min-x min-y (- max-x min-x) (- max-y min-y))
-  )
+(rum/defc main-component < rum/reactive []
+  (rum/react app-state)
+  (our-layout/mk-html
+   ;; sidebar
+   (sidebar-component)
+   ;; [[:div nil (str "FRAME RATE: " frame-rate)]
+   ;;  [:div nil "scale: "]]
+   ;; bottom bar
+   nil))
 
-;; main
-(do
+(defn render []
+  (rum/mount (main-component)
+             (. js/document (getElementById "app"))))
 
-  (rum/defc sidebar-component < rum/reactive []
+;; Resources to be loaded
 
-    (let [{:keys [frame-rate]} (rum/react app-state)]
-      [:div
-       [:div (str "FRAME RATE: " frame-rate)]
-       [:div
-        "scale: " (canvas-control/get-scale) " "
-        [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 0.5))} "50%"] " "
-        [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 1.0))} "100%"] " "
-        [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 2.0))} "200%"]]]))
+(def resource-fnames
+  ["background.png"
+   "tiles.png"
+   "loco1.png"
+   "loco1-debug.png"
+   "carriage1.png"
+   "level1.tmx"])
 
-  (rum/defc main-component < rum/reactive []
-    (rum/react app-state)
-    (our-layout/mk-html
-     ;; sidebar
-     (sidebar-component)
-     ;; [[:div nil (str "FRAME RATE: " frame-rate)]
-     ;;  [:div nil "scale: "]]
-     ;; bottom bar
-     nil)
-)
+;; Main function
 
-  (defn render []
-    (rum/mount (main-component)
-               (. js/document (getElementById "app"))))
+(defn main [& _]
 
-  (def resource-fnames
-    ["background.png"
-     "tiles.png"
-     "loco1.png"
-     "loco1-debug.png"
-     "carriage1.png"
-     "level1.tmx"])
+  (.log js/console "-----> main")
 
-  (defn main [& _]
+  (js/setInterval (fn []
+                    (let [rate (js/frameRate)
+                          rate-s (/ (int (* rate 10)) 10)]
+                      (swap! app-state assoc :frame-rate rate-s)))
+                  1000)
 
-    (.log js/console "-----> main")
+  (doseq [fname resource-fnames]
+    (resources/add-resource fname))
 
-    (js/setInterval (fn []
-                      (let [rate (js/frameRate)
-                            rate-s (/ (int (* rate 10)) 10)]
-                        (swap! app-state assoc :frame-rate rate-s)))
-                    1000)
+  (resources/set-on-all-loaded
+   #(do
+      (.log js/console "on all loaded")
+      (when (every? resources/get-resource resource-fnames)
+        (.log js/console "mozna odpalac")
+        (init-world))))
 
-    (doseq [fname resource-fnames]
-      (resources/add-resource fname))
+  (our-layout/initialize
+   app-state [:layout]
+   {:bottom-bar-height 150
+    :after-canvas-resize
+    #(;;.log js/console "ACR callback"
+      )})
 
-    (resources/set-on-all-loaded
-     #(do
-        (.log js/console "on all loaded")
-        (when (every? resources/get-resource resource-fnames)
-          (.log js/console "mozna odpalac")
-          (init-world))))
+  ;; TODO
 
-    (our-layout/initialize
-     app-state [:layout]
-     {:bottom-bar-height 150
-      :after-canvas-resize
-      #(;;.log js/console "ACR callback"
-        )})
+  ;; to zle
+  ;; bo nasze draw teraz zawiera obsluge kolejki zdarzen,
+  ;; wiec wyjdzie, ze jest
+  ;; 1. canvas/clear itd.
+  ;; 2. oblsuga kolejki
+  ;; 3. canvas/dalsze rysowanie
 
-    ;; TODO
+  ;; I w ogole jakos to glupio.
+  ;; Moze zrobic globalna podpinke do draw,
+  ;; jakos tak aspektowo czy cos?
 
-    ;; to zle
-    ;; bo nasze draw teraz zawiera obsluge kolejki zdarzen,
-    ;; wiec wyjdzie, ze jest
-    ;; 1. canvas/clear itd.
-    ;; 2. oblsuga kolejki
-    ;; 3. canvas/dalsze rysowanie
+  ;; Ale moze teraz na poczatek zostawic, zeby pojsc naprzod?
+  ;; TAK
 
-    ;; I w ogole jakos to glupio.
-    ;; Moze zrobic globalna podpinke do draw,
-    ;; jakos tak aspektowo czy cos?
+  (canvas-control/initialize
+   {:state-atom app-state
+    :state-kvs [:canvas-control]
+    :draw #'draw
+    :get-canvas-size our-layout/get-canvas-size ;; TODO
+    ;; :get-world-size #(vector 2000 1000) ;; TODO
+    })
 
-    ;; Ale moze teraz na poczatek zostawic, zeby pojsc naprzod?
-    ;; TAK
+  (vt/resume virtual-timer))
 
-    (canvas-control/initialize
-     {:state-atom app-state
-      :state-kvs [:canvas-control]
-      :draw #'draw
-      :get-canvas-size our-layout/get-canvas-size ;; TODO
-      :get-world-size #(vector 2000 1000) ;; TODO
-      })
-
-    (vt/resume virtual-timer)))
-
-
-
-
-;; test
-(comment
-
-  (do
-    (def w (ecs/mk-world))
-    (def s (te/mk-system))
-    (def e1 (ecs/mk-entity :my-entity :my-type))
-    (def e2 (ecs/mk-entity :my-entity-2 :my-type))
-    (def c1 (te/mk-component e1 "pierwszy"))
-    (def c2 (te/mk-component e1 "drugi"))
-    (def c3 (te/mk-component e2 "trzeci"))
-    (def w' (-> w
-                (ecs/insert-object s)
-                (ecs/insert-object e1)
-                (ecs/insert-object e2)
-                (ecs/insert-object c1)
-                (ecs/insert-object c2)
-                (ecs/insert-object c3))))
-
-
-
-
-  (swap! app-state
-         assoc :world w')
-  
-
-  (def event1 (ecs/mk-event s ::ecs/time))
-
-  (eq/put-event!
-   event-queue
-   (assoc event1
-          ::eq/time
-          20
-          ))
-
-  (eq/put-event!
-   event-queue
-   (assoc event1
-          ::eq/time
-          (+ 5000 (vt/get-time virtual-timer))
-          ))
-
-
-  (eq/initialize event-queue)
-
-
-  )

@@ -5,8 +5,6 @@
    [gamebase.geometry :as g]
    [gamebase.layers :as layers]))
 
-(declare maybe-draw-layers)
-
 (do ;; SYSTEM
 
   (defn mk-system []
@@ -28,9 +26,9 @@
                   world-width-in-tiles
                   world-height-in-tiles] :as ctx} (:tile-context system)
           tx-min (max 0 (- (int (/ min-x tile-width)) 1))
-          tx-max (+ (int (/ max-x tile-width)) 2)
+          tx-max (min (+ (int (/ max-x tile-width)) 2) (dec world-width-in-tiles))
           ty-min (max 0 (- (int (/ min-y tile-width)) 1))
-          ty-max (+ (int (/ max-y tile-height)) 2)
+          ty-max (min (+ (int (/ max-y tile-height)) 2) (dec world-height-in-tiles))
           tx-range (range tx-min (inc tx-max))
           ty-range (range ty-min (inc ty-max))]
       (doall
@@ -87,41 +85,6 @@
       (assoc system
              :layers ls
              :tile-context ctx))))
-
-(do ;; Tiled layer drawing
-
-  (defn- draw-tiled-layer [{:keys [data img-resource-name tile-offset]}]
-    (js/push)
-    ;; we could invert each tile separately, but inverting
-    ;; the whole thing is easier
-    (js/scale 1 -1)
-    (when-let [img (resources/get-resource img-resource-name)]
-      (doall
-       (map-indexed
-        (fn [y row]
-          (when true ;(and (<= v-tile-start y) (< y v-tile-end))
-            (doall
-             (map-indexed
-              (fn [x tile-number]
-                (when (> tile-number 0)
-                  (let [tile-x
-                        (mod (- tile-number tile-offset) 20)
-                        tile-y
-                        (quot (- tile-number tile-offset) 20)
-                        ]
-                    (js/image img,
-                              (- (* x 32) 0) (- (* y 32) 0) 32 32,
-                              (* tile-x 32) (* tile-y 32) 32 32))))
-              row))))
-        (:content data))))
-    (js/pop))
-
-  (defn- maybe-draw-layers [world {:keys [layers] :as system}]
-    ;;(.log js/console (pr-str layers))
-    (doseq [{:keys [layer-data]} layers]
-      (when-let [data (:data layer-data)]
-        (draw-tiled-layer layer-data)))
-    world))
 
 (do ;; COMPONENT: static image
 

@@ -43,33 +43,21 @@
       ;; to use the standard coordinate system (y points upwards)
       (js/scale 1 -1)
 
-      (let [[wc hc] (get-canvas-size)]
+      (let [rev-x #(/ (- % translation-x) scale-factor)
+            rev-y #(/ (- % translation-y) (- scale-factor))
+            [wc hc] (get-canvas-size)]
         ;; client draw
         ((:draw @conf)
-         {:min-x (/ (- translation-x) scale-factor)
-          :max-x (/ (- wc translation-x) scale-factor)
-          :min-y (/ (- translation-y) scale-factor)
-          :max-y (/ (- hc translation-y) scale-factor)})))
+         {:min-x (rev-x 0)
+          :max-x (rev-x wc)
+          :min-y (rev-y hc) ;; because of negative y scale, hc is min and 0 is max
+          :max-y (rev-y 0)})))
 
     ;; draw coordinate system marker
     (when (-> @debug/settings
               :canvas-control
               :coordinate-system-marker)
       (debug-draw-coord-system))))
-
-;; TODO SUMARY
-;; 2. dragging (panning)
-;; 3. readjust
-
-nil
-;; TODO DETAILS
-;;
-;; Ad 2.
-;; implement setup-drag-event WITH LIMITING TO WORLD
-;; possibly implement and use `readjust`
-;;
-;; Ad 3.
-;; think if there is a scenario when we need readjust anyway
 
 (declare setup-drag-event)
 
@@ -160,35 +148,31 @@ nil
                          :translation-x tr-x
                          :translation-y tr-y)))))
 
-;; TODO 2, 3
+;; TODO
 ;; this will need to use :get-world-size from conf
+;; this will be called in setup-drag-event, set-scale etc.
+;; this should also correct the position so that it is at pixel boundary according to scale
 (defn readjust
-  "fix scale and/or translation after external change
-  (such as canvas resize by layout or game state reloaded)"
+  "fix translation after external change
+  (such as canvas resize by layout or game state reloaded)
+  so that some of the world is visible at least"
   []
 
-
   )
 
-;; TODO 2
 (defn- setup-drag-event []
-  ;; (events/add-handler :canvas-mouse-dragged
-  ;;                     (fn [{:keys [button x y prev-x prev-y]}]
-  ;;                       (when (= button js/RIGHT)
-  ;;                         (let [canvas-width ((:get-canvas-width @conf))
-  ;;                               canvas-height ((:get-canvas-height @conf))
-  ;;                               dx (- x prev-x)
-  ;;                               dy (- y prev-y)
-  ;;                               scale ((:get-scale @conf))
-  ;;                               {:keys [state-atom state-kvs]} @conf]
-  ;;                           (swap! state-atom
-  ;;                                  update-in state-kvs
-  ;;                                  (fn [{:keys [top-left-x top-left-y] :as st}]
-  ;;                                    (let [[new-top-left-x new-top-left-y]
-  ;;                                          ,   (correct-top-left (- top-left-x (/ dx scale))
-  ;;                                                                (- top-left-y (/ dy scale)))]
-  ;;                                      (assoc st :top-left-x new-top-left-x
-  ;;                                             :top-left-y new-top-left-y))))))))
-
-  )
+  (events/add-handler
+   :canvas-mouse-dragged
+   (fn [{:keys [button x y prev-x prev-y]}]
+     (when (= button js/RIGHT)
+       ;; (.log js/console (str prev-x "-" x ", " prev-y "-" y))
+       (let [{:keys [state-atom state-kvs]} @conf
+             dx (- x prev-x)
+             dy (- y prev-y)]
+         (swap! state-atom update-in state-kvs
+                (fn [{:keys [translation-x translation-y] :as s}]
+                  (assoc s
+                         :translation-x (+ translation-x dx)
+                         :translation-y (+ translation-y dy)
+                         ))))))))
 
