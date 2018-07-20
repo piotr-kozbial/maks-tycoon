@@ -9,7 +9,6 @@
    {
     :canvas-control {:coordinate-system-marker true}
 
-
     }))
 
 (comment

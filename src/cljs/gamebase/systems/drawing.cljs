@@ -122,3 +122,31 @@
         (js/image img (- center-x) (- center-y))
         (js/pop)))
     component))
+
+(do ;; COMPONENT: path
+
+  ;; draws a path as defined in gamebase.geometry
+
+  (defn mk-path-component
+    [entity-or-id key {:keys [path-kvs]}]
+    (assoc
+     (ecs/mk-component ::drawing entity-or-id key ::path)
+     :path-kvs path-kvs))
+
+  (defmethod ecs/handle-event [:to-component ::path :update]
+    [world event component]
+    nil)
+
+  (defmethod ecs/handle-event [:to-component ::path ::draw]
+    [world event {:keys [path-kvs] :as component}]
+    (let [entity (ecs/get-entity world component)]
+      (when-let [path (get-in entity path-kvs)]
+        (let [len (g/path-length path)
+              n (int (/ len 5))
+              d (/ len n)]
+          (js/push)
+          (js/stroke (js/color "magenta"))
+          (doseq [i (range (inc n))]
+            (apply js/point (g/path-point-at-length path (* i d))))
+          (js/pop))))
+    nil))

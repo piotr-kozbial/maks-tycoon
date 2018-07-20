@@ -45,7 +45,7 @@
 (defn handle-all-pending-events [world]
   (let [t (vt/get-time virtual-timer)]
     (->> (repeatedly #(eq/pop-soonest-event-until event-queue t))
-         (take-while identity) ;; not nil
+         (take-while identity) ;; noz dnia na dzieńt nil
          (reduce
           (fn [wrl e] (ecs/do-handle-event wrl e #(eq/put-event! event-queue %)))
           world))))

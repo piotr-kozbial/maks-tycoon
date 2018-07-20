@@ -19,18 +19,24 @@
             {:point-kvs (ecs/ck-kvs :move :position)
              :angle-kvs (ecs/ck-kvs :move :angle)
              :center [16 8]
-             :resource-name "loco1.png"})})))
+             :resource-name "loco1.png"})
+      :debug-path (sys-drawing/mk-path-component
+                   e :debug-path
+                   {:path-kvs (ecs/ck-kvs :move :path)})})))
 
 
-(def path1 ;;(g/precomputed (g/circle-arc [100 100] 100 (g/degrees 0) (g/degrees 180) :positive))
-  (g/line-segment [0 16] [200 16])
-  )
-(def path2 ;(g/line-segment [200 120] [300 70])
-  (g/precomputed (g/line-segment [0 100] [100 100]))
-  )
-(def path3 ;(g/line-segment [300 70] [100 100])
-  (g/precomputed (g/line-segment [100 100] [200 100]))
-  )
+;; (def path1 ;;(g/precomputed (g/circle-arc [100 100] 100 (g/degrees 0) (g/degrees 180) :positive))
+;;   (g/line-segment [0 16] [200 16]))
+;; (def path2 ;(g/line-segment [200 120] [300 70])
+;;   (g/precomputed (g/line-segment [0 100] [100 100])))
+;; (def path3 ;(g/line-segment [300 70] [100 100])
+;;   (g/precomputed (g/line-segment [100 100] [200 100])))
+
+
+(def path1  (g/line-segment [0 16] [200 16]))
+(def path2
+  (g/precomputed (g/circle-arc [100 16] 100 (g/degrees 0) (g/degrees 180) :positive)))
+
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ecs/init]
   [world event this]
@@ -49,11 +55,12 @@
       (ecs/mk-event (-> this ::ecs/components :move)
                     ::sys-move/set-path
                     (::eq/time event))
-      :path path1
-      ;; (cond
-      ;;         (= path path1) path2
-      ;;         (= path path2) path3
-      ;;         (= path path3) path1)
+      :path
+      (cond
+              (= path path1) path2
+              (= path path2) path1
+              ;;(= path path3) path1
+              )
 
       )]))
 

@@ -350,7 +350,7 @@
 ;;; dispatching on object types.
 
 
-;;;## Lengths
+;;;## Lengths and points
 
   (do
 
