@@ -11,7 +11,7 @@
             [gamebase.layouts.sidebar-and-bottombar :as our-layout]
             [gamebase.ecsu :as ecsu]
             [gamebase.geometry :as g]
-
+            [gamebase.tiles :as tiles]
             [app.core :as core]
             ))
 
@@ -40,10 +40,10 @@
     (ecsu/mk-entity :test ::test
                     {:path (ecsu/mk-component sys-drawing/mk-path-component
                                               {:path-kvs [:path]})}
-                    :path (g/precomputed
+                    :path #_(g/precomputed
                            (g/circle-arc
                             [100 16] 150 (g/degrees 0) (g/degrees 180) :positive))
-
+                    (tiles/zero-based-path [:e :n])
                     ))
 
   (inject-entity test-entity)

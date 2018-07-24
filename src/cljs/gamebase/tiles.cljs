@@ -88,7 +88,7 @@
 ;;     [x] specjalny testowy entity, ze specjalnym testowym komponentem (juz mam - ten fioletowy)
 ;;     [x] zrobic latwa metode wrzucania nowych entity do worlda - to i tak bedzie potrzebne,
 ;;        a jak zrobie to moge sobie z repla testowac
-;;     [ ] przetestowac to co tu mamy
+;;     [x] przetestowac to co tu mamy
 ;;
 ;; [ ] zrobic przesuniecie
 ;;     [ ] w geometry zrobic taki "general operation" jak "translate" i zaimplementowac
