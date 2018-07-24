@@ -315,3 +315,10 @@ nil
     ,  (assoc-in world [::entities (::entity-id object)
                         ::components (::component-key object)] object)))
 
+;; helper function
+(defn remove-entity-by-key[world entity-key]
+  (update-in world [::entities] dissoc entity-key))
+
+
+
+

@@ -83,14 +83,15 @@
 
 ;; TODO:
 
-;; [1] przetestowac to rysunkowo
+;; [ ] przetestowac to rysunkowo
 ;;     A co w tym celu trzeba zrobic?
-;;     - specjalny testowy entity, ze specjalnym testowym komponentem (juz mam - ten fioletowy)
-;;     - zrobic latwa metode wrzucania nowych entity do worlda - to i tak bedzie potrzebne,
-;;       a jak zrobie to moge sobie z repla testowac
+;;     [x] specjalny testowy entity, ze specjalnym testowym komponentem (juz mam - ten fioletowy)
+;;     [x] zrobic latwa metode wrzucania nowych entity do worlda - to i tak bedzie potrzebne,
+;;        a jak zrobie to moge sobie z repla testowac
+;;     [ ] przetestowac to co tu mamy
 ;;
-;; [2] zrobic przesuniecie
-;;     - w geometry zrobic taki "general operation" jak "translate" i zaimplementowac
-;;       dla line-segment i circle-arc
-;;     - uzyc tego tutaj, zaimplementowac (track-path track tile-x tile-y)
+;; [ ] zrobic przesuniecie
+;;     [ ] w geometry zrobic taki "general operation" jak "translate" i zaimplementowac
+;;         dla line-segment i circle-arc
+;;     [ ] uzyc tego tutaj, zaimplementowac (track-path track tile-x tile-y)
 ;;

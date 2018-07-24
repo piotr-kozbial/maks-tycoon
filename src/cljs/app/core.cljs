@@ -16,7 +16,7 @@
             [gamebase.layouts.sidebar-and-bottombar
              :as our-layout]
 
-            [gamebase.ecsu] ;; without this it doesn't get compiled and loaded for cljs either
+            [gamebase.ecsu :as ecsu] ;; without this it doesn't get compiled and loaded for cljs either
             ))
 
 ;; App state

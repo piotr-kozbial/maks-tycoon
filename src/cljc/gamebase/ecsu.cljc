@@ -12,6 +12,8 @@
 (def -id-event '<event>)
 (def -id-this '<this>) (declare <this>)
 (def -id-time '<time>)
+(def -id-entity '<entity>)
+(def -id-component-key '<component-key>)
 
 (defmacro component [id & body]
   (let [body' (remove #(and (seq? %) (= 'local (first %))) body)
@@ -34,4 +36,33 @@
         id-this '<this>]
     `(ecs/get-entity ~id-world ~id-this)))
 
+(defmacro mk-component [constructor options]
+  `(~constructor ~-id-entity ~-id-component-key ~options))
+
+(defmacro mk-entity [id kind components & other-data-kvs]
+  (let [components'
+        (->> components
+             (mapcat (fn [[k v]] [k `(let [~-id-component-key ~k] ~v)]))
+             (apply hash-map))]
+    `(let [~-id-entity (ecs/mk-entity ~id ~kind)]
+       (assoc
+         ~-id-entity
+         ::ecs/components ~components'
+         ~@other-data-kvs
+         ))))
+
+;; (ecsu/mk-entity
+;;  ;; id
+;;  :my-test-entity
+;;  ;; components
+;;  {:move (ecsu/mk-component sys-move/mk-path-follower nil)
+;;   :img (ecsu/mk-component sys-drawing/mk-static-image-component
+;;                           {:point-kvs (ecs/ck-kvs :move :position)
+;;                            :angle-kvs (ecs/ck-kvs :move :angle)
+;;                            :center [16 8]
+;;                            :resource-name "loco1.png"})
+;;   :debug-path (ecsu/mk-component sys-drawing/mk-path-component
+;;                                  {:path-kvs (ecs/ck-kvs :move :path)})}
+;;  ;; other data
+;;  :origin [0 0])
 
