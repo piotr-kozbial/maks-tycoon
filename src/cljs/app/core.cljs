@@ -186,6 +186,7 @@
   (our-layout/initialize
    app-state [:layout]
    {:bottom-bar-height 150
+    :side-bar-width 200
     :after-canvas-resize
     #(;;.log js/console "ACR callback"
       )})
