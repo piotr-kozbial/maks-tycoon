@@ -88,14 +88,7 @@
                                   ::sys-drawing/draw (vt/get-time virtual-timer))
                     :context context)
                    #(eq/put-event! event-queue %))]
-      (swap! app-state assoc :world world'')))
-
-  ;; ;; TODO - this is for debugging, remove afterwards
-  ;; (js/stroke 255 255 255)
-  ;; (js/strokeWeight 10)
-  ;; (js/noFill)
-  ;; (js/rect min-x min-y (- max-x min-x) (- max-y min-y))
-  )
+      (swap! app-state assoc :world world''))))
 
 ;; Initial world
 
@@ -105,22 +98,12 @@
          (-> (ecs/mk-world)
              (ecs/insert-object (sys-drawing/mk-system))
              (ecs/insert-object (sys-move/mk-system))
-             (ecs/insert-object (locomotive/mk-entity :loc))))
+             (ecs/insert-object (locomotive/mk-entity :loc 1 0))))
 
   (eq/put-event!
    event-queue
    (ecs/mk-event sys-drawing/to-system
                  ::sys-drawing/clear-layers 0))
-
-  ;; (eq/put-event!
-  ;;  event-queue
-  ;;  (assoc
-  ;;   (ecs/mk-event sys-drawing/to-system
-  ;;                 ::sys-drawing/set-tiled-context 0)
-  ;;   :width 100
-  ;;   :height 100
-  ;;   :tile-width 32
-  ;;   :tile-height 32))
 
   (eq/put-event!
    event-queue
@@ -129,32 +112,7 @@
                   ::sys-drawing/set-all-tmx 0)
     :tmx-fname "level1.tmx"))
 
-  ;; (eq/put-event!
-  ;;  event-queue
-  ;;  (assoc
-  ;;   (ecs/mk-event sys-drawing/to-system
-  ;;                 ::sys-drawing/add-layer 0)
-  ;;   :layer-key :background
-  ;;   :layer-type :tmx
-  ;;   :layer-data {:resource-name "level1.tmx"
-  ;;                :layer-key :background}))
-
-  ;; (eq/put-event!
-  ;;  event-queue
-  ;;  (assoc
-  ;;   (ecs/mk-event sys-drawing/to-system
-  ;;                 ::sys-drawing/add-layer 0)
-  ;;   :layer-key :terrain
-  ;;   :layer-type :tmx
-  ;;   :layer-data {:resource-name "level1.tmx"
-  ;;                :layer-key :foreground
-  ;;                ;;:img-resource-name "tiles.png"
-  ;;                ;;:tile-offset 1
-  ;;                }))
-
-
   ;; Send ::ecs/init to all entities
-
 
   (doseq [c (ecs/all-components (:world @app-state))]
     (eq/put-event!

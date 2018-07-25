@@ -10,7 +10,6 @@
 ;;   1. full page
 ;;   2. splash
 
-
 (defn mk-html [sidebar-content bottombar-content & [splash-image]]
   [:div {}
    [:div {:id "gamebase/canvas-holder"
@@ -22,32 +21,15 @@
              :backgroundColor "#BBA415"}}
     bottombar-content]
    [:div
+    {:id "gamebase/bottom-bar-border"
+     :style {:position "absolute"
+             :backgroundColor "#BB4400"
+             :cursor "ns-resize"}}]
+   [:div
     {:id "gamebase/side-bar"
      :style {:position "absolute"
              :backgroundColor "#C6AF20"}}
-    sidebar-content]
-   ;; [:div
-   ;;  {:id "gamebase/fullpage"
-   ;;   :style {:position "absolute"
-   ;;           :left 0
-   ;;           :top 0
-   ;;           :backgroundColor "#C6AF20"
-   ;;           :width "100%"
-   ;;           :height "100%"}}]
-   ;; (when splash-image
-   ;;   [:div
-   ;;    {:id "gamebase/splash"
-   ;;     :style {:position "absolute"
-   ;;             :zIndex 200
-   ;;             :width "100%"
-   ;;             :height "100%"}}
-   ;;    [:img
-   ;;     {:src "loading.png"
-   ;;      :style {:position "absolute"
-   ;;              :width "100%"
-   ;;              :height "100%"}}]])
-
-   ])
+    sidebar-content]])
 
 (declare -setup-events update-canvas-size show-canvas)
 
@@ -74,6 +56,8 @@
   (.getElementById js/document "gamebase/canvas-holder"))
 (defn get-bottom-bar-element []
   (.getElementById js/document "gamebase/bottom-bar"))
+(defn get-bottom-bar-border-element []
+  (.getElementById js/document "gamebase/bottom-bar-border"))
 (defn get-side-bar-element []
   (.getElementById js/document "gamebase/side-bar"))
 (defn get-fullpage-element []
@@ -119,25 +103,74 @@
         width (.-innerWidth js/window)
         height (.-innerHeight js/window)
         canvas-width (- width 200)
-        canvas-height (- height bottom-bar-height)]
+        canvas-height (- height bottom-bar-height)
+
+        bottom-bar-border-left 200
+        bottom-bar-border-width (- width 200)
+        ]
 
     (position-element (get-canvas-holder-element)
                       200 0 canvas-width canvas-height)
     (position-element (get-side-bar-element)
                       0 0 200 height)
     (position-element (get-bottom-bar-element)
-                      200 (- height bottom-bar-height)
-                      (- width 200) bottom-bar-height)
+                      200 (+ height (- bottom-bar-height) 5)
+                      (- width 200) (- bottom-bar-height 5))
+    (position-element (get-bottom-bar-border-element)
+                      bottom-bar-border-left (+ height (- bottom-bar-height))
+                      bottom-bar-border-width 5)
     (js/resizeCanvas canvas-width canvas-height)
+    (swap! state assoc
+
+           :screen-width width
+           :screen-height height
+           :bottom-bar-border-left bottom-bar-border-left
+           :bottom-bar-border-width bottom-bar-border-width
+           :canvas-width canvas-width
+           :canvas-height canvas-height
+           )
     (swap! base-atom update-in kvs
            (fn [s] (assoc s
                          :canvas-x 200
                          :canvas-y 1
                          :canvas-width canvas-width
-                         :canvas-height canvas-height)))
+                         :canvas-height canvas-height
+
+                         )))
     (after-canvas-resize)))
 
 (defn -setup-events []
-  (let [{:keys [base-atom kvs]} @state]
-    (events/add-handler :window-resized
-                        (fn [_] (update-canvas-size)))))
+  (events/add-handler :window-resized
+                      (fn [_] (update-canvas-size)))
+  (events/add-handler
+   :mouse-dragged
+   (fn [{:keys [prev-x prev-y x y] :as event}]
+
+     (let [{:keys [base-atom kvs
+                   bottom-bar-height
+                   bottom-bar-border-left
+                   bottom-bar-border-width
+                   canvas-height]} @state]
+
+       ;; these coordinates are canvas-related! (unfortunately)
+
+       (when (and (< 0 prev-x bottom-bar-border-width)
+                  (< canvas-height prev-y (+ 5 canvas-height)))
+
+         (.log js/console (str "mouse dragged w bottom border "))
+         (swap! state update-in [:bottom-bar-height] #(+ % (- prev-y y)))
+         (update-canvas-size)
+         ))
+
+     ))
+
+    )
+
+
+;;;;;;;;;;;;;;
+
+(defn on-bottom-bar-click [event]
+  (.log js/console "bottom bar click")
+  (.log js/console event)
+  )
+

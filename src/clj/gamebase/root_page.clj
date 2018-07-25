@@ -36,7 +36,7 @@
 
              "function mousePressed()  { gamebase.events.callback(\"canvas-mouse-pressed\");  return false; }\n"
              "function mouseMoved()    { gamebase.events.callback(\"canvas-mouse-moved\");    return false; }\n"
-             "function mouseDragged()  { gamebase.events.callback(\"canvas-mouse-dragged\");  return false; }\n"
+             "function mouseDragged()  { gamebase.events.callback(\"mouse-dragged\"); gamebase.events.callback(\"canvas-mouse-dragged\");  return false; }\n"
              "function mouseReleased() { gamebase.events.callback(\"canvas-mouse-released\"); return false; }\n"
              "function mouseClicked()  { gamebase.events.callback(\"canvas-mouse-clicked\");  return false; }\n"
              "function mouseScrolled() { gamebase.events.callback(\"canvas-mouse-scrolled\"); return false; }\n"

@@ -17,7 +17,8 @@
 (defmulti precondition-for-event (fn [event-key] event-key))
 
 (defn ^:export callback [event-name]
-
+  ;; (when (not= event-name "draw")
+  ;;   (.log js/console (str "callback >" event-name "<")))
   (let [event-key (keyword event-name)
         handlers (event-key @all-handlers)]
     (when (precondition-for-event event-key)
@@ -36,6 +37,12 @@
   {:button js/mouseButton
    :x js/mouseX
    :y js/mouseY})
+(defmethod data-for-event :mouse-dragged [_]
+  {:button js/mouseButton
+   :x js/mouseX
+   :y js/mouseY
+   :prev-x js/pmouseX
+   :prev-y js/pmouseY})
 (defmethod data-for-event :canvas-mouse-dragged [_]
   {:button js/mouseButton
    :x js/mouseX
@@ -69,6 +76,7 @@
 (defmethod precondition-for-event :draw [_] true)
 (defmethod precondition-for-event :canvas-mouse-pressed [_] (and @canvas-events-on? (mouseInCanvas)))
 (defmethod precondition-for-event :canvas-mouse-moved [_] (and @canvas-events-on? (mouseInCanvas)))
+(defmethod precondition-for-event :mouse-dragged [_] true)
 (defmethod precondition-for-event :canvas-mouse-dragged [_] (and @canvas-events-on? (mouseInCanvas) (pmouseInCanvas)))
 (defmethod precondition-for-event :canvas-mouse-released [_] (and @canvas-events-on? (mouseInCanvas)))
 (defmethod precondition-for-event :canvas-mouse-clicked [_] (and @canvas-events-on? (mouseInCanvas)))
