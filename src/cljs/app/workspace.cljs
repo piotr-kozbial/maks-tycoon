@@ -40,11 +40,7 @@
     (ecsu/mk-entity :test ::test
                     {:path (ecsu/mk-component sys-drawing/mk-path-component
                                               {:path-kvs [:path]})}
-                    :path #_(g/precomputed
-                           (g/circle-arc
-                            [100 16] 150 (g/degrees 0) (g/degrees 180) :positive))
-                    (tiles/zero-based-path [:e :n])
-                    ))
+                    :path (g/precomputed (tiles/track-path [:e :n] 2 1))))
 
   (inject-entity test-entity)
 

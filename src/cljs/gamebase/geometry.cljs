@@ -371,6 +371,10 @@
     (defmulti angle-at-length
       (fn [path length] (:path-type path))))
 
+;;;## Modifications
+  (do
+    (defmulti translate-path (fn [path dx dy] (:path-type path))))
+
 ;;;## Precomputation
 
   (do
@@ -482,6 +486,14 @@
 ;;;`   :dx
 ;;;`   :dy
 ;;;
+
+
+  (defmethod translate-path :line-segment
+    [{[x1 y1] :p1, [x2 y2] :p2 :as segment}, dx, dy]
+    (assoc segment
+           :p1 [(+ x1 dx) (+ y1 dy)]
+           :p2 [(+ x2 dx) (+ y2 dy)]))
+
   )
 
 ;;;# Circle arcs
@@ -581,7 +593,14 @@
       (normalize-to-2pi
        (case direction
          :positive (+ st (/ length radius) (/ pi 2))
-         :negative (- st (/ length radius) (/ pi 2)))))))
+         :negative (- st (/ length radius) (/ pi 2))))))
+
+  (defmethod translate-path :circle-arc
+    [{[xc yc] :center :as arc}, dx, dy]
+    (assoc arc
+           :center [(+ xc dx) (+ yc dy)]))
+
+  )
 
 ;;; TODO - na poczatku (na koncu?) dac jakis "synopsis", pokazujacy struktury danych i funkcje
 ;;; Moze na poczatku - i wtedy to bedzie zdefiniowana funkcja (synopsis), majaca w srodku asserty

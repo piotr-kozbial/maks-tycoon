@@ -10,7 +10,6 @@
 ;; :ids - identifiers to be used in a code (all equivalent),
 ;; :tracks - railway tracks [from to], but ordering is irrelevant.
 
-
 ;; TODO - move the whole thing under app. instead of gamebase.
 
 (def tiles
@@ -74,24 +73,7 @@
     [:w :s] (g/precompute (g/circle-arc [0 0] 16 (g/degrees 90) (g/degrees 0) :negative))
 
     [:s :e] (g/precompute (g/circle-arc [32 0] 16 (g/degrees 180) (g/degrees 90) :negative))
-    [:e :s] (g/precompute (g/circle-arc [32 0] 16 (g/degrees 90) (g/degrees 180) :positive)))
+    [:e :s] (g/precompute (g/circle-arc [32 0] 16 (g/degrees 90) (g/degrees 180) :positive))))
 
-
-  )
-
-
-
-;; TODO:
-
-;; [ ] przetestowac to rysunkowo
-;;     A co w tym celu trzeba zrobic?
-;;     [x] specjalny testowy entity, ze specjalnym testowym komponentem (juz mam - ten fioletowy)
-;;     [x] zrobic latwa metode wrzucania nowych entity do worlda - to i tak bedzie potrzebne,
-;;        a jak zrobie to moge sobie z repla testowac
-;;     [x] przetestowac to co tu mamy
-;;
-;; [ ] zrobic przesuniecie
-;;     [ ] w geometry zrobic taki "general operation" jak "translate" i zaimplementowac
-;;         dla line-segment i circle-arc
-;;     [ ] uzyc tego tutaj, zaimplementowac (track-path track tile-x tile-y)
-;;
+(defn track-path [track tile-x tile-y]
+  (g/translate-path (zero-based-path track) (* 32 tile-x) (* 32 tile-y)))
