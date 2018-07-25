@@ -52,3 +52,13 @@
               (= path path1) path2
               (= path path2) path1))]))
 
+
+
+
+;; TODO:
+;;
+;; [ ] implement "stop" and "drive" events (not speed:=0! special flag!)
+;; [ ] use it to gently translate to track-based driving:
+;;     [ ] first, stop after the first path is reached and just change tile-x, tile-y
+;;     [ ] then, assume the starting path (at ::ecs/init) is [:w :e] on the starting tile
+;;     [ ] then, implement ::sys-move/at-path-end to pick up one of tracke on the next tile

@@ -16,6 +16,8 @@
             [gamebase.layouts.sidebar-and-bottombar
              :as our-layout]
 
+            [cljs.pprint :refer [pprint]]
+
             [gamebase.ecsu :as ecsu] ;; without this it doesn't get compiled and loaded for cljs either
             ))
 
@@ -137,15 +139,18 @@
       [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 1.0))} "100%"] " "
       [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 2.0))} "200%"]]]))
 
+(rum/defc bottombar-component < rum/reactive []
+  [:div
+   [:pre
+    (with-out-str (pprint (get-in  (rum/react app-state) [:world :gamebase.ecs/entities])))]])
+
 (rum/defc main-component < rum/reactive []
   (rum/react app-state)
   (our-layout/mk-html
    ;; sidebar
    (sidebar-component)
-   ;; [[:div nil (str "FRAME RATE: " frame-rate)]
-   ;;  [:div nil "scale: "]]
    ;; bottom bar
-   nil))
+   (bottombar-component)))
 
 (defn render []
   (rum/mount (main-component)

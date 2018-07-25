@@ -77,3 +77,26 @@
 
 (defn track-path [track tile-x tile-y]
   (g/translate-path (zero-based-path track) (* 32 tile-x) (* 32 tile-y)))
+
+;; if track is on [tile-x tile-y], where does it lead
+;; returns [new-tile-x new-tile-y]
+(defn track-destination-tile [track tile-x tile-y]
+  (case track
+    [:n :s] [tile-x (dec tile-y)]
+    [:s :n] [tile-x (inc (tile-y))]
+
+    [:w :e] [(inc tile-x) tile-y]
+    [:e :w] [(dec tile-x) tile-y]
+
+    [:n :w] [(dec tile-x) (dec tile-y)]
+    [:w :n] [(inc tile-x) (inc tile-y)]
+
+    [:n :e] [(inc tile-x) (dec tile-y)]
+    [:e :n] [(dec tile-x) (inc tile-y)]
+
+    [:s :w] [(dec tile-x) (inc tile-y)]
+    [:w :s] [(inc tile-x) (dec tile-y)]
+
+    [:s :e] [(inc tile-x) (inc tile-y)]
+    [:e :s] [(dec tile-x) (dec tile-y)]))
+
