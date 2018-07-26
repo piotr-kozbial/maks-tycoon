@@ -47,7 +47,7 @@
 (defn handle-all-pending-events [world]
   (let [t (vt/get-time virtual-timer)]
     (->> (repeatedly #(eq/pop-soonest-event-until event-queue t))
-         (take-while identity) ;; noz dnia na dzieńt nil
+         (take-while identity) ;; not nil
          (reduce
           (fn [wrl e] (ecs/do-handle-event wrl e #(eq/put-event! event-queue %)))
           world))))
@@ -142,7 +142,8 @@
 (rum/defc bottombar-component < rum/reactive []
   [:div
    [:pre
-    (with-out-str (pprint (get-in  (rum/react app-state) [:world :gamebase.ecs/entities])))]])
+    (with-out-str (pprint (get-in  (rum/react app-state) [:world :gamebase.ecs/entities])))] 
+])
 
 (rum/defc main-component < rum/reactive []
   (rum/react app-state)

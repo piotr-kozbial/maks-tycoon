@@ -52,12 +52,25 @@
               (= path path1) path2
               (= path path2) path1))]))
 
+(defmethod ecs/handle-event [:to-entity ::locomotive ::stop]
+  [world event this]
+  [(ecs/mk-event (-> this ::ecs/components :move)
+                  ::sys-move/stop
+                  (::eq/time event))])
 
+(defmethod ecs/handle-event [:to-entity ::locomotive ::drive]
+  [world event this]
+  [(ecs/mk-event (-> this ::ecs/components :move)
+                 ::sys-move/drive
+                 (::eq/time event))])
 
 
 ;; TODO:
 ;;
-;; [ ] implement "stop" and "drive" events (not speed:=0! special flag!)
+;; [x] implement "stop" (not speed:=0! special flag!)
+;; [x] test it by manually sending an event (maybe special helpers needed)
+;; [ ] implement "drive"
+;;
 ;; [ ] use it to gently translate to track-based driving:
 ;;     [ ] first, stop after the first path is reached and just change tile-x, tile-y
 ;;     [ ] then, assume the starting path (at ::ecs/init) is [:w :e] on the starting tile

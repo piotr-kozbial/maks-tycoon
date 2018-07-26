@@ -29,6 +29,9 @@
 
 
 (defn put-event! [qa event]
+  (when-not event
+    (println "ALARM! event is nil!!!")
+    (assert false))
   (let [was-empty (= 0 (:n (my-deref qa)))]
     (my-swap!
      qa

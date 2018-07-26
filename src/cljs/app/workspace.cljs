@@ -12,6 +12,7 @@
             [gamebase.ecsu :as ecsu]
             [gamebase.geometry :as g]
             [gamebase.tiles :as tiles]
+            [gamebase.event-queue :as eq]
             [app.core :as core]
             ))
 
@@ -34,6 +35,14 @@
             (ecs/remove-entity-by-key world entity-key))))
   nil)
 
+(defn send-to-entity [entity-key msg & kvs]
+  (let [{:keys [world]} @core/app-state
+        entity (ecs/get-entity-by-key world entity-key)
+        time (vt/get-time core/virtual-timer)
+        event (apply assoc (ecs/mk-event (ecs/to entity) msg time) kvs)]
+    (apply eq/put-event! core/event-queue event kvs)))
+
+
 (comment
 
   (def test-entity
@@ -45,6 +54,10 @@
   (inject-entity test-entity)
 
   (kill-entity :test)
+
+  (send-to-entity :loc ::locomotive/stop)
+
+  (send-to-entity :loc ::locomotive/drive)
 
   )
 

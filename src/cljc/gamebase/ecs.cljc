@@ -174,7 +174,10 @@ nil
         ;; these instances to be defined by system
         ;; to which component belongs
         :to-component
-        ,   [:to-component (::type object) (::msg event)]))))
+        ,   [:to-component (::type object) (::msg event)]
+
+        (println (str "PROBLEM 2 !!!! >" (pr-str target-id) "< EVENT: " (pr-str event)))
+        ))))
 
 (defmethod handle-event :default
   [_ e _]
@@ -202,7 +205,7 @@ nil
         (if (map? ret)
           [ret] ;; single object - pack into vector to make it seqable
           ret)]
-   (doseq [e (remove ::kind new-objects-or-events)]
+   (doseq [e (remove nil? (remove ::kind new-objects-or-events))]
      (push-event-fn e))
    (reduce
     insert-object
@@ -235,9 +238,16 @@ nil
 ;; TODO - event time should be already set here (to 0 by default)
 ;; (now it is only defined in event-queue, but that is inconvenient)
 (defn mk-event [target-or-id msg time]
-  {::target-id (to target-or-id)
-   ::msg msg
-   ::eq/time time})
+  (let [target-id (to target-or-id)]
+    (when-not target-id
+      (println "ERROR!!! TARGET-ID NIL!!!")
+      (/ 1 0))
+    (when-not (::kind target-id)
+      (println (str "ERROR!!! TARGET-ID KIND NIL!!! " (pr-str target-id)))
+      (/ 1 0))
+    {::target-id target-id
+     ::msg msg
+     ::eq/time time}))
 
 ;;;;; Predefined events
 
@@ -300,7 +310,9 @@ nil
     ,  ((::entities world) (::entity-id target-id))
     :to-component
     ,  (let [entity ((::entities world) (::entity-id target-id))]
-         ((::components entity) (::component-id target-id)))))
+         ((::components entity) (::component-id target-id)))
+    (println (str "PROBLEM!!!! >" (pr-str target-id) "<"))
+    ))
 
 ;; helper function
 (defn insert-object [world object]
@@ -319,6 +331,8 @@ nil
 (defn remove-entity-by-key[world entity-key]
   (update-in world [::entities] dissoc entity-key))
 
+(defn get-entity-by-key [world entity-key]
+  (get-in world [::entities entity-key]))
 
 
 

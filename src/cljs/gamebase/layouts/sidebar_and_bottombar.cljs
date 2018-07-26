@@ -19,8 +19,7 @@
     {:id "gamebase/bottom-bar"
      :style {:position "absolute"
              :backgroundColor "#BBA415"
-             :overflow "auto"
-             }}
+             :overflow "auto"}}
     bottombar-content]
    [:div
     {:id "gamebase/bottom-bar-border"

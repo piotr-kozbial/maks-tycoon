@@ -49,55 +49,76 @@
    [entity-or-id key _]
    (assoc
     (ecs/mk-component ::movement entity-or-id key ::path-follower)
+    :driving? true
     :speed 0.06))
 
- (ecsu/handle-event ::ecs/init
-  (println "PATH-FOLLOWER INIT")
-  [])
+ (ecsu/handle-event ::ecs/init [])
 
- (ecsu/handle-event :update
+ (ecsu/handle-event :update (do-update <this> <time> <world>))
 
-  (let [{:keys [path
-                path-start-time
-                path-start-length
-                path-end-time
-                speed]} <this>]
-    (when path
-      (let [time-of-travel (- <time> path-start-time)
-            length-on-path (+ path-start-length (* time-of-travel speed))
-            total-path-length (g/path-length path)
-            at-end? (= <time> path-end-time)
-            after-end? (>= <time> path-end-time)]
+ (ecsu/handle-event ::stop
+                    (when-let [[maybe-event this'] (do-update <this> <time> <world>)]
+                      [maybe-event (assoc this' :driving? false)]))
 
-        [(when at-end?
-           (ecs/mk-event (ecsu/my-entity) ::at-path-end <time>))
-         (assoc <this>
-
-                :position
-                (g/path-point-at-length
-                 path
-                 (if after-end? total-path-length length-on-path))
-
-                :angle
-                (g/angle-at-length
-                 path
-                 (if after-end? total-path-length length-on-path)))]))))
+ (ecsu/handle-event ::drive
+                    (set-path
+                     (assoc <this> :driving? true)
+                     <time>
+                     (:path <this>)
+                     (:length-on-path <this>)))
 
  (ecsu/handle-event ::set-path
                     (let [{:keys [path]} <event>]
-                      (let [this' (assoc <this>
-                                         :path path
-                                         :path-start-length 0
-                                         :path-start-time <time>)
-                            path-end-time (calculate-path-end-time this' <time>)]
-                        [(assoc this' :path-end-time path-end-time)
-                         ;; ensure we'll get an :update event exactly at the end of the path
-                         (ecs/mk-event <this> :update path-end-time)])))
+                      (set-path <this> <time> path 0)))
 
  (local
 
   calculate-path-end-time
   , (fn [{:keys [path path-start-length path-start-time speed] :as component} time]
       (when (> speed 0)
-        (int (+ time (/ (- (g/path-length path) path-start-length) speed)))))))
+        (int (+ time (/ (- (g/path-length path) path-start-length) speed)))))
+
+  set-path
+  , (fn [this time path path-start-length]
+      (let [this' (assoc this
+                         :path path
+                         :path-start-length path-start-length
+                         :path-start-time time)
+            path-end-time (calculate-path-end-time this' time)]
+        [(assoc this' :path-end-time path-end-time)
+         ;; ensure we'll get an :update event exactly at the end of the path
+         (ecs/mk-event this :update path-end-time)]))
+
+  do-update
+  , (fn [<this> <time> <world>]
+      (let [{:keys [path
+                    path-start-time
+                    path-start-length
+                    path-end-time
+                    speed
+                    driving?]} <this>]
+        (when (and path driving?)
+          (let [time-of-travel (- <time> path-start-time)
+                length-on-path (+ path-start-length (* time-of-travel speed))
+                total-path-length (g/path-length path)
+                at-end? (= <time> path-end-time)
+                after-end? (>= <time> path-end-time)]
+
+            [(when at-end?
+               (ecs/mk-event (ecsu/my-entity) ::at-path-end <time>))
+             (assoc <this>
+
+                    :length-on-path length-on-path
+                    :at-end? at-end?
+                    :after-end? after-end?
+
+                    :position
+                    (g/path-point-at-length
+                     path
+                     (if after-end? total-path-length length-on-path))
+
+                    :angle
+                    (g/angle-at-length
+                     path
+                     (if after-end? total-path-length length-on-path)))]))))))
 
