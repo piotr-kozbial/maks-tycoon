@@ -24,12 +24,9 @@
     :debug-path (ecsu/mk-component sys-drawing/mk-path-component
                                    {:path-kvs (ecs/ck-kvs :move :path)})}
 
-   :path1  (g/line-segment [0 16] [200 16])
-   :path2 (g/precomputed (g/circle-arc [100 16] 100 (g/degrees 0) (g/degrees 180) :positive))
    :tile-x tile-x
    :tile-y tile-y
-   :track [:w :e]
-   ))
+   :track [:w :e]))
 
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ecs/init]
@@ -44,24 +41,19 @@
 (defmethod ecs/handle-event [:to-entity ::locomotive ::sys-move/at-path-end]
   [world event this]
   (let [path (-> this ::ecs/components :move :path)
-        {:keys [path1 path2 track tile-x tile-y]} this
-        [new-tile-x new-tile-y] (tiles/track-destination-tile track tile-x tile-y)]
-    [
-     (assoc this
+        {:keys [track tile-x tile-y]} this
+        [new-tile-x new-tile-y] (tiles/track-destination-tile track tile-x tile-y)
+        new-track [:w :e]
+        new-path (tiles/track-path new-track new-tile-x new-tile-y)]
+    [(assoc this
             :tile-x new-tile-x
-            :tile-y new-tile-y)
-
-     ;; (ecs/mk-event (-> this ::ecs/components :move)
-     ;;               ::sys-move/stop
-     ;;               (::eq/time event))
-
+            :tile-y new-tile-y
+            :track new-track)
      (assoc
       (ecs/mk-event (-> this ::ecs/components :move)
                     ::sys-move/set-path
                     (::eq/time event))
-      :path (tiles/track-path [:w :e] new-tile-x new-tile-y))
-
-     ]))
+      :path new-path)]))
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::stop]
   [world event this]
