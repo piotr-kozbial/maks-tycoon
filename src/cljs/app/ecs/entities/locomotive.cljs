@@ -5,7 +5,8 @@
    [gamebase.systems.drawing :as sys-drawing]
    [gamebase.systems.movement :as sys-move]
    [gamebase.event-queue :as eq]
-   [gamebase.geometry :as g]))
+   [gamebase.geometry :as g]
+   [gamebase.tiles :as tiles]))
 
 (defn mk-entity [id tile-x tile-y]
   (ecsu/mk-entity
@@ -27,7 +28,7 @@
    :path2 (g/precomputed (g/circle-arc [100 16] 100 (g/degrees 0) (g/degrees 180) :positive))
    :tile-x tile-x
    :tile-y tile-y
-   ;;:origin [0 0]
+   :track [:w :e]
    ))
 
 
@@ -38,19 +39,29 @@
    (ecs/mk-event (-> this ::ecs/components :move)
                  ::sys-move/set-path
                  (::eq/time event))
-   :path (:path1 this)))
+   :path (tiles/track-path (:track this) (:tile-x this) (:tile-y this))))
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::sys-move/at-path-end]
   [world event this]
   (let [path (-> this ::ecs/components :move :path)
-        {:keys [path1 path2]} this]
-    [(assoc
+        {:keys [path1 path2 track tile-x tile-y]} this
+        [new-tile-x new-tile-y] (tiles/track-destination-tile track tile-x tile-y)]
+    [
+     (assoc this
+            :tile-x new-tile-x
+            :tile-y new-tile-y)
+
+     ;; (ecs/mk-event (-> this ::ecs/components :move)
+     ;;               ::sys-move/stop
+     ;;               (::eq/time event))
+
+     (assoc
       (ecs/mk-event (-> this ::ecs/components :move)
                     ::sys-move/set-path
                     (::eq/time event))
-      :path (cond
-              (= path path1) path2
-              (= path path2) path1))]))
+      :path (tiles/track-path [:w :e] new-tile-x new-tile-y))
+
+     ]))
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::stop]
   [world event this]
@@ -73,7 +84,13 @@
 ;;
 ;; [x] btw. connect start/stop to UI
 ;;
-;; [ ] use it to gently translate to track-based driving:
-;;     [ ] first, stop after the first path is reached and just change tile-x, tile-y
-;;     [ ] then, assume the starting path (at ::ecs/init) is [:w :e] on the starting tile
-;;     [ ] then, implement ::sys-move/at-path-end to pick up one of tracke on the next tile
+;; [x] use it to gently translate to track-based driving:
+;;     [x] first, stop after the first path is reached and just change tile-x, tile-y
+;;     [x] then, assume the starting path (at ::ecs/init) is [:w :e] on the starting tile
+;;
+;; [ ] then, implement ::sys-move/at-path-end to pick up one of tracks on the next tile
+;;     [ ] refactor locomotive; re-think simultaneous changes to entity/components
+;;         and derived stuff (such as path from track etc.)
+;;     [ ] think how real world (tracks) will be connected to locomotive/engine
+;;     [ ] implement
+

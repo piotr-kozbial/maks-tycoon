@@ -50,7 +50,7 @@
    (assoc
     (ecs/mk-component ::movement entity-or-id key ::path-follower)
     :driving? true
-    :speed 0.06))
+    :speed 0.02))
 
  (ecsu/handle-event ::ecs/init [])
 
