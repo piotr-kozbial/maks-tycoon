@@ -128,16 +128,37 @@
 
 ;; UI
 
+
+
+(defn send-to-entity [entity-key msg & kvs]
+  (let [{:keys [world]} @app-state
+        entity (ecs/get-entity-by-key world entity-key)
+        time (vt/get-time virtual-timer)
+        event (apply assoc (ecs/mk-event (ecs/to entity) msg time) kvs)]
+    (apply eq/put-event! event-queue event kvs)))
+
 (rum/defc sidebar-component < rum/reactive []
 
-  (let [{:keys [frame-rate]} (rum/react app-state)]
+  (let [{:keys [frame-rate world]} (rum/react app-state)
+        loc (ecs/get-entity-by-key world :loc)
+        driving? (:driving? (:move (::ecs/components loc)))]
     [:div
      [:div (str "FRAME RATE: " frame-rate)]
      [:div
       "scale: " (canvas-control/get-scale) " "
       [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 0.5))} "50%"] " "
       [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 1.0))} "100%"] " "
-      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 2.0))} "200%"]]]))
+      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 2.0))} "200%"]]
+     [:br] [:br] [:br] [:br] [:br]
+     [:div
+      [:a {:href "#" :on-click (fn [_] (send-to-entity :loc ::locomotive/drive))}
+       (if driving? "[DRIVE]" "DRIVE")]
+      [:span " - "]
+      [:a {:href "#" :on-click (fn [_] (send-to-entity :loc ::locomotive/stop))}
+       (if driving? "STOP" "[STOP]")]]
+
+
+     ]))
 
 (rum/defc bottombar-component < rum/reactive []
   [:div

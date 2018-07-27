@@ -51,18 +51,5 @@
          ~@other-data-kvs
          ))))
 
-;; (ecsu/mk-entity
-;;  ;; id
-;;  :my-test-entity
-;;  ;; components
-;;  {:move (ecsu/mk-component sys-move/mk-path-follower nil)
-;;   :img (ecsu/mk-component sys-drawing/mk-static-image-component
-;;                           {:point-kvs (ecs/ck-kvs :move :position)
-;;                            :angle-kvs (ecs/ck-kvs :move :angle)
-;;                            :center [16 8]
-;;                            :resource-name "loco1.png"})
-;;   :debug-path (ecsu/mk-component sys-drawing/mk-path-component
-;;                                  {:path-kvs (ecs/ck-kvs :move :path)})}
-;;  ;; other data
-;;  :origin [0 0])
+
 

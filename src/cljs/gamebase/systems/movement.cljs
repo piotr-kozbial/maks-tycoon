@@ -57,15 +57,17 @@
  (ecsu/handle-event :update (do-update <this> <time> <world>))
 
  (ecsu/handle-event ::stop
-                    (when-let [[maybe-event this'] (do-update <this> <time> <world>)]
-                      [maybe-event (assoc this' :driving? false)]))
+                    (when (:driving? <this>)
+                      (when-let [[maybe-event this'] (do-update <this> <time> <world>)]
+                        [maybe-event (assoc this' :driving? false)])))
 
  (ecsu/handle-event ::drive
-                    (set-path
-                     (assoc <this> :driving? true)
-                     <time>
-                     (:path <this>)
-                     (:length-on-path <this>)))
+                    (when-not (:driving? <this>)
+                      (set-path
+                       (assoc <this> :driving? true)
+                       <time>
+                       (:path <this>)
+                       (:length-on-path <this>))))
 
  (ecsu/handle-event ::set-path
                     (let [{:keys [path]} <event>]

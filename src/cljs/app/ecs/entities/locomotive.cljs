@@ -69,7 +69,9 @@
 ;;
 ;; [x] implement "stop" (not speed:=0! special flag!)
 ;; [x] test it by manually sending an event (maybe special helpers needed)
-;; [ ] implement "drive"
+;; [x] implement "drive"
+;;
+;; [x] btw. connect start/stop to UI
 ;;
 ;; [ ] use it to gently translate to track-based driving:
 ;;     [ ] first, stop after the first path is reached and just change tile-x, tile-y
