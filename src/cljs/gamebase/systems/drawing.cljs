@@ -13,18 +13,18 @@
   (def to-system
     (ecs/to-system ::drawing))
 
-  (defn- -get-layer [system layer-key]
-    (->> (:layers system)
+  (defn- -get-layer [world layer-key]
+    (->> (:layers world)
          (filter #(= (first %) layer-key))
          (first)
          (second)))
 
-  (defn- -draw-layer [system layer {:keys [min-x max-x min-y max-y] :as context}]
+  (defn- -draw-layer [world layer {:keys [min-x max-x min-y max-y] :as context}]
     (js/push)
     (js/scale 1 -1)
     (let [{:keys [tile-width tile-height
                   world-width-in-tiles
-                  world-height-in-tiles] :as ctx} (:tile-context system)
+                  world-height-in-tiles] :as ctx} (:tile-context world)
           tx-min (max 0 (- (int (/ min-x tile-width)) 1))
           tx-max (min (+ (int (/ max-x tile-width)) 2) (dec world-width-in-tiles))
           ty-min (max 0 (- (int (/ min-y tile-width)) 1))
@@ -57,37 +57,15 @@
     ;; layerow z rysowaniem komponentow nad tymi layerami.
 
     ;; draw layers
-    (-draw-layer system (-get-layer system :background) context)
-    (-draw-layer system (-get-layer system :foreground) context)
+    (-draw-layer world (-get-layer world :background) context)
+    (-draw-layer world (-get-layer world :foreground) context)
 
     ;; draw components
     (-> world
         (#(ecs/pass-event-through-all
            % event (ecs/all-components-of-system % system)))))
 
-  (defmethod ecs/handle-event [:to-system ::drawing :update]
-    [world event system]
-    (let [world'
-          (ecs/pass-event-through-all
-           world
-           event
-           (ecs/all-components-of-system world system))]
-      world'))
-
-  (defmethod ecs/handle-event [:to-system ::drawing ::set-all-tmx]
-    [world {:keys [tmx-fname]} system]
-    (let [ls (layers/get-all-layers-from-tmx
-              (resources/get-resource tmx-fname))
-          tileset-map (layers/get-tileset-rendering-map-from-tmx
-                       (resources/get-resource tmx-fname))
-          ctx {:tile-width 32
-               :tile-height 32
-               :world-width-in-tiles 100
-               :world-height-in-tiles 100
-               :tileset-rendering-map tileset-map}]
-      (assoc system
-             :layers ls
-             :tile-context ctx))))
+  (defmethod ecs/handle-event [:to-system ::drawing :update] [world event system] (let [world'(ecs/pass-event-through-all world event (ecs/all-components-of-system world system))] world')))
 
 (do ;; COMPONENT: static image
 

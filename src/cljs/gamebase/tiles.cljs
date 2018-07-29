@@ -26,8 +26,8 @@
     :tracks [[:s :w]]}
    {:number 40, :ids [:track-ne :track-en]
     :tracks [[:n :e]]}
-   {:number 42, :ids [:track-sw :track-ws]
-    :tracks [[:s :w]]}
+   {:number 42, :ids [:track-nw :track-wn]
+    :tracks [[:n :w]]}
 
    ;; crossing
    {:number 21, :ids [:track-cross]
@@ -81,22 +81,9 @@
 ;; if track is on [tile-x tile-y], where does it lead
 ;; returns [new-tile-x new-tile-y]
 (defn track-destination-tile [track tile-x tile-y]
-  (case track
-    [:n :s] [tile-x (dec tile-y)]
-    [:s :n] [tile-x (inc (tile-y))]
-
-    [:w :e] [(inc tile-x) tile-y]
-    [:e :w] [(dec tile-x) tile-y]
-
-    [:n :w] [(dec tile-x) (dec tile-y)]
-    [:w :n] [(inc tile-x) (inc tile-y)]
-
-    [:n :e] [(inc tile-x) (dec tile-y)]
-    [:e :n] [(dec tile-x) (inc tile-y)]
-
-    [:s :w] [(dec tile-x) (inc tile-y)]
-    [:w :s] [(inc tile-x) (dec tile-y)]
-
-    [:s :e] [(inc tile-x) (inc tile-y)]
-    [:e :s] [(dec tile-x) (dec tile-y)]))
+  (case (second track)
+    :n [tile-x (inc tile-y)]
+    :s [tile-x (dec tile-y)]
+    :w [(dec tile-x) tile-y]
+    :e [(inc tile-x) tile-y]))
 

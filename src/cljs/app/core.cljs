@@ -18,8 +18,11 @@
 
             [cljs.pprint :refer [pprint]]
 
+            [gamebase.layers :as layers]
+
             [gamebase.ecsu :as ecsu] ;; without this it doesn't get compiled and loaded for cljs either
-            ))
+
+            [gamebase.tiles :as tiles]))
 
 ;; App state
 
@@ -96,16 +99,26 @@
 
 (defn init-world []
 
-  (swap! app-state assoc :world
-         (-> (ecs/mk-world)
-             (ecs/insert-object (sys-drawing/mk-system))
-             (ecs/insert-object (sys-move/mk-system))
-             (ecs/insert-object (locomotive/mk-entity :loc 1 0))))
+  (let [tmx-fname "level1.tmx"
+        ls (layers/get-all-layers-from-tmx
+            (resources/get-resource tmx-fname))
+        tileset-rendering-map (layers/get-tileset-rendering-map-from-tmx
+                     (resources/get-resource tmx-fname))
+        ctx {:tile-width 32
+             :tile-height 32
+             :world-width-in-tiles 100
+             :world-height-in-tiles 100
+             :tileset-rendering-map tileset-rendering-map
+             :tileset-map {:kafelki tiles/tiles-by-number}}]
 
-  (eq/put-event!
-   event-queue
-   (ecs/mk-event sys-drawing/to-system
-                 ::sys-drawing/clear-layers 0))
+    (swap! app-state assoc :world
+           (assoc
+            (-> (ecs/mk-world)
+                (ecs/insert-object (sys-drawing/mk-system))
+                (ecs/insert-object (sys-move/mk-system))
+                (ecs/insert-object (locomotive/mk-entity :loc 1 0)))
+            :layers ls
+            :tile-context ctx)))
 
   (eq/put-event!
    event-queue
