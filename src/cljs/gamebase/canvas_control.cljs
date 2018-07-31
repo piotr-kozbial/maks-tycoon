@@ -28,6 +28,17 @@
   (js/line 0 0 0 0))
 
 
+(defn get-canvas-to-world-converters []
+ (when-let [{:keys [state-atom state-kvs get-canvas-size]} @conf]
+    (let [{:keys [scale-factor translation-x translation-y]}
+          ,    (get-in @state-atom state-kvs)
+          ;; IMPORTANT!!! We must make translations integers, otherwise
+          ;; there will be unwanted artifacts (lines between tiles).
+          t-x (int translation-x)
+          t-y (int translation-y)]
+       [#(/ (- % t-x) scale-factor)
+        #(/ (- % t-y) (- scale-factor))])))
+
 (defn- draw []
   ;; canvas clear and setup
   (js/clear)
@@ -55,13 +66,18 @@
          {:min-x (rev-x 0)
           :max-x (rev-x wc)
           :min-y (rev-y hc) ;; because of negative y scale, hc is min and 0 is max
-          :max-y (rev-y 0)})))
+          :max-y (rev-y 0)
+          :mouse-x (rev-x js/mouseX)
+          :mouse-y (rev-y js/mouseY)})))
 
     ;; draw coordinate system marker
     (when (-> @debug/settings
               :canvas-control
               :coordinate-system-marker)
-      (debug-draw-coord-system))))
+      (debug-draw-coord-system)))
+
+
+  )
 
 (declare setup-drag-event)
 

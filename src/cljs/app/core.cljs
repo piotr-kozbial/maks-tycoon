@@ -116,7 +116,7 @@
             (-> (ecs/mk-world)
                 (ecs/insert-object (sys-drawing/mk-system))
                 (ecs/insert-object (sys-move/mk-system))
-                (ecs/insert-object (locomotive/mk-entity :loc 1 0)))
+                (ecs/insert-object (locomotive/mk-entity :loc 4 7)))
             :layers ls
             :tile-context ctx)))
 
@@ -203,6 +203,26 @@
 
 ;; Main function
 
+(defn on-canvas-click [{:keys [button world-x world-y tile-x tile-y]}]
+  (.log js/console (str "CANVAS MOUSE CLICKED button=" button
+                        " X=" world-x " Y=" world-y
+                        " TILE-X=" tile-x " TILE-Y=" tile-y)))
+
+(defn setup-click-handler []
+  (events/add-handler
+   :canvas-mouse-clicked
+   (fn [{:keys [button x y]}]
+     (when-let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters)]
+       (let [world-x (conv-x x)
+             world-y (conv-y y)
+             tile-x (quot world-x 32)
+             tile-y (quot world-y 32)]
+         (on-canvas-click {:button button
+                           :world-x world-x
+                           :world-y world-y
+                           :tile-x tile-x
+                           :tile-y tile-y}))))))
+
 (defn main [& _]
 
   (.log js/console "-----> main")
@@ -255,5 +275,9 @@
     ;; :get-world-size #(vector 2000 1000) ;; TODO
     })
 
+  (setup-click-handler)
+
   (vt/resume virtual-timer))
+
+
 
