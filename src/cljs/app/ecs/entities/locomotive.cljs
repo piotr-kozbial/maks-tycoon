@@ -7,7 +7,8 @@
    [gamebase.event-queue :as eq]
    [gamebase.geometry :as g]
    [gamebase.tiles :as tiles]
-   [gamebase.layers :as layers]))
+   [gamebase.layers :as layers]
+   [app.world-interop :as wo]))
 
 (defn mk-entity [id tile-x tile-y]
   (ecsu/mk-entity
@@ -23,7 +24,9 @@
                              :center [16 8]
                              :resource-name "loco1.png"})
     :debug-path (ecsu/mk-component sys-drawing/mk-path-component
-                                   {:path-kvs (ecs/ck-kvs :move :path)})}
+                                   {:path-kvs (ecs/ck-kvs :move :path)})
+
+    }
 
    :tile-x tile-x
    :tile-y tile-y
@@ -71,17 +74,17 @@
 
         ]
     
-    (.log js/console
+    ;; (.log js/console
 
-          (str "NEW TILE (" new-tile-x "," new-tile-y, "): "
-               (pr-str info)
-               " tile end: " (pr-str tile-end)
-               " new tracks: " (pr-str new-tile-tracks)
+    ;;       (str "NEW TILE (" new-tile-x "," new-tile-y, "): "
+    ;;            (pr-str info)
+    ;;            " tile end: " (pr-str tile-end)
+    ;;            " new tracks: " (pr-str new-tile-tracks)
 
-               " poss. new. tracks: "
-               (pr-str possible-new-tracks))
+    ;;            " poss. new. tracks: "
+    ;;            (pr-str possible-new-tracks))
 
-          )
+    ;;       )
 
     [(assoc this
             :tile-x new-tile-x

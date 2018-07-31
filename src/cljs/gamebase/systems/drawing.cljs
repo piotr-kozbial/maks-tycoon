@@ -47,17 +47,6 @@
                        x y w h))))))
     (js/pop))
 
-  (defn -draw-tile-box-under-mouse [{:keys [mouse-x mouse-y]}]
-
-    (js/noFill)
-    (js/strokeWeight 1)
-    (js/stroke 20 20 20)
-    (js/rect (* 32 (quot mouse-x 32)) (* 32 (quot mouse-y 32)) 31 31)
-    (js/stroke 210 210 210)
-    (js/rect (inc (* 32 (quot mouse-x 32))) (dec (* 32 (quot mouse-y 32))) 31 31)
-
-      )
-
   (defmethod ecs/handle-event [:to-system ::drawing ::draw]
     [world {:keys [context] :as event} system]
 
@@ -72,18 +61,9 @@
     (-draw-layer world (-get-layer world :foreground) context)
 
     ;; draw components
-    (let [world' (-> world
-                     (#(ecs/pass-event-through-all
-                        % event (ecs/all-components-of-system % system))))]
-
-      ;; draw UI overlays
-
-      ;; TODO - to nie powinno byc tutaj, tylko jakos osobno!
-      ;; A moze na zasadzie dedykowanego layera? Eee... słabo.
-
-      (-draw-tile-box-under-mouse context)
-
-      world'))
+    (-> world
+        (#(ecs/pass-event-through-all
+           % event (ecs/all-components-of-system % system)))))
 
   (defmethod ecs/handle-event [:to-system ::drawing :update] [world event system] (let [world'(ecs/pass-event-through-all world event (ecs/all-components-of-system world system))] world')))
 

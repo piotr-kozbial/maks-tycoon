@@ -2,31 +2,9 @@
   (:require
    [gamebase.events :as events]
    [gamebase.ecs :as ecs]
-   [gamebase.projection :as proj]
-   [gamebase.debug :as debug]))
+   [gamebase.projection :as proj]))
 
 (defonce conf (atom nil))
-
-
-(defn debug-draw-coord-system []
-
-  ;; x axis
-  (js/stroke 255 0 0)
-  (js/strokeWeight 4)
-  (js/line -32 0  32 0)
-  (js/line 32 0 28 5)
-  (js/line 32 0 28 -5)
-
-  ;; y axis
-  (js/stroke 0 0 255)
-  (js/strokeWeight 4)
-  (js/line 0 -32 0 32)
-  (js/line 0 32 -5 28)
-  (js/line 0 32 5 28)
-
-  (js/stroke 255 255 255)
-  (js/line 0 0 0 0))
-
 
 (defn get-canvas-to-world-converters []
  (when-let [{:keys [state-atom state-kvs get-canvas-size]} @conf]
@@ -68,16 +46,7 @@
           :min-y (rev-y hc) ;; because of negative y scale, hc is min and 0 is max
           :max-y (rev-y 0)
           :mouse-x (rev-x js/mouseX)
-          :mouse-y (rev-y js/mouseY)})))
-
-    ;; draw coordinate system marker
-    (when (-> @debug/settings
-              :canvas-control
-              :coordinate-system-marker)
-      (debug-draw-coord-system)))
-
-
-  )
+          :mouse-y (rev-y js/mouseY)})))))
 
 (declare setup-drag-event)
 
@@ -103,7 +72,6 @@
      translation-y
      wc
      hc)))
-
 
 (defn -get-state []
   (when-let [{:keys [state-atom state-kvs]} @conf]
