@@ -1,0 +1,51 @@
+.gamebase_dropdown {
+    color: red;
+    text-decoration:none;
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+    cursor: default;
+    position: relative;
+
+}
+
+.gamebase_dropdown_placeholder {
+    color: black;
+    text-decoration:none;
+    border: 2px solid black;
+    padding: 0;
+    margin: 0;
+}
+
+.gamebase_dropdown_selected {
+    color: black;
+    text-decoration:none;
+    font-weight: bold;
+    border: 1px solid black;
+    padding: 0;
+    margin: 0;
+}
+
+.gamebase_dropdown_arrow {
+    color: black;
+    text-decoration:none;
+    border: 2px solid black;
+    padding: 0;
+    margin: 0;
+}
+
+.gamebase_dropdown_item {
+    color: black;
+    background-color: #BBAA00;
+    text-decoration:none;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+.gamebase_dropdown_item:hover {
+    background-color: #BB4400;
+}

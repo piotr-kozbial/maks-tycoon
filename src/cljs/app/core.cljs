@@ -1,7 +1,8 @@
 (ns app.core
   (:require [rum.core :as rum]
 
-            [app.state :refer [app-state]]
+            [app.state :refer [app-state ui-refresh-tick virtual-timer
+                               get-fresh-entity-id event-queue]]
 
             [gamebase.resources :as resources]
 
@@ -26,23 +27,16 @@
             [gamebase.ecsu :as ecsu] ;; without this it doesn't get compiled and loaded for cljs either
 
             [gamebase.tiles :as tiles]
-            [app.world-interop :as wo]))
+            [app.world-interop :as wo]
 
+            [app.ui.sidebar :refer [sidebar-component]]
+            [app.ui.bottombar :refer [bottombar-component]]
+
+            ))
 
 ;; Events are to be handled inside `draw`,
 ;; which *does not* mean that they rely
 ;; on a specific frame rate.
-
-;; Event queue
-
-(def event-queue {:root-atom app-state :ks [:event-queue]
-                  :on-adding-to-empty (fn [])})
-(defonce _eq_init (do (eq/initialize event-queue) nil))
-
-;; Virtual timer
-
-(def virtual-timer {:root-atom app-state :ks [:virtual-timer]})
-(defonce _vt_init (do (vt/initialize virtual-timer) nil))
 
 ;; Event handling
 
@@ -175,52 +169,12 @@
      event-queue
      (ecs/mk-event e ::ecs/init 0))))
 
-;; UI
-
-(declare send-to-entity)
-
-
-(defonce ui-refresh-tick (atom 0))
-
-(defonce _ui-refresh
-  (do
-    (js/setInterval (fn [] (swap! ui-refresh-tick inc)) 500)
-    nil))
-
-(rum/defc sidebar-component < rum/reactive []
-  (rum/react ui-refresh-tick)
-  (let [{:keys [frame-rate world]} @app-state
-        loc (ecs/get-entity-by-key world :loc)
-        driving? (:driving? (:move (::ecs/components loc)))]
-    [:div
-     [:div (str "FRAME RATE: " frame-rate)]
-     [:div
-      "scale: " (canvas-control/get-scale) " "
-      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 0.5))} "50%"] " "
-      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 1.0))} "100%"] " "
-      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 2.0))} "200%"]]
-     [:br] [:br] [:br] [:br] [:br]
-     [:div
-      [:a {:href "#" :on-click (fn [_] (send-to-entity :loc ::locomotive/drive))}
-       (if driving? "[DRIVE]" "DRIVE")]
-      [:span " - "]
-      [:a {:href "#" :on-click (fn [_] (send-to-entity :loc ::locomotive/stop))}
-       (if driving? "STOP" "[STOP]")]]
-
-     [:br] [:br] [:br] [:br] [:br]
-
-     [:div "Locomotives: " (str (count (wo/get-all-locomotives world)))]
-
-     ]))
-
-(rum/defc bottombar-component < rum/reactive []
-  [:div
-   [:pre
-    ;;(with-out-str (pprint (get-in  (rum/react app-state) [:world :gamebase.ecs/entities])))
-    ]])
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; UI root
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (rum/defc main-component < rum/reactive []
-  ;;(rum/react app-state)
+  (rum/react ui-refresh-tick)
   (our-layout/mk-html
    ;; sidebar
    (sidebar-component)
@@ -231,7 +185,9 @@
   (rum/mount (main-component)
              (. js/document (getElementById "app"))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Resources to be loaded
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def resource-fnames
   ["background.png"
@@ -241,14 +197,27 @@
    "carriage1.png"
    "level1.tmx"])
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main function
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(declare on-canvas-click)
+(defn on-canvas-click [{:keys [button world-x world-y tile-x tile-y]}]
+  ;; (.log js/console (str "CANVAS MOUSE CLICKED button=" button
+  ;;                       " X=" world-x " Y=" world-y
+  ;;                       " TILE-X=" tile-x " TILE-Y=" tile-y))
+
+  (let [id (keyword (str "loc-" (get-fresh-entity-id)))
+        loc (locomotive/mk-entity id tile-x tile-y)]
+
+    (wo/inject-entity loc)
+
+    (eq/put-event! event-queue (ecs/mk-event loc ::ecs/init (vt/get-time virtual-timer)))))
 
 (defn setup-click-handler []
   (events/add-handler
    :canvas-mouse-clicked
    (fn [{:keys [button x y]}]
+     (.log js/console "CANVAS MOUSE CLICKED")
      (when-let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters)]
        (let [world-x (conv-x x)
              world-y (conv-y y)
@@ -315,59 +284,4 @@
   (setup-click-handler)
 
   (vt/resume virtual-timer))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(defn inject-entity [e]
-  (swap! app-state
-         (fn [{:keys [world] :as state}]
-           (assoc
-            state
-            :world
-            (ecs/insert-object world e))))
-  nil)
-
-(defn kill-entity [entity-key]
-  (swap! app-state
-         (fn [{:keys [world] :as state}]
-           (assoc
-            state
-            :world
-            (ecs/remove-entity-by-key world entity-key))))
-  nil)
-
-(defn send-to-entity [entity-key msg & kvs]
-  (let [{:keys [world]} @app-state
-        entity (ecs/get-entity-by-key world entity-key)
-        time (vt/get-time virtual-timer
-                          )
-        event (apply assoc (ecs/mk-event (ecs/to entity) msg time) kvs)]
-    (apply eq/put-event! event-queue event kvs)))
-
-
-
-(defonce -entity-id-counter (atom 0))
-
-(defn get-fresh-entity-id []
-  (swap! -entity-id-counter inc))
-
-
-(defn on-canvas-click [{:keys [button world-x world-y tile-x tile-y]}]
-  ;; (.log js/console (str "CANVAS MOUSE CLICKED button=" button
-  ;;                       " X=" world-x " Y=" world-y
-  ;;                       " TILE-X=" tile-x " TILE-Y=" tile-y))
-
-  (let [id (keyword (str "loc-" (get-fresh-entity-id)))
-        loc (locomotive/mk-entity id tile-x tile-y)]
-
-    (inject-entity loc)
-
-    (eq/put-event! event-queue (ecs/mk-event loc ::ecs/init (vt/get-time virtual-timer)))
-
-    )
-  )
-
 

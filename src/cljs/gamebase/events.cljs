@@ -23,7 +23,8 @@
         handlers (event-key @all-handlers)]
     (when (precondition-for-event event-key)
       (doseq [h handlers]
-        (h (data-for-event event-key))))))
+        (h (data-for-event event-key)))))
+  nil)
 
 ;;-------------------------------------------------------------------
 
