@@ -1,5 +1,10 @@
 * {
     font-family: sans-serif;
+    text-decoration: none;
+}
+
+a {
+    font-decoration: none;
 }
 
 .gamebase_dropdown {

@@ -15,10 +15,10 @@
 
 (rum/defc sidebar-component < rum/reactive []
   (rum/react ui-refresh-tick)
-  
+
   (let [{:keys [open? selected-id]} (-> (rum/react ui-state) :sidebar :loc-selector)
         {:keys [frame-rate world]} @app-state
-        loc (ecs/get-entity-by-key world :loc)
+        loc (ecs/get-entity-by-key world selected-id)
         driving? (:driving? (:move (::ecs/components loc)))]
 
     [:div
@@ -28,20 +28,7 @@
       [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 0.5))} "50%"] " "
       [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 1.0))} "100%"] " "
       [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 2.0))} "200%"]]
-     [:br] [:br] [:br] [:br] [:br]
-
-
-
-     [:div
-      [:a {:href "#" :on-click (fn [_] (wo/send-to-entity :loc ::locomotive/drive))}
-       (if driving? "[DRIVE]" "DRIVE")]
-      [:span " - "]
-      [:a {:href "#" :on-click (fn [_] (wo/send-to-entity :loc ::locomotive/stop))}
-       (if driving? "STOP" "[STOP]")]]
-
-     [:br] [:br] [:br] [:br] [:br]
-
-
+     [:br] [:br] [:br]
 
      (let [locs (wo/get-all-locomotives world)]
        [:div
@@ -65,10 +52,34 @@
            "tile: [" tile-x ", " tile-y "]" [:br]
            "heading: " [:br]
            [:a {:href "#"
-                :on-click (fn [_] (canvas-control/center-on (proj/world-point [(* 32 tile-x) (* 32 tile-y)])))
-                } "goto"]
+                :on-click (fn [_] (canvas-control/center-on
+                                  (proj/world-point [(* 32 tile-x) (* 32 tile-y)])))
+                } "goto"] [:br]
 
-           ;[:div (pr-str (:move (::ecs/components selected-loc)))]
+           [:div
+            [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-id ::locomotive/drive))
+                 :style (if driving?
+                          {:color "white"
+                           :background-color "green"
+                           :border "solid 1px green"}
+                          {:color "black"
+                           :border "solid 1px black"})}
+             "DRIVE"
+             ;(if driving? "[DRIVE]" "DRIVE")
+             ]
+            [:span " "]
+            [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-id ::locomotive/stop))
+                 :style (if driving?
+                          {:color "black"
+                           :border "solid 1px black"}
+                          {:color "white"
+                           :background-color "red"
+                           :border "solid 1px red"
+                           })}
+             "STOP"
+             ;(if driving? "STOP" "[STOP]")
+             ]] [:br]
+
 
            ])])]))
 

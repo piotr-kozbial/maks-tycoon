@@ -17,7 +17,7 @@
 
    ::locomotive
 
-   {:move (ecsu/mk-component sys-move/mk-path-follower {:path-history-size 2})
+   {:move (ecsu/mk-component sys-move/mk-path-follower {:path-history-size 1})
     :img (ecsu/mk-component sys-drawing/mk-static-image-component
                             {:point-kvs (ecs/ck-kvs :move :position)
                              :angle-kvs (ecs/ck-kvs :move :angle)
@@ -26,12 +26,12 @@
     :debug-path (ecsu/mk-component sys-drawing/mk-path-component
                                    {:path-kvs (ecs/ck-kvs :move :path)
                                     :color "magenta"})
-    :debug-path-history-1 (ecsu/mk-component sys-drawing/mk-path-component
-                                             {:path-kvs (ecs/ck-kvs :move :path-history 1)
-                                              :color "blue"})
+    ;; :debug-path-history-1 (ecsu/mk-component sys-drawing/mk-path-component
+    ;;                                          {:path-kvs (ecs/ck-kvs :move :path-history 1)
+    ;;                                           :color "blue"})
     :debug-path-history-0 (ecsu/mk-component sys-drawing/mk-path-component
                                              {:path-kvs (ecs/ck-kvs :move :path-history 0)
-                                              :color "black"})
+                                              :color "blue"})
 
     }
 
