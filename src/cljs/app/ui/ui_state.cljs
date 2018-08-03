@@ -4,7 +4,8 @@
   (atom
 
    {:sidebar
-    {:loc-selector {:open? true}}
+    {:loc-selector {:open? true
+                    :selected-id nil}}
     :bottombar
     {}}))
 
@@ -25,3 +26,5 @@
 (defn loc-selector-close []
   (swap! ui-state assoc-in [:sidebar :loc-selector :open?] false))
 
+(defn loc-selector-select [loc-id]
+  (swap! ui-state assoc-in [:sidebar :loc-selector :selected-id] loc-id))

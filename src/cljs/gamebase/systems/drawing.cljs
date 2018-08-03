@@ -106,10 +106,11 @@
   ;; draws a path as defined in gamebase.geometry
 
   (defn mk-path-component
-    [entity-or-id key {:keys [path-kvs]}]
+    [entity-or-id key {:keys [path-kvs color]}]
     (assoc
      (ecs/mk-component ::drawing entity-or-id key ::path)
-     :path-kvs path-kvs))
+     :path-kvs path-kvs
+     :color color))
 
   (defmethod ecs/handle-event [:to-component ::path :update]
     [world event component]
@@ -123,7 +124,7 @@
               n (int (/ len 5))
               d (/ len n)]
           (js/push)
-          (js/stroke (js/color "magenta"))
+          (js/stroke (js/color (:color component)))
           (doseq [i (range (inc n))]
             (apply js/point (g/path-point-at-length path (* i d))))
           (js/pop))))

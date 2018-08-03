@@ -5,6 +5,7 @@
    [gamebase.ecs :as ecs]
    [app.ecs.entities.locomotive :as locomotive]
    [gamebase.canvas-control :as canvas-control]
+   [gamebase.projection :as proj]
    [gamebase.virtual-timer :as vt]
    [app.world-interop :as wo]
 
@@ -15,7 +16,7 @@
 (rum/defc sidebar-component < rum/reactive []
   (rum/react ui-refresh-tick)
   
-  (let [open? (-> (rum/react ui-state) :sidebar :loc-selector :open?)
+  (let [{:keys [open? selected-id]} (-> (rum/react ui-state) :sidebar :loc-selector)
         {:keys [frame-rate world]} @app-state
         loc (ecs/get-entity-by-key world :loc)
         driving? (:driving? (:move (::ecs/components loc)))]
@@ -52,10 +53,22 @@
                                   (map #(::ecs/entity-id %))
                                   (sort)
                                   (map #(vector % (str "halo" (name %)))))
-                      :selected-id :loc-2
-                      :on-click-open #'uis/loc-selector-open
-                      :on-click-close #'uis/loc-selector-close})
+                      :selected-id selected-id
+                      :callbacks {:open #'uis/loc-selector-open
+                                  :close #'uis/loc-selector-close
+                                  :on-select #'uis/loc-selector-select
+                                  }})
+        (let [selected-loc (first (filter #(= (::ecs/entity-id %) selected-id) locs))
+              tile-x (:tile-x selected-loc)
+              tile-y (:tile-y selected-loc)]
+          [:div
+           "tile: [" tile-x ", " tile-y "]" [:br]
+           "heading: " [:br]
+           [:a {:href "#"
+                :on-click (fn [_] (canvas-control/center-on (proj/world-point [(* 32 tile-x) (* 32 tile-y)])))
+                } "goto"]
 
-        "A tutaj ......................."
-        ])]))
+           ;[:div (pr-str (:move (::ecs/components selected-loc)))]
+
+           ])])]))
 

@@ -114,17 +114,19 @@
   "set translation in such a way that the center point
    of the viewport matches given world point"
 
-  [world-p]
+  [[_ world-x world-y :as world-p]]
 
-  (let [{:keys [state-atom state-kvs]} @conf
+  (let [world-p' (proj/world-point [world-x (- world-y)])
+        {:keys [state-atom state-kvs]} @conf
         proj-conf (make-proj-conf)
         proj-conf0 (assoc proj-conf
                           :tx 0
                           :ty 0)
+        ;;;_ (println (str "got" (pr-str world-p')))
         ;; view coords of the given world point
-        [xw yw] (proj/view-coords proj-conf0 world-p)
-        _ (println [xw yw])
-        _ (println proj-conf)
+        [xw yw] (proj/view-coords proj-conf0 world-p')
+        ;;; _ (println [xw yw])
+        ;;; _ (println proj-conf)
         ;; view coords of view center
         [xc yc] (proj/view-coords proj-conf0 (proj/Vc proj-conf0))
         _ (println [xc yc])
@@ -135,18 +137,18 @@
            (fn [s] (assoc s
                          :translation-x tr-x
                          :translation-y tr-y))))
-  nil)
+  nil
 
-;; TODO
-;; this will need to use :get-world-size from conf
-;; this will be called in setup-drag-event, set-scale etc.
-(defn readjust
-  "fix translation after external change
+  ;; TODO
+  ;; this will need to use :get-world-size from conf
+  ;; this will be called in setup-drag-event, set-scale etc.
+  (defn readjust
+    "fix translation after external change
   (such as canvas resize by layout or game state reloaded)
   so that some of the world is visible at least"
-  []
+    []
 
-  )
+    ))
 
 (defn- setup-drag-event []
   (events/add-handler

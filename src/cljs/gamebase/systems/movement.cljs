@@ -46,11 +46,13 @@
 (ecsu/component ::path-follower
 
  (defn mk-path-follower
-   [entity-or-id key _]
+   [entity-or-id key {:keys [path-history-size]}]
    (assoc
     (ecs/mk-component ::movement entity-or-id key ::path-follower)
     :driving? true
-    :speed 0.02))
+    :speed 0.02
+    :path-history-size path-history-size
+    :path-history []))
 
  (ecsu/handle-event ::ecs/init [])
 
@@ -82,7 +84,13 @@
 
   set-path
   , (fn [this time path path-start-length]
-      (let [this' (assoc this
+      (let [history (:path-history this)
+            history' (into history [(:path this)])
+            history'' (if (<= (count history') (:path-history-size this))
+                        history'
+                        (apply vector (rest history')))
+            this' (assoc this
+                         :path-history history''
                          :path path
                          :path-start-length path-start-length
                          :path-start-time time)

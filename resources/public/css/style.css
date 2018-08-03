@@ -1,3 +1,7 @@
+* {
+    font-family: sans-serif;
+}
+
 .gamebase_dropdown {
     color: red;
     text-decoration:none;
