@@ -3,14 +3,13 @@
    [gamebase.ecs :as ecs]
    [gamebase.virtual-timer :as vt]
    [gamebase.event-queue :as eq]
-   [app.state :refer [app-state ui-refresh-tick virtual-timer event-queue]]
-   [app.ecs.entities.locomotive :as locomotive]))
+   [app.state :refer [app-state ui-refresh-tick virtual-timer event-queue]]))
 
 
 (defn get-all-locomotives [world]
 
   (filter
-   #(= (::ecs/type %) ::locomotive/locomotive)
+   #(= (::ecs/type %) :app.ecs.entities.locomotive/locomotive)
    (vals (::ecs/entities world)))
   ;; (::ecs/entities world)
 
