@@ -148,7 +148,8 @@
                 ;;;(ecs/insert-object (locomotive/mk-entity :loc 4 7))
                 )
             :layers ls
-            :tile-context ctx)))
+            :tile-context ctx
+            :tile-extra {})))
 
   (eq/put-event!
    event-queue
@@ -232,6 +233,9 @@
 (defn main [& _]
 
   (.log js/console "-----> main")
+
+  ;;(js/frameRate 5)
+
 
   (js/setInterval (fn []
                     (let [rate (js/frameRate)

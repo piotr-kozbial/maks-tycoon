@@ -3,7 +3,41 @@
    [gamebase.ecs :as ecs]
    [gamebase.resources :as resources]
    [gamebase.geometry :as g]
-   [gamebase.layers :as layers]))
+   [gamebase.layers :as layers]
+   [gamebase.tiles :as tiles]
+   [app.state :as st]))
+
+(defn -put-image [img x y w h dst-x dst-y]
+  (js/push)
+  (js/scale 1 -1)
+  (js/image img
+            ;; destination
+            dst-x (- (* -1 dst-y) h) w h
+            ;; source
+            x y w h)
+  (js/pop))
+
+(defmulti draw-tile-extra (fn [tile-id x y tile-info] tile-id) :default nil)
+
+(defmethod draw-tile-extra nil
+  [tile-id tile-info x y]
+  false)
+
+(defmethod draw-tile-extra :track-wt [tile-id tx ty tile-info]
+  (let [{:keys [state]} (st/get-tile-extra tx ty)
+        x (* 32 tx)
+        y (* 32 ty)
+        [src-x src-y] (case state
+                        :right [384 0]
+                        :straight-right [393 0]
+                        :left [384 9]
+                        :straight-left [393 9]
+                        [402 0])]
+    (-put-image (resources/get-resource "tiles.png")
+                src-x src-y 8 8
+                (+ x 23) (+ y 12)))
+  true)
+
 
 (do ;; SYSTEM
 
@@ -19,9 +53,10 @@
          (first)
          (second)))
 
-  (defn- -draw-layer [world layer {:keys [min-x max-x min-y max-y] :as context}]
-    (js/push)
-    (js/scale 1 -1)
+
+
+  (defn- -draw-layer [world layer {:keys [min-x max-x min-y max-y] :as context}
+                      draw-extra?]
     (let [{:keys [tile-width tile-height
                   world-width-in-tiles
                   world-height-in-tiles] :as ctx} (:tile-context world)
@@ -33,19 +68,17 @@
           ty-range (range ty-min (inc ty-max))]
       (doall
        (for [tx tx-range, ty ty-range]
-         (let [tl (layers/get-tile-from-layer layer tx ty)
+         (let [[_ tile-number :as tl] (layers/get-tile-from-layer layer tx ty)
                {:keys [img x y w h] :as inf}
                ,  (layers/get-rendering-information-for-tile ctx tl)]
            (when tl
-             (js/image (resources/get-resource img)
-                       ;; destination
 
-                       ;; TODO !!! - skad jest to -32 ponizej?
+             (-put-image (resources/get-resource img)
+                         x y w h (* tile-width tx) (* tile-height ty))
 
-                       (* tile-width tx) (- (* -32 ty) tile-height) w h
-                       ;; source
-                       x y w h))))))
-    (js/pop))
+             (when draw-extra?
+               (let [tile-data (tiles/tiles-by-number tile-number)]
+                 (some #(draw-tile-extra % tx ty tile-data) (:ids tile-data))))))))))
 
   (defmethod ecs/handle-event [:to-system ::drawing ::draw]
     [world {:keys [context] :as event} system]
@@ -57,8 +90,8 @@
     ;; layerow z rysowaniem komponentow nad tymi layerami.
 
     ;; draw layers
-    (-draw-layer world (-get-layer world :background) context)
-    (-draw-layer world (-get-layer world :foreground) context)
+    (-draw-layer world (-get-layer world :background) context false)
+    (-draw-layer world (-get-layer world :foreground) context true)
 
     ;; draw components
     (-> world
@@ -127,5 +160,4 @@
           (js/stroke (js/color (:color component)))
           (doseq [i (range (inc n))]
             (apply js/point (g/path-point-at-length path (* i d))))
-          (js/pop))))
-    nil))
+          (js/pop)))) nil))

@@ -35,3 +35,16 @@
                   :on-adding-to-empty (fn [])})
 (defonce _eq_init (do (eq/initialize event-queue) nil))
 
+;; Tile extra
+
+(defn get-tile-extra [tx ty]
+  ((:tile-extra (:world @app-state)) [tx ty]))
+
+(defn update-tile-extra [tx ty f]
+  (swap! app-state update-in [:world :tile-extra]
+         (fn [m]
+           (assoc
+            m
+            [tx ty]
+            (f (m [tx ty])))))
+  nil)
