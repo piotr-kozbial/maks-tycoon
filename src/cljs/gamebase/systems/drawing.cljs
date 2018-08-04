@@ -7,6 +7,8 @@
    [app.tiles.general :as tiles]
    [app.state :as st]))
 
+;; utils
+
 (defn -put-image [img x y w h dst-x dst-y]
   (js/push)
   (js/scale 1 -1)
@@ -17,26 +19,15 @@
             x y w h)
   (js/pop))
 
+
+;; TILE EXTRA
+
 (defmulti draw-tile-extra (fn [tile-id tx ty tile-info] tile-id) :default nil)
 
 (defmethod draw-tile-extra nil
   [tile-id tile-info tx ty]
   false)
 
-(defmethod draw-tile-extra :track-wt [tile-id tx ty tile-info]
-  (let [{:keys [state]} (st/get-tile-extra tx ty)
-        x (* 32 tx)
-        y (* 32 ty)
-        [src-x src-y] (case state
-                        :right [384 0]
-                        :straight-right [393 0]
-                        :left [384 9]
-                        :straight-left [393 9]
-                        [402 0])]
-    (-put-image (resources/get-resource "tiles.png")
-                src-x src-y 8 8
-                (+ x 23) (+ y 12)))
-  true)
 
 
 (do ;; SYSTEM

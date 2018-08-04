@@ -87,3 +87,14 @@
     :s [tile-x (dec tile-y)]
     :w [(dec tile-x) tile-y]
     :e [(inc tile-x) tile-y]))
+
+
+;;;;; TILE EXTRA
+
+(defmulti initialize-tile-extra (fn [tile-id tile-x tile-y tile-info] tile-id) :default nil)
+
+(defmethod initialize-tile-extra nil
+  [tile-id tile-x tile-y tile-info]
+  nil)
+
+

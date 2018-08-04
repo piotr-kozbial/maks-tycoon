@@ -32,7 +32,7 @@
             [app.ui.sidebar :refer [sidebar-component]]
             [app.ui.bottombar :refer [bottombar-component]]
 
-            [app.tile-extra :refer [initialize-tile-extra]]
+            [app.tiles.general :refer [initialize-tile-extra]]
 
             [app.state :as st]))
 
