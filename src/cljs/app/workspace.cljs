@@ -11,7 +11,7 @@
             [gamebase.layouts.sidebar-and-bottombar :as our-layout]
             [gamebase.ecsu :as ecsu]
             [gamebase.geometry :as g]
-            [gamebase.tiles :as tiles]
+            [app.tiles.general :as tiles]
             [gamebase.event-queue :as eq]
             [app.core :as core]
             [app.state :refer [app-state virtual-timer event-queue]]))

@@ -26,7 +26,7 @@
 
             [gamebase.ecsu :as ecsu] ;; without this it doesn't get compiled and loaded for cljs either
 
-            [gamebase.tiles :as tiles]
+            [app.tiles.general :as tiles]
             [app.world-interop :as wo]
 
             [app.ui.sidebar :refer [sidebar-component]]

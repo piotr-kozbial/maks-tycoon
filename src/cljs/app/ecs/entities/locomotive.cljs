@@ -6,7 +6,7 @@
    [gamebase.systems.movement :as sys-move]
    [gamebase.event-queue :as eq]
    [gamebase.geometry :as g]
-   [gamebase.tiles :as tiles]
+   [app.tiles.general :as tiles]
    [gamebase.layers :as layers]
    [app.world-interop :as wo]))
 

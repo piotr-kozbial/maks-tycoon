@@ -4,7 +4,7 @@
    [gamebase.resources :as resources]
    [gamebase.geometry :as g]
    [gamebase.layers :as layers]
-   [gamebase.tiles :as tiles]
+   [app.tiles.general :as tiles]
    [app.state :as st]))
 
 (defn -put-image [img x y w h dst-x dst-y]
