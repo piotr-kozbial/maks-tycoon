@@ -17,10 +17,10 @@
             x y w h)
   (js/pop))
 
-(defmulti draw-tile-extra (fn [tile-id x y tile-info] tile-id) :default nil)
+(defmulti draw-tile-extra (fn [tile-id tx ty tile-info] tile-id) :default nil)
 
 (defmethod draw-tile-extra nil
-  [tile-id tile-info x y]
+  [tile-id tile-info tx ty]
   false)
 
 (defmethod draw-tile-extra :track-wt [tile-id tx ty tile-info]

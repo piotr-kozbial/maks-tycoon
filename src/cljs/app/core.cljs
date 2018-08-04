@@ -2,7 +2,7 @@
   (:require [rum.core :as rum]
 
             [app.state :refer [app-state ui-refresh-tick virtual-timer
-                               get-fresh-entity-id event-queue]]
+                               get-fresh-entity-id event-queue update-tile-extra]]
 
             [gamebase.resources :as resources]
 
@@ -32,7 +32,9 @@
             [app.ui.sidebar :refer [sidebar-component]]
             [app.ui.bottombar :refer [bottombar-component]]
 
-            ))
+            [app.tile-extra :refer [initialize-tile-extra]]
+
+            [app.state :as st]))
 
 ;; Events are to be handled inside `draw`,
 ;; which *does not* mean that they rely
@@ -126,17 +128,26 @@
 
 ;; Initial world
 
+(defn- -get-layer [world layer-key]
+  (->> (:layers world)
+       (filter #(= (first %) layer-key))
+       (first)
+       (second)))
+
+
 (defn init-world []
 
   (let [tmx-fname "level1.tmx"
         ls (layers/get-all-layers-from-tmx
             (resources/get-resource tmx-fname))
         tileset-rendering-map (layers/get-tileset-rendering-map-from-tmx
-                     (resources/get-resource tmx-fname))
+                               (resources/get-resource tmx-fname))
+        world-width-in-tiles 100
+        world-height-in-tiles 100
         ctx {:tile-width 32
              :tile-height 32
-             :world-width-in-tiles 100
-             :world-height-in-tiles 100
+             :world-width-in-tiles world-width-in-tiles
+             :world-height-in-tiles world-height-in-tiles
              :tileset-rendering-map tileset-rendering-map
              :tileset-map {:kafelki tiles/tiles-by-number}}]
 
@@ -149,7 +160,19 @@
                 )
             :layers ls
             :tile-context ctx
-            :tile-extra {})))
+            :tile-extra {}))
+
+    ;; initialize tiles extra in layer :foreground
+    (let [layer (-get-layer (:world @app-state) :foreground)]
+      (doseq [tile-x (range world-width-in-tiles)
+              tile-y (range world-height-in-tiles)]
+        (let [[_ tile-number] (layers/get-tile-from-layer layer tile-x tile-y)
+              tile-data (tiles/tiles-by-number tile-number)]
+          (doseq [tile-id (:ids tile-data)]
+            (update-tile-extra
+             tile-x tile-y
+             (constantly
+              (some #(initialize-tile-extra % tile-x tile-y tile-data) (:ids tile-data)))))))))
 
   (eq/put-event!
    event-queue

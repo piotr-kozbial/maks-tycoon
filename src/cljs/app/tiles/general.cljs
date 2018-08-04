@@ -1,5 +1,6 @@
-(ns gamebase.tiles
+(ns app.tiles.general
   (:require [gamebase.geometry :as g]))
+
 
 ;; We'll define tiles with double identification: a keyword and the number of tile in tiles.png.
 ;; So first we define them in a list and then we'll convert them into two maps.
@@ -86,4 +87,3 @@
     :s [tile-x (dec tile-y)]
     :w [(dec tile-x) tile-y]
     :e [(inc tile-x) tile-y]))
-
