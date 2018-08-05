@@ -34,6 +34,9 @@
              "function draw()          {
  gamebase.events.callback(\"draw\"); }\n"
 
+
+             "function keyTyped()  { gamebase.events.callback(\"canvas-key-typed\");  return false; }\n"
+
              "function mousePressed()  { gamebase.events.callback(\"canvas-mouse-pressed\");  return false; }\n"
              "function mouseMoved()    { gamebase.events.callback(\"canvas-mouse-moved\");    return false; }\n"
              "function mouseDragged()  { gamebase.events.callback(\"mouse-dragged\"); gamebase.events.callback(\"canvas-mouse-dragged\");  return false; }\n"

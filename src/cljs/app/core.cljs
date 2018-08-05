@@ -226,33 +226,33 @@
 ;; Main function
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn on-canvas-click [{:keys [button world-x world-y tile-x tile-y]}]
-  ;; (.log js/console (str "CANVAS MOUSE CLICKED button=" button
-  ;;                       " X=" world-x " Y=" world-y
-  ;;                       " TILE-X=" tile-x " TILE-Y=" tile-y))
+(defn setup-key-handler []
 
-  (let [id (keyword (str "loc-" (get-fresh-entity-id)))
-        loc (locomotive/mk-entity id tile-x tile-y)]
 
-    (wo/inject-entity loc)
-
-    (eq/put-event! event-queue (ecs/mk-event loc ::ecs/init (vt/get-time virtual-timer)))))
-
-(defn setup-click-handler []
   (events/add-handler
-   :canvas-mouse-clicked
-   (fn [{:keys [button x y]}]
-     (.log js/console "CANVAS MOUSE CLICKED")
-     (when-let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters)]
-       (let [world-x (conv-x x)
-             world-y (conv-y y)
-             tile-x (quot world-x 32)
-             tile-y (quot world-y 32)]
-         (on-canvas-click {:button button
-                           :world-x world-x
-                           :world-y world-y
-                           :tile-x tile-x
-                           :tile-y tile-y}))))))
+   :canvas-key-typed
+   (fn [{:keys [key x y]}]
+     (if (= key "a")
+
+       (when-let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters)]
+         (let [world-x (conv-x x)
+               world-y (conv-y y)
+               tile-x (quot world-x 32)
+               tile-y (quot world-y 32)]
+
+           (let [id (keyword (str "loc-" (get-fresh-entity-id)))
+                 loc (locomotive/mk-entity id tile-x tile-y)]
+
+             (wo/inject-entity loc)
+
+             (eq/put-event! event-queue (ecs/mk-event loc ::ecs/init (vt/get-time virtual-timer))))
+
+))
+
+       )
+
+))
+  )
 
 (defn main [& _]
 
@@ -309,7 +309,7 @@
     ;; :get-world-size #(vector 2000 1000) ;; TODO
     })
 
-  (setup-click-handler)
+  (setup-key-handler)
 
   (vt/resume virtual-timer))
 
