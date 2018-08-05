@@ -43,7 +43,10 @@ nil
 
 (defn to-entity [entity]
   {::kind :to-entity
-   ::entity-id (::entity-id entity)})
+   ::entity-id
+   (if (map? entity)
+     (::entity-id entity)
+     entity)})
 
 (defn to-component [component]
   {::kind :to-component

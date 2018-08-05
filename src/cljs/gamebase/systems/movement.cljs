@@ -3,7 +3,8 @@
    [gamebase.ecs :as ecs]
    [gamebase.ecsu :as ecsu]
    [gamebase.event-queue :as eq]
-   [gamebase.geometry :as g])
+   [gamebase.geometry :as g]
+   [app.ecs.common-events :as ci])
 
   (:require-macros [gamebase.ecsu :as ecsu]))
 
@@ -58,12 +59,12 @@
 
  (ecsu/handle-event :update (do-update <this> <time> <world>))
 
- (ecsu/handle-event ::stop
+ (ecsu/handle-event ::ci/stop
                     (when (:driving? <this>)
                       (when-let [[maybe-event this'] (do-update <this> <time> <world>)]
                         [maybe-event (assoc this' :driving? false)])))
 
- (ecsu/handle-event ::drive
+ (ecsu/handle-event ::ci/drive
                     (when-not (:driving? <this>)
                       (set-path
                        (assoc <this> :driving? true)

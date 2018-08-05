@@ -246,12 +246,43 @@
 
                  (eq/put-event! event-queue (ecs/mk-event loc ::ecs/init (vt/get-time virtual-timer))))
 
-           "q" (let [id (keyword (str "loc-" (get-fresh-entity-id)))
+           "q" (let [id (keyword (str "car-" (get-fresh-entity-id)))
                      car (carriage/mk-entity id tile-x tile-y)]
 
                  (wo/inject-entity car)
 
                  (eq/put-event! event-queue (ecs/mk-event car ::ecs/init (vt/get-time virtual-timer))))
+
+           "w" (let [loc-id (keyword (str "loc-" (get-fresh-entity-id)))
+                     loc (locomotive/mk-entity loc-id tile-x tile-y)
+                     car-id (keyword (str "car-" (get-fresh-entity-id)))
+                     car (carriage/mk-entity car-id (dec tile-x) tile-y)
+                     car2-id (keyword (str "car-" (get-fresh-entity-id)))
+                     car2 (carriage/mk-entity car2-id (- tile-x 2) tile-y)
+                     car3-id (keyword (str "car-" (get-fresh-entity-id)))
+                     car3 (carriage/mk-entity car3-id (- tile-x 3) tile-y)
+
+                     ]
+                 (doseq [e [loc car car2 car3]]
+                   (wo/inject-entity e)
+                   (eq/put-event! event-queue
+                                  (ecs/mk-event e ::ecs/init (vt/get-time virtual-timer))))
+
+                 (eq/put-event! event-queue
+                                (assoc (ecs/mk-event loc ::locomotive/couple-rear
+                                                     (vt/get-time virtual-timer))
+                                       :the-other-id car))
+                 (eq/put-event! event-queue
+                                (assoc (ecs/mk-event car ::carriage/couple-rear
+                                                     (vt/get-time virtual-timer))
+                                       :the-other-id car2))
+                 (eq/put-event! event-queue
+                                (assoc (ecs/mk-event car2 ::carriage/couple-rear
+                                                     (vt/get-time virtual-timer))
+                                       :the-other-id car3))
+
+
+                 )
 
            " " (when (turnouts/is-turnout? tile-x tile-y)
 

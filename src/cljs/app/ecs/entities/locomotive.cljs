@@ -9,7 +9,8 @@
    [app.tiles.general :as tiles]
    [gamebase.layers :as layers]
    [app.world-interop :as wo]
-   [app.state :as st]))
+   [app.state :as st]
+   [app.ecs.common-events :as ci]))
 
 (defn mk-entity [id tile-x tile-y]
   (ecsu/mk-entity
@@ -24,21 +25,27 @@
                              :angle-kvs (ecs/ck-kvs :move :angle)
                              :center [16 8]
                              :resource-name "loco1.png"})
-    :debug-path (ecsu/mk-component sys-drawing/mk-path-component
-                                   {:path-kvs (ecs/ck-kvs :move :path)
-                                    :color "magenta"})
+    ;; :debug-path (ecsu/mk-component sys-drawing/mk-path-component
+    ;;                                {:path-kvs (ecs/ck-kvs :move :path)
+    ;;                                 :color "magenta"})
     ;; :debug-path-history-1 (ecsu/mk-component sys-drawing/mk-path-component
     ;;                                          {:path-kvs (ecs/ck-kvs :move :path-history 1)
     ;;                                           :color "blue"})
-    :debug-path-history-0 (ecsu/mk-component sys-drawing/mk-path-component
-                                             {:path-kvs (ecs/ck-kvs :move :path-history 0)
-                                              :color "blue"})
+    ;; :debug-path-history-0 (ecsu/mk-component sys-drawing/mk-path-component
+    ;;                                          {:path-kvs (ecs/ck-kvs :move :path-history 0)
+    ;;                                           :color "blue"})
 
     }
 
    :tile-x tile-x
    :tile-y tile-y
-   :track [:w :e]))
+   :track [:w :e]
+
+   :tile-track-history [[tile-x tile-y [:w :e]]]
+
+   :front-coupling nil
+   :rear-coupling nil
+   ))
 
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ecs/init]
@@ -55,6 +62,12 @@
        (filter #(= (first %) layer-key))
        (first)
        (second)))
+
+(defn -put-to-history [history tile-x tile-y track]
+  (let [history' (if (>= (count history) 2)
+                   (apply vector (rest history))
+                   history)]
+    (into history' [[tile-x tile-y track]])))
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::sys-move/at-path-end]
   [world event this]
@@ -91,7 +104,9 @@
         [(assoc this
                 :tile-x new-tile-x
                 :tile-y new-tile-y
-                :track new-track)
+                :track new-track
+                :tile-track-history (-put-to-history (:tile-track-history this)
+                                                     new-tile-x new-tile-y new-track))
          (assoc
           (ecs/mk-event (-> this ::ecs/components :move)
                         ::sys-move/set-path
@@ -100,21 +115,33 @@
       (do
         (.log js/console "NO NEW TRACK!!!")
         [(ecs/mk-event (-> this ::ecs/components :move)
-                       ::sys-move/stop
+                       ::ci/stop
                        (::eq/time event))]))))
 
-(defmethod ecs/handle-event [:to-entity ::locomotive ::stop]
-  [world event this]
-  [(ecs/mk-event (-> this ::ecs/components :move)
-                  ::sys-move/stop
-                  (::eq/time event))])
+(defmethod ecs/handle-event [:to-entity ::locomotive ::ci/stop]
+  [world event {:keys [rear-coupling] :as this}]
 
-(defmethod ecs/handle-event [:to-entity ::locomotive ::drive]
-  [world event this]
   [(ecs/mk-event (-> this ::ecs/components :move)
-                 ::sys-move/drive
-                 (::eq/time event))])
+                  ::ci/stop
+                  (::eq/time event))
+   (when rear-coupling
+     (ecs/mk-event (ecs/to-entity rear-coupling)
+                   ::ci/stop
+                   (::eq/time event)))])
 
+(defmethod ecs/handle-event [:to-entity ::locomotive ::ci/drive]
+  [world event {:keys [rear-coupling] :as this}]
+  [(ecs/mk-event (-> this ::ecs/components :move)
+                 ::ci/drive
+                 (::eq/time event))
+   (when rear-coupling
+     (ecs/mk-event (ecs/to-entity rear-coupling)
+                   ::ci/drive
+                   (::eq/time event)))])
+
+(defmethod ecs/handle-event [:to-entity ::locomotive ::couple-rear]
+  [world {:keys [the-other-id] :as event} this]
+  [(assoc this :rear-coupling the-other-id)])
 
 ;; TODO:
 ;;

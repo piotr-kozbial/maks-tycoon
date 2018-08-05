@@ -4,6 +4,7 @@
    [app.state :refer [app-state ui-refresh-tick]]
    [gamebase.ecs :as ecs]
    [app.ecs.entities.locomotive :as locomotive]
+   [app.ecs.common-events :as ci]
    [gamebase.canvas-control :as canvas-control]
    [gamebase.projection :as proj]
    [gamebase.virtual-timer :as vt]
@@ -57,7 +58,7 @@
                 } "goto"] [:br]
 
            [:div
-            [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-id ::locomotive/drive))
+            [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-id ::ci/drive))
                  :style (if driving?
                           {:color "white"
                            :background-color "green"
@@ -68,7 +69,7 @@
              ;(if driving? "[DRIVE]" "DRIVE")
              ]
             [:span " "]
-            [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-id ::locomotive/stop))
+            [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-id ::ci/stop))
                  :style (if driving?
                           {:color "black"
                            :border "solid 1px black"}
@@ -79,6 +80,10 @@
              "STOP"
              ;(if driving? "STOP" "[STOP]")
              ]] [:br]
+           "Tile-track history:" [:br]
+           (pr-str (:tile-track-history selected-loc)) [:br]
+           (pr-str (->> (:tile-track-history selected-loc)
+                        (mapcat (fn [[tx ty track]] [[tx ty] track])) (apply hash-map)))
 
 
            ])])]))
