@@ -232,24 +232,29 @@
   (events/add-handler
    :canvas-key-typed
    (fn [{:keys [key x y]}]
-     (if (= key "a")
+     (when-let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters)]
+       (let [world-x (conv-x x)
+             world-y (conv-y y)
+             tile-x (quot world-x 32)
+             tile-y (quot world-y 32)]
+         (case key
+           "a" (let [id (keyword (str "loc-" (get-fresh-entity-id)))
+                     loc (locomotive/mk-entity id tile-x tile-y)]
 
-       (when-let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters)]
-         (let [world-x (conv-x x)
-               world-y (conv-y y)
-               tile-x (quot world-x 32)
-               tile-y (quot world-y 32)]
+                 (wo/inject-entity loc)
 
-           (let [id (keyword (str "loc-" (get-fresh-entity-id)))
-                 loc (locomotive/mk-entity id tile-x tile-y)]
+                 (eq/put-event! event-queue (ecs/mk-event loc ::ecs/init (vt/get-time virtual-timer))))
+           " " (do ;; TODO - implement switching turnout
 
-             (wo/inject-entity loc)
+                 (.log js/console "SWITCH TURNOUT!!!")
 
-             (eq/put-event! event-queue (ecs/mk-event loc ::ecs/init (vt/get-time virtual-timer))))
+                 )
+           )
 
-))
 
-       )
+         ))
+
+       
 
 ))
   )
