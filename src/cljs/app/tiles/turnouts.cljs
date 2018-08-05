@@ -12,6 +12,12 @@
 
 (defmethod initialize-tile-extra :track-wt [tile-id tile-x tile-y tile-info]
   {:state :straight-left})
+(defmethod initialize-tile-extra :track-et [tile-id tile-x tile-y tile-info]
+  {:state :straight-left})
+(defmethod initialize-tile-extra :track-nt [tile-id tile-x tile-y tile-info]
+  {:state :straight-left})
+(defmethod initialize-tile-extra :track-st [tile-id tile-x tile-y tile-info]
+  {:state :straight-left})
 
 (defmethod draw-tile-extra :track-wt [tile-id tx ty tile-info]
   (let [{:keys [state]} (st/get-tile-extra tx ty)
@@ -26,6 +32,48 @@
     (-put-image (resources/get-resource "tiles.png")
                 src-x src-y 8 8
                 (+ x 23) (+ y 12)))
+  true)
+(defmethod draw-tile-extra :track-et [tile-id tx ty tile-info]
+  (let [{:keys [state]} (st/get-tile-extra tx ty)
+        x (* 32 tx)
+        y (* 32 ty)
+        [src-x src-y] (case state
+                        :right [404 0]
+                        :straight-right [413 0]
+                        :left [404 9]
+                        :straight-left [413 9]
+                        [402 0])]
+    (-put-image (resources/get-resource "tiles.png")
+                src-x src-y 8 8
+                (+ x 1) (+ y 12)))
+  true)
+(defmethod draw-tile-extra :track-nt [tile-id tx ty tile-info]
+  (let [{:keys [state]} (st/get-tile-extra tx ty)
+        x (* 32 tx)
+        y (* 32 ty)
+        [src-x src-y] (case state
+                        :right [404 20]
+                        :straight-right [413 20]
+                        :left [404 29]
+                        :straight-left [413 29]
+                        [402 20])]
+    (-put-image (resources/get-resource "tiles.png")
+                src-x src-y 8 8
+                (+ x 12) (+ y 1)))
+  true)
+(defmethod draw-tile-extra :track-st [tile-id tx ty tile-info]
+  (let [{:keys [state]} (st/get-tile-extra tx ty)
+        x (* 32 tx)
+        y (* 32 ty)
+        [src-x src-y] (case state
+                        :right [384 20]
+                        :straight-right [393 20]
+                        :left [384 29]
+                        :straight-left [393 29]
+                        [402 20])]
+    (-put-image (resources/get-resource "tiles.png")
+                src-x src-y 8 8
+                (+ x 12) (+ y 23)))
   true)
 
 (defmethod -active-tracks-from :track-wt
@@ -47,6 +95,63 @@
          :left [[:n :w]]
          :right [[:n :s]])
     []))
+(defmethod -active-tracks-from :track-et
+  [_ start-direction _ _ _ {:keys [state] :as tile-extra}]
+  (case start-direction
+    :e (case state
+         :right [[:e :n]]
+         :straight-right [[:e :n]]
+         :left [[:e :s]]
+         :straight-left [[:e :s]])
+    :s (case state
+         :straight-right [[:s :n]]
+         :straight-left [[:s :n]]
+         :left [[:s :e]]
+         :right [[:s :n]])
+    :n (case state
+         :straight-right [[:n :s]]
+         :straight-left [[:n :s]]
+         :left [[:n :s]]
+         :right [[:n :e]])
+    []))
+(defmethod -active-tracks-from :track-nt
+  [_ start-direction _ _ _ {:keys [state] :as tile-extra}]
+  (case start-direction
+    :e (case state
+         :right [[:e :w]]
+         :straight-right [[:e :w]]
+         :left [[:e :n]]
+         :straight-left [[:e :w]])
+    :n (case state
+         :straight-right [[:n :w]]
+         :straight-left [[:n :e]]
+         :left [[:n :e]]
+         :right [[:n :w]])
+    :w (case state
+         :straight-right [[:w :e]]
+         :straight-left [[:w :e]]
+         :left [[:w :e]]
+         :right [[:w :n]])
+    []))
+(defmethod -active-tracks-from :track-st
+  [_ start-direction _ _ _ {:keys [state] :as tile-extra}]
+  (case start-direction
+    :e (case state
+         :right [[:e :s]]
+         :straight-right [[:e :w]]
+         :left [[:e :w]]
+         :straight-left [[:e :w]])
+    :s (case state
+         :straight-right [[:s :e]]
+         :straight-left [[:s :w]]
+         :left [[:s :w]]
+         :right [[:s :e]])
+    :w (case state
+         :straight-right [[:w :e]]
+         :straight-left [[:w :e]]
+         :left [[:w :s]]
+         :right [[:w :e]])
+    []))
 
 (defn- -get-layer [world layer-key]
   (->> (:layers world)
@@ -61,7 +166,6 @@
 
     (not-empty (set/intersection #{:track-wt :track-et :track-st :track-nt}
                                  (apply hash-set (or (:ids info) []))))))
-
 
 (defn cycle-turnout-state [tile-x tile-y]
   (st/update-tile-extra
