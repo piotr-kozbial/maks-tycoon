@@ -136,6 +136,8 @@
   [world event this]
 
   [(assoc this
-          :image (if (:rear-coupling this)
-                   "carriage1-coupled.png"
-                   "carriage1.png"))])
+          :image (case [(boolean (:front-coupling this)) (boolean (:rear-coupling this))]
+                   [false false] "carriage1.png"
+                   [true false] "carriage1-front-coupled.png"
+                   [false true] "carriage1-rear-coupled.png"
+                   [true true] "carriage1-both-coupled.png"))])

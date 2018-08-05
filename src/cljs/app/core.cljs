@@ -232,7 +232,9 @@
    "loco1-coupled.png"
    "loco1-debug.png"
    "carriage1.png"
-   "carriage1-coupled.png"
+   "carriage1-front-coupled.png"
+   "carriage1-rear-coupled.png"
+   "carriage1-both-coupled.png"
    "carriage2.png"
    "level1.tmx"])
 
