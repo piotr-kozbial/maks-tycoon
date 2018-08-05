@@ -34,7 +34,7 @@
    {:number 21, :ids [:track-cross]
     :tracks [[:n :s] [:w :e]]}
 
-   ;; T-crossings
+   ;; turnouts
    {:number 1, :ids [:track-st :track-ts]
     :tracks [[:s :w] [:s :e] [:w :e]]}
    {:number 20, :ids [:track-et :track-te]
@@ -53,6 +53,11 @@
   (->> tiles
        (mapcat #(interleave (:ids %) (take (count (:ids %)) (repeat %))))
        (apply hash-map)))
+
+;; Define isa? hierarchy, so that multimethods can be dispatched on any of a tile's ids.
+
+
+
 
 ;; Now for the geometry of those tiles.
 
@@ -98,3 +103,21 @@
   nil)
 
 
+
+;;;;; RAILWAY TRACKS EXTRA
+
+(declare -active-tracks-from)
+
+(defn active-tracks-from [start-direction tile-x tyle-y tile-info tile-extra]
+  (some
+   #(-active-tracks-from % start-direction tile-x tyle-y tile-info tile-extra)
+   (:ids tile-info)))
+
+(defmulti -active-tracks-from
+  (fn [tile-id start-direction tile-x tyle-y tile-info tile-extra]
+    tile-id)
+  :default nil)
+
+;; default implementation that will work for all single tracks
+(defmethod -active-tracks-from nil [tile-id start-direction tile-x tyle-y tile-info tile-extra]
+  nil)

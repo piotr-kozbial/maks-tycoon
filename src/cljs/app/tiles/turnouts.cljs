@@ -1,10 +1,12 @@
 (ns app.tiles.turnouts
-  (:require [app.tiles.general :refer [initialize-tile-extra]]
-            [gamebase.systems.drawing :refer [draw-tile-extra]]))
+  (:require [app.tiles.general :refer [initialize-tile-extra -active-tracks-from]]
+            [app.state :as st]
+            [gamebase.resources :as resources]
+            [gamebase.systems.drawing :refer [draw-tile-extra -put-image]]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;; WT turnout
+;;;;; W turnout
 
 (defmethod initialize-tile-extra :track-wt [tile-id tile-x tile-y tile-info]
   {:state :straight-left})
@@ -23,3 +25,23 @@
                 src-x src-y 8 8
                 (+ x 23) (+ y 12)))
   true)
+
+(defmethod -active-tracks-from :track-wt
+  [_ start-direction _ _ _ {:keys [state] :as tile-extra}]
+  (case start-direction
+    :w (case state
+         :right [[:w :s]]
+         :straight-right [[:w :s]]
+         :left [[:w :n]]
+         :straight-left [[:w :n]])
+    :s (case state
+         :straight-right [[:s :n]]
+         :straight-left [[:s :n]]
+         :left [[:s :n]]
+         :right [[:s :w]])
+    :n (case state
+         :straight-right [[:n :s]]
+         :straight-left [[:n :s]]
+         :left [[:n :w]]
+         :right [[:n :s]])
+    []))

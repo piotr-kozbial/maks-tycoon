@@ -8,7 +8,8 @@
    [gamebase.geometry :as g]
    [app.tiles.general :as tiles]
    [gamebase.layers :as layers]
-   [app.world-interop :as wo]))
+   [app.world-interop :as wo]
+   [app.state :as st]))
 
 (defn mk-entity [id tile-x tile-y]
   (ecsu/mk-entity
@@ -65,14 +66,31 @@
         tile-context (:tile-context world)
         new-tile (layers/get-tile-from-layer layer new-tile-x new-tile-y)
         info (layers/get-tile-info-from-layer tile-context layer new-tile-x new-tile-y)
-        new-tile-tracks (concat (:tracks info) (map reverse (:tracks info)))
+        extra (st/get-tile-extra new-tile-x new-tile-y)
+        ;;new-tile-tracks (concat (:tracks info) (map reverse (:tracks info)))
 
         [_ tile-end] (:track this)
+
+
         new-tile-start ({:w :e
                          :e :w
                          :n :s
                          :s :n} tile-end)
-        possible-new-tracks (filter #(= (first %) new-tile-start) new-tile-tracks)
+
+
+        possible-new-tracks (tiles/active-tracks-from
+                             new-tile-start
+                             new-tile-x new-tile-y
+                             info
+                             extra)
+
+        _ (.log js/console (str "POSSIBLE NEW TRACKS ( "
+                                "start=" new-tile-start " "
+                                "ids=" (:ids info)
+                                " ) = "
+                                (pr-str possible-new-tracks)))
+
+        ;;possible-new-tracks (filter #(= (first %) new-tile-start) new-tile-tracks)
 
         ;; choose the first possible tracks
         new-track (first possible-new-tracks)

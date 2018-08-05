@@ -33,6 +33,7 @@
             [app.ui.bottombar :refer [bottombar-component]]
 
             [app.tiles.general :refer [initialize-tile-extra]]
+            [app.tiles.activate]
 
             [app.state :as st]))
 
