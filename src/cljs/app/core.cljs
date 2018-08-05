@@ -27,6 +27,7 @@
             [gamebase.ecsu :as ecsu] ;; without this it doesn't get compiled and loaded for cljs either
 
             [app.tiles.general :as tiles]
+            [app.tiles.turnouts :as turnouts]
             [app.world-interop :as wo]
 
             [app.ui.sidebar :refer [sidebar-component]]
@@ -244,9 +245,10 @@
                  (wo/inject-entity loc)
 
                  (eq/put-event! event-queue (ecs/mk-event loc ::ecs/init (vt/get-time virtual-timer))))
-           " " (do ;; TODO - implement switching turnout
+           " " (when (turnouts/is-turnout? tile-x tile-y)
 
-                 (.log js/console "SWITCH TURNOUT!!!")
+                 (.log js/console (str "SWITCH TURNOUT!!! " tile-x ", " tile-y))
+                 (turnouts/cycle-turnout-state tile-x tile-y)
 
                  )
            )

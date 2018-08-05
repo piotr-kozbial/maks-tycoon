@@ -1,8 +1,10 @@
 (ns app.tiles.turnouts
   (:require [app.tiles.general :refer [initialize-tile-extra -active-tracks-from]]
             [app.state :as st]
+            [gamebase.layers :as layers]
             [gamebase.resources :as resources]
-            [gamebase.systems.drawing :refer [draw-tile-extra -put-image]]))
+            [gamebase.systems.drawing :refer [draw-tile-extra -put-image]]
+            [clojure.set :as set]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -45,3 +47,32 @@
          :left [[:n :w]]
          :right [[:n :s]])
     []))
+
+(defn- -get-layer [world layer-key]
+  (->> (:layers world)
+       (filter #(= (first %) layer-key))
+       (first)
+       (second)))
+
+(defn is-turnout? [tile-x tile-y]
+  (let [{:keys [world]} @st/app-state
+        layer (-get-layer world :foreground)
+        info (layers/get-tile-info-from-layer (:tile-context world) layer tile-x tile-y)]
+
+    (not-empty (set/intersection #{:track-wt :track-et :track-st :track-nt}
+                                 (apply hash-set (or (:ids info) []))))))
+
+
+(defn cycle-turnout-state [tile-x tile-y]
+  (st/update-tile-extra
+   tile-x tile-y
+
+   (fn [{:keys [state] :as extra}]
+     (let [new-state (case state
+                      :straight-right :straight-left
+                      :straight-left :right
+                      :right :left
+                      :left :straight-right)]
+       (assoc extra :state new-state)))))
+
+

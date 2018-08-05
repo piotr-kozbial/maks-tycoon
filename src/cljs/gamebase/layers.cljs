@@ -251,7 +251,8 @@
     (defn get-tile-info-from-layer [context layer x y]
       (let [{:keys [tileset-map]} context
             [tileset-id tile-id] (get-tile-from-layer layer x y)]
-        ((tileset-map tileset-id) tile-id)))
+        (when-let [ts-map (tileset-map tileset-id)]
+          (ts-map tile-id))))
 
     (examples
 
