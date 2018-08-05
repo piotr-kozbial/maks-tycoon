@@ -23,7 +23,7 @@
                             {:point-kvs (ecs/ck-kvs :move :position)
                              :angle-kvs (ecs/ck-kvs :move :angle)
                              :center [16 8]
-                             :resource-name "carriage1.png"})
+                             :resource-name-kvs [:image]})
 
     :move (ecsu/mk-component sys-move/mk-path-follower {:path-history-size 0})
 
@@ -34,7 +34,10 @@
    :track [:w :e]
 
    :front-coupling nil
-   :rear-coupling nil))
+   :rear-coupling nil
+
+   :image "carriage1.png"
+   ))
 
 (defmethod ecs/handle-event [:to-entity ::carriage ::ecs/init]
   [world event this]
@@ -128,3 +131,11 @@
 (defmethod ecs/handle-event [:to-entity ::carriage ::couple-rear]
   [world {:keys [the-other-id] :as event} this]
   [(assoc this :rear-coupling the-other-id)])
+
+(defmethod ecs/handle-event [:to-entity ::carriage :update]
+  [world event this]
+
+  [(assoc this
+          :image (if (:rear-coupling this)
+                   "carriage1-coupled.png"
+                   "carriage1.png"))])

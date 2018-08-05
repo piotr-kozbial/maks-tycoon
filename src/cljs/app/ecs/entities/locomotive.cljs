@@ -24,7 +24,7 @@
                             {:point-kvs (ecs/ck-kvs :move :position)
                              :angle-kvs (ecs/ck-kvs :move :angle)
                              :center [16 8]
-                             :resource-name "loco1.png"})
+                             :resource-name-kvs [:image]})
     ;; :debug-path (ecsu/mk-component sys-drawing/mk-path-component
     ;;                                {:path-kvs (ecs/ck-kvs :move :path)
     ;;                                 :color "magenta"})
@@ -45,6 +45,8 @@
 
    :front-coupling nil
    :rear-coupling nil
+
+   :image "loco1.png"
    ))
 
 
@@ -68,6 +70,11 @@
                    (apply vector (rest history))
                    history)]
     (into history' [[tile-x tile-y track]])))
+
+(defn -history-to-map [history]
+  (->> history
+       (mapcat (fn [[tx ty track]] [[tx ty] track]))
+       (apply hash-map)))
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::sys-move/at-path-end]
   [world event this]
@@ -142,6 +149,17 @@
 (defmethod ecs/handle-event [:to-entity ::locomotive ::couple-rear]
   [world {:keys [the-other-id] :as event} this]
   [(assoc this :rear-coupling the-other-id)])
+
+
+
+(defmethod ecs/handle-event [:to-entity ::locomotive :update]
+  [world event this]
+
+  [(assoc this
+           :image (if (:rear-coupling this)
+                    "loco1-coupled.png"
+                    "loco1.png"))])
+
 
 ;; TODO:
 ;;

@@ -66,18 +66,29 @@
 
 ;; :update EVENT HANDLER ON WORLD LEVEL
 ;; This will pass the :update event through all systems.
+;; And then through all entities.
 
 (defmethod ecs/handle-event [:to-world :update]
   [world event _]
-  (reduce
-   (fn [wrl sys]
-     (let [event' (ecs/retarget event sys)]
-       (ecs/do-handle-event
-        wrl
-        event'
-        #(eq/put-event! event-queue %))))
-   world
-   (ecs/all-systems world)))
+  (let [world' (reduce
+               (fn [wrl sys]
+                 (let [event' (ecs/retarget event sys)]
+                   (ecs/do-handle-event
+                    wrl
+                    event'
+                    #(eq/put-event! event-queue %))))
+               world
+               (ecs/all-systems world))]
+
+    (reduce
+     (fn [wrl e]
+       (let [event' (ecs/retarget event e)]
+         (ecs/do-handle-event
+          wrl
+          event'
+          #(eq/put-event! event-queue %))))
+     world'
+     (ecs/all-entities world))))
 
 ;; Drawing
 
@@ -218,8 +229,10 @@
   ["background.png"
    "tiles.png"
    "loco1.png"
+   "loco1-coupled.png"
    "loco1-debug.png"
    "carriage1.png"
+   "carriage1-coupled.png"
    "carriage2.png"
    "level1.tmx"])
 

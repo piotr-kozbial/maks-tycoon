@@ -83,8 +83,5 @@
            "Tile-track history:" [:br]
            (pr-str (:tile-track-history selected-loc)) [:br]
            (pr-str (->> (:tile-track-history selected-loc)
-                        (mapcat (fn [[tx ty track]] [[tx ty] track])) (apply hash-map)))
-
-
-           ])])]))
+                        (mapcat (fn [[tx ty track]] [[tx ty] track])) (apply hash-map)))])])]))
 
