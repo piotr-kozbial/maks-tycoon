@@ -10,6 +10,7 @@
             [gamebase.systems.movement :as sys-move]
 
             [app.ecs.entities.locomotive :as locomotive]
+            [app.ecs.entities.carriage :as carriage]
 
             [gamebase.events :as events]
             [gamebase.event-queue :as eq]
@@ -157,9 +158,7 @@
            (assoc
             (-> (ecs/mk-world)
                 (ecs/insert-object (sys-drawing/mk-system))
-                (ecs/insert-object (sys-move/mk-system))
-                ;;;(ecs/insert-object (locomotive/mk-entity :loc 4 7))
-                )
+                (ecs/insert-object (sys-move/mk-system)))
             :layers ls
             :tile-context ctx
             :tile-extra {}))
@@ -221,6 +220,7 @@
    "loco1.png"
    "loco1-debug.png"
    "carriage1.png"
+   "carriage2.png"
    "level1.tmx"])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -245,6 +245,14 @@
                  (wo/inject-entity loc)
 
                  (eq/put-event! event-queue (ecs/mk-event loc ::ecs/init (vt/get-time virtual-timer))))
+
+           "q" (let [id (keyword (str "loc-" (get-fresh-entity-id)))
+                     car (carriage/mk-entity id tile-x tile-y)]
+
+                 (wo/inject-entity car)
+
+                 (eq/put-event! event-queue (ecs/mk-event car ::ecs/init (vt/get-time virtual-timer))))
+
            " " (when (turnouts/is-turnout? tile-x tile-y)
 
                  (.log js/console (str "SWITCH TURNOUT!!! " tile-x ", " tile-y))
