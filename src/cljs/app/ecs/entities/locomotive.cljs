@@ -67,7 +67,6 @@
         new-tile (layers/get-tile-from-layer layer new-tile-x new-tile-y)
         info (layers/get-tile-info-from-layer tile-context layer new-tile-x new-tile-y)
         extra (st/get-tile-extra new-tile-x new-tile-y)
-        ;;new-tile-tracks (concat (:tracks info) (map reverse (:tracks info)))
 
         [_ tile-end] (:track this)
 
@@ -84,42 +83,25 @@
                              info
                              extra)
 
-        _ (.log js/console (str "POSSIBLE NEW TRACKS ( "
-                                "start=" new-tile-start " "
-                                "ids=" (:ids info)
-                                " ) = "
-                                (pr-str possible-new-tracks)))
-
-        ;;possible-new-tracks (filter #(= (first %) new-tile-start) new-tile-tracks)
-
         ;; choose the first possible tracks
-        new-track (first possible-new-tracks)
+        new-track (first possible-new-tracks)]
 
-        new-path (tiles/track-path new-track new-tile-x new-tile-y)
-
-        ]
-    
-    ;; (.log js/console
-
-    ;;       (str "NEW TILE (" new-tile-x "," new-tile-y, "): "
-    ;;            (pr-str info)
-    ;;            " tile end: " (pr-str tile-end)
-    ;;            " new tracks: " (pr-str new-tile-tracks)
-
-    ;;            " poss. new. tracks: "
-    ;;            (pr-str possible-new-tracks))
-
-    ;;       )
-
-    [(assoc this
-            :tile-x new-tile-x
-            :tile-y new-tile-y
-            :track new-track)
-     (assoc
-      (ecs/mk-event (-> this ::ecs/components :move)
-                    ::sys-move/set-path
-                    (::eq/time event))
-      :path new-path)]))
+    (if new-track
+      (let [new-path (tiles/track-path new-track new-tile-x new-tile-y)]
+        [(assoc this
+                :tile-x new-tile-x
+                :tile-y new-tile-y
+                :track new-track)
+         (assoc
+          (ecs/mk-event (-> this ::ecs/components :move)
+                        ::sys-move/set-path
+                        (::eq/time event))
+          :path new-path)])
+      (do
+        (.log js/console "NO NEW TRACK!!!")
+        [(ecs/mk-event (-> this ::ecs/components :move)
+                       ::sys-move/stop
+                       (::eq/time event))]))))
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::stop]
   [world event this]
