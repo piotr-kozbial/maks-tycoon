@@ -78,8 +78,31 @@
                            :border "solid 1px red"
                            })}
              "STOP"
-             ;(if driving? "STOP" "[STOP]")
-             ]] [:br]
+             ]
+            [:br]
+
+
+            ;; (pr-str selected-loc)
+
+            [:br]
+            [:a {:href "#" :on-click (fn [_]
+
+
+                                       (wo/kill-train world (::ecs/entity-id selected-loc))
+                                       )
+                 :style (if driving?
+                          {:color "black"
+                           :border "solid 1px black"}
+                          {:color "white"
+                           :background-color "red"
+                           :border "solid 1px red"
+                           })}
+             "GIN ROBALU!"
+                                        ;(if driving? "STOP" "[STOP]")
+             ]
+
+            ] [:br]
+
            "Tile-track history:" [:br]
            (pr-str (:tile-track-history selected-loc)) [:br]
            (pr-str (->> (:tile-track-history selected-loc)

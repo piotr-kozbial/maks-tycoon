@@ -230,11 +230,13 @@
    "tiles.png"
    "loco1.png"
    "loco1-coupled.png"
+   "loco1-crashed.png"
    "loco1-debug.png"
    "carriage1.png"
    "carriage1-front-coupled.png"
    "carriage1-rear-coupled.png"
    "carriage1-both-coupled.png"
+   "carriage1-crashed.png"
    "carriage2.png"
    "level1.tmx"])
 
@@ -286,15 +288,15 @@
                  (eq/put-event! event-queue
                                 (assoc (ecs/mk-event loc ::locomotive/couple-rear
                                                      (vt/get-time virtual-timer))
-                                       :the-other-id car))
+                                       :the-other-id car-id))
                  (eq/put-event! event-queue
                                 (assoc (ecs/mk-event car ::carriage/couple-rear
                                                      (vt/get-time virtual-timer))
-                                       :the-other-id car2))
+                                       :the-other-id car2-id))
                  (eq/put-event! event-queue
                                 (assoc (ecs/mk-event car2 ::carriage/couple-rear
                                                      (vt/get-time virtual-timer))
-                                       :the-other-id car3))
+                                       :the-other-id car3-id))
 
 
                  )

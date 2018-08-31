@@ -312,7 +312,7 @@ nil
     :to-entity
     ,  ((::entities world) (::entity-id target-id))
     :to-component
-    ,  (let [entity ((::entities world) (::entity-id target-id))]
+    ,  (when-let [entity ((::entities world) (::entity-id target-id))]
          ((::components entity) (::component-id target-id)))
     (println (str "PROBLEM!!!! >" (pr-str target-id) "<"))
     ))

@@ -148,7 +148,9 @@
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::couple-rear]
   [world {:keys [the-other-id] :as event} this]
-  [(assoc this :rear-coupling the-other-id)])
+  (let [the-other (ecs/get-entity-by-key world the-other-id)]
+    [(assoc this :rear-coupling the-other-id)
+     (assoc the-other :front-coupling (::ecs/entity-id this))]))
 
 
 
@@ -156,9 +158,14 @@
   [world event this]
 
   [(assoc this
-           :image (if (:rear-coupling this)
+          :image
+          ;; "loco1-crashed.png"
+
+          (if (:rear-coupling this)
                     "loco1-coupled.png"
-                    "loco1.png"))])
+                    "loco1.png")
+
+           )])
 
 
 ;; TODO:

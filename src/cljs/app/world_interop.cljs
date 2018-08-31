@@ -55,3 +55,13 @@
             :world
             (ecs/remove-entity-by-key world entity-key))))
   nil)
+
+(defn kill-train [world loc-key]
+  (loop [key loc-key]
+    (when key
+      (let [entity (ecs/get-entity-by-key world key)]
+        (kill-entity key)
+        (recur (:rear-coupling entity))))
+
+    ))
+

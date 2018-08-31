@@ -33,6 +33,8 @@
    :tile-y tile-y
    :track [:w :e]
 
+   :tile-track-history [[tile-x tile-y [:w :e]]]
+
    :front-coupling nil
    :rear-coupling nil
 
@@ -60,6 +62,17 @@
        (filter #(= (first %) layer-key))
        (first)
        (second)))
+
+(defn -put-to-history [history tile-x tile-y track]
+  (let [history' (if (>= (count history) 2)
+                   (apply vector (rest history))
+                   history)]
+    (into history' [[tile-x tile-y track]])))
+
+(defn -history-to-map [history]
+  (->> history
+       (mapcat (fn [[tx ty track]] [[tx ty] track]))
+       (apply hash-map)))
 
 (defmethod ecs/handle-event [:to-entity ::carriage ::sys-move/at-path-end]
   [world event this]
@@ -89,19 +102,40 @@
                              extra)
 
         ;; choose the first possible tracks
-        new-track (first possible-new-tracks)]
+        new-track (first possible-new-tracks)
+
+
+        track-chosen-by-front
+        (when-let [front-id (:front-coupling this)]
+          (let [front (ecs/get-entity-by-key world front-id)
+                front-history (-history-to-map (:tile-track-history front))]
+            (front-history [new-tile-x new-tile-y])))]
 
     (if new-track
-      (let [new-path (tiles/track-path new-track new-tile-x new-tile-y)]
-        [(assoc this
-                :tile-x new-tile-x
-                :tile-y new-tile-y
-                :track new-track)
-         (assoc
-          (ecs/mk-event (-> this ::ecs/components :move)
-                        ::sys-move/set-path
-                        (::eq/time event))
-          :path new-path)])
+
+      (if (and track-chosen-by-front (not= track-chosen-by-front new-track))
+        (do
+          (.log js/console "DECOUPLE !!!")
+          (.log js/console "DECOUPLE !!!")
+          (.log js/console "DECOUPLE !!!")
+          [(assoc this :front-coupling nil)
+           (assoc (ecs/get-entity-by-key world (:front-coupling this))
+                  :rear-coupling nil)
+           (ecs/mk-event this ::ci/stop (::eq/time event))])
+
+        (let [new-path (tiles/track-path new-track new-tile-x new-tile-y)]
+          [(assoc this
+                  :tile-x new-tile-x
+                  :tile-y new-tile-y
+                  :track new-track
+                  :tile-track-history (-put-to-history (:tile-track-history this)
+                                                       new-tile-x new-tile-y new-track))
+           (assoc
+            (ecs/mk-event (-> this ::ecs/components :move)
+                          ::sys-move/set-path
+                          (::eq/time event))
+            :path new-path)]))
+
       (do
         (.log js/console "NO NEW TRACK!!!")
         [(ecs/mk-event (-> this ::ecs/components :move)
@@ -130,14 +164,20 @@
 
 (defmethod ecs/handle-event [:to-entity ::carriage ::couple-rear]
   [world {:keys [the-other-id] :as event} this]
-  [(assoc this :rear-coupling the-other-id)])
+  (let [the-other (ecs/get-entity-by-key world the-other-id)]
+    [(assoc this :rear-coupling the-other-id)
+     (assoc the-other :front-coupling (::ecs/entity-id this))]))
 
 (defmethod ecs/handle-event [:to-entity ::carriage :update]
   [world event this]
 
   [(assoc this
-          :image (case [(boolean (:front-coupling this)) (boolean (:rear-coupling this))]
+          :image
+          ;; "carriage1-crashed.png"
+          (case [(boolean (:front-coupling this)) (boolean (:rear-coupling this))]
                    [false false] "carriage1.png"
                    [true false] "carriage1-front-coupled.png"
                    [false true] "carriage1-rear-coupled.png"
-                   [true true] "carriage1-both-coupled.png"))])
+                   [true true] "carriage1-both-coupled.png")
+
+          )])
