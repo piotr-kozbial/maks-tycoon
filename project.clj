@@ -27,6 +27,8 @@
                  [hiccup "1.0.5"]
                  [com.taoensso/carmine "2.16.0"]
 
+                 [cljs-ajax "0.7.4"]
+
                  ]
 
   :plugins [[lein-cljsbuild "1.1.7"]

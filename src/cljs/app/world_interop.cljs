@@ -3,6 +3,7 @@
    [gamebase.ecs :as ecs]
    [gamebase.virtual-timer :as vt]
    [gamebase.event-queue :as eq]
+   [app.server-communication :as sc]
    [app.state :refer [app-state ui-refresh-tick virtual-timer event-queue]]))
 
 
@@ -64,16 +65,4 @@
         (recur (:rear-coupling entity))))
 
     ))
-
-
-
-
-(defn save-game []
-  (.log js/console "SAVING GAME"))
-
-(defn save-game-as [name]
-  (.log js/console "SAVING GAME AS '" name "'"))
-
-(defn load-game []
-  (.log js/console "LOAD GAME"))
 
