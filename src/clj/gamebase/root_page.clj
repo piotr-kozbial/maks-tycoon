@@ -29,7 +29,8 @@
 
             ;;[:script {:type "text/javascript"} "app.system.go();"]
             [:script
-             (str "function setup() { app.system.go(); " main "();\n }\n")
+             ;;(str "function setup() { app.system.go(); " main "();\n }\n")
+             (str "function setup() { app.system.go(); }\n")
 
              "function draw()          {
  gamebase.events.callback(\"draw\"); }\n"
