@@ -12,6 +12,8 @@
 
    [gamebase.ui.dropdown :refer [mk-dropdown]]
 
+   [app.ui.save-load-game :refer [save-load-game-component]]
+
    [app.ui.ui-state :refer [ui-state] :as uis]))
 
 (rum/defc sidebar-component < rum/reactive []
@@ -106,5 +108,12 @@
            "Tile-track history:" [:br]
            (pr-str (:tile-track-history selected-loc)) [:br]
            (pr-str (->> (:tile-track-history selected-loc)
-                        (mapcat (fn [[tx ty track]] [[tx ty] track])) (apply hash-map)))])])]))
+                        (mapcat (fn [[tx ty track]] [[tx ty] track])) (apply hash-map)))])
+
+
+        [:br] [:br] [:br]
+
+        (save-load-game-component)
+
+        ])]))
 

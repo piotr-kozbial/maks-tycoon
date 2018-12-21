@@ -3,7 +3,7 @@
 
             [app.state :refer [app-state ui-refresh-tick virtual-timer
                                get-fresh-entity-id event-queue update-tile-extra]]
-
+            [app.ui.ui-state :refer [ui-state]]
             [gamebase.resources :as resources]
 
             [gamebase.systems.drawing :as sys-drawing]

@@ -35,14 +35,12 @@
  gamebase.events.callback(\"draw\"); }\n"
 
 
-             "function keyTyped()  { gamebase.events.callback(\"canvas-key-typed\");  return false; }\n"
-
-             "function mousePressed()  { gamebase.events.callback(\"canvas-mouse-pressed\");  return false; }\n"
-             "function mouseMoved()    { gamebase.events.callback(\"canvas-mouse-moved\");    return false; }\n"
-             "function mouseDragged()  { gamebase.events.callback(\"mouse-dragged\"); gamebase.events.callback(\"canvas-mouse-dragged\");  return false; }\n"
-             "function mouseReleased() { gamebase.events.callback(\"canvas-mouse-released\"); return false; }\n"
-             "function mouseClicked()  { gamebase.events.callback(\"canvas-mouse-clicked\");  return false; }\n"
-             "function mouseScrolled() { gamebase.events.callback(\"canvas-mouse-scrolled\"); return false; }\n"
-             "function windowResized() { gamebase.events.callback(\"window-resized\"); return false; }\n"
-             ]]]))))
+        "function keyTyped()      { return gamebase.events.callback(\"canvas-key-typed\"); }\n"
+        "function mousePressed()  { return gamebase.events.callback(\"canvas-mouse-pressed\"); }\n"
+        "function mouseMoved()    { return gamebase.events.callback(\"canvas-mouse-moved\"); }\n"
+        "function mouseDragged()  { gamebase.events.callback(\"mouse-dragged\"); gamebase.events.callback(\"canvas-mouse-dragged\");  return false; }\n"
+        "function mouseReleased() { return gamebase.events.callback(\"canvas-mouse-released\"); }\n"
+        "function mouseClicked()  { return gamebase.events.callback(\"canvas-mouse-clicked\"); }\n"
+        "function mouseScrolled() { gamebase.events.callback(\"canvas-mouse-scrolled\"); }\n"
+        "function windowResized() { gamebase.events.callback(\"window-resized\"); }\n"]]]))))
 

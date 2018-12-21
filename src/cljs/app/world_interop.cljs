@@ -65,3 +65,15 @@
 
     ))
 
+
+
+
+(defn save-game []
+  (.log js/console "SAVING GAME"))
+
+(defn save-game-as [name]
+  (.log js/console "SAVING GAME AS '" name "'"))
+
+(defn load-game []
+  (.log js/console "LOAD GAME"))
+

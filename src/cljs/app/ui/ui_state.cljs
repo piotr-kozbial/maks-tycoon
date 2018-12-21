@@ -3,9 +3,16 @@
 (defonce ui-state
   (atom
 
-   {:sidebar
+
+
+   {
+
+    :sidebar
     {:loc-selector {:open? true
-                    :selected-id nil}}
+                    :selected-id nil}
+
+     :save-load-game {:state :save-as} ;; nil | :save-as | :load
+     }
     :bottombar
     {}}))
 
