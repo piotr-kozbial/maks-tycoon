@@ -20,11 +20,15 @@
   (rum/react ui-refresh-tick)
 
   (let [{:keys [open? selected-id]} (-> (rum/react ui-state) :sidebar :loc-selector)
+        {:keys [game-id game-name]} (-> (rum/react ui-state))
         {:keys [frame-rate world]} @app-state
         loc (ecs/get-entity-by-key world selected-id)
         driving? (:driving? (:move (::ecs/components loc)))]
 
     [:div
+     [:div {:style {:font-size "larger" :font-weight "bold"}} (if game-id (or game-name "") [:i "(unsaved game)"])]
+     [:br]
+
      [:div (str "FRAME RATE: " frame-rate)]
      [:div
       "scale: " (canvas-control/get-scale) " "

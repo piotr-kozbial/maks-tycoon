@@ -46,3 +46,21 @@
         handler
         error-handler))
 
+(defn list-games [handler & [error-handler]]
+  (post "/"
+        {:request :list-games}
+        (fn [ret] (handler (read-string ret)))
+        error-handler))
+
+(defn load-game [id handler & [error-handler]]
+
+  (post "/"
+        {:request :load-game
+         :id id}
+        (fn [ret] (handler (read-string ret)        ; (read-string ret)
+                          ))
+        error-handler)
+
+  )
+
+

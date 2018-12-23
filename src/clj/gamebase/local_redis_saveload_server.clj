@@ -14,6 +14,7 @@
 
   )
 
+(def PREFIX "")
 
 (declare message-handler)
 
@@ -32,25 +33,26 @@
           :exception-handler (fn [req ex] {:blad (str ex)}))))
 
 (defn get-game-name [redis-conn id]
-  (car/wcar redis-conn (car/get (str "game:" id ":name"))))
+  (car/wcar redis-conn (car/get (str PREFIX "game:" id ":name"))))
 
 (defn get-game-state [redis-conn id]
-  (read-string (car/wcar redis-conn (car/get (str "game:" id ":state")))))
+  (read-string (car/wcar redis-conn (car/get (str PREFIX "game:" id ":state")))))
 
 (defn get-games [redis-conn]
   (println "GET GAMES!!!")
-  (->> (car/wcar redis-conn (car/keys "game:*:name"))
+  (->> (car/wcar redis-conn (car/keys (str PREFIX "game:*:name")))
        (map #(let [id (Integer. (nth (str/split % #":") 1))] [id (get-game-name redis-conn id)]))))
 
 (defn get-game [redis-conn id]
-  (let [state (car/wcar redis-conn (car/get (str "game:" id ":state")))
+  (println "LOAD!!!")
+  (let [state (car/wcar redis-conn (car/get (str PREFIX "game:" id ":state")))
         name (get-game-name redis-conn id)]
     {:id id
      :name name
      :state (read-string state)}))
 
 (defn get-fresh-game-id [redis-conn]
-  (->> (car/wcar redis-conn (car/keys "game:*:name"))
+  (->> (car/wcar redis-conn (car/keys (str PREFIX "game:*:name")))
        (map #(Integer. (nth (str/split % #":") 1)))
        (sort)
        (last)
@@ -64,9 +66,11 @@
   ;; update name if not nil, update state if not nil
   (let [id (or id? (get-fresh-game-id redis-conn))]
     (when name?
-      (car/wcar redis-conn (car/set (str "game:" id ":name") name?)))
+      (car/wcar redis-conn (car/set (str PREFIX "game:" id ":name") name?)))
     (when state?
-      (car/wcar redis-conn (car/set (str "game:" id ":state") state?)))
+      (println "STATE: ")
+      (println state?)
+      (car/wcar redis-conn (car/set (str PREFIX "game:" id ":state") (pr-str state?))))
     id))
 
 

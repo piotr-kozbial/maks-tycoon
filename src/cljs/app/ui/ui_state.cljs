@@ -6,12 +6,16 @@
 
 
    {
+    :game-id nil
+    :game-name nil
 
     :sidebar
     {:loc-selector {:open? true
                     :selected-id nil}
 
-     :save-load-game {:state :save-as} ;; nil | :save-as | :load
+     :save-load-game {:state :base ;; :base | :save-as | :load
+                      :mouse-over-game-id 1
+                      :game-list []}
      }
     :bottombar
     {}}))
