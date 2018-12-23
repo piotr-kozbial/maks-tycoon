@@ -1,18 +1,7 @@
 (ns gamebase.ecsu
   (:require
    [gamebase.ecs :as ecs]
-   [gamebase.event-queue :as eq])
-;;;;; THIS IS WHAT WAS IN CREATX
-
-(def ^:dynamic <-event-target-prefix>)
-(def ^:dynamie <world>)
-(def ^:dynamic <event>)
-(def ^:dynamic <this>)
-(def ^:dynamic <time>)
-(def ^:dynamic <entity>)
-(def ^:dynamic <component-key>)
-
-;;;;; THIS IS WHAT WAS IN MAKS TYCOON (gamebase-test)
+   [gamebase.event-queue :as eq]))
 
 ;; private - bare identifiers to be used in macros
 (def -id-event-target-prefix '<-event-target-prefix>)
