@@ -39,58 +39,7 @@
 
             [app.state :as st]))
 
-;; Events are to be handled inside `draw`,
-;; which *does not* mean that they rely
-;; on a specific frame rate.
-
-;; Event handling
-
-(defn handle-all-pending-events [world]
-  (let [t (vt/get-time virtual-timer)]
-    (->> (repeatedly #(eq/pop-soonest-event-until event-queue t))
-         (take-while identity) ;; not nil
-         (reduce
-          (fn [wrl e] (ecs/do-handle-event wrl e #(eq/put-event! event-queue %)))
-          world))))
-
-(defn handle-update [world]
-  (ecs/do-handle-event
-   world
-   (ecs/mk-event (ecs/to-world) :update (vt/get-time virtual-timer))
-   #(eq/put-event! event-queue %)))
-
-(defn handle-events [world]
-  (-> world
-      (handle-all-pending-events)
-      (handle-update)))
-
-;; :update EVENT HANDLER ON WORLD LEVEL
-;; This will pass the :update event through all systems.
-;; And then through all entities.
-
-(defmethod ecs/handle-event [:to-world :update]
-  [world event _]
-  (let [world' (reduce
-               (fn [wrl sys]
-                 (let [event' (ecs/retarget event sys)]
-                   (ecs/do-handle-event
-                    wrl
-                    event'
-                    #(eq/put-event! event-queue %))))
-               world
-               (ecs/all-systems world))]
-
-    (reduce
-     (fn [wrl e]
-       (let [event' (ecs/retarget event e)]
-         (ecs/do-handle-event
-          wrl
-          event'
-          #(eq/put-event! event-queue %))))
-     world'
-     (ecs/all-entities world))))
-
-;; Drawing
+;; Simulation animation and drawing
 
 (defn -draw-tile-box-under-mouse [{:keys [mouse-x mouse-y]}]
   (js/noFill)
@@ -119,26 +68,30 @@
   (js/stroke 255 255 255)
   (js/line 0 0 0 0))
 
-(defn draw [{:keys [min-x max-x min-y max-y] :as context}]
-  (when-let [world (:world @app-state)]
-    (let [world' (handle-events world)
-          world'' (ecs/do-handle-event
-                   world'
-                   (assoc
-                    (ecs/mk-event sys-drawing/to-system
-                                  ::sys-drawing/draw (vt/get-time virtual-timer))
-                    :context context)
-                   #(eq/put-event! event-queue %))]
-
-      (-draw-tile-box-under-mouse context)
-
-      ;; draw coordinate system marker
-      (when (-> @debug/settings
-                :canvas-control
-                :coordinate-system-marker)
-        (debug-draw-coord-system))
-
-      (swap! app-state assoc :world world''))))
+(defn advance-simulation-and-draw [{:keys [min-x max-x min-y max-y] :as context}]
+  (let [{:keys [world timer]} @app-state]
+    (when world
+  ;;; Handle pending events...
+      (let [world' (if (wo/running?)
+                     (let [time (wo/get-time)]
+                       (-> world
+                           (ecs/advance-until-time time)
+                           (ecs/do-handle-event (ecs/mk-event (ecs/to-world) :update time))))
+                     world)]
+  ;;; validate...
+        (s/validate st/s-world world')
+  ;;; and put new world in state.
+        (swap! app-state assoc :world world')
+  ;;; Draw the world.
+        (sys-drawing/draw-all world' context)
+  ;;; Draw other things.
+        (if (-mouse-in-active-area? context world')
+          (-draw-tile-box-under-mouse context))
+  ;;; Draw debug stuff.
+        (when (-> @debug/settings
+                  :canvas-control
+                  :coordinate-system-marker)
+          (debug-draw-coord-system))))))
 
 ;; Initial world
 
@@ -319,12 +272,7 @@
 
 (defn main [& _]
 
-  (.log js/console "-----> main")
-
-  ;;(js/frameRate 5)
-
-
-  (js/setInterval (fn []
+  (js/setInterval (fn [] ;; set up periodic frame rate measurement update
                     (let [rate (js/frameRate)
                           rate-s (/ (int (* rate 10)) 10)]
                       (swap! app-state assoc :frame-rate rate-s)))
@@ -340,13 +288,8 @@
         (.log js/console "mozna odpalac")
         (init-world))))
 
-  (our-layout/initialize
-   app-state [:layout]
-   {:bottom-bar-height 150
-    :side-bar-width 200
-    :after-canvas-resize
-    #(;;.log js/console "ACR callback"
-      )})
+  (initialize-layout)
+
 
   ;; TODO
 
@@ -367,12 +310,21 @@
   (canvas-control/initialize
    {:state-atom app-state
     :state-kvs [:canvas-control]
-    :draw #'draw
-    :get-canvas-size our-layout/get-canvas-size ;; TODO
-    ;; :get-world-size #(vector 2000 1000) ;; TODO
+    :draw #'advance-simulation-and-draw
+    :overlay-draw nil
+    :get-canvas-size our-layout/get-canvas-size
+    :get-world-size #(vector 2000 1000) ;; TODO
     })
 
   (setup-key-handler)
 
   (vt/resume virtual-timer))
 
+(defn initialize-layout []
+  (our-layout/initialize
+   app-state [:layout]
+   {:bottom-bar-height 150
+    :side-bar-width 200
+    :after-canvas-resize
+    #(;;.log js/console "ACR callback"
+      )}))
