@@ -1,7 +1,10 @@
 (ns gamebase.ecsu
-  (:require
-   [gamebase.ecs :as ecs]
-   [gamebase.event-queue :as eq]))
+;;  (:require
+;;   [gamebase.ecs :as ecs]
+;;   [gamebase.event-queue :as eq]
+;;   
+;;   )
+  )
 
 ;; private - bare identifiers to be used in macros
 (def -id-event-target-prefix '<-event-target-prefix>)
@@ -25,7 +28,7 @@
   `(let [event-target# (into ~-id-event-target-prefix [~msg])]
      (defmethod ecs/handle-event event-target#
        [~-id-world ~-id-event ~-id-this]
-       (let [~-id-time (::eq/time ~-id-event)]
+       (let [~-id-time (:gamebase.event-queue/time ~-id-event)]
          ~@body))))
 
 (defmacro my-entity []
@@ -44,7 +47,7 @@
     `(let [~-id-entity (ecs/mk-entity ~id ~kind)]
        (assoc
          ~-id-entity
-         ::ecs/components ~components'
+         :gamebase.ecs/components ~components'
          ~@other-data-kvs
          ))))
 
