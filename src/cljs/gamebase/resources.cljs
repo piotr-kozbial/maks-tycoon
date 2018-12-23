@@ -9,7 +9,7 @@
    )
   )
 
-
+(def PREFIX "public/")
 
 (declare all-resources-loaded?)
 
@@ -33,14 +33,14 @@
 
 (defmulti start-loading (fn [fname callback] (file-type fname)))
 (defmethod start-loading :img [fname callback]
-  (js/loadImage (str "public/" fname) callback))
+  (js/loadImage (str PREFIX fname) callback))
 (defmethod start-loading :tmx [fname callback]
-  (js/loadStrings (str "public/" fname) callback))
+  (js/loadStrings (str PREFIX fname) callback))
 
 (defmulti parse-and-store (fn [fname & args] (file-type fname)))
 (defmethod parse-and-store :img [fname img]
   (swap! resources assoc fname img)
-  (when (all-resources-loaded?)
+  (when (and all-resources-loaded? @on-all-loaded)
     (@on-all-loaded)))
 (defmethod parse-and-store :tmx [fname lines]
   (let [text (str/join "\n" lines)]

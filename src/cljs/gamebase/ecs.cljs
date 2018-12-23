@@ -1,8 +1,8 @@
 ;;;;; STATUS: COMPLETE ;;;;;
 
 (ns gamebase.ecs
-  (:require [gamebase.event-queue :as eq]) ;; only or ::eq/time)
-  )
+  (:require [gamebase.event-queue :as eq]
+            [schema.core :as s :include-macros true]))
 
 ;;;;;;;;;;;;;;;;;;;;;; P U B L I C ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 nil
@@ -119,10 +119,19 @@ nil
     ;; if not map, then not object, then what we got was id itself
     object-or-object-id))
 
+(def s-world
+  {::kind (s/pred #{:world})
+   ::entities s/Any
+   ::systems s/Any
+   ::time s/Any
+   ::event-queue s/Any})
+
 (defn mk-world []
   {::kind :world
+   ::entities {}
    ::systems {}
-   ::entities {}})
+   ::time 0
+   ::event-queue (eq/create)})
 
 (defn mk-system [id]
   {::kind :system
@@ -198,45 +207,41 @@ nil
 
 ;; Event-handling function to be called by clients.
 ;; Always returns world.
-(
- ;; s/
- defn do-handle-event ;; :- sWorld
-  [world event push-event-fn]
- (let [object (resolve-target-id world (::target-id event))
-        ret (handle-event world event object)
+(defn do-handle-event [world event]
+
+  (let [world0 (assoc world ::time (::eq/time event))
+        object (resolve-target-id world0 (::target-id event))
+        ret (handle-event
+             world0
+             event object)
         new-objects-or-events
         (if (map? ret)
           [ret] ;; single object - pack into vector to make it seqable
-          ret)]
-   (doseq [e (remove nil? (remove ::kind new-objects-or-events))]
-     (push-event-fn e))
-   (reduce
-    insert-object
-    world
-    (filter ::kind new-objects-or-events))))
+          ret)
+
+        world' (reduce
+                insert-object
+                world0
+                (filter ::kind new-objects-or-events))
+
+        events' (remove nil? (remove ::kind new-objects-or-events))
+
+        event-queue' (eq/put-all-events (::event-queue world') events')
+
+        world'' (assoc world' ::event-queue event-queue')]
+
+    world''))
 
 
-
-;; (
-;;  ;; s/
-;;  defn do-handle-event ;; :- sWorld
-;;  [world event]
-;;  (let [object (resolve-target-id world (::target-id event))
-;;        ret (handle-event world event object)
-;;        new-objects-or-events
-;;        (if (map? ret)
-;;          [ret] ;; single object - pack into vector to make it seqable
-;;          ret)]
-
-
-;;    (reduce
-;;     insert-object
-;;     world
-;;     new-objects)))
-
-
-
-
+(defn advance-until-time [world time]
+  (loop [wrl world]
+    (if-let [s-t (eq/soonest-event-time (::event-queue wrl))]
+      (if (<=  s-t time)
+        (let [[event event-queue'] (eq/take-event (::event-queue wrl))
+              wrl' (assoc wrl ::event-queue event-queue')]
+          (recur (do-handle-event wrl' event)))
+        wrl)
+      (assoc wrl ::time time))))
 
 ;; TODO - event time should be already set here (to 0 by default)
 ;; (now it is only defined in event-queue, but that is inconvenient)
@@ -251,6 +256,13 @@ nil
     {::target-id target-id
      ::msg msg
      ::eq/time time}))
+
+;;;;; Putting events into queue
+
+(defn put-all-events [world events]
+  (let [event-queue' (eq/put-all-events (::event-queue world) events)]
+    (assoc world ::event-queue event-queue')))
+
 
 ;;;;; Predefined events
 
@@ -268,8 +280,7 @@ nil
 
 (defn pass-event-through-all [world event objects]
   (reduce
-   (fn [w o]
-     (do-handle-event w (retarget event o) (fn [_])))
+   (fn [w o] (do-handle-event w (retarget event o)))
    world
    objects))
 
@@ -312,9 +323,11 @@ nil
     :to-entity
     ,  ((::entities world) (::entity-id target-id))
     :to-component
-    ,  (when-let [entity ((::entities world) (::entity-id target-id))]
+    ,  (let [entity ((::entities world) (::entity-id target-id))]
          ((::components entity) (::component-id target-id)))
-    (println (str "PROBLEM!!!! >" (pr-str target-id) "<"))
+    (do
+      (.log js/console (str "PROBLEM!!!! >" (pr-str target-id) "<"))
+      nil)
     ))
 
 ;; helper function

@@ -19,7 +19,6 @@
             x y w h)
   (js/pop))
 
-
 ;; TILE EXTRA
 
 (defmulti draw-tile-extra (fn [tile-id tx ty tile-info] tile-id) :default nil)
@@ -27,8 +26,6 @@
 (defmethod draw-tile-extra nil
   [tile-id tile-info tx ty]
   false)
-
-
 
 (do ;; SYSTEM
 
@@ -44,10 +41,27 @@
          (first)
          (second)))
 
+  (def s-draw-context
+    {:min-x s/Int
+     :max-x s/Int
+     :min-y s/Int
+     :max-y s/Int
+     :mouse-x s/Int
+     :mouse-y s/Int})
 
+  (def s-tile-context
+    {:tile-width s/Any
+     :tile-height s/Any
+     :world-width-in-tiles s/Any
+     :world-height-in-tiles s/Any
+     :tileset-rendering-map s/Any
+     :tileset-map {:kafelki s/Any}})
 
-  (defn- -draw-layer [world layer {:keys [min-x max-x min-y max-y] :as context}
-                      draw-extra?]
+  (defn- -draw-layer [world layer {:keys [min-x max-x min-y max-y] :as context} draw-extra?]
+
+    ;; (s/validate s-draw-context context)
+    ;; (s/validate s-tile-context (:tile-context world))
+
     (let [{:keys [tile-width tile-height
                   world-width-in-tiles
                   world-height-in-tiles] :as ctx} (:tile-context world)
@@ -71,9 +85,27 @@
                (let [tile-data (tiles/tiles-by-number tile-number)]
                  (some #(draw-tile-extra % tx ty tile-data) (:ids tile-data))))))))))
 
-  (defmethod ecs/handle-event [:to-system ::drawing ::draw]
-    [world {:keys [context] :as event} system]
+  ;; (defmethod ecs/handle-event [:to-system ::drawing ::draw]
+  ;;   [world {:keys [context] :as event} system]
 
+  ;;   ;; TODO!
+  ;;   ;; To przez chwile moze byc tak (tylko zadbac, zeby tlo bylo *pod* fg).
+  ;;   ;; Ale w przyszlosci ma byc tak, ze komponenty (razem z ich entities)
+  ;;   ;; beda na roznych layerach i trzeba bedzie przeplatac rysowanie
+  ;;   ;; layerow z rysowaniem komponentow nad tymi layerami.
+
+  ;;   ;; draw layers
+  ;;   ;;(-draw-layer world (-get-layer world :background) context false)
+  ;;   (-draw-layer world (-get-layer world :foreground) context true)
+
+  ;;   ;; draw components
+  ;;   (-> world
+  ;;       (#(ecs/pass-event-through-all
+  ;;          % event (ecs/all-components-of-system % system))))
+
+  ;;   )
+
+  (defn draw-all [world context]
     ;; TODO!
     ;; To przez chwile moze byc tak (tylko zadbac, zeby tlo bylo *pod* fg).
     ;; Ale w przyszlosci ma byc tak, ze komponenty (razem z ich entities)
@@ -84,12 +116,16 @@
     (-draw-layer world (-get-layer world :background) context false)
     (-draw-layer world (-get-layer world :foreground) context true)
 
-    ;; draw components
-    (-> world
-        (#(ecs/pass-event-through-all
-           % event (ecs/all-components-of-system % system)))))
+    (dorun
+     (ecs/pass-event-through-all
+      world (ecs/mk-event to-system ::draw 0)
+      (ecs/all-components-of-system world
+                                    (::drawing (::ecs/systems world))))))
 
-  (defmethod ecs/handle-event [:to-system ::drawing :update] [world event system] (let [world'(ecs/pass-event-through-all world event (ecs/all-components-of-system world system))] world')))
+
+  (defmethod ecs/handle-event [:to-system ::drawing :update] [world event system]
+    (let [world'(ecs/pass-event-through-all world event (ecs/all-components-of-system world system))]
+      world')))
 
 (do ;; COMPONENT: static image
 
@@ -104,7 +140,8 @@
 
   (defmethod ecs/handle-event [:to-component ::static-image :update]
     [world event component]
-    ;;(.log js/console "drawing/static-image: update")
+    ;; (print (str "drawing/static-image: update, " (pr-str component)))
+
     component)
 
   (defmethod ecs/handle-event [:to-component ::static-image ::draw]

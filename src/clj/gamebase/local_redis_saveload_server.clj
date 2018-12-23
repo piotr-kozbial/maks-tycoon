@@ -68,8 +68,6 @@
     (when name?
       (car/wcar redis-conn (car/set (str PREFIX "game:" id ":name") name?)))
     (when state?
-      (println "STATE: ")
-      (println state?)
       (car/wcar redis-conn (car/set (str PREFIX "game:" id ":state") (pr-str state?))))
     id))
 

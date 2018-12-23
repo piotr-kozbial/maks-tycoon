@@ -20,13 +20,11 @@
   ;; (when (not= event-name "draw")
   ;;   (.log js/console (str "callback >" event-name "<")))
   (let [event-key (keyword event-name)
-        handlers (event-key @all-handlers)
-        ret (atom nil)]
+        handlers (event-key @all-handlers)]
     (when (precondition-for-event event-key)
       (doseq [h handlers]
-        (let [r (h (data-for-event event-key))]
-          (reset! ret r))))
-    @ret))
+        (h (data-for-event event-key)))))
+  nil)
 
 ;;-------------------------------------------------------------------
 

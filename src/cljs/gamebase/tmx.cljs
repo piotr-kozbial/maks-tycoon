@@ -2,12 +2,12 @@
 
 (ns gamebase.tmx
   (:require
-   [clojure.data.xml :as xml]
+   ;;[clojure.data.xml :as xml]
    [clojure.string :as s]))
 
 (defn parse-int [s]
-  #?(:clj (Integer. s)
-     :cljs (js/parseInt s)))
+  (js/parseInt s)
+)
 
 ;; (defmacro examples [& body]
 ;;   `(do)
@@ -72,7 +72,7 @@
 
 ;;; Parse it as XML:
 
-(def example-doc (xml/parse-str example-doc-text))
+;; (def example-doc (xml/parse-str example-doc-text))
 
 ;;; And now we can start implementing our tmx-specific parser, which will take
 ;;; the parsed xml structure and return the same data in a nice usable form.

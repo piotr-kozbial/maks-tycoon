@@ -4,6 +4,7 @@
    [gamebase.ecs :as ecs]
    [gamebase.projection :as proj]))
 
+
 (defonce conf (atom nil))
 
 (defn get-canvas-to-world-converters []
@@ -22,31 +23,39 @@
   (js/clear)
   (js/noSmooth)
   ;; outermost scaling and translation
-  (when-let [{:keys [state-atom state-kvs get-canvas-size]} @conf]
-    (let [{:keys [scale-factor translation-x translation-y]}
-          ,    (get-in @state-atom state-kvs)
-          ;; IMPORTANT!!! We must make translations integers, otherwise
-          ;; there will be unwanted artifacts (lines between tiles).
-          t-x (int translation-x)
-          t-y (int translation-y)]
-      (js/translate t-x t-y)
-      (js/scale scale-factor)
-      ;; flip vertical - this allowws the client draw function
-      ;; to use the standard coordinate system (y points upwards)
-      (js/scale 1 -1)
+  (when @conf
 
-      ;; We keep use the integer translations here as well
-      (let [rev-x #(/ (- % t-x) scale-factor)
-            rev-y #(/ (- % t-y) (- scale-factor))
-            [wc hc] (get-canvas-size)]
-        ;; client draw
-        ((:draw @conf)
-         {:min-x (rev-x 0)
-          :max-x (rev-x wc)
-          :min-y (rev-y hc) ;; because of negative y scale, hc is min and 0 is max
-          :max-y (rev-y 0)
-          :mouse-x (rev-x js/mouseX)
-          :mouse-y (rev-y js/mouseY)})))))
+    ;; (s/validate s-conf @conf)
+
+    (let [{:keys [state-atom state-kvs get-canvas-size]} @conf]
+      (let [{:keys [scale-factor translation-x translation-y]}
+            ,    (get-in @state-atom state-kvs)
+            ;; IMPORTANT!!! We must make translations integers, otherwise
+            ;; there will be unwanted artifacts (lines between tiles).
+            t-x (int translation-x)
+            t-y (int translation-y)]
+        (js/translate t-x t-y)
+        (js/scale scale-factor)
+        ;; flip vertical - this allowws the client draw function
+        ;; to use the standard coordinate system (y points upwards)
+        (js/scale 1 -1)
+
+        ;; We keep use the integer translations here as well
+        (let [rev-x #(/ (- % t-x) scale-factor)
+              rev-y #(/ (- % t-y) (- scale-factor))
+              [wc hc] (get-canvas-size)]
+          ;; client draw
+          ((:draw @conf)
+           {:min-x (int (rev-x 0))
+            :max-x (int (rev-x wc))
+            :min-y (int (rev-y hc)) ;; because of negative y scale, hc is min and 0 is max
+            :max-y (int (rev-y 0))
+            :mouse-x (int (rev-x js/mouseX))
+            :mouse-y (int (rev-y js/mouseY))})
+          ;; overlay draw
+          (when-let [overlay-draw (:overlay-draw @conf)]
+            (js/resetMatrix)
+            (overlay-draw wc hc)))))))
 
 (declare setup-drag-event)
 
@@ -66,6 +75,13 @@
                 translation-x
                 translation-y]} (get-in @state-atom state-kvs)
         [wc hc] (get-canvas-size)]
+
+    (swap! state-atom update-in state-kvs
+           (fn [state]
+             (assoc state
+                    :canvas-width wc
+                    :canvas-height hc)))
+
     (proj/projection-config
      scale-factor
      translation-x
@@ -80,6 +96,12 @@
 (defn get-scale []
   (when-let [{:keys [scale-factor]} (-get-state)]
     scale-factor))
+
+(defn get-canvas-size []
+  (when-let [{:keys [canvas-width canvas-height]} (-get-state)]
+    [canvas-width canvas-height]))
+
+(declare readjust)
 
 ;; public API
 (defn set-scale
@@ -108,6 +130,7 @@
                          :scale-factor scale-factor
                          :translation-x tr-x
                          :translation-y tr-y))))
+  (readjust)
   nil)
 
 (defn center-on
@@ -138,17 +161,69 @@
                          :translation-x tr-x
                          :translation-y tr-y))))
   nil
+)
 
-  ;; TODO
-  ;; this will need to use :get-world-size from conf
-  ;; this will be called in setup-drag-event, set-scale etc.
-  (defn readjust
-    "fix translation after external change
+(def MARGIN 100)
+
+;; TODO
+;; this will need to use :get-world-size from conf
+;; this will be called in setup-drag-event, set-scale etc.
+(defn readjust
+  "fix translation after external change
   (such as canvas resize by layout or game state reloaded)
   so that some of the world is visible at least"
-    []
+  []
 
-    ))
+  ;; (.log js/console "-----------------------------------")
+  ;; (.log js/console "readjust now")
+
+  (let [{:keys [state-atom state-kvs get-world-size]} @conf
+        {:keys [translation-x translation-y] :as state} (get-in @state-atom state-kvs)
+        {:keys [wc hc] :as proj-conf} (make-proj-conf)
+
+        wZ (proj/world-point [0 0])
+
+        [ww wh] (get-world-size)
+        wM (proj/world-point [ww (- wh)])
+
+        [xZ yZ] (proj/view-coords proj-conf wZ)
+        [xM yM] (proj/view-coords proj-conf wM)
+
+        ]
+    ;; (.log js/console (str "WORLD SIZE" (pr-str (get-world-size))))
+    ;; (.log js/console (pr-str state))
+    ;; (.log js/console (pr-str proj-conf))
+    ;; (.log js/console (str "wZ = " (pr-str wZ)))
+    ;; (.log js/console (str "wM = " (pr-str wM)))
+    ;; (.log js/console (str "[xZ yZ] = " (pr-str [xZ yZ])))
+    ;; (.log js/console (str "[xM yM] = " (pr-str [xM yM])))
+
+
+    (when (> xZ (- wc MARGIN))
+      ;; (.log js/console "X przekracza na prawo!")
+      (swap! state-atom update-in state-kvs
+             (fn [state]
+               (assoc state :translation-x (- (:translation-x state) (- xZ wc) MARGIN)))))
+
+    (when (< xM MARGIN)
+      ;; (.log js/console "X przekracza na lewo!")
+      (swap! state-atom update-in state-kvs
+             (fn [state]
+               (assoc state :translation-x (+ (:translation-x state) (- MARGIN xM))))))
+
+    (when (> yM (- hc MARGIN))
+      ;; (.log js/console "Y przekracza w dol!")
+      (swap! state-atom update-in state-kvs
+             (fn [state]
+               (assoc state :translation-y (- (:translation-y state) (+ yM MARGIN (- hc))))))
+
+      )
+
+    (when (< yZ MARGIN)
+      ;; (.log js/console "Y przekracza w gore!")
+      (swap! state-atom update-in state-kvs
+             (fn [state]
+               (assoc state :translation-y (+ (:translation-y state) (- MARGIN yZ))))))))
 
 (defn- setup-drag-event []
   (events/add-handler
@@ -162,5 +237,6 @@
                 (fn [{:keys [translation-x translation-y] :as s}]
                   (assoc s
                          :translation-x (+ translation-x dx)
-                         :translation-y (+ translation-y dy)))))))))
+                         :translation-y (+ translation-y dy))))
+         (readjust))))))
 

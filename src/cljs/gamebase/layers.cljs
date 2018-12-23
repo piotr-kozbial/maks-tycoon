@@ -22,9 +22,11 @@
 ;;; Creating a layer filled with a given tile:
 
     (defn clean-layer [width height fill-tile]
-      (let [row (apply vector (repeat width fill-tile))]
+      (let [row (apply vector (repeat width fill-tile))
+            r (atom 0)
+            data (apply vector (repeat height row))]
         {:layer-type :tiled
-         :data (apply vector (repeat height row))}))
+         :data data}))
 
     (examples
      (clean-layer 5 3 [:kafelki 3])
@@ -33,6 +35,25 @@
       :data [[[:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3]]
              [[:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3]]
              [[:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3] [:kafelki 3]]]})
+
+    (defn clean-layer-with-frame [width height fill-tile frame-tile]
+      (let [row (apply vector
+                  (concat
+                   [frame-tile frame-tile]
+                   (repeat (- width 4) fill-tile)
+                   [frame-tile frame-tile]))
+            frame-row (apply vector (repeat width frame-tile))
+            r (atom 0)
+            data (apply vector
+                   (concat
+                    [frame-row frame-row]
+                    (repeat (- height 4) row)
+                    [frame-row frame-row]))]
+        {:layer-type :tiled
+         :data data}))
+
+
+
 
 ;;; WARNING! A layer printed like this "looks" upside-down wrt. how it will be
 ;;; rendered, because row number logically grows upwards in the coordinate
@@ -77,7 +98,12 @@
       2 1)
      =>
      [:inny-set 55])
-    )
+
+    (defn get-layer-width [layer]
+      (count (first (:data layer))))
+
+    (defn get-layer-height [layer]
+      (count (:data layer))))
 
 ;;;## Loading tiled layers from tmx files
   (do
@@ -252,6 +278,7 @@
       (let [{:keys [tileset-map]} context
             [tileset-id tile-id] (get-tile-from-layer layer x y)]
         (when-let [ts-map (tileset-map tileset-id)]
+          ;;(.log js/console (str "tile " tile-id " -> " (pr-str (ts-map tile-id))))
           (ts-map tile-id))))
 
     (examples
@@ -550,4 +577,5 @@
 ;;   [:kafelki 5])
 ;;  =>
 ;;  {:img "tiles.png", :x 64, :y 32, :w 32, :h 32})
+
 
