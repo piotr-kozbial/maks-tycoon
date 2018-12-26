@@ -226,8 +226,13 @@
 
                  (wo/inject-entity loc)
 
-                 ;; TODO
-                 ;; (eq/put-event! event-queue (ecs/mk-event loc ::ecs/init (vt/get-time virtual-timer)))
+                 (swap! app-state update-in [:world]
+                        (fn [wrl]
+                          (ecs/put-all-events wrl [(ecs/mk-event loc ::ecs/init (wo/get-time))]
+)
+
+                          ))
+
                  )
 
            "q" (let [id (keyword (str "car-" (get-fresh-entity-id)))
