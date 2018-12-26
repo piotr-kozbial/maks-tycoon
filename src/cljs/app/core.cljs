@@ -1,8 +1,9 @@
 (ns app.core
   (:require [rum.core :as rum]
+            ;; [schema.core :as s :include-macros true]
 
-            [app.state :refer [app-state ui-refresh-tick virtual-timer
-                               get-fresh-entity-id event-queue update-tile-extra]]
+            [app.state :refer [app-state ui-refresh-tick
+                               get-fresh-entity-id update-tile-extra]]
             [app.ui.ui-state :refer [ui-state]]
             [gamebase.resources :as resources]
 
@@ -69,6 +70,8 @@
   (js/line 0 0 0 0))
 
 (defn advance-simulation-and-draw [{:keys [min-x max-x min-y max-y] :as context}]
+
+
   (let [{:keys [world timer]} @app-state]
     (when world
   ;;; Handle pending events...
@@ -79,19 +82,19 @@
                            (ecs/do-handle-event (ecs/mk-event (ecs/to-world) :update time))))
                      world)]
   ;;; validate...
-        (s/validate st/s-world world')
+        ;;(s/validate st/s-world world')
   ;;; and put new world in state.
         (swap! app-state assoc :world world')
   ;;; Draw the world.
         (sys-drawing/draw-all world' context)
   ;;; Draw other things.
-        (if (-mouse-in-active-area? context world')
-          (-draw-tile-box-under-mouse context))
   ;;; Draw debug stuff.
         (when (-> @debug/settings
                   :canvas-control
                   :coordinate-system-marker)
-          (debug-draw-coord-system))))))
+          (debug-draw-coord-system)))))
+
+  )
 
 ;; Initial world
 
@@ -116,16 +119,24 @@
              :world-width-in-tiles world-width-in-tiles
              :world-height-in-tiles world-height-in-tiles
              :tileset-rendering-map tileset-rendering-map
-             :tileset-map {:kafelki tiles/tiles-by-number}}]
+             :tileset-map {:kafelki tiles/tiles-by-number}}
 
-    (swap! app-state assoc :world
-           (assoc
-            (-> (ecs/mk-world)
-                (ecs/insert-object (sys-drawing/mk-system))
-                (ecs/insert-object (sys-move/mk-system)))
-            :layers ls
-            :tile-context ctx
-            :tile-extra {}))
+        world0 (assoc
+                (-> (ecs/mk-world)
+                    (ecs/insert-object (sys-drawing/mk-system))
+                    (ecs/insert-object (sys-move/mk-system)))
+                :layers ls
+                :tile-context ctx
+                :tile-extra {})
+        world1
+        (ecs/put-all-events world0 [(assoc
+                                     (ecs/mk-event sys-drawing/to-system
+                                                   ::sys-drawing/set-all-tmx 0)
+                                     :tmx-fname "level1.tmx")])]
+
+    (swap! app-state assoc :world world1)
+
+    (.log js/console "WORLD HAS BEEN SET")
 
     ;; initialize tiles extra in layer :foreground
     (let [layer (-get-layer (:world @app-state) :foreground)]
@@ -139,24 +150,21 @@
              (constantly
               (some #(initialize-tile-extra % tile-x tile-y tile-data) (:ids tile-data)))))))))
 
-  (eq/put-event!
-   event-queue
-   (assoc
-    (ecs/mk-event sys-drawing/to-system
-                  ::sys-drawing/set-all-tmx 0)
-    :tmx-fname "level1.tmx"))
 
   ;; Send ::ecs/init to all entities
 
   (doseq [c (ecs/all-components (:world @app-state))]
-    (eq/put-event!
-     event-queue
-     (ecs/mk-event c ::ecs/init 0)))
+    ;; (eq/put-event!
+    ;;  event-queue
+    ;;  (ecs/mk-event c ::ecs/init 0))
+    )
 
   (doseq [e (ecs/all-entities (:world @app-state))]
-    (eq/put-event!
-     event-queue
-     (ecs/mk-event e ::ecs/init 0))))
+    ;; (eq/put-event!
+    ;;  event-queue
+    ;;  (ecs/mk-event e ::ecs/init 0))
+
+    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; UI root
@@ -171,8 +179,12 @@
    (bottombar-component)))
 
 (defn render []
+  (.log js/console "RENDER")
   (rum/mount (main-component)
-             (. js/document (getElementById "app"))))
+             (. js/document (getElementById "app")))
+
+
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Resources to be loaded
@@ -214,14 +226,18 @@
 
                  (wo/inject-entity loc)
 
-                 (eq/put-event! event-queue (ecs/mk-event loc ::ecs/init (vt/get-time virtual-timer))))
+                 ;; TODO
+                 ;; (eq/put-event! event-queue (ecs/mk-event loc ::ecs/init (vt/get-time virtual-timer)))
+                 )
 
            "q" (let [id (keyword (str "car-" (get-fresh-entity-id)))
                      car (carriage/mk-entity id tile-x tile-y)]
 
                  (wo/inject-entity car)
 
-                 (eq/put-event! event-queue (ecs/mk-event car ::ecs/init (vt/get-time virtual-timer))))
+                 ;; TODO
+                 ;; (eq/put-event! event-queue (ecs/mk-event car ::ecs/init (vt/get-time virtual-timer)))
+                 )
 
            "w" (let [loc-id (keyword (str "loc-" (get-fresh-entity-id)))
                      loc (locomotive/mk-entity loc-id tile-x tile-y)
@@ -235,21 +251,22 @@
                      ]
                  (doseq [e [loc car car2 car3]]
                    (wo/inject-entity e)
-                   (eq/put-event! event-queue
-                                  (ecs/mk-event e ::ecs/init (vt/get-time virtual-timer))))
+                   ;; TODO
+                   ;; (eq/put-event! event-queue (ecs/mk-event e ::ecs/init (vt/get-time virtual-timer)))
+                   )
 
-                 (eq/put-event! event-queue
-                                (assoc (ecs/mk-event loc ::locomotive/couple-rear
-                                                     (vt/get-time virtual-timer))
-                                       :the-other-id car-id))
-                 (eq/put-event! event-queue
-                                (assoc (ecs/mk-event car ::carriage/couple-rear
-                                                     (vt/get-time virtual-timer))
-                                       :the-other-id car2-id))
-                 (eq/put-event! event-queue
-                                (assoc (ecs/mk-event car2 ::carriage/couple-rear
-                                                     (vt/get-time virtual-timer))
-                                       :the-other-id car3-id))
+                 ;; (eq/put-event! event-queue
+                 ;;                (assoc (ecs/mk-event loc ::locomotive/couple-rear
+                 ;;                                     (vt/get-time virtual-timer))
+                 ;;                       :the-other-id car-id))
+                 ;; (eq/put-event! event-queue
+                 ;;                (assoc (ecs/mk-event car ::carriage/couple-rear
+                 ;;                                     (vt/get-time virtual-timer))
+                 ;;                       :the-other-id car2-id))
+                 ;; (eq/put-event! event-queue
+                 ;;                (assoc (ecs/mk-event car2 ::carriage/couple-rear
+                 ;;                                     (vt/get-time virtual-timer))
+                 ;;                       :the-other-id car3-id))
 
 
                  )
@@ -259,18 +276,13 @@
                  (.log js/console (str "SWITCH TURNOUT!!! " tile-x ", " tile-y))
                  (turnouts/cycle-turnout-state tile-x tile-y)
 
-                 )
-           )
+                 )))))))
 
 
-         ))
-
-       
-
-))
-  )
+(declare initialize-layout)
 
 (defn main [& _]
+  (.log js/console "MAIN")
 
   (js/setInterval (fn [] ;; set up periodic frame rate measurement update
                     (let [rate (js/frameRate)
@@ -286,26 +298,10 @@
       (.log js/console "on all loaded")
       (when (every? resources/get-resource resource-fnames)
         (.log js/console "mozna odpalac")
-        (init-world))))
+        (init-world)
+        (wo/run))))
 
   (initialize-layout)
-
-
-  ;; TODO
-
-  ;; to zle
-  ;; bo nasze draw teraz zawiera obsluge kolejki zdarzen,
-  ;; wiec wyjdzie, ze jest
-  ;; 1. canvas/clear itd.
-  ;; 2. oblsuga kolejki
-  ;; 3. canvas/dalsze rysowanie
-
-  ;; I w ogole jakos to glupio.
-  ;; Moze zrobic globalna podpinke do draw,
-  ;; jakos tak aspektowo czy cos?
-
-  ;; Ale moze teraz na poczatek zostawic, zeby pojsc naprzod?
-  ;; TAK
 
   (canvas-control/initialize
    {:state-atom app-state
@@ -318,7 +314,10 @@
 
   (setup-key-handler)
 
-  (vt/resume virtual-timer))
+  ;; (vt/resume virtual-timer)
+
+
+  )
 
 (defn initialize-layout []
   (our-layout/initialize

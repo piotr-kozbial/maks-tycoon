@@ -2,7 +2,8 @@
 
 (ns gamebase.ecs
   (:require [gamebase.event-queue :as eq]
-            [schema.core :as s :include-macros true]))
+            ;;[schema.core :as s :include-macros true]
+            ))
 
 ;;;;;;;;;;;;;;;;;;;;;; P U B L I C ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 nil
@@ -120,11 +121,12 @@ nil
     object-or-object-id))
 
 (def s-world
-  {::kind (s/pred #{:world})
-   ::entities s/Any
-   ::systems s/Any
-   ::time s/Any
-   ::event-queue s/Any})
+  ;; {::kind (s/pred #{:world})
+  ;;  ::entities s/Any
+  ;;  ::systems s/Any
+  ;;  ::time s/Any
+  ;;  ::event-queue s/Any}
+  )
 
 (defn mk-world []
   {::kind :world

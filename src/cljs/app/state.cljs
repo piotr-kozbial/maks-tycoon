@@ -9,7 +9,7 @@
   (atom
    {:frame-rate "???"
 
-
+    :timer (vt/mk-timer)
     }))
 
 (defonce ui-refresh-tick (atom 0))
@@ -19,21 +19,11 @@
     (js/setInterval (fn [] (swap! ui-refresh-tick inc)) 500)
     nil))
 
-(def virtual-timer {:root-atom app-state :ks [:virtual-timer]})
-(defonce _vt_init (do (vt/initialize virtual-timer) nil))
-
-
 (defonce -entity-id-counter (atom 0))
 
 (defn get-fresh-entity-id []
   (swap! -entity-id-counter inc))
 
-
-;; Event queue
-
-(def event-queue {:root-atom app-state :ks [:event-queue]
-                  :on-adding-to-empty (fn [])})
-(defonce _eq_init (do (eq/initialize event-queue) nil))
 
 ;; Tile extra
 

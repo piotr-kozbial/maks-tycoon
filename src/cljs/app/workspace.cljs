@@ -14,7 +14,7 @@
             [app.tiles.general :as tiles]
             [gamebase.event-queue :as eq]
             [app.core :as core]
-            [app.state :refer [app-state virtual-timer event-queue]]))
+            [app.state :refer [app-state]]))
 
 
 (defn inject-entity [e]
@@ -35,13 +35,13 @@
             (ecs/remove-entity-by-key world entity-key))))
   nil)
 
-(defn send-to-entity [entity-key msg & kvs]
-  (let [{:keys [world]} @app-state
-        entity (ecs/get-entity-by-key world entity-key)
-        time (vt/get-time virtual-timer
-              )
-        event (apply assoc (ecs/mk-event (ecs/to entity) msg time) kvs)]
-    (apply eq/put-event! event-queue event kvs)))
+;; (defn send-to-entity [entity-key msg & kvs]
+;;   (let [{:keys [world]} @app-state
+;;         entity (ecs/get-entity-by-key world entity-key)
+;;         time (vt/get-time virtual-timer
+;;               )
+;;         event (apply assoc (ecs/mk-event (ecs/to entity) msg time) kvs)]
+;;     (apply eq/put-event! event-queue event kvs)))
 
 
 (comment

@@ -36,7 +36,7 @@
 
   :min-lein-version "2.6.1"
 
-  :source-paths ["src/clj" "src/cljs" "src/cljc"]
+  :source-paths ["src/clj" "src/cljs" ] ;; "src/cljc"
 
   :test-paths ["test/clj" "test/cljc"]
 
@@ -54,7 +54,7 @@
 
   :cljsbuild {:builds
               [{:id "app"
-                :source-paths ["src/cljs" "src/cljc" "dev"]
+                :source-paths ["src/cljs"  "dev"] ;; "src/cljc"
 
                 :figwheel {;;:on-jsload "app.dev/on-jsload"
                            }
@@ -66,7 +66,7 @@
                            :source-map-timestamp true}}
 
                {:id "test"
-                :source-paths ["src/cljs" "test/cljs" "src/cljc" "test/cljc"]
+                :source-paths ["src/cljs" "test/cljs" "test/cljc"] ;; "src/cljc"
                 :compiler {:output-to "dev-target/public/js/compiled/testable.js"
                            :main app.test-runner
                            :optimizations :none}}

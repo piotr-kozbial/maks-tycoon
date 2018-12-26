@@ -3,8 +3,48 @@
    [gamebase.ecs :as ecs]
    [gamebase.virtual-timer :as vt]
    [gamebase.event-queue :as eq]
+   [gamebase.layers :as layers]
    [app.server-communication :as sc]
-   [app.state :refer [app-state ui-refresh-tick virtual-timer event-queue]]))
+   [app.state :refer [app-state ui-refresh-tick]]))
+
+;; time-related operations
+
+(defn run []
+  (let [{:keys [world timer]} @app-state]
+    (assert world)
+    (swap! app-state update-in [:timer] #(vt/run % (::ecs/time world)))))
+
+(defn stop []
+  (let [{:keys [world timer]} @app-state]
+    (assert world)
+    (swap! app-state update-in [:timer] vt/stop)))
+
+(defn running? []
+  (let [{:keys [world timer]} @app-state]
+    (assert world)
+    (vt/running? timer)))
+
+(defn get-time []
+  "Returns virtual time if the world is running, world time otherwise."
+  (let [{:keys [world timer]} @app-state]
+    (assert world)
+    (if (vt/running? timer)
+      (vt/get-time timer)
+      (::ecs/time world))))
+
+;; whole world related operation
+
+(defn set-world [world]
+  (swap! app-state assoc :world world)
+  (stop))
+
+(defn destroy-world []
+  (swap! app-state assoc :world nil))
+
+;; other
+
+
+
 
 
 (defn get-all-locomotives [world]
@@ -33,8 +73,7 @@
 (defn send-to-entity [entity-key msg & kvs]
   (let [{:keys [world]} @app-state
         entity (ecs/get-entity-by-key world entity-key)
-        time (vt/get-time virtual-timer
-                          )
+        time (get-time)
         event (apply assoc (ecs/mk-event (ecs/to entity) msg time) kvs)]
     (apply eq/put-event! event-queue event kvs)))
 

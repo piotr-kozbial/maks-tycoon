@@ -5,7 +5,9 @@
    [gamebase.geometry :as g]
    [gamebase.layers :as layers]
    [app.tiles.general :as tiles]
-   [app.state :as st]))
+   [app.state :as st]
+   ;; [schema.core :as s :include-macros true]
+   ))
 
 ;; utils
 
@@ -42,20 +44,22 @@
          (second)))
 
   (def s-draw-context
-    {:min-x s/Int
-     :max-x s/Int
-     :min-y s/Int
-     :max-y s/Int
-     :mouse-x s/Int
-     :mouse-y s/Int})
+    ;; {:min-x s/Int
+    ;;  :max-x s/Int
+    ;;  :min-y s/Int
+    ;;  :max-y s/Int
+    ;;  :mouse-x s/Int
+    ;;  :mouse-y s/Int}
+    )
 
   (def s-tile-context
-    {:tile-width s/Any
-     :tile-height s/Any
-     :world-width-in-tiles s/Any
-     :world-height-in-tiles s/Any
-     :tileset-rendering-map s/Any
-     :tileset-map {:kafelki s/Any}})
+    ;; {:tile-width s/Any
+    ;;  :tile-height s/Any
+    ;;  :world-width-in-tiles s/Any
+    ;;  :world-height-in-tiles s/Any
+    ;;  :tileset-rendering-map s/Any
+    ;;  :tileset-map {:kafelki s/Any}}
+    )
 
   (defn- -draw-layer [world layer {:keys [min-x max-x min-y max-y] :as context} draw-extra?]
 
