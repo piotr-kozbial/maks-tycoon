@@ -71,11 +71,15 @@
  )
 
 (defn send-to-entity [entity-key msg & kvs]
-  (let [{:keys [world]} @app-state
-        entity (ecs/get-entity-by-key world entity-key)
-        time (get-time)
-        event (apply assoc (ecs/mk-event (ecs/to entity) msg time) kvs)]
-    (apply eq/put-event! event-queue event kvs)))
+  (swap! app-state update-in [:world]
+         (fn [world]
+           (let [entity (ecs/get-entity-by-key world entity-key)
+                 time (get-time)
+                 event (apply assoc (ecs/mk-event (ecs/to entity) msg time) kvs)]
+             (ecs/put-all-events world [event])))))
+
+
+
 
 
 (defn inject-entity [e]

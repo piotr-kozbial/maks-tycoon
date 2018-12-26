@@ -38,7 +38,11 @@
             [app.tiles.general :refer [initialize-tile-extra]]
             [app.tiles.activate]
 
-            [app.state :as st]))
+            [app.state :as st]
+
+            ;; must simply be required to define the :update handler for world
+            [app.ecs.world]
+            ))
 
 ;; Simulation animation and drawing
 
@@ -223,26 +227,13 @@
          (case key
            "a" (let [id (keyword (str "loc-" (get-fresh-entity-id)))
                      loc (locomotive/mk-entity id tile-x tile-y)]
-
                  (wo/inject-entity loc)
-
-                 (swap! app-state update-in [:world]
-                        (fn [wrl]
-                          (ecs/put-all-events wrl [(ecs/mk-event loc ::ecs/init (wo/get-time))]
-)
-
-                          ))
-
-                 )
+                 (wo/send-to-entity id ::ecs/init))
 
            "q" (let [id (keyword (str "car-" (get-fresh-entity-id)))
                      car (carriage/mk-entity id tile-x tile-y)]
-
                  (wo/inject-entity car)
-
-                 ;; TODO
-                 ;; (eq/put-event! event-queue (ecs/mk-event car ::ecs/init (vt/get-time virtual-timer)))
-                 )
+                 (wo/send-to-entity id ::ecs/init))
 
            "w" (let [loc-id (keyword (str "loc-" (get-fresh-entity-id)))
                      loc (locomotive/mk-entity loc-id tile-x tile-y)
@@ -251,30 +242,17 @@
                      car2-id (keyword (str "car-" (get-fresh-entity-id)))
                      car2 (carriage/mk-entity car2-id (- tile-x 2) tile-y)
                      car3-id (keyword (str "car-" (get-fresh-entity-id)))
-                     car3 (carriage/mk-entity car3-id (- tile-x 3) tile-y)
-
-                     ]
+                     car3 (carriage/mk-entity car3-id (- tile-x 3) tile-y)]
                  (doseq [e [loc car car2 car3]]
-                   (wo/inject-entity e)
-                   ;; TODO
-                   ;; (eq/put-event! event-queue (ecs/mk-event e ::ecs/init (vt/get-time virtual-timer)))
-                   )
-
-                 ;; (eq/put-event! event-queue
-                 ;;                (assoc (ecs/mk-event loc ::locomotive/couple-rear
-                 ;;                                     (vt/get-time virtual-timer))
-                 ;;                       :the-other-id car-id))
-                 ;; (eq/put-event! event-queue
-                 ;;                (assoc (ecs/mk-event car ::carriage/couple-rear
-                 ;;                                     (vt/get-time virtual-timer))
-                 ;;                       :the-other-id car2-id))
-                 ;; (eq/put-event! event-queue
-                 ;;                (assoc (ecs/mk-event car2 ::carriage/couple-rear
-                 ;;                                     (vt/get-time virtual-timer))
-                 ;;                       :the-other-id car3-id))
-
-
-                 )
+                   (wo/inject-entity e))
+                 (doseq [id [loc-id car-id car2-id car3-id]]
+                   (wo/send-to-entity id ::ecs/init))
+                 (wo/send-to-entity loc-id ::locomotive/couple-rear
+                                    :the-other-id car-id)
+                 (wo/send-to-entity car-id ::locomotive/couple-rear
+                                    :the-other-id car2-id)
+                 (wo/send-to-entity car2-id ::locomotive/couple-rear
+                                    :the-other-id car3-id))
 
            " " (when (turnouts/is-turnout? tile-x tile-y)
 
