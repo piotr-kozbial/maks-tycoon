@@ -50,24 +50,17 @@
      (swap! ui-state assoc-in [:sidebar :save-load-game :state] :load)
      (swap! ui-state assoc-in [:sidebar :save-load-game :game-list] game-list))))
 (defn load-game [id name]
+  (sc/load-game
+   id
+   (fn [ret] (do
+              (swap! ui-state assoc-in [:sidebar :save-load-game :state] :base)
 
-  (.log js/console (str "Load game >" name "<"))
-
-  (sc/load-game id
-                (fn [ret] (do
-                           (swap! ui-state assoc-in [:sidebar :save-load-game :state] :base)
-                           (.log js/console
-                                 (pr-str ret)
-                                 ;(str "L-O-A-D-E-D\n" ret)
-                                 ))
-                   )
-                #(
-                  (swap! ui-state assoc-in [:sidebar :save-load-game :state] :base)
-                  (js/alert "ERROR: game not loaded!")
-                  ))
-
-  ) ;; TODO
-
+              (let [world (:world (:state ret))]
+                (wo/set-world world)
+                (wo/run)
+                (.log js/console "GAME LOADED."))))
+   #((swap! ui-state assoc-in [:sidebar :save-load-game :state] :base)
+     (js/alert "ERROR: game not loaded!"))))
 
 (rum/defcs save-load-game-component < rum/reactive [component-state]
   (rum/react ui-refresh-tick)
