@@ -22,15 +22,21 @@
   (reduce put-event q events))
 
 (defn take-event [q]
-  (let [{:keys [set_ n]} q]
-    [(first set_)
+  (let [all (:set_ q)
+        all-sorted (sort-by ::time all)
+        soonest-event (first all-sorted)
+        rest-of-events (rest all-sorted)]
+    [soonest-event
      (assoc q
-            :set_ (rest set_)
-            :n (dec n))]))
+            :set_ rest-of-events
+            :n (dec (:n q)))]))
 
 (defn soonest-event-time [q]
-  (when-let [fst (first (:set_ q))]
-    (::time fst)))
+  (let [all (:set_ q)]
+    (->> all
+         (map ::time)
+         (sort)
+         (first))))
 
 (defn take-events-until  [q time]
   (let [all (:set_ q)]

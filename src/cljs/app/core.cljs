@@ -228,12 +228,12 @@
            "a" (let [id (keyword (str "loc-" (get-fresh-entity-id)))
                      loc (locomotive/mk-entity id tile-x tile-y)]
                  (wo/inject-entity loc)
-                 (wo/send-to-entity id ::ecs/init))
+                 (wo/send-to-entity loc ::ecs/init))
 
            "q" (let [id (keyword (str "car-" (get-fresh-entity-id)))
                      car (carriage/mk-entity id tile-x tile-y)]
                  (wo/inject-entity car)
-                 (wo/send-to-entity id ::ecs/init))
+                 (wo/send-to-entity car ::ecs/init))
 
            "w" (let [loc-id (keyword (str "loc-" (get-fresh-entity-id)))
                      loc (locomotive/mk-entity loc-id tile-x tile-y)
@@ -244,15 +244,16 @@
                      car3-id (keyword (str "car-" (get-fresh-entity-id)))
                      car3 (carriage/mk-entity car3-id (- tile-x 3) tile-y)]
                  (doseq [e [loc car car2 car3]]
-                   (wo/inject-entity e))
-                 (doseq [id [loc-id car-id car2-id car3-id]]
-                   (wo/send-to-entity id ::ecs/init))
-                 (wo/send-to-entity loc-id ::locomotive/couple-rear
-                                    :the-other-id car-id)
-                 (wo/send-to-entity car-id ::locomotive/couple-rear
-                                    :the-other-id car2-id)
-                 (wo/send-to-entity car2-id ::locomotive/couple-rear
-                                    :the-other-id car3-id))
+                   (wo/inject-entity e)
+                   (wo/send-to-entity e ::ecs/init))
+                 ;; (wo/send-to-entity loc ::locomotive/couple-rear
+                 ;;                    :the-other-id car-id)
+                 ;; (wo/send-to-entity car ::locomotive/couple-rear
+                 ;;                    :the-other-id car2-id)
+                 ;; (wo/send-to-entity car2 ::locomotive/couple-rear
+                 ;;                    :the-other-id car3-id)
+
+                 )
 
            " " (when (turnouts/is-turnout? tile-x tile-y)
 

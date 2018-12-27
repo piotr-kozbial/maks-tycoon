@@ -78,6 +78,7 @@
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::sys-move/at-path-end]
   [world event this]
+  (.log js/console (str "At path end " (::ecs/entity-id this)))
   (let [path (-> this ::ecs/components :move :path)
         {:keys [track tile-x tile-y]} this
         [new-tile-x new-tile-y] (tiles/track-destination-tile track tile-x tile-y)

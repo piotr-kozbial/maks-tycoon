@@ -240,7 +240,8 @@ nil
     (if-let [s-t (eq/soonest-event-time (::event-queue wrl))]
       (if (<=  s-t time)
         (let [[event event-queue'] (eq/take-event (::event-queue wrl))
-              wrl' (assoc wrl ::event-queue event-queue')]
+              wrl' (assoc wrl ::event-queue event-queue'
+                          ::time s-t)]
           (recur (do-handle-event wrl' event)))
         wrl)
       (assoc wrl ::time time))))
