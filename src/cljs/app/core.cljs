@@ -246,18 +246,18 @@
                  (doseq [e [loc car car2 car3]]
                    (wo/inject-entity e)
                    (wo/send-to-entity e ::ecs/init))
-                 ;; (wo/send-to-entity loc ::locomotive/couple-rear
-                 ;;                    :the-other-id car-id)
-                 ;; (wo/send-to-entity car ::locomotive/couple-rear
-                 ;;                    :the-other-id car2-id)
-                 ;; (wo/send-to-entity car2 ::locomotive/couple-rear
-                 ;;                    :the-other-id car3-id)
+                 (wo/send-to-entity loc ::locomotive/couple-rear
+                                    :the-other-id car-id)
+                 (wo/send-to-entity car ::carriage/couple-rear
+                                    :the-other-id car2-id)
+                 (wo/send-to-entity car2 ::carriage/couple-rear
+                                    :the-other-id car3-id)
 
                  )
 
            " " (when (turnouts/is-turnout? tile-x tile-y)
 
-                 (.log js/console (str "SWITCH TURNOUT!!! " tile-x ", " tile-y))
+                 (.log js/console (str "SWICH TURNOUT!!! " tile-x ", " tile-y))
                  (turnouts/cycle-turnout-state tile-x tile-y)
 
                  )))))))

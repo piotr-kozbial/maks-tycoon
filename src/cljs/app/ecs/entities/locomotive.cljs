@@ -128,7 +128,6 @@
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ci/stop]
   [world event {:keys [rear-coupling] :as this}]
-
   [(ecs/mk-event (-> this ::ecs/components :move)
                   ::ci/stop
                   (::eq/time event))
