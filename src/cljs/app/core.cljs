@@ -100,75 +100,6 @@
 
   )
 
-;; Initial world
-
-(defn- -get-layer [world layer-key]
-  (->> (:layers world)
-       (filter #(= (first %) layer-key))
-       (first)
-       (second)))
-
-
-(defn init-world []
-
-  (let [tmx-fname "level1.tmx"
-        ls (layers/get-all-layers-from-tmx
-            (resources/get-resource tmx-fname))
-        tileset-rendering-map (layers/get-tileset-rendering-map-from-tmx
-                               (resources/get-resource tmx-fname))
-        world-width-in-tiles 100
-        world-height-in-tiles 100
-        ctx {:tile-width 32
-             :tile-height 32
-             :world-width-in-tiles world-width-in-tiles
-             :world-height-in-tiles world-height-in-tiles
-             :tileset-rendering-map tileset-rendering-map
-             :tileset-map {:kafelki tiles/tiles-by-number}}
-
-        world0 (assoc
-                (-> (ecs/mk-world)
-                    (ecs/insert-object (sys-drawing/mk-system))
-                    (ecs/insert-object (sys-move/mk-system)))
-                :layers ls
-                :tile-context ctx
-                :tile-extra {})
-        world1
-        (ecs/put-all-events world0 [(assoc
-                                     (ecs/mk-event sys-drawing/to-system
-                                                   ::sys-drawing/set-all-tmx 0)
-                                     :tmx-fname "level1.tmx")])]
-
-    (swap! app-state assoc :world world1)
-
-    (.log js/console "WORLD HAS BEEN SET")
-
-    ;; initialize tiles extra in layer :foreground
-    (let [layer (-get-layer (:world @app-state) :foreground)]
-      (doseq [tile-x (range world-width-in-tiles)
-              tile-y (range world-height-in-tiles)]
-        (let [[_ tile-number] (layers/get-tile-from-layer layer tile-x tile-y)
-              tile-data (tiles/tiles-by-number tile-number)]
-          (doseq [tile-id (:ids tile-data)]
-            (update-tile-extra
-             tile-x tile-y
-             (constantly
-              (some #(initialize-tile-extra % tile-x tile-y tile-data) (:ids tile-data)))))))))
-
-
-  ;; Send ::ecs/init to all entities
-
-  (doseq [c (ecs/all-components (:world @app-state))]
-    ;; (eq/put-event!
-    ;;  event-queue
-    ;;  (ecs/mk-event c ::ecs/init 0))
-    )
-
-  (doseq [e (ecs/all-entities (:world @app-state))]
-    ;; (eq/put-event!
-    ;;  event-queue
-    ;;  (ecs/mk-event e ::ecs/init 0))
-
-    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; UI root
@@ -282,7 +213,7 @@
       (.log js/console "on all loaded")
       (when (every? resources/get-resource resource-fnames)
         (.log js/console "mozna odpalac")
-        (init-world)
+        (wo/set-world (wo/mk-world))
         (wo/run))))
 
   (initialize-layout)

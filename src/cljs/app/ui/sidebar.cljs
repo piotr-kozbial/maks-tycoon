@@ -14,19 +14,23 @@
 
    [app.ui.save-load-game :refer [save-load-game-component]]
 
-   [app.ui.ui-state :refer [ui-state] :as uis]))
+   [app.ui.ui-state :as uis]))
 
 (rum/defc sidebar-component < rum/reactive []
   (rum/react ui-refresh-tick)
 
-  (let [{:keys [open? selected-id]} (-> (rum/react ui-state) :sidebar :loc-selector)
-        {:keys [game-id game-name]} (-> (rum/react ui-state))
+  (let [ui-state (rum/react uis/ui-state)
+        game-id (uis/get-game-id ui-state)
+        game-name (uis/get-game-name ui-state)
+        {:keys [open? selected-id]} (-> (rum/react uis/ui-state) :sidebar :loc-selector)
         {:keys [frame-rate world]} @app-state
         loc (ecs/get-entity-by-key world selected-id)
         driving? (:driving? (:move (::ecs/components loc)))]
 
     [:div
-     [:div {:style {:font-size "larger" :font-weight "bold"}} (if game-id (or game-name "") [:i "(unsaved game)"])]
+     [:div {:style {:font-size "larger" :font-weight "bold"}}
+      (if game-id (or game-name "") [:i "(unsaved game)" game-id game-name])
+      ]
      [:br]
 
      [:div (str "FRAME RATE: " frame-rate)]

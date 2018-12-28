@@ -30,3 +30,17 @@
 
 (defn loc-selector-select [loc-id]
   (swap! ui-state assoc-in [:sidebar :loc-selector :selected-id] loc-id))
+
+;; other
+
+(defn get-game-id [state]
+  (:game-id state))
+(defn get-game-name [state]
+  (:game-name state))
+
+(defn set-game-id [id]
+  (swap! ui-state assoc :game-id id))
+(defn set-game-name [name]
+  (swap! ui-state assoc :game-name name))
+(defn set-game-saved-time [time]
+  (swap! ui-state assoc :game-saved-time time))

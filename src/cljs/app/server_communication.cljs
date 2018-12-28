@@ -29,11 +29,11 @@
 
 
 
-(defn save-game [handler & [error-handler]]
+(defn save-game [id name handler & [error-handler]]
   (post "/"
         {:request :save-game
-         :id 1
-         :name "???"
+         :id id
+         :name name
          :state @st/app-state}
         handler
         error-handler))

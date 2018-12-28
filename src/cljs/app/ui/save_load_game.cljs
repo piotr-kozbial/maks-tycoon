@@ -6,7 +6,10 @@
    [app.ecs.common-events :as ci]
    [app.world-interop :as wo]
    [app.server-communication :as sc]
-   [app.ui.ui-state :refer [ui-state] :as uis]))
+   [app.ui.ui-state :as uis]
+
+   [goog.string :as gstring]
+   [goog.string.format]))
 
 (def button-style {:color "#e8cba2"
                    :background-color "#47681b" ;; "#34517f"
@@ -26,7 +29,7 @@
    text])
 (defn cancel-button []
   (button nil red-button-style "Cancel"
-          #(swap! ui-state assoc-in [:sidebar :save-load-game :state] :base)))
+          #(swap! uis/ui-state assoc-in [:sidebar :save-load-game :state] :base)))
 (defn box [& content]
   (apply vector
     :div
@@ -35,44 +38,80 @@
 (defn spacer []
   [:span {:style {:white-space "pre"}} "   "])
 
-(defn save-game []) ; TODO
 (defn save-game-as-open []
-  (swap! ui-state assoc-in [:sidebar :save-load-game :state] :save-as))
+  (swap! uis/ui-state assoc-in [:sidebar :save-load-game :state] :save-as))
 (defn save-game-as [name]
-  (sc/save-game-as name #(swap! ui-state assoc-in [:sidebar :save-load-game :state] :base)
-                   #(do (swap! ui-state assoc-in [:sidebar :save-load-game :state] :base)
+  (sc/save-game-as name
+                   #(do (swap! uis/ui-state assoc-in [:sidebar :save-load-game :state] :base)
+                        (swap! uis/ui-state assoc-in [:game-saved-time] (js/millis)))
+                   #(do (swap! uis/ui-state assoc-in [:sidebar :save-load-game :state] :base)
                         (js/alert "ERROR: game not saved!"))))
+(defn save-game []
+  (let [ui-state @uis/ui-state
+        id (uis/get-game-id ui-state)
+        name (uis/get-game-name ui-state)]
+    (sc/save-game id name
+                  #(do (swap! uis/ui-state assoc-in [:sidebar :save-load-game :state] :base)
+                       (swap! uis/ui-state assoc-in [:game-saved-time] (js/millis)))
+                  #(do (swap! uis/ui-state assoc-in [:sidebar :save-load-game :state] :base)
+                       (js/alert "ERROR: game not saved!")))))
 (defn load-game-open []
   (.log js/console "load game...")
   (sc/list-games
    (fn [game-list]
      (.log js/console (str "LIST GAMES RET: " game-list))
-     (swap! ui-state assoc-in [:sidebar :save-load-game :state] :load)
-     (swap! ui-state assoc-in [:sidebar :save-load-game :game-list] game-list))))
+     (swap! uis/ui-state assoc-in [:sidebar :save-load-game :state] :load)
+     (swap! uis/ui-state assoc-in [:sidebar :save-load-game :game-list] game-list))))
 (defn load-game [id name]
   (sc/load-game
    id
    (fn [ret] (do
-              (swap! ui-state assoc-in [:sidebar :save-load-game :state] :base)
-
+              (swap! uis/ui-state assoc-in [:sidebar :save-load-game :state] :base)
+              (swap! uis/ui-state assoc-in [:game-saved-time] (js/millis))
               (let [world (:world (:state ret))]
                 (wo/set-world world)
                 (wo/run)
-                (.log js/console "GAME LOADED."))))
-   #((swap! ui-state assoc-in [:sidebar :save-load-game :state] :base)
+                (uis/set-game-id id)
+                (uis/set-game-name name)
+                (.log js/console (str "GAME LOADED. " id " " name " - " (uis/get-game-id @uis/ui-state) " " (uis/get-game-name @uis/ui-state))))))
+   #((swap! uis/ui-state assoc-in [:sidebar :save-load-game :state] :base)
      (js/alert "ERROR: game not loaded!"))))
+(defn new-game []
+  (wo/set-world (wo/mk-world))
+  (wo/run)
+  (uis/set-game-id nil)
+  (uis/set-game-name nil)
+  (uis/set-game-saved-time nil))
 
 (rum/defcs save-load-game-component < rum/reactive [component-state]
   (rum/react ui-refresh-tick)
 
-  (let [{:keys [state game-list mouse-over-game-id]} (-> (rum/react ui-state) :sidebar :save-load-game)]
+  (let [{:keys [state game-list mouse-over-game-id]} (-> (rum/react uis/ui-state) :sidebar :save-load-game)]
 
     [:div
      ;; SAVE
      (box (button "public/save-icon.png"
-                  (if (= state :base) button-style disabled-button-style)
+                  (if (and (uis/get-game-id @uis/ui-state) (= state :base)) button-style disabled-button-style)
                   " SAVE GAME"
-                  #(when (= state :base) (save-game))))
+                  #(when (and (uis/get-game-id @uis/ui-state) (= state :base)) (save-game)))
+          [:br]
+          [:i
+           (if-let [saved-time (:game-saved-time @uis/ui-state)]
+             (let [total-seconds (int (/ (- (js/millis) saved-time) 1000))
+                   seconds (mod total-seconds 60)
+                   minutes (mod (int (/ total-seconds 60)) 60)
+                   hours (int (/ total-seconds 3600))]
+               (str "saved "
+                    (when (> hours 0)
+                      (hours "h "))
+                    (when (> minutes 0)
+                      (gstring/format "%02dm" minutes))
+                    (gstring/format "%02ds" seconds)
+                    " ago"))
+             "never saved"
+             )]
+
+          )
 
      ;; SAVE AS
      (box (button "public/save-as-icon.png"
@@ -101,9 +140,9 @@
                [:div {:style {:cursor "pointer"
                               :background-color (when (= id mouse-over-game-id) "#a58d2e")}
                       :on-mouse-over (fn [e]
-                                       (swap! ui-state assoc-in [:sidebar :save-load-game :mouse-over-game-id] id))
+                                       (swap! uis/ui-state assoc-in [:sidebar :save-load-game :mouse-over-game-id] id))
                       :on-mouse-out (fn [_]
-                                      (swap! ui-state assoc-in [:sidebar :save-load-game :mouse-over-game-id] nil))
+                                      (swap! uis/ui-state assoc-in [:sidebar :save-load-game :mouse-over-game-id] nil))
                       :on-click (fn [_]
                                   (load-game id name))
 
@@ -112,6 +151,7 @@
 
              (box (cancel-button))]))
      ;; NEW
-     (box (button "public/asterisk.png" button-style " NEW GAME" #()))
+     (box (button "public/asterisk.png" button-style " NEW GAME"
+                  #(new-game)))
 
      ]))
