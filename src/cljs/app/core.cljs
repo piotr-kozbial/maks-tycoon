@@ -92,6 +92,7 @@
   ;;; Draw the world.
         (sys-drawing/draw-all world' context)
   ;;; Draw other things.
+        (-draw-tile-box-under-mouse context)
   ;;; Draw debug stuff.
         (when (-> @debug/settings
                   :canvas-control
