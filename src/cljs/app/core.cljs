@@ -42,6 +42,8 @@
 
             ;; must simply be required to define the :update handler for world
             [app.ecs.world]
+
+            [app.modules.construction]
             ))
 
 ;; Simulation animation and drawing
@@ -232,7 +234,7 @@
 
   ;; (vt/resume virtual-timer)
 
-
+  (app.modules.construction/initialize)
   )
 
 (defn initialize-layout []

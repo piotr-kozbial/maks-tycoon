@@ -34,12 +34,21 @@
          [:sidebar :tabs tab-key :open?]
          false))
 
+(defn register-tab [tab-struct]
+  (swap! uis/ui-state
+         assoc-in
+         [:sidebar :tabs (:key tab-struct)]
+         tab-struct))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+nil
+;; These tabs are predefined here.
+;; But others may be installed dynamically in the UI state.
 (def tabs
-  {:games {:component #'save-load-game-component}
-
-   })
+  {:games {:key :games
+           :title "Games"
+           :component #'save-load-game-component}})
 
 ;; ordering of tabs
 ;; if however this does not contain all keys from `tabs`,
@@ -47,6 +56,24 @@
 ;; in an undeterined order
 (def tab-order
   [:games])
+
+(defn effective-tabs [ui-state]
+  (merge-with
+   merge
+   tabs
+   (get-in ui-state [:sidebar :tabs])))
+
+(defn effective-tab-order [ui-state]
+  (let [numbered-tab-order
+        (map vector (reverse tab-order) (iterate dec 0))
+        tab-number-map (apply hash-map
+                         (apply concat numbered-tab-order))
+        tab-number-fn (fn [tab-key]
+                        (get tab-number-map tab-key 1))]
+    (sort-by tab-number-fn (keys (effective-tabs ui-state)))))
+
+(defn get-tab [ui-state tab-key]
+  ((effective-tabs ui-state) tab-key))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -78,8 +105,8 @@
 
      [:br] [:br] [:br]
 
-     (for [tab-key tab-order]
-       (let [tab (tabs tab-key)]
+     (for [tab-key (effective-tab-order ui-state)]
+       (let [{:keys [component title]} (get-tab ui-state tab-key)]
          [:div
           [:hr {:style {:border "1px solid #BB4400"}}]
           (if (tab-open? ui-state tab-key)
@@ -88,13 +115,13 @@
               [:span {:style {:color "#993300"
                               :cursor "pointer"}
                       :on-click (fn [_] (close-tab tab-key))}
-               "[-] Games"]]
-             (save-load-game-component)]
+               (str "[-] " title)]]
+             (when component (component))]
             [:div {:style {:margin-bottom "10px"}}
              [:span {:style {:color "#993300"
                              :cursor "pointer"}
                      :on-click (fn [_] (open-tab tab-key))}
-              "[+] Games"]])]))
+              (str "[+] " title)]])]))
 
      [:hr {:style {:border "1px solid #BB4400"}}]
  ]))
