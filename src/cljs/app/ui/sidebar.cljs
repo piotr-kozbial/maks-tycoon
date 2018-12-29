@@ -16,6 +16,40 @@
 
    [app.ui.ui-state :as uis]))
 
+
+;;;;; State ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defn tab-open? [ui-state tab-key]
+  (get-in ui-state [:sidebar :tabs tab-key :open?]))
+
+(defn open-tab [tab-key]
+  (swap! uis/ui-state
+         assoc-in
+         [:sidebar :tabs tab-key :open?]
+         true))
+(defn close-tab [tab-key]
+  (swap! uis/ui-state
+         assoc-in
+         [:sidebar :tabs tab-key :open?]
+         false))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def tabs
+  {:games {:component #'save-load-game-component}
+
+   })
+
+;; ordering of tabs
+;; if however this does not contain all keys from `tabs`,
+;; those missing will be rendered anyway, at the end
+;; in an undeterined order
+(def tab-order
+  [:games])
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (rum/defc sidebar-component < rum/reactive []
   (rum/react ui-refresh-tick)
 
@@ -39,10 +73,29 @@
       [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 0.5))} "50%"] " "
       [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 1.0))} "100%"] " "
       [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 2.0))} "200%"]]
-     [:br] [:br] [:br]
 
      [:br] [:br] [:br]
 
-     (save-load-game-component)
+     [:br] [:br] [:br]
+
+     (for [tab-key tab-order]
+       (let [tab (tabs tab-key)]
+         [:div
+          [:hr {:style {:border "1px solid #BB4400"}}]
+          (if (tab-open? ui-state tab-key)
+            [:div
+             [:div {:style {:margin-bottom "10px"}}
+              [:span {:style {:color "#993300"
+                              :cursor "pointer"}
+                      :on-click (fn [_] (close-tab tab-key))}
+               "[-] Games"]]
+             (save-load-game-component)]
+            [:div {:style {:margin-bottom "10px"}}
+             [:span {:style {:color "#993300"
+                             :cursor "pointer"}
+                     :on-click (fn [_] (open-tab tab-key))}
+              "[+] Games"]])]))
+
+     [:hr {:style {:border "1px solid #BB4400"}}]
  ]))
 
