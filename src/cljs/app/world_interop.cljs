@@ -1,6 +1,6 @@
 (ns app.world-interop
   (:require
-
+   [gamebase.canvas-control :as canvas-control]
    [gamebase.resources :as resources]
    [gamebase.systems.drawing :as sys-drawing]
    [gamebase.systems.movement :as sys-move]
@@ -94,7 +94,6 @@
 
 (defn set-world [world]
   (swap! app-state assoc :world world)
-  (init-tile-extra)
   (stop))
 
 (defn destroy-world []
@@ -161,3 +160,34 @@
 
     ))
 
+
+(defn get-world-size [] ;; TODO
+  [2000 1000])
+
+(defn get-tile-xy [canvas-x canvas-y]
+  (let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters)
+        tile-x (quot (conv-x canvas-x) 32)
+        tile-y (quot (conv-y canvas-y) 32)
+        [world-width world-height] (get-world-size)]
+    (when (and (>= tile-x 0) (< tile-x world-width)
+               (>= tile-y 0) (< tile-y world-height))
+      [tile-x tile-y])))
+
+(defn get-tile [tile-x tile-y]
+  (let [world (:world @app-state)
+        layer (-get-layer world :foreground)]
+    (layers/get-tile-from-layer layer tile-x tile-y)))
+
+(defn set-tile [tile-x tile-y tile]
+  (swap!
+   app-state
+   update-in
+   [:world :layers]
+   (fn [layers]
+     (map
+      (fn [[key l]]
+        [key
+         (if (= key :foreground)
+           (layers/set-tile-in-layer l tile-x tile-y tile)
+           l)])
+      layers))))

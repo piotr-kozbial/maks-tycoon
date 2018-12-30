@@ -8,15 +8,17 @@
 (defonce conf (atom nil))
 
 (defn get-canvas-to-world-converters []
- (when-let [{:keys [state-atom state-kvs get-canvas-size]} @conf]
+  (when-let [{:keys [state-atom state-kvs get-canvas-size]} @conf]
+    (.log js/console (pr-str 
+                      (get-in @state-atom state-kvs)))
     (let [{:keys [scale-factor translation-x translation-y]}
           ,    (get-in @state-atom state-kvs)
           ;; IMPORTANT!!! We must make translations integers, otherwise
           ;; there will be unwanted artifacts (lines between tiles).
           t-x (int translation-x)
           t-y (int translation-y)]
-       [#(/ (- % t-x) scale-factor)
-        #(/ (- % t-y) (- scale-factor))])))
+      [#(int (/ (- % t-x) scale-factor))
+       #(int (/ (- % t-y) (- scale-factor)))])))
 
 (defn- draw []
   ;; canvas clear and setup

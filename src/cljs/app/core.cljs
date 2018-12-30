@@ -188,7 +188,7 @@
     :draw #'advance-simulation-and-draw
     :overlay-draw nil
     :get-canvas-size our-layout/get-canvas-size
-    :get-world-size #(vector 2000 1000) ;; TODO
+    :get-world-size #'wo/get-world-size
     })
 
   (km/setup-key-handler)
