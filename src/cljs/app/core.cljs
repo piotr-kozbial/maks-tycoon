@@ -43,6 +43,8 @@
             ;; must simply be required to define the :update handler for world
             [app.ecs.world]
 
+            [app.key-mouse-input :as km]
+
             [app.modules.construction]
             ))
 
@@ -129,72 +131,31 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def resource-fnames
-  ["background.png"
-   "tiles.png"
-   "loco1.png"
-   "loco1-coupled.png"
-   "loco1-crashed.png"
-   "loco1-debug.png"
-   "carriage1.png"
-   "carriage1-front-coupled.png"
-   "carriage1-rear-coupled.png"
-   "carriage1-both-coupled.png"
-   "carriage1-crashed.png"
-   "carriage2.png"
-   "level1.tmx"])
+  (concat
+   ["background.png"
+    "tiles.png"
+    "loco1.png"
+    "loco1-coupled.png"
+    "loco1-crashed.png"
+    "loco1-debug.png"
+    "carriage1.png"
+    "carriage1-front-coupled.png"
+    "carriage1-rear-coupled.png"
+    "carriage1-both-coupled.png"
+    "carriage1-crashed.png"
+    "carriage2.png"
+    "level1.tmx"]
+   (for [n (range 9)] (str "track-palette/" n ".png"))
+   (for [n (range 8)] (str "track-palette/2" (inc n) ".png"))
+   (for [n (range 8)] (str "track-palette/4" (inc n) ".png"))
+   (for [n [62 63 64]] (str "track-palette/" n ".png"))
+   (for [n [82 83 84]] (str "track-palette/" n ".png"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main function
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn setup-key-handler []
 
-
-  (events/add-handler
-   :canvas-key-typed
-   (fn [{:keys [key x y]}]
-     (when-let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters)]
-       (let [world-x (conv-x x)
-             world-y (conv-y y)
-             tile-x (quot world-x 32)
-             tile-y (quot world-y 32)]
-         (case key
-           "a" (let [id (keyword (str "loc-" (get-fresh-entity-id)))
-                     loc (locomotive/mk-entity id tile-x tile-y)]
-                 (wo/inject-entity loc)
-                 (wo/send-to-entity loc ::ecs/init))
-
-           "q" (let [id (keyword (str "car-" (get-fresh-entity-id)))
-                     car (carriage/mk-entity id tile-x tile-y)]
-                 (wo/inject-entity car)
-                 (wo/send-to-entity car ::ecs/init))
-
-           "w" (let [loc-id (keyword (str "loc-" (get-fresh-entity-id)))
-                     loc (locomotive/mk-entity loc-id tile-x tile-y)
-                     car-id (keyword (str "car-" (get-fresh-entity-id)))
-                     car (carriage/mk-entity car-id (dec tile-x) tile-y)
-                     car2-id (keyword (str "car-" (get-fresh-entity-id)))
-                     car2 (carriage/mk-entity car2-id (- tile-x 2) tile-y)
-                     car3-id (keyword (str "car-" (get-fresh-entity-id)))
-                     car3 (carriage/mk-entity car3-id (- tile-x 3) tile-y)]
-                 (doseq [e [loc car car2 car3]]
-                   (wo/inject-entity e)
-                   (wo/send-to-entity e ::ecs/init))
-                 (wo/send-to-entity loc ::locomotive/couple-rear
-                                    :the-other-id car-id)
-                 (wo/send-to-entity car ::carriage/couple-rear
-                                    :the-other-id car2-id)
-                 (wo/send-to-entity car2 ::carriage/couple-rear
-                                    :the-other-id car3-id)
-
-                 )
-
-           " " (when (turnouts/is-turnout? tile-x tile-y)
-
-                 (.log js/console (str "SWICH TURNOUT!!! " tile-x ", " tile-y))
-                 (turnouts/cycle-turnout-state tile-x tile-y)
-
-                 )))))))
 
 
 (declare initialize-layout)
@@ -230,9 +191,8 @@
     :get-world-size #(vector 2000 1000) ;; TODO
     })
 
-  (setup-key-handler)
-
-  ;; (vt/resume virtual-timer)
+  (km/setup-key-handler)
+  (km/setup-mouse-handler)
 
   (app.modules.construction/initialize)
   )

@@ -55,7 +55,8 @@ nil
 ;; those missing will be rendered anyway, at the end
 ;; in an undeterined order
 (def tab-order
-  [:games])
+  [:app.modules.construction/construction
+   :games])
 
 (defn effective-tabs [ui-state]
   (merge-with
