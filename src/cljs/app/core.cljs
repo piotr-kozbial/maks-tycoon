@@ -178,6 +178,7 @@
       (when (every? resources/get-resource resource-fnames)
         (.log js/console "mozna odpalac")
         (wo/set-world (wo/mk-world))
+        (wo/init-tile-extra)
         (wo/run))))
 
   (initialize-layout)

@@ -29,7 +29,8 @@
    [:div
     {:id "gamebase/side-bar"
      :style {:position "absolute"
-             :backgroundColor "#C6AF20"}}
+             :backgroundColor "#C6AF20"
+             :overflow "auto"}}
     sidebar-content]
    [:div
     {:id "gamebase/side-bar-border"

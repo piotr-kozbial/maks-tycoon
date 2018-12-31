@@ -9,9 +9,7 @@
 
 (defn build [_ x y]
   (when-let [[tile-x tile-y] (wo/get-tile-xy x y)]
-    (.log js/console (str "Build! " x " " y " -> " tile-x " " tile-y " => " (wo/get-tile tile-x tile-y)))
-    (wo/set-tile tile-x tile-y [:kafelki 21])
-    ))
+    (wo/set-tile tile-x tile-y [:kafelki 21])))
 
 (rum/defc component < rum/reactive []
   (rum/react app.ui.ui-state/ui-state)
