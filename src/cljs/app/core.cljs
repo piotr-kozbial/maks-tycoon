@@ -145,11 +145,13 @@
     "carriage1-crashed.png"
     "carriage2.png"
     "level1.tmx"]
-   (for [n (range 9)] (str "track-palette/" n ".png"))
-   (for [n (range 8)] (str "track-palette/2" (inc n) ".png"))
-   (for [n (range 8)] (str "track-palette/4" (inc n) ".png"))
-   (for [n [62 63 64]] (str "track-palette/" n ".png"))
-   (for [n [82 83 84]] (str "track-palette/" n ".png"))))
+   ;; (for [n (range 9)] (str "track-palette/" n ".png"))
+   ;; (for [n (range 8)] (str "track-palette/2" (inc n) ".png"))
+   ;; (for [n (range 8)] (str "track-palette/4" (inc n) ".png"))
+   ;; (for [n [62 63 64]] (str "track-palette/" n ".png"))
+   ;; (for [n [82 83 84]] (str "track-palette/" n ".png"))
+
+   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main function

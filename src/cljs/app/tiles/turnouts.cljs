@@ -8,7 +8,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;; W turnout
 
 (defmethod initialize-tile-extra :track-wt [tile-id tile-x tile-y tile-info]
   {:state :straight-left})
