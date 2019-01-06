@@ -42,7 +42,14 @@
    {:number 22, :ids [:track-wt :track-tw]
     :tracks [[:w :n] [:w :s] [:n :s]]}
    {:number 41, :ids [:track-nt :track-tn]
-    :tracks [[:n :w] [:n :e] [:w :e]]}])
+    :tracks [[:n :w] [:n :e] [:w :e]]}
+
+   ;; train factory - TODO, move to module!
+   {:number 364, :ids [:train-factory-left]
+    :tracks [:w :e]}
+   {:number 365, :ids [:train-factory-right]
+    :tracks [:w :e]}
+   ])
 
 (def tiles-by-number
   (->> tiles

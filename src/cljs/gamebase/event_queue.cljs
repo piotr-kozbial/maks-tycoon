@@ -42,5 +42,5 @@
   (let [all (:set_ q)]
     [(->> all
           (filter #(<= (::time %) time))
-          (sort-by ::time))
+          (sort-by #(vector (::time %) (:sq %))))
      (assoc q :set_ (remove #(<= (::time %) time) all))]))

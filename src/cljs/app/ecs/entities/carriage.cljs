@@ -25,7 +25,7 @@
                              :center [16 8]
                              :resource-name-kvs [:image]})
 
-    :move (ecsu/mk-component sys-move/mk-path-follower {:path-history-size 0})
+    :move (ecsu/mk-component sys-move/mk-path-follower {:path-history-size 2})
 
     }
 
@@ -101,9 +101,6 @@
                              info
                              extra)
 
-        ;; choose the first possible tracks
-        new-track (first possible-new-tracks)
-
 
         track-chosen-by-front
         (when-let [front-id (:front-coupling this)]
@@ -111,39 +108,36 @@
                 front-history (-history-to-map (:tile-track-history front))]
             (front-history [new-tile-x new-tile-y])))]
 
-    (if new-track
+    (if track-chosen-by-front
 
-      (if (and track-chosen-by-front (not= track-chosen-by-front new-track))
-        (do
-          (.log js/console "DECOUPLE !!!")
-          (.log js/console "DECOUPLE !!!")
-          (.log js/console "DECOUPLE !!!")
-          [(assoc this :front-coupling nil)
-           (assoc (ecs/get-entity-by-key world (:front-coupling this))
-                  :rear-coupling nil)
-           (ecs/mk-event this ::ci/stop (::eq/time event))])
-
-        (let [new-path (tiles/track-path new-track new-tile-x new-tile-y)]
-          [(assoc this
-                  :tile-x new-tile-x
-                  :tile-y new-tile-y
-                  :track new-track
-                  :tile-track-history (-put-to-history (:tile-track-history this)
-                                                       new-tile-x new-tile-y new-track))
-           (assoc
-            (ecs/mk-event (-> this ::ecs/components :move)
-                          ::sys-move/set-path
-                          (::eq/time event))
-            :path new-path)]))
+      (let [new-path (tiles/track-path track-chosen-by-front new-tile-x new-tile-y)]
+        [(assoc this
+                :tile-x new-tile-x
+                :tile-y new-tile-y
+                :track track-chosen-by-front
+                :tile-track-history (-put-to-history (:tile-track-history this)
+                                                     new-tile-x new-tile-y track-chosen-by-front))
+         (assoc
+          (ecs/mk-event (-> this ::ecs/components :move)
+                        ::sys-move/set-path
+                        (::eq/time event))
+          :path new-path)])
 
       (do
         (.log js/console "NO NEW TRACK!!!")
-        [(ecs/mk-event (-> this ::ecs/components :move)
+        [
+         ;; (ecs/mk-event (-> this ::ecs/components :move)
+         ;;               ::ci/stop
+         ;;               (::eq/time event))
+         (ecs/mk-event this
                        ::ci/stop
-                       (::eq/time event))]))))
+                       (::eq/time event))
+
+         ]))))
 
 (defmethod ecs/handle-event [:to-entity ::carriage ::ci/stop]
   [world event {:keys [rear-coupling] :as this}]
+  (.log js/console "CAR GOT STOP, sending to " rear-coupling)
   [(ecs/mk-event (-> this ::ecs/components :move)
                  ::ci/stop
                  (::eq/time event))

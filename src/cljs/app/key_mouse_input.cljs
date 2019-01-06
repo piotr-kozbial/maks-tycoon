@@ -40,7 +40,7 @@
              tile-y (quot world-y 32)]
          (case key
            "a" (let [id (keyword (str "loc-" (get-fresh-entity-id)))
-                     loc (locomotive/mk-entity id tile-x tile-y)]
+                     loc (locomotive/mk-entity id 1 1)]
                  (wo/inject-entity loc)
                  (wo/send-to-entity loc ::ecs/init))
 
@@ -49,7 +49,9 @@
                  (wo/inject-entity car)
                  (wo/send-to-entity car ::ecs/init))
 
-           "w" (let [loc-id (keyword (str "loc-" (get-fresh-entity-id)))
+           "w" (let [tile-x 4
+                     tile-y 1
+                     loc-id (keyword (str "loc-" (get-fresh-entity-id)))
                      loc (locomotive/mk-entity loc-id tile-x tile-y)
                      car-id (keyword (str "car-" (get-fresh-entity-id)))
                      car (carriage/mk-entity car-id (dec tile-x) tile-y)
@@ -60,14 +62,9 @@
                  (doseq [e [loc car car2 car3]]
                    (wo/inject-entity e)
                    (wo/send-to-entity e ::ecs/init))
-                 (wo/send-to-entity loc ::locomotive/couple-rear
-                                    :the-other-id car-id)
-                 (wo/send-to-entity car ::carriage/couple-rear
-                                    :the-other-id car2-id)
-                 (wo/send-to-entity car2 ::carriage/couple-rear
-                                    :the-other-id car3-id)
-
-                 )
+                 (wo/send-to-entity loc  ::locomotive/couple-rear :the-other-id car-id)
+                 (wo/send-to-entity car  ::carriage/couple-rear   :the-other-id car2-id)
+                 (wo/send-to-entity car2 ::carriage/couple-rear   :the-other-id car3-id))
 
            " " (when (turnouts/is-turnout? tile-x tile-y)
 

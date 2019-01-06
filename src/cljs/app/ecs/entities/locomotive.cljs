@@ -19,7 +19,7 @@
 
    ::locomotive
 
-   {:move (ecsu/mk-component sys-move/mk-path-follower {:path-history-size 1})
+   {:move (ecsu/mk-component sys-move/mk-path-follower {:path-history-size 2})
     :img (ecsu/mk-component sys-drawing/mk-static-image-component
                             {:point-kvs (ecs/ck-kvs :move :position)
                              :angle-kvs (ecs/ck-kvs :move :angle)
@@ -105,9 +105,10 @@
 
         ;; choose the first possible tracks
         new-track (first possible-new-tracks)]
-
+    (.log js/console (pr-str new-tile))
     (if new-track
       (let [new-path (tiles/track-path new-track new-tile-x new-tile-y)]
+
         [(assoc this
                 :tile-x new-tile-x
                 :tile-y new-tile-y
@@ -121,12 +122,19 @@
           :path new-path)])
       (do
         (.log js/console "NO NEW TRACK!!!")
-        [(ecs/mk-event (-> this ::ecs/components :move)
+        [
+         ;; (ecs/mk-event (-> this ::ecs/components :move)
+         ;;               ::ci/stop
+         ;;               (::eq/time event))
+         (ecs/mk-event this
                        ::ci/stop
-                       (::eq/time event))]))))
+                       (::eq/time event))
+
+         ]))))
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ci/stop]
   [world event {:keys [rear-coupling] :as this}]
+  (.log js/console "LOC GOT STOP, sending to " rear-coupling)
   [(ecs/mk-event (-> this ::ecs/components :move)
                   ::ci/stop
                   (::eq/time event))
@@ -167,23 +175,3 @@
            )])
 
 
-;; TODO:
-;;
-;; [x] implement "stop" (not speed:=0! special flag!)
-;; [x] test it by manually sending an event (maybe special helpers needed)
-;; [x] implement "drive"
-;;
-;; [x] btw. connect start/stop to UI
-;;
-;; [x] use it to gently translate to track-based driving:
-;;     [x] first, stop after the first path is reached and just change tile-x, tile-y
-;;     [x] then, assume the starting path (at ::ecs/init) is [:w :e] on the starting tile
-;;
-;; [ ] then, implement ::sys-move/at-path-end to pick up one of tracks on the next tile
-;;     [x] dokonczyc i wygladzic wpiecie layerow w world
-;;     [ ] implement
-;;     [ ] brac w miejscu "TODO" powyzej wziecie nowego tracka z kafelka z layera
-
-;; TO MOZE KIEDYS:
-;;     - refactor locomotive; re-think simultaneous changes to entity/components
-;;       and derived stuff (such as path from track etc.)
