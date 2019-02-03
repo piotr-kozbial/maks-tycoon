@@ -133,3 +133,30 @@
                      path
                      (if after-end? total-path-length length-on-path)))]))))))
 
+(ecsu/component ::path-trailer
+ (defn mk-path-trailer
+   [entity-or-id key {:keys [path-history-size]}]
+   (assoc
+    (ecs/mk-component ::movement entity-or-id key ::path-trailer)
+    ;; TODO - podpiecie do czegos, do innego komponentu, ktory potrafilby powiedziec
+    ;; "prosze tu jest dlugi path history,
+    ;; a moj tylny koniec jest na takiej a takiej dlugosci do tylu od czola path history"
+    ;; Wtedy jeszcze path-trailer dolicza swoj offset od frontu do swojej pozycji
+    ;; i gotowe.
+    ;; A gdy sam path-trailer zostanie zapytany, to poda path history, ktore bierze
+    ;; od swojego poprzednika, oraz doliczy swoja dlugosc itd.
+    ;;
+    ;; Kwestia zarzadzenia usuwaniem starych wpisow z historii - potem.
+    ;; Prawdopodobnie gosc, ktory jest na czele (path-follower w lokomotywie)
+    ;; dodajac cos do historii bedzie jeszcze pytal swojego trailera, czy moze cos usunac,
+    ;; a ten bedzie pytal swojego i tak do konca. Koncowy (jak zobaczy, ze sam juz
+    ;; nie ma followera) powie, ze mozna usunac (powie ile segmentow, albo raczej powie
+    ;; od jakiej dlugosci.
+    ;;
+    ;; Tak! Niech pytanie od lokomotywy bedzie "na jaka odleglosc ktos uzywa sciezki?"
+    ;; I wtedy trailer za trailerem beda sie odpytywac, a ostatni po prostu powie,
+    ;; na jakiej dlugosci jest. Wtedy lokomotywa bedzie wiedziala, co usunac.
+    ),
+
+    :a :b
+    ))

@@ -602,6 +602,35 @@
 
   )
 
+;;;# Path chains
+(do
+
+;;; A list of paths which is supposed to be continuous (the end of one concides with the
+;;; start of the next. The ordering is as in seq, as given to the constructor `path-chain`.
+;;; (Internally we'll hold it as a vetor).
+
+  (defn path-chain [paths]
+    {:path-type :path-chain
+     :paths (apply vector paths)})
+
+  ;; jeszcze precompute!
+
+  (defmethod path-length :path-chain
+    [{:keys [paths]}]
+    (reduce + (map path-length paths)))
+
+  (comment
+    (def p1 (line-segment [1 1] [3 1]))
+    (def p2 (line-segment [3 1] [3 4]))
+    (def p3 (line-segment [3 4] [2 4]))
+    (def ch (path-chain [p1 p2 p3]))
+
+    )
+
+  )
+
+
+
 ;;; TODO - na poczatku (na koncu?) dac jakis "synopsis", pokazujacy struktury danych i funkcje
 ;;; Moze na poczatku - i wtedy to bedzie zdefiniowana funkcja (synopsis), majaca w srodku asserty
 ;;; (czy tez "examples"), a na samym koncu pliku wywolamy te funkcje, zeby sie upewnic,
