@@ -19,9 +19,7 @@
                  [org.clojure/tools.namespace "0.2.11"]
                  [rum "0.11.2"]
 
-                 ;; TYMCZASOWO rozwijam gamebase tutaj, zamiast w osobnym projekcie
-                 ;; (bo mam jakies straszne problemy ze zapakowaniem tego jako biblioteka, zeby sie dobrze wczytywalo
-                 ;; [gamebase "0.1.1-SNAPSHOT"]
+                 [gamebase "0.1.1-SNAPSHOT"]
                  ;; AND THESE ARE ALSO FOR gamebase:
                  [org.clojure/data.xml "0.2.0-alpha2"]
                  [hiccup "1.0.5"]
