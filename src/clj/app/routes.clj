@@ -31,6 +31,7 @@
                 :main "app.core.main")
    ;; TODO - jak to ustawic?
    :dev? true
+   :files-root "./resources/public"
    })
 
 (defn home-routes [_]

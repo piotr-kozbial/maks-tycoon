@@ -9,7 +9,8 @@
    )
   )
 
-(def PREFIX "public/")
+;; (def PREFIX "public/")
+(def PREFIX "")
 
 (declare all-resources-loaded?)
 

@@ -8,4 +8,5 @@
   {:http-port  (Integer. (or (env :port) 10555))
    :middleware [[wrap-defaults api-defaults]
                 wrap-with-logger
-                wrap-gzip]})
+                wrap-gzip]
+   })
