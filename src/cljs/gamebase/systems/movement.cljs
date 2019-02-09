@@ -156,7 +156,5 @@
     ;; Tak! Niech pytanie od lokomotywy bedzie "na jaka odleglosc ktos uzywa sciezki?"
     ;; I wtedy trailer za trailerem beda sie odpytywac, a ostatni po prostu powie,
     ;; na jakiej dlugosci jest. Wtedy lokomotywa bedzie wiedziala, co usunac.
-    ),
-
     :a :b
-    ))
+    )))

@@ -46,7 +46,15 @@
             [app.key-mouse-input :as km]
 
             [app.modules.construction]
-            ))
+
+
+            [sablono.core :as sab]
+
+            )
+  (:require-macros
+   [devcards.core :refer [defcard]])
+
+  )
 
 ;; Simulation animation and drawing
 
@@ -158,8 +166,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-
-
 (declare initialize-layout)
 
 (defn main [& _]
@@ -208,3 +214,9 @@
     :after-canvas-resize
     #(;;.log js/console "ACR callback"
       )}))
+
+
+(defcard
+  "Jasio"
+  )
+

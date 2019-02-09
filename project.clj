@@ -27,6 +27,8 @@
 
                  [cljs-ajax "0.7.4"]
 
+                 [devcards "0.2.5"]
+                 [sablono "0.8.5"]
                  ]
 
   :plugins [[lein-cljsbuild "1.1.7"]
@@ -48,7 +50,10 @@
   ;; nREPL by default starts in the :main namespace, we want to start in `user`
   ;; because that's where our development helper functions like (go) and
   ;; (browser-repl) live.
-  :repl-options {:init-ns user}
+  :repl-options {:init-ns user
+                 
+                   :timeout 120000
+                 }
 
   :cljsbuild {:builds
               [{:id "app"
@@ -78,7 +83,19 @@
                            :source-map-timestamp true
                            :optimizations :advanced
                            :closure-defines {goog.DEBUG false}
-                           :pretty-print false}}]}
+                           :pretty-print false}}
+
+               {
+                          :id "devcards"
+                          :source-paths ["src/cljs"  "dev"]
+                          :figwheel { :devcards true
+                                     } ;; <- note this
+                          :compiler { :main    app.system
+                                     :asset-path "js/compiled/devcards_out"
+                                     :output-to  "resources/public/js/compiled/app_devcards.js"
+                                     :output-dir "resources/public/js/compiled/devcards_out"
+                                     :source-map-timestamp true }}
+               ]}
 
   ;; When running figwheel from nREPL, figwheel will read this configuration
   ;; stanza, but it will read it without passing through leiningen's profile
@@ -86,7 +103,7 @@
   ;; not be picked up, instead configure figwheel here on the top level.
 
   :figwheel {;; :http-server-root "public"       ;; serve static assets from resources/public/
-             ;; :server-port 3449                ;; default
+             ;; :server-port 3450                ;; default
              ;; :server-ip "127.0.0.1"           ;; default
              :css-dirs ["resources/public/css"]  ;; watch and update CSS
 
