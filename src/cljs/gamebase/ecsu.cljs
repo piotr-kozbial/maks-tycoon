@@ -1,8 +1,4 @@
-(ns gamebase.ecsu
-  (:require
-   [gamebase.ecs :as ecs]
-   [gamebase.event-queue :as eq]))
-;;;;; THIS IS WHAT WAS IN CREATX
+(ns gamebase.ecsu)
 
 (def ^:dynamic <-event-target-prefix>)
 (def ^:dynamie <world>)

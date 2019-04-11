@@ -211,7 +211,7 @@ nil
 ;; Always returns world.
 (defn do-handle-event [world event]
 
-  (let [world0 (assoc world ::time (::eq/time event))
+  (let [world0 (assoc world ::time (:gamebase.event-queue/time event))
         object (resolve-target-id world0 (::target-id event))
         ret (handle-event
              world0
@@ -258,7 +258,7 @@ nil
       (/ 1 0))
     {::target-id target-id
      ::msg msg
-     ::eq/time time}))
+     :gamebase.event-queue/time time}))
 
 ;;;;; Putting events into queue
 
