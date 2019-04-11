@@ -26,8 +26,6 @@
             [gamebase.layers :as layers]
             [gamebase.debug :as debug]
 
-            [gamebase.ecsu :as ecsu] ;; without this it doesn't get compiled and loaded for cljs either
-
             [app.tiles.general :as tiles]
             [app.tiles.turnouts :as turnouts]
             [app.world-interop :as wo]

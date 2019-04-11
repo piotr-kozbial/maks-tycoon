@@ -1,12 +1,9 @@
 (ns gamebase.systems.movement
   (:require
    [gamebase.ecs :as ecs]
-   [gamebase.ecsu :as ecsu]
    [gamebase.event-queue :as eq]
    [gamebase.geometry :as g]
-   [app.ecs.common-events :as ci])
-
-  (:require-macros [gamebase.ecsu :as ecsu]))
+   [app.ecs.common-events :as ci]))
 
 (defn mk-system []
   (ecs/mk-system ::movement))
@@ -80,7 +77,7 @@
             after-end? (>= <time> path-end-time)]
 
         [(when at-end?
-           (ecs/mk-event (ecsu/my-entity) ::at-path-end <time>))
+           (ecs/mk-event (ecs/get-entity <world> <this>) ::at-path-end <time>))
          (assoc <this>
 
                 :length-on-path length-on-path

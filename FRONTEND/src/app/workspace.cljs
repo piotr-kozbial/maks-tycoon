@@ -9,7 +9,6 @@
             [gamebase.virtual-timer :as vt]
             [gamebase.canvas-control :as canvas-control]
             [gamebase.layouts.sidebar-and-bottombar :as our-layout]
-            [gamebase.ecsu :as ecsu]
             [gamebase.geometry :as g]
             [app.tiles.general :as tiles]
             [gamebase.event-queue :as eq]
@@ -46,11 +45,11 @@
 
 (comment
 
-  (def test-entity
-    (ecsu/mk-entity :test ::test
-                    {:path (ecsu/mk-component sys-drawing/mk-path-component
-                                              {:path-kvs [:path]})}
-                    :path (g/precomputed (tiles/track-path [:e :n] 2 1))))
+  ;; (def test-entity
+  ;;   (ecs---u/mk-entity :test ::test
+  ;;                   {:path (ecs---u/mk-component sys-drawing/mk-path-component
+  ;;                                             {:path-kvs [:path]})}
+  ;;                   :path (g/precomputed (tiles/track-path [:e :n] 2 1))))
 
   (inject-entity test-entity)
 
