@@ -22,9 +22,11 @@
         locals (->> body
                     (filter #(and (seq? %) (= 'local (first %))))
                     (mapcat rest))]
-    `(binding [~id-event-target-prefix [:to-component ~id]]
-       (let [~@locals]
-         ~@body'))))
+    `(do
+       (def ^:dynamic ~id-event-target-prefix nil)
+       (binding [~id-event-target-prefix [:to-component ~id]]
+           (let [~@locals]
+             ~@body')))))
 
 (defmacro handle-event [msg & body]
   `(let [event-target# (into ~id-event-target-prefix [~msg])]
@@ -45,11 +47,13 @@
              (mapcat (fn [[k v]]
                        [k `(binding [~id-component-key ~k] ~v)]))
              (apply hash-map))]
-    `(binding [~id-entity (ecs/mk-entity ~id ~kind)]
-       (assoc
-        ~id-entity
-        :gamebase.ecs/components ~components'
-        ~@other-data-kvs))))
+    `(do
+       (def ^:dynamic ~id-entity nil)
+       (binding [~id-entity (ecs/mk-entity ~id ~kind)]
+           (assoc
+            ~id-entity
+            :gamebase.ecs/components ~components'
+            ~@other-data-kvs)))))
 
 
 

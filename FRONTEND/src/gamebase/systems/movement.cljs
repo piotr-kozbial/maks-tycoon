@@ -44,96 +44,92 @@
 ;; Will send the following events to its owning entity:
 ;; ::out-of-path {:follower <my key>}
 
-(ecsu/component ::path-follower
+(defn calculate-path-end-time
+  [{:keys [path path-start-length path-start-time speed] :as component} time]
+  (when (> speed 0)
+    (int (+ time (/ (- (g/path-length path) path-start-length) speed)))))
 
- (defn mk-path-follower
-   [entity-or-id key {:keys [path-history-size]}]
-   (assoc
-    (ecs/mk-component ::movement entity-or-id key ::path-follower)
-    :driving? true
-    :speed 0.02
-    :path-history-size path-history-size
-    :path-history []))
+(defn set-path [this time path path-start-length]
+  (let [history (:path-history this)
+        history' (into history [(:path this)])
+        history'' (if (<= (count history') (:path-history-size this))
+                    history'
+                    (apply vector (rest history')))
+        this' (assoc this
+                     :path-history history''
+                     :path path
+                     :path-start-length path-start-length
+                     :path-start-time time)
+        path-end-time (calculate-path-end-time this' time)]
+    [(assoc this' :path-end-time path-end-time)
+     ;; ensure we'll get an :update event exactly at the end of the path
+     (ecs/mk-event this :update path-end-time)]))
 
- (ecsu/handle-event ::ecs/init [])
+(defn  do-update [<this> <time> <world>]
+  (let [{:keys [path
+                path-start-time
+                path-start-length
+                path-end-time
+                speed
+                driving?]} <this>]
+    (when (and path driving?)
+      (let [time-of-travel (- <time> path-start-time)
+            length-on-path (+ path-start-length (* time-of-travel speed))
+            total-path-length (g/path-length path)
+            at-end? (= <time> path-end-time)
+            after-end? (>= <time> path-end-time)]
 
- (ecsu/handle-event :update (do-update <this> <time> <world>))
+        [(when at-end?
+           (ecs/mk-event (ecsu/my-entity) ::at-path-end <time>))
+         (assoc <this>
 
- (ecsu/handle-event ::ci/stop
-                    (when (:driving? <this>)
-                      (when-let [[maybe-event this'] (do-update <this> <time> <world>)]
-                        [maybe-event (assoc this' :driving? false)])))
+                :length-on-path length-on-path
+                :at-end? at-end?
+                :after-end? after-end?
 
- (ecsu/handle-event ::ci/drive
-                    (when-not (:driving? <this>)
-                      (set-path
-                       (assoc <this> :driving? true)
-                       <time>
-                       (:path <this>)
-                       (:length-on-path <this>))))
+                :position
+                (g/path-point-at-length
+                 path
+                 (if after-end? total-path-length length-on-path))
 
- (ecsu/handle-event ::set-path
-                    (let [{:keys [path]} <event>]
-                      (set-path <this> <time> path 0)))
+                :angle
+                (g/angle-at-length
+                 path
+                 (if after-end? total-path-length length-on-path)))]))))
 
- (local
+(defn mk-path-follower [entity-or-id key {:keys [path-history-size]}]
+  (assoc
+   (ecs/mk-component ::movement entity-or-id key ::path-follower)
+   :driving? true
+   :speed 0.02
+   :path-history-size path-history-size
+   :path-history []))
 
-  calculate-path-end-time
-  , (fn [{:keys [path path-start-length path-start-time speed] :as component} time]
-      (when (> speed 0)
-        (int (+ time (/ (- (g/path-length path) path-start-length) speed)))))
+(defmethod ecs/handle-event [:to-component ::path-follower ::ecs/init] [_ _ this] [])
 
-  set-path
-  , (fn [this time path path-start-length]
-      (let [history (:path-history this)
-            history' (into history [(:path this)])
-            history'' (if (<= (count history') (:path-history-size this))
-                        history'
-                        (apply vector (rest history')))
-            this' (assoc this
-                         :path-history history''
-                         :path path
-                         :path-start-length path-start-length
-                         :path-start-time time)
-            path-end-time (calculate-path-end-time this' time)]
-        [(assoc this' :path-end-time path-end-time)
-         ;; ensure we'll get an :update event exactly at the end of the path
-         (ecs/mk-event this :update path-end-time)]))
+(defmethod ecs/handle-event [:to-component ::path-follower ::ci/stop]
+  [world event this]
+  (when (:driving? this)
+    (when-let [[maybe-event this'] (do-update this (::eq/time event) world)]
+      [maybe-event (assoc this' :driving? false)])))
 
-  do-update
-  , (fn [<this> <time> <world>]
-      (let [{:keys [path
-                    path-start-time
-                    path-start-length
-                    path-end-time
-                    speed
-                    driving?]} <this>]
-        (when (and path driving?)
-          (let [time-of-travel (- <time> path-start-time)
-                length-on-path (+ path-start-length (* time-of-travel speed))
-                total-path-length (g/path-length path)
-                at-end? (= <time> path-end-time)
-                after-end? (>= <time> path-end-time)]
+(defmethod ecs/handle-event [:to-component ::path-follower ::ci/drive]
+  [world event this]
+  (when-not (:driving? this)
+    (set-path
+     (assoc this :driving? true)
+     (::eq/time event)
+     (:path this)
+     (:length-on-path this))))
 
-            [(when at-end?
-               (ecs/mk-event (ecsu/my-entity) ::at-path-end <time>))
-             (assoc <this>
+(defmethod ecs/handle-event [:to-component ::path-follower :update] [world event this]
+  (do-update this (::eq/time event) world))
 
-                    :length-on-path length-on-path
-                    :at-end? at-end?
-                    :after-end? after-end?
+(defmethod ecs/handle-event [:to-component ::path-follower ::set-path]
+  [world event this]
+  (let [{:keys [path]} event]
+    (set-path this (::eq/time event) path 0)))
 
-                    :position
-                    (g/path-point-at-length
-                     path
-                     (if after-end? total-path-length length-on-path))
-
-                    :angle
-                    (g/angle-at-length
-                     path
-                     (if after-end? total-path-length length-on-path)))]))))))
-
-(ecsu/component ::path-trailer
  (defn mk-path-trailer
    [entity-or-id key {:keys [path-history-size]}]
    (assoc
@@ -157,4 +153,6 @@
     ;; I wtedy trailer za trailerem beda sie odpytywac, a ostatni po prostu powie,
     ;; na jakiej dlugosci jest. Wtedy lokomotywa bedzie wiedziala, co usunac.
     :a :b
-    )))
+    ))
+
+

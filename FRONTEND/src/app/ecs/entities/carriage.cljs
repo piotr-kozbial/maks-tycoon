@@ -1,7 +1,6 @@
 (ns app.ecs.entities.carriage
   (:require
    [gamebase.ecs :as ecs]
-   [gamebase.ecsu :as ecsu]
    [gamebase.systems.drawing :as sys-drawing]
    [gamebase.systems.movement :as sys-move]
    [gamebase.event-queue :as eq]
@@ -13,33 +12,32 @@
    [app.ecs.common-events :as ci]))
 
 (defn mk-entity [id tile-x tile-y]
-  (ecsu/mk-entity
+  (let [entity (ecs/mk-entity id ::carriage)]
+    (assoc
+     entity
 
-   id
+     :gamebase.ecs/components
+     {:img (sys-drawing/mk-static-image-component
+            entity
+            :img
+            {:point-kvs (ecs/ck-kvs :move :position)
+             :angle-kvs (ecs/ck-kvs :move :angle)
+             :center [16 8]
+             :resource-name-kvs [:image]})
 
-   ::carriage
+      :move (sys-move/mk-path-follower entity :move {:path-history-size 2})}
 
-   {:img (ecsu/mk-component sys-drawing/mk-static-image-component
-                            {:point-kvs (ecs/ck-kvs :move :position)
-                             :angle-kvs (ecs/ck-kvs :move :angle)
-                             :center [16 8]
-                             :resource-name-kvs [:image]})
+     :tile-x tile-x
+     :tile-y tile-y
+     :track [:w :e]
 
-    :move (ecsu/mk-component sys-move/mk-path-follower {:path-history-size 2})
+     :tile-track-history [[tile-x tile-y [:w :e]]]
 
-    }
+     :front-coupling nil
+     :rear-coupling nil
 
-   :tile-x tile-x
-   :tile-y tile-y
-   :track [:w :e]
-
-   :tile-track-history [[tile-x tile-y [:w :e]]]
-
-   :front-coupling nil
-   :rear-coupling nil
-
-   :image "carriage1.png"
-   ))
+     :image "carriage1.png"
+     )))
 
 (defmethod ecs/handle-event [:to-entity ::carriage ::ecs/init]
   [world event this]

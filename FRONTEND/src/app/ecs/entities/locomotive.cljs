@@ -1,7 +1,6 @@
 (ns app.ecs.entities.locomotive
   (:require
    [gamebase.ecs :as ecs]
-   [gamebase.ecsu :as ecsu]
    [gamebase.systems.drawing :as sys-drawing]
    [gamebase.systems.movement :as sys-move]
    [gamebase.event-queue :as eq]
@@ -13,41 +12,41 @@
    [app.ecs.common-events :as ci]))
 
 (defn mk-entity [id tile-x tile-y]
-  (ecsu/mk-entity
+  (let [entity (ecs/mk-entity id ::locomotive)]
+    (assoc
+     entity
 
-   id
+     :gamebase.ecs/components
+     {:move (sys-move/mk-path-follower entity :move {:path-history-size 2})
 
-   ::locomotive
+      :img (sys-drawing/mk-static-image-component entity :img
+                              {:point-kvs (ecs/ck-kvs :move :position)
+                               :angle-kvs (ecs/ck-kvs :move :angle)
+                               :center [16 8]
+                               :resource-name-kvs [:image]})
 
-   {:move (ecsu/mk-component sys-move/mk-path-follower {:path-history-size 2})
-    :img (ecsu/mk-component sys-drawing/mk-static-image-component
-                            {:point-kvs (ecs/ck-kvs :move :position)
-                             :angle-kvs (ecs/ck-kvs :move :angle)
-                             :center [16 8]
-                             :resource-name-kvs [:image]})
-    ;; :debug-path (ecsu/mk-component sys-drawing/mk-path-component
-    ;;                                {:path-kvs (ecs/ck-kvs :move :path)
-    ;;                                 :color "magenta"})
-    ;; :debug-path-history-1 (ecsu/mk-component sys-drawing/mk-path-component
-    ;;                                          {:path-kvs (ecs/ck-kvs :move :path-history 1)
-    ;;                                           :color "blue"})
-    ;; :debug-path-history-0 (ecsu/mk-component sys-drawing/mk-path-component
-    ;;                                          {:path-kvs (ecs/ck-kvs :move :path-history 0)
-    ;;                                           :color "blue"})
+      ;; :debug-path (sys-drawing/mk-path-component entity :debug-path
+      ;;                                {:path-kvs (ecs/ck-kvs :move :path)
+      ;;                                 :color "magenta"})
+      ;; :debug-path-history-1 (sys-drawing/mk-path-component entity :debug-path-history-1
+      ;;                                          {:path-kvs (ecs/ck-kvs :move :path-history 1)
+      ;;                                           :color "blue"})
+      ;; :debug-path-history-0 (sys-drawing/mk-path-component entity :debug-path-history-0
+      ;;                                          {:path-kvs (ecs/ck-kvs :move :path-history 0)
+      ;;                                           :color "blue"})
 
-    }
+      }
 
-   :tile-x tile-x
-   :tile-y tile-y
-   :track [:w :e]
+     :tile-x tile-x
+     :tile-y tile-y
+     :track [:w :e]
 
-   :tile-track-history [[tile-x tile-y [:w :e]]]
+     :tile-track-history [[tile-x tile-y [:w :e]]]
 
-   :front-coupling nil
-   :rear-coupling nil
+     :front-coupling nil
+     :rear-coupling nil
 
-   :image "loco1.png"
-   ))
+     :image "loco1.png")))
 
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ecs/init]
