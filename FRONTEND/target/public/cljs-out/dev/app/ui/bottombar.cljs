@@ -44,7 +44,6 @@
           (let [tile-x (:tile-x selected-loc)
                 tile-y (:tile-y selected-loc)]
             [:div
-
              [;; location
               :div {:style {:margin-bottom "5px"}}
               "Location (loc): [" tile-x ", " tile-y "] "

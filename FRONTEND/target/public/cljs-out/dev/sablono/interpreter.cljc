@@ -57,7 +57,7 @@
              ;; TODO: Find a better solution, since this conflicts
              ;; with controlled/uncontrolled inputs.
              ;; https://github.com/r0man/sablono/issues/148
-             (if (not= state-value element-value)
+             (if (not= (str state-value) (str element-value))
                (update-state this new-props property element-value)
                (update-state this new-props property (object/get new-props property)))))
 

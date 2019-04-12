@@ -40,8 +40,8 @@ clojure.data.xml.name.qname_local = (function clojure$data$xml$name$qname_local(
 return clojure.data.xml.protocols.qname_local.call(null,v);
 });
 clojure.data.xml.name.qname = (function clojure$data$xml$name$qname(var_args){
-var G__20072 = arguments.length;
-switch (G__20072) {
+var G__28128 = arguments.length;
+switch (G__28128) {
 case 1:
 return clojure.data.xml.name.qname.cljs$core$IFn$_invoke$arity$1((arguments[(0)]));
 
@@ -174,39 +174,39 @@ return null;
 clojure.data.xml.name.separate_xmlns = (function clojure$data$xml$name$separate_xmlns(attrs,cont){
 var attrs_STAR_ = cljs.core.transient$.call(null,cljs.core.PersistentArrayMap.EMPTY);
 var xmlns_STAR_ = cljs.core.transient$.call(null,cljs.core.PersistentArrayMap.EMPTY);
-var G__20077 = cljs.core.keys.call(null,attrs);
-var vec__20078 = G__20077;
-var qn = cljs.core.nth.call(null,vec__20078,(0),null);
-var attrs_SINGLEQUOTE_ = vec__20078;
+var G__28133 = cljs.core.keys.call(null,attrs);
+var vec__28134 = G__28133;
+var qn = cljs.core.nth.call(null,vec__28134,(0),null);
+var attrs_SINGLEQUOTE_ = vec__28134;
 var attrs_STAR___$1 = attrs_STAR_;
 var xmlns_STAR___$1 = xmlns_STAR_;
-var G__20077__$1 = G__20077;
+var G__28133__$1 = G__28133;
 while(true){
 var attrs_STAR___$2 = attrs_STAR___$1;
 var xmlns_STAR___$2 = xmlns_STAR___$1;
-var vec__20081 = G__20077__$1;
-var qn__$1 = cljs.core.nth.call(null,vec__20081,(0),null);
-var attrs_SINGLEQUOTE___$1 = vec__20081;
+var vec__28137 = G__28133__$1;
+var qn__$1 = cljs.core.nth.call(null,vec__28137,(0),null);
+var attrs_SINGLEQUOTE___$1 = vec__28137;
 if(cljs.core.seq.call(null,attrs_SINGLEQUOTE___$1)){
 var val = cljs.core.get.call(null,attrs,qn__$1);
 if(cljs.core.truth_(clojure.data.xml.name.xmlns_attr_QMARK_.call(null,qn__$1))){
 var prefix = clojure.data.xml.name.xmlns_attr_prefix.call(null,qn__$1);
 clojure.data.xml.name.legal_xmlns_binding_BANG_.call(null,prefix,val);
 
-var G__20084 = attrs_STAR___$2;
-var G__20085 = cljs.core.assoc_BANG_.call(null,xmlns_STAR___$2,prefix,val);
-var G__20086 = cljs.core.next.call(null,attrs_SINGLEQUOTE___$1);
-attrs_STAR___$1 = G__20084;
-xmlns_STAR___$1 = G__20085;
-G__20077__$1 = G__20086;
+var G__28140 = attrs_STAR___$2;
+var G__28141 = cljs.core.assoc_BANG_.call(null,xmlns_STAR___$2,prefix,val);
+var G__28142 = cljs.core.next.call(null,attrs_SINGLEQUOTE___$1);
+attrs_STAR___$1 = G__28140;
+xmlns_STAR___$1 = G__28141;
+G__28133__$1 = G__28142;
 continue;
 } else {
-var G__20087 = cljs.core.assoc_BANG_.call(null,attrs_STAR___$2,qn__$1,val);
-var G__20088 = xmlns_STAR___$2;
-var G__20089 = cljs.core.next.call(null,attrs_SINGLEQUOTE___$1);
-attrs_STAR___$1 = G__20087;
-xmlns_STAR___$1 = G__20088;
-G__20077__$1 = G__20089;
+var G__28143 = cljs.core.assoc_BANG_.call(null,attrs_STAR___$2,qn__$1,val);
+var G__28144 = xmlns_STAR___$2;
+var G__28145 = cljs.core.next.call(null,attrs_SINGLEQUOTE___$1);
+attrs_STAR___$1 = G__28143;
+xmlns_STAR___$1 = G__28144;
+G__28133__$1 = G__28145;
 continue;
 }
 } else {
@@ -221,8 +221,8 @@ clojure.data.xml.name.prefix_alphabet = cljs.core.apply.call(null,cljs.core.str,
  * Zero-arity can only be called, when *gen-prefix-counter* is bound and will increment it.
  */
 clojure.data.xml.name.gen_prefix = (function clojure$data$xml$name$gen_prefix(var_args){
-var G__20091 = arguments.length;
-switch (G__20091) {
+var G__28147 = arguments.length;
+switch (G__28147) {
 case 0:
 return clojure.data.xml.name.gen_prefix.cljs$core$IFn$_invoke$arity$0();
 
@@ -259,8 +259,8 @@ var n_STAR__STAR_ = cljs.core.quot.call(null,n_STAR_,cnt);
 sb.append((clojure.data.xml.name.prefix_alphabet[ch]));
 
 if((n_STAR__STAR_ > (0))){
-var G__20093 = n_STAR__STAR_;
-n_STAR_ = G__20093;
+var G__28149 = n_STAR__STAR_;
+n_STAR_ = G__28149;
 continue;
 } else {
 return [cljs.core.str.cljs$core$IFn$_invoke$arity$1(sb)].join('');

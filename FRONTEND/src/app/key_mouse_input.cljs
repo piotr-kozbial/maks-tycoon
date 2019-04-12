@@ -11,7 +11,9 @@
    [app.world-interop :as wo]
    [app.tiles.turnouts :as turnouts]
 
-   [app.ui.ui-state :as uis]))
+   [app.ui.ui-state :as uis]
+
+   [app.scratch :as scratch]))
 
 (defn takeover-mouse-click [owner-id handler]
   (swap! uis/ui-state assoc-in [:key-mouse :click-owner] owner-id)
@@ -71,7 +73,11 @@
                  (.log js/console (str "SWICH TURNOUT!!! " tile-x ", " tile-y))
                  (turnouts/cycle-turnout-state tile-x tile-y)
 
-                 )))))))
+                 )
+
+           "=" (scratch/toggle)
+
+           ))))))
 
 (defn setup-mouse-handler []
   (events/add-handler

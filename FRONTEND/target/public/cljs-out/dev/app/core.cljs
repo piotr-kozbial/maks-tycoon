@@ -2,6 +2,8 @@
   (:require [rum.core :as rum]
             ;; [schema.core :as s :include-macros true]
 
+            [app.scratch :as scratch]
+
             [app.state :refer [app-state ui-refresh-tick
                                get-fresh-entity-id update-tile-extra]]
             [app.ui.ui-state :refer [ui-state]]
@@ -25,8 +27,6 @@
 
             [gamebase.layers :as layers]
             [gamebase.debug :as debug]
-
-            [gamebase.ecsu :as ecsu] ;; without this it doesn't get compiled and loaded for cljs either
 
             [app.tiles.general :as tiles]
             [app.tiles.turnouts :as turnouts]
@@ -140,12 +140,16 @@
 
   )
 
-(rum/defc main-component < my-mixin []
-  (our-layout/mk-html
-   ;; sidebar
-   (sidebar-component)
-   ;; bottom bar
-   (bottombar-component)))
+(rum/defc main-component < my-mixin rum/reactive []
+  (rum/react ui-refresh-tick)
+  [:dev
+   (our-layout/mk-html
+    ;; sidebar
+    (sidebar-component)
+    ;; bottom bar
+    (bottombar-component))
+
+   (scratch/component)])
 
 (defn render []
   (.log js/console "RENDER")

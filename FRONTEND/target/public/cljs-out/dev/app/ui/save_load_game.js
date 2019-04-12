@@ -25,14 +25,14 @@ return cljs.core.swap_BANG_.call(null,app.ui.ui_state.ui_state,cljs.core.assoc_i
 });
 app.ui.save_load_game.box = (function app$ui$save_load_game$box(var_args){
 var args__4534__auto__ = [];
-var len__4531__auto___25262 = arguments.length;
-var i__4532__auto___25263 = (0);
+var len__4531__auto___31015 = arguments.length;
+var i__4532__auto___31016 = (0);
 while(true){
-if((i__4532__auto___25263 < len__4531__auto___25262)){
-args__4534__auto__.push((arguments[i__4532__auto___25263]));
+if((i__4532__auto___31016 < len__4531__auto___31015)){
+args__4534__auto__.push((arguments[i__4532__auto___31016]));
 
-var G__25264 = (i__4532__auto___25263 + (1));
-i__4532__auto___25263 = G__25264;
+var G__31017 = (i__4532__auto___31016 + (1));
+i__4532__auto___31016 = G__31017;
 continue;
 } else {
 }
@@ -50,9 +50,9 @@ return cljs.core.apply.call(null,cljs.core.vector,new cljs.core.Keyword(null,"di
 app.ui.save_load_game.box.cljs$lang$maxFixedArity = (0);
 
 /** @this {Function} */
-app.ui.save_load_game.box.cljs$lang$applyTo = (function (seq25261){
+app.ui.save_load_game.box.cljs$lang$applyTo = (function (seq31014){
 var self__4519__auto__ = this;
-return self__4519__auto__.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq.call(null,seq25261));
+return self__4519__auto__.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq.call(null,seq31014));
 });
 
 app.ui.save_load_game.spacer = (function app$ui$save_load_game$spacer(){
@@ -135,18 +135,18 @@ return app.ui.ui_state.set_game_saved_time.call(null,null);
 app.ui.save_load_game.save_load_game_component = rum.core.build_defcs.call(null,(function (component_state){
 rum.core.react.call(null,app.state.ui_refresh_tick);
 
-var map__25266 = new cljs.core.Keyword(null,"save-load-game","save-load-game",1986449844).cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"sidebar","sidebar",35784458).cljs$core$IFn$_invoke$arity$1(rum.core.react.call(null,app.ui.ui_state.ui_state)));
-var map__25266__$1 = ((((!((map__25266 == null)))?(((((map__25266.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__25266.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__25266):map__25266);
-var state = cljs.core.get.call(null,map__25266__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
-var game_list = cljs.core.get.call(null,map__25266__$1,new cljs.core.Keyword(null,"game-list","game-list",1562205445));
-var mouse_over_game_id = cljs.core.get.call(null,map__25266__$1,new cljs.core.Keyword(null,"mouse-over-game-id","mouse-over-game-id",1618384737));
-var attrs25265 = app.ui.save_load_game.box.call(null,app.ui.save_load_game.button.call(null,"public/save-icon.png",(cljs.core.truth_((function (){var and__3938__auto__ = app.ui.ui_state.get_game_id.call(null,cljs.core.deref.call(null,app.ui.ui_state.ui_state));
+var map__31019 = new cljs.core.Keyword(null,"save-load-game","save-load-game",1986449844).cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"sidebar","sidebar",35784458).cljs$core$IFn$_invoke$arity$1(rum.core.react.call(null,app.ui.ui_state.ui_state)));
+var map__31019__$1 = ((((!((map__31019 == null)))?(((((map__31019.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__31019.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__31019):map__31019);
+var state = cljs.core.get.call(null,map__31019__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
+var game_list = cljs.core.get.call(null,map__31019__$1,new cljs.core.Keyword(null,"game-list","game-list",1562205445));
+var mouse_over_game_id = cljs.core.get.call(null,map__31019__$1,new cljs.core.Keyword(null,"mouse-over-game-id","mouse-over-game-id",1618384737));
+var attrs31018 = app.ui.save_load_game.box.call(null,app.ui.save_load_game.button.call(null,"public/save-icon.png",(cljs.core.truth_((function (){var and__3938__auto__ = app.ui.ui_state.get_game_id.call(null,cljs.core.deref.call(null,app.ui.ui_state.ui_state));
 if(cljs.core.truth_(and__3938__auto__)){
 return cljs.core._EQ_.call(null,state,new cljs.core.Keyword(null,"base","base",185279322));
 } else {
 return and__3938__auto__;
 }
-})())?app.ui.save_load_game.button_style:app.ui.save_load_game.disabled_button_style)," SAVE GAME",((function (map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+})())?app.ui.save_load_game.button_style:app.ui.save_load_game.disabled_button_style)," SAVE GAME",((function (map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (){
 if(cljs.core.truth_((function (){var and__3938__auto__ = app.ui.ui_state.get_game_id.call(null,cljs.core.deref.call(null,app.ui.ui_state.ui_state));
 if(cljs.core.truth_(and__3938__auto__)){
@@ -159,7 +159,7 @@ return app.ui.save_load_game.save_game.call(null);
 } else {
 return null;
 }
-});})(map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
+});})(map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
 ),new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"br","br",934104792)], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"i","i",-1386841315),(function (){var temp__5455__auto__ = new cljs.core.Keyword(null,"game-saved-time","game-saved-time",2144273364).cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null,app.ui.ui_state.ui_state));
 if(cljs.core.truth_(temp__5455__auto__)){
 var saved_time = temp__5455__auto__;
@@ -172,62 +172,62 @@ return ["saved ",cljs.core.str.cljs$core$IFn$_invoke$arity$1((((hours > (0)))?ho
 return "never saved";
 }
 })()], null));
-return cljs.core.apply.call(null,React.createElement,"div",((cljs.core.map_QMARK_.call(null,attrs25265))?sablono.interpreter.attributes.call(null,attrs25265):null),((cljs.core.map_QMARK_.call(null,attrs25265))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [sablono.interpreter.interpret.call(null,app.ui.save_load_game.box.call(null,app.ui.save_load_game.button.call(null,"public/save-as-icon.png",(cljs.core.truth_(new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"save-as","save-as",-1722047792),null,new cljs.core.Keyword(null,"base","base",185279322),null], null), null).call(null,state))?app.ui.save_load_game.button_style:app.ui.save_load_game.disabled_button_style)," SAVE GAME AS...",((function (attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+return cljs.core.apply.call(null,React.createElement,"div",((cljs.core.map_QMARK_.call(null,attrs31018))?sablono.interpreter.attributes.call(null,attrs31018):null),((cljs.core.map_QMARK_.call(null,attrs31018))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [sablono.interpreter.interpret.call(null,app.ui.save_load_game.box.call(null,app.ui.save_load_game.button.call(null,"public/save-as-icon.png",(cljs.core.truth_(new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"save-as","save-as",-1722047792),null,new cljs.core.Keyword(null,"base","base",185279322),null], null), null).call(null,state))?app.ui.save_load_game.button_style:app.ui.save_load_game.disabled_button_style)," SAVE GAME AS...",((function (attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (){
 if(cljs.core._EQ_.call(null,state,new cljs.core.Keyword(null,"base","base",185279322))){
 return app.ui.save_load_game.save_game_as_open.call(null);
 } else {
 return null;
 }
-});})(attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-),((cljs.core._EQ_.call(null,state,new cljs.core.Keyword(null,"save-as","save-as",-1722047792)))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"form","form",-1624062471),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"input","input",556931961),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"type","type",1174270348),"text",new cljs.core.Keyword(null,"name","name",1843675177),"save-game-as-name",new cljs.core.Keyword(null,"ref","ref",1289896967),"save-game-as-name"], null)], null)], null),app.ui.save_load_game.box.call(null,app.ui.save_load_game.spacer.call(null),app.ui.save_load_game.button.call(null,null,app.ui.save_load_game.button_style,"Save",((function (attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+),((cljs.core._EQ_.call(null,state,new cljs.core.Keyword(null,"save-as","save-as",-1722047792)))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"form","form",-1624062471),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"input","input",556931961),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"type","type",1174270348),"text",new cljs.core.Keyword(null,"name","name",1843675177),"save-game-as-name",new cljs.core.Keyword(null,"ref","ref",1289896967),"save-game-as-name"], null)], null)], null),app.ui.save_load_game.box.call(null,app.ui.save_load_game.spacer.call(null),app.ui.save_load_game.button.call(null,null,app.ui.save_load_game.button_style,"Save",((function (attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (){
 var name = rum.core.ref_node.call(null,component_state,"save-game-as-name").value;
 return app.ui.save_load_game.save_game_as.call(null,name);
-});})(attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-),app.ui.save_load_game.spacer.call(null),app.ui.save_load_game.cancel_button.call(null))], null):null))),sablono.interpreter.interpret.call(null,app.ui.save_load_game.box.call(null,app.ui.save_load_game.button.call(null,"public/load-icon.png",(cljs.core.truth_(new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"load","load",-1318641184),null,new cljs.core.Keyword(null,"base","base",185279322),null], null), null).call(null,state))?app.ui.save_load_game.button_style:app.ui.save_load_game.disabled_button_style)," LOAD GAME...",((function (attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+),app.ui.save_load_game.spacer.call(null),app.ui.save_load_game.cancel_button.call(null))], null):null))),sablono.interpreter.interpret.call(null,app.ui.save_load_game.box.call(null,app.ui.save_load_game.button.call(null,"public/load-icon.png",(cljs.core.truth_(new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"load","load",-1318641184),null,new cljs.core.Keyword(null,"base","base",185279322),null], null), null).call(null,state))?app.ui.save_load_game.button_style:app.ui.save_load_game.disabled_button_style)," LOAD GAME...",((function (attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (){
 if(cljs.core._EQ_.call(null,state,new cljs.core.Keyword(null,"base","base",185279322))){
 return app.ui.save_load_game.load_game_open.call(null);
 } else {
 return null;
 }
-});})(attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-),((cljs.core._EQ_.call(null,state,new cljs.core.Keyword(null,"load","load",-1318641184)))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),(function (){var iter__4324__auto__ = ((function (attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
-return (function app$ui$save_load_game$iter__25268(s__25269){
-return (new cljs.core.LazySeq(null,((function (attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+),((cljs.core._EQ_.call(null,state,new cljs.core.Keyword(null,"load","load",-1318641184)))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),(function (){var iter__4324__auto__ = ((function (attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
+return (function app$ui$save_load_game$iter__31021(s__31022){
+return (new cljs.core.LazySeq(null,((function (attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (){
-var s__25269__$1 = s__25269;
+var s__31022__$1 = s__31022;
 while(true){
-var temp__5457__auto__ = cljs.core.seq.call(null,s__25269__$1);
+var temp__5457__auto__ = cljs.core.seq.call(null,s__31022__$1);
 if(temp__5457__auto__){
-var s__25269__$2 = temp__5457__auto__;
-if(cljs.core.chunked_seq_QMARK_.call(null,s__25269__$2)){
-var c__4322__auto__ = cljs.core.chunk_first.call(null,s__25269__$2);
+var s__31022__$2 = temp__5457__auto__;
+if(cljs.core.chunked_seq_QMARK_.call(null,s__31022__$2)){
+var c__4322__auto__ = cljs.core.chunk_first.call(null,s__31022__$2);
 var size__4323__auto__ = cljs.core.count.call(null,c__4322__auto__);
-var b__25271 = cljs.core.chunk_buffer.call(null,size__4323__auto__);
-if((function (){var i__25270 = (0);
+var b__31024 = cljs.core.chunk_buffer.call(null,size__4323__auto__);
+if((function (){var i__31023 = (0);
 while(true){
-if((i__25270 < size__4323__auto__)){
-var vec__25272 = cljs.core._nth.call(null,c__4322__auto__,i__25270);
-var id = cljs.core.nth.call(null,vec__25272,(0),null);
-var name = cljs.core.nth.call(null,vec__25272,(1),null);
-cljs.core.chunk_append.call(null,b__25271,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"cursor","cursor",1011937484),"pointer",new cljs.core.Keyword(null,"background-color","background-color",570434026),((cljs.core._EQ_.call(null,id,mouse_over_game_id))?"#a58d2e":null)], null),new cljs.core.Keyword(null,"on-mouse-over","on-mouse-over",-858472552),((function (i__25270,vec__25272,id,name,c__4322__auto__,size__4323__auto__,b__25271,s__25269__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+if((i__31023 < size__4323__auto__)){
+var vec__31025 = cljs.core._nth.call(null,c__4322__auto__,i__31023);
+var id = cljs.core.nth.call(null,vec__31025,(0),null);
+var name = cljs.core.nth.call(null,vec__31025,(1),null);
+cljs.core.chunk_append.call(null,b__31024,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"cursor","cursor",1011937484),"pointer",new cljs.core.Keyword(null,"background-color","background-color",570434026),((cljs.core._EQ_.call(null,id,mouse_over_game_id))?"#a58d2e":null)], null),new cljs.core.Keyword(null,"on-mouse-over","on-mouse-over",-858472552),((function (i__31023,vec__31025,id,name,c__4322__auto__,size__4323__auto__,b__31024,s__31022__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (e){
 return cljs.core.swap_BANG_.call(null,app.ui.ui_state.ui_state,cljs.core.assoc_in,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"sidebar","sidebar",35784458),new cljs.core.Keyword(null,"save-load-game","save-load-game",1986449844),new cljs.core.Keyword(null,"mouse-over-game-id","mouse-over-game-id",1618384737)], null),id);
-});})(i__25270,vec__25272,id,name,c__4322__auto__,size__4323__auto__,b__25271,s__25269__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-,new cljs.core.Keyword(null,"on-mouse-out","on-mouse-out",643448647),((function (i__25270,vec__25272,id,name,c__4322__auto__,size__4323__auto__,b__25271,s__25269__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(i__31023,vec__31025,id,name,c__4322__auto__,size__4323__auto__,b__31024,s__31022__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+,new cljs.core.Keyword(null,"on-mouse-out","on-mouse-out",643448647),((function (i__31023,vec__31025,id,name,c__4322__auto__,size__4323__auto__,b__31024,s__31022__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (_){
 return cljs.core.swap_BANG_.call(null,app.ui.ui_state.ui_state,cljs.core.assoc_in,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"sidebar","sidebar",35784458),new cljs.core.Keyword(null,"save-load-game","save-load-game",1986449844),new cljs.core.Keyword(null,"mouse-over-game-id","mouse-over-game-id",1618384737)], null),null);
-});})(i__25270,vec__25272,id,name,c__4322__auto__,size__4323__auto__,b__25271,s__25269__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-,new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (i__25270,vec__25272,id,name,c__4322__auto__,size__4323__auto__,b__25271,s__25269__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(i__31023,vec__31025,id,name,c__4322__auto__,size__4323__auto__,b__31024,s__31022__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+,new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (i__31023,vec__31025,id,name,c__4322__auto__,size__4323__auto__,b__31024,s__31022__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (_){
 return app.ui.save_load_game.load_game.call(null,id,name);
-});})(i__25270,vec__25272,id,name,c__4322__auto__,size__4323__auto__,b__25271,s__25269__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
+});})(i__31023,vec__31025,id,name,c__4322__auto__,size__4323__auto__,b__31024,s__31022__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
 ], null),name], null));
 
-var G__25288 = (i__25270 + (1));
-i__25270 = G__25288;
+var G__31041 = (i__31023 + (1));
+i__31023 = G__31041;
 continue;
 } else {
 return true;
@@ -235,98 +235,98 @@ return true;
 break;
 }
 })()){
-return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__25271),app$ui$save_load_game$iter__25268.call(null,cljs.core.chunk_rest.call(null,s__25269__$2)));
+return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__31024),app$ui$save_load_game$iter__31021.call(null,cljs.core.chunk_rest.call(null,s__31022__$2)));
 } else {
-return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__25271),null);
+return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__31024),null);
 }
 } else {
-var vec__25275 = cljs.core.first.call(null,s__25269__$2);
-var id = cljs.core.nth.call(null,vec__25275,(0),null);
-var name = cljs.core.nth.call(null,vec__25275,(1),null);
-return cljs.core.cons.call(null,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"cursor","cursor",1011937484),"pointer",new cljs.core.Keyword(null,"background-color","background-color",570434026),((cljs.core._EQ_.call(null,id,mouse_over_game_id))?"#a58d2e":null)], null),new cljs.core.Keyword(null,"on-mouse-over","on-mouse-over",-858472552),((function (vec__25275,id,name,s__25269__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+var vec__31028 = cljs.core.first.call(null,s__31022__$2);
+var id = cljs.core.nth.call(null,vec__31028,(0),null);
+var name = cljs.core.nth.call(null,vec__31028,(1),null);
+return cljs.core.cons.call(null,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"cursor","cursor",1011937484),"pointer",new cljs.core.Keyword(null,"background-color","background-color",570434026),((cljs.core._EQ_.call(null,id,mouse_over_game_id))?"#a58d2e":null)], null),new cljs.core.Keyword(null,"on-mouse-over","on-mouse-over",-858472552),((function (vec__31028,id,name,s__31022__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (e){
 return cljs.core.swap_BANG_.call(null,app.ui.ui_state.ui_state,cljs.core.assoc_in,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"sidebar","sidebar",35784458),new cljs.core.Keyword(null,"save-load-game","save-load-game",1986449844),new cljs.core.Keyword(null,"mouse-over-game-id","mouse-over-game-id",1618384737)], null),id);
-});})(vec__25275,id,name,s__25269__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-,new cljs.core.Keyword(null,"on-mouse-out","on-mouse-out",643448647),((function (vec__25275,id,name,s__25269__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(vec__31028,id,name,s__31022__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+,new cljs.core.Keyword(null,"on-mouse-out","on-mouse-out",643448647),((function (vec__31028,id,name,s__31022__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (_){
 return cljs.core.swap_BANG_.call(null,app.ui.ui_state.ui_state,cljs.core.assoc_in,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"sidebar","sidebar",35784458),new cljs.core.Keyword(null,"save-load-game","save-load-game",1986449844),new cljs.core.Keyword(null,"mouse-over-game-id","mouse-over-game-id",1618384737)], null),null);
-});})(vec__25275,id,name,s__25269__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-,new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (vec__25275,id,name,s__25269__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(vec__31028,id,name,s__31022__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+,new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (vec__31028,id,name,s__31022__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (_){
 return app.ui.save_load_game.load_game.call(null,id,name);
-});})(vec__25275,id,name,s__25269__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-], null),name], null),app$ui$save_load_game$iter__25268.call(null,cljs.core.rest.call(null,s__25269__$2)));
+});})(vec__31028,id,name,s__31022__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+], null),name], null),app$ui$save_load_game$iter__31021.call(null,cljs.core.rest.call(null,s__31022__$2)));
 }
 } else {
 return null;
 }
 break;
 }
-});})(attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
+});})(attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
 ,null,null));
-});})(attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
+});})(attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
 ;
 return iter__4324__auto__.call(null,cljs.core.sort_by.call(null,cljs.core.second,game_list));
-})(),app.ui.save_load_game.box.call(null,app.ui.save_load_game.cancel_button.call(null))], null):null))),sablono.interpreter.interpret.call(null,app.ui.save_load_game.box.call(null,app.ui.save_load_game.button.call(null,"public/asterisk.png",app.ui.save_load_game.button_style," NEW GAME",((function (attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+})(),app.ui.save_load_game.box.call(null,app.ui.save_load_game.cancel_button.call(null))], null):null))),sablono.interpreter.interpret.call(null,app.ui.save_load_game.box.call(null,app.ui.save_load_game.button.call(null,"public/asterisk.png",app.ui.save_load_game.button_style," NEW GAME",((function (attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (){
 return app.ui.save_load_game.new_game.call(null);
-});})(attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-)))], null):new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [sablono.interpreter.interpret.call(null,attrs25265),sablono.interpreter.interpret.call(null,app.ui.save_load_game.box.call(null,app.ui.save_load_game.button.call(null,"public/save-as-icon.png",(cljs.core.truth_(new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"save-as","save-as",-1722047792),null,new cljs.core.Keyword(null,"base","base",185279322),null], null), null).call(null,state))?app.ui.save_load_game.button_style:app.ui.save_load_game.disabled_button_style)," SAVE GAME AS...",((function (attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+)))], null):new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [sablono.interpreter.interpret.call(null,attrs31018),sablono.interpreter.interpret.call(null,app.ui.save_load_game.box.call(null,app.ui.save_load_game.button.call(null,"public/save-as-icon.png",(cljs.core.truth_(new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"save-as","save-as",-1722047792),null,new cljs.core.Keyword(null,"base","base",185279322),null], null), null).call(null,state))?app.ui.save_load_game.button_style:app.ui.save_load_game.disabled_button_style)," SAVE GAME AS...",((function (attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (){
 if(cljs.core._EQ_.call(null,state,new cljs.core.Keyword(null,"base","base",185279322))){
 return app.ui.save_load_game.save_game_as_open.call(null);
 } else {
 return null;
 }
-});})(attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-),((cljs.core._EQ_.call(null,state,new cljs.core.Keyword(null,"save-as","save-as",-1722047792)))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"form","form",-1624062471),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"input","input",556931961),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"type","type",1174270348),"text",new cljs.core.Keyword(null,"name","name",1843675177),"save-game-as-name",new cljs.core.Keyword(null,"ref","ref",1289896967),"save-game-as-name"], null)], null)], null),app.ui.save_load_game.box.call(null,app.ui.save_load_game.spacer.call(null),app.ui.save_load_game.button.call(null,null,app.ui.save_load_game.button_style,"Save",((function (attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+),((cljs.core._EQ_.call(null,state,new cljs.core.Keyword(null,"save-as","save-as",-1722047792)))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"form","form",-1624062471),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"input","input",556931961),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"type","type",1174270348),"text",new cljs.core.Keyword(null,"name","name",1843675177),"save-game-as-name",new cljs.core.Keyword(null,"ref","ref",1289896967),"save-game-as-name"], null)], null)], null),app.ui.save_load_game.box.call(null,app.ui.save_load_game.spacer.call(null),app.ui.save_load_game.button.call(null,null,app.ui.save_load_game.button_style,"Save",((function (attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (){
 var name = rum.core.ref_node.call(null,component_state,"save-game-as-name").value;
 return app.ui.save_load_game.save_game_as.call(null,name);
-});})(attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-),app.ui.save_load_game.spacer.call(null),app.ui.save_load_game.cancel_button.call(null))], null):null))),sablono.interpreter.interpret.call(null,app.ui.save_load_game.box.call(null,app.ui.save_load_game.button.call(null,"public/load-icon.png",(cljs.core.truth_(new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"load","load",-1318641184),null,new cljs.core.Keyword(null,"base","base",185279322),null], null), null).call(null,state))?app.ui.save_load_game.button_style:app.ui.save_load_game.disabled_button_style)," LOAD GAME...",((function (attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+),app.ui.save_load_game.spacer.call(null),app.ui.save_load_game.cancel_button.call(null))], null):null))),sablono.interpreter.interpret.call(null,app.ui.save_load_game.box.call(null,app.ui.save_load_game.button.call(null,"public/load-icon.png",(cljs.core.truth_(new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"load","load",-1318641184),null,new cljs.core.Keyword(null,"base","base",185279322),null], null), null).call(null,state))?app.ui.save_load_game.button_style:app.ui.save_load_game.disabled_button_style)," LOAD GAME...",((function (attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (){
 if(cljs.core._EQ_.call(null,state,new cljs.core.Keyword(null,"base","base",185279322))){
 return app.ui.save_load_game.load_game_open.call(null);
 } else {
 return null;
 }
-});})(attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-),((cljs.core._EQ_.call(null,state,new cljs.core.Keyword(null,"load","load",-1318641184)))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),(function (){var iter__4324__auto__ = ((function (attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
-return (function app$ui$save_load_game$iter__25278(s__25279){
-return (new cljs.core.LazySeq(null,((function (attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+),((cljs.core._EQ_.call(null,state,new cljs.core.Keyword(null,"load","load",-1318641184)))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),(function (){var iter__4324__auto__ = ((function (attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
+return (function app$ui$save_load_game$iter__31031(s__31032){
+return (new cljs.core.LazySeq(null,((function (attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (){
-var s__25279__$1 = s__25279;
+var s__31032__$1 = s__31032;
 while(true){
-var temp__5457__auto__ = cljs.core.seq.call(null,s__25279__$1);
+var temp__5457__auto__ = cljs.core.seq.call(null,s__31032__$1);
 if(temp__5457__auto__){
-var s__25279__$2 = temp__5457__auto__;
-if(cljs.core.chunked_seq_QMARK_.call(null,s__25279__$2)){
-var c__4322__auto__ = cljs.core.chunk_first.call(null,s__25279__$2);
+var s__31032__$2 = temp__5457__auto__;
+if(cljs.core.chunked_seq_QMARK_.call(null,s__31032__$2)){
+var c__4322__auto__ = cljs.core.chunk_first.call(null,s__31032__$2);
 var size__4323__auto__ = cljs.core.count.call(null,c__4322__auto__);
-var b__25281 = cljs.core.chunk_buffer.call(null,size__4323__auto__);
-if((function (){var i__25280 = (0);
+var b__31034 = cljs.core.chunk_buffer.call(null,size__4323__auto__);
+if((function (){var i__31033 = (0);
 while(true){
-if((i__25280 < size__4323__auto__)){
-var vec__25282 = cljs.core._nth.call(null,c__4322__auto__,i__25280);
-var id = cljs.core.nth.call(null,vec__25282,(0),null);
-var name = cljs.core.nth.call(null,vec__25282,(1),null);
-cljs.core.chunk_append.call(null,b__25281,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"cursor","cursor",1011937484),"pointer",new cljs.core.Keyword(null,"background-color","background-color",570434026),((cljs.core._EQ_.call(null,id,mouse_over_game_id))?"#a58d2e":null)], null),new cljs.core.Keyword(null,"on-mouse-over","on-mouse-over",-858472552),((function (i__25280,vec__25282,id,name,c__4322__auto__,size__4323__auto__,b__25281,s__25279__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+if((i__31033 < size__4323__auto__)){
+var vec__31035 = cljs.core._nth.call(null,c__4322__auto__,i__31033);
+var id = cljs.core.nth.call(null,vec__31035,(0),null);
+var name = cljs.core.nth.call(null,vec__31035,(1),null);
+cljs.core.chunk_append.call(null,b__31034,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"cursor","cursor",1011937484),"pointer",new cljs.core.Keyword(null,"background-color","background-color",570434026),((cljs.core._EQ_.call(null,id,mouse_over_game_id))?"#a58d2e":null)], null),new cljs.core.Keyword(null,"on-mouse-over","on-mouse-over",-858472552),((function (i__31033,vec__31035,id,name,c__4322__auto__,size__4323__auto__,b__31034,s__31032__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (e){
 return cljs.core.swap_BANG_.call(null,app.ui.ui_state.ui_state,cljs.core.assoc_in,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"sidebar","sidebar",35784458),new cljs.core.Keyword(null,"save-load-game","save-load-game",1986449844),new cljs.core.Keyword(null,"mouse-over-game-id","mouse-over-game-id",1618384737)], null),id);
-});})(i__25280,vec__25282,id,name,c__4322__auto__,size__4323__auto__,b__25281,s__25279__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-,new cljs.core.Keyword(null,"on-mouse-out","on-mouse-out",643448647),((function (i__25280,vec__25282,id,name,c__4322__auto__,size__4323__auto__,b__25281,s__25279__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(i__31033,vec__31035,id,name,c__4322__auto__,size__4323__auto__,b__31034,s__31032__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+,new cljs.core.Keyword(null,"on-mouse-out","on-mouse-out",643448647),((function (i__31033,vec__31035,id,name,c__4322__auto__,size__4323__auto__,b__31034,s__31032__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (_){
 return cljs.core.swap_BANG_.call(null,app.ui.ui_state.ui_state,cljs.core.assoc_in,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"sidebar","sidebar",35784458),new cljs.core.Keyword(null,"save-load-game","save-load-game",1986449844),new cljs.core.Keyword(null,"mouse-over-game-id","mouse-over-game-id",1618384737)], null),null);
-});})(i__25280,vec__25282,id,name,c__4322__auto__,size__4323__auto__,b__25281,s__25279__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-,new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (i__25280,vec__25282,id,name,c__4322__auto__,size__4323__auto__,b__25281,s__25279__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(i__31033,vec__31035,id,name,c__4322__auto__,size__4323__auto__,b__31034,s__31032__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+,new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (i__31033,vec__31035,id,name,c__4322__auto__,size__4323__auto__,b__31034,s__31032__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (_){
 return app.ui.save_load_game.load_game.call(null,id,name);
-});})(i__25280,vec__25282,id,name,c__4322__auto__,size__4323__auto__,b__25281,s__25279__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
+});})(i__31033,vec__31035,id,name,c__4322__auto__,size__4323__auto__,b__31034,s__31032__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
 ], null),name], null));
 
-var G__25289 = (i__25280 + (1));
-i__25280 = G__25289;
+var G__31042 = (i__31033 + (1));
+i__31033 = G__31042;
 continue;
 } else {
 return true;
@@ -334,42 +334,42 @@ return true;
 break;
 }
 })()){
-return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__25281),app$ui$save_load_game$iter__25278.call(null,cljs.core.chunk_rest.call(null,s__25279__$2)));
+return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__31034),app$ui$save_load_game$iter__31031.call(null,cljs.core.chunk_rest.call(null,s__31032__$2)));
 } else {
-return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__25281),null);
+return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__31034),null);
 }
 } else {
-var vec__25285 = cljs.core.first.call(null,s__25279__$2);
-var id = cljs.core.nth.call(null,vec__25285,(0),null);
-var name = cljs.core.nth.call(null,vec__25285,(1),null);
-return cljs.core.cons.call(null,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"cursor","cursor",1011937484),"pointer",new cljs.core.Keyword(null,"background-color","background-color",570434026),((cljs.core._EQ_.call(null,id,mouse_over_game_id))?"#a58d2e":null)], null),new cljs.core.Keyword(null,"on-mouse-over","on-mouse-over",-858472552),((function (vec__25285,id,name,s__25279__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+var vec__31038 = cljs.core.first.call(null,s__31032__$2);
+var id = cljs.core.nth.call(null,vec__31038,(0),null);
+var name = cljs.core.nth.call(null,vec__31038,(1),null);
+return cljs.core.cons.call(null,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"cursor","cursor",1011937484),"pointer",new cljs.core.Keyword(null,"background-color","background-color",570434026),((cljs.core._EQ_.call(null,id,mouse_over_game_id))?"#a58d2e":null)], null),new cljs.core.Keyword(null,"on-mouse-over","on-mouse-over",-858472552),((function (vec__31038,id,name,s__31032__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (e){
 return cljs.core.swap_BANG_.call(null,app.ui.ui_state.ui_state,cljs.core.assoc_in,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"sidebar","sidebar",35784458),new cljs.core.Keyword(null,"save-load-game","save-load-game",1986449844),new cljs.core.Keyword(null,"mouse-over-game-id","mouse-over-game-id",1618384737)], null),id);
-});})(vec__25285,id,name,s__25279__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-,new cljs.core.Keyword(null,"on-mouse-out","on-mouse-out",643448647),((function (vec__25285,id,name,s__25279__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(vec__31038,id,name,s__31032__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+,new cljs.core.Keyword(null,"on-mouse-out","on-mouse-out",643448647),((function (vec__31038,id,name,s__31032__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (_){
 return cljs.core.swap_BANG_.call(null,app.ui.ui_state.ui_state,cljs.core.assoc_in,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"sidebar","sidebar",35784458),new cljs.core.Keyword(null,"save-load-game","save-load-game",1986449844),new cljs.core.Keyword(null,"mouse-over-game-id","mouse-over-game-id",1618384737)], null),null);
-});})(vec__25285,id,name,s__25279__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-,new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (vec__25285,id,name,s__25279__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+});})(vec__31038,id,name,s__31032__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+,new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (vec__31038,id,name,s__31032__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (_){
 return app.ui.save_load_game.load_game.call(null,id,name);
-});})(vec__25285,id,name,s__25279__$2,temp__5457__auto__,attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
-], null),name], null),app$ui$save_load_game$iter__25278.call(null,cljs.core.rest.call(null,s__25279__$2)));
+});})(vec__31038,id,name,s__31032__$2,temp__5457__auto__,attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
+], null),name], null),app$ui$save_load_game$iter__31031.call(null,cljs.core.rest.call(null,s__31032__$2)));
 }
 } else {
 return null;
 }
 break;
 }
-});})(attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
+});})(attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
 ,null,null));
-});})(attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
+});})(attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
 ;
 return iter__4324__auto__.call(null,cljs.core.sort_by.call(null,cljs.core.second,game_list));
-})(),app.ui.save_load_game.box.call(null,app.ui.save_load_game.cancel_button.call(null))], null):null))),sablono.interpreter.interpret.call(null,app.ui.save_load_game.box.call(null,app.ui.save_load_game.button.call(null,"public/asterisk.png",app.ui.save_load_game.button_style," NEW GAME",((function (attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id){
+})(),app.ui.save_load_game.box.call(null,app.ui.save_load_game.cancel_button.call(null))], null):null))),sablono.interpreter.interpret.call(null,app.ui.save_load_game.box.call(null,app.ui.save_load_game.button.call(null,"public/asterisk.png",app.ui.save_load_game.button_style," NEW GAME",((function (attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id){
 return (function (){
 return app.ui.save_load_game.new_game.call(null);
-});})(attrs25265,map__25266,map__25266__$1,state,game_list,mouse_over_game_id))
+});})(attrs31018,map__31019,map__31019__$1,state,game_list,mouse_over_game_id))
 )))], null)));
 }),new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [rum.core.reactive], null),"save-load-game-component");
 

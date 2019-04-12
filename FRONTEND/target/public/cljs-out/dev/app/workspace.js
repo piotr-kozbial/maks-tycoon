@@ -11,28 +11,27 @@ goog.require('gamebase.ecs');
 goog.require('gamebase.virtual_timer');
 goog.require('gamebase.canvas_control');
 goog.require('gamebase.layouts.sidebar_and_bottombar');
-goog.require('gamebase.ecsu');
 goog.require('gamebase.geometry');
 goog.require('app.tiles.general');
 goog.require('app.core');
 goog.require('app.state');
 app.workspace.inject_entity = (function app$workspace$inject_entity(e){
-cljs.core.swap_BANG_.call(null,app.state.app_state,(function (p__28609){
-var map__28610 = p__28609;
-var map__28610__$1 = ((((!((map__28610 == null)))?(((((map__28610.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__28610.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__28610):map__28610);
-var state = map__28610__$1;
-var world = cljs.core.get.call(null,map__28610__$1,new cljs.core.Keyword(null,"world","world",-418292623));
+cljs.core.swap_BANG_.call(null,app.state.app_state,(function (p__37555){
+var map__37556 = p__37555;
+var map__37556__$1 = ((((!((map__37556 == null)))?(((((map__37556.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__37556.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__37556):map__37556);
+var state = map__37556__$1;
+var world = cljs.core.get.call(null,map__37556__$1,new cljs.core.Keyword(null,"world","world",-418292623));
 return cljs.core.assoc.call(null,state,new cljs.core.Keyword(null,"world","world",-418292623),gamebase.ecs.insert_object.call(null,world,e));
 }));
 
 return null;
 });
 app.workspace.kill_entity = (function app$workspace$kill_entity(entity_key){
-cljs.core.swap_BANG_.call(null,app.state.app_state,(function (p__28612){
-var map__28613 = p__28612;
-var map__28613__$1 = ((((!((map__28613 == null)))?(((((map__28613.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__28613.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__28613):map__28613);
-var state = map__28613__$1;
-var world = cljs.core.get.call(null,map__28613__$1,new cljs.core.Keyword(null,"world","world",-418292623));
+cljs.core.swap_BANG_.call(null,app.state.app_state,(function (p__37558){
+var map__37559 = p__37558;
+var map__37559__$1 = ((((!((map__37559 == null)))?(((((map__37559.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__37559.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__37559):map__37559);
+var state = map__37559__$1;
+var world = cljs.core.get.call(null,map__37559__$1,new cljs.core.Keyword(null,"world","world",-418292623));
 return cljs.core.assoc.call(null,state,new cljs.core.Keyword(null,"world","world",-418292623),gamebase.ecs.remove_entity_by_key.call(null,world,entity_key));
 }));
 

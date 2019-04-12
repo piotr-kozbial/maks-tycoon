@@ -193,3 +193,34 @@
           (doseq [i (range (inc n))]
             (apply js/point (g/path-point-at-length path (* i d))))
           (js/pop)))) nil))
+
+(do ;; COMPONENT: path-history
+
+  ;; draws a path as defined in gamebase.geometry
+
+  (defn mk-path-history-component
+    [entity-or-id key {:keys [path-history-kvs color]}]
+    (assoc
+     (ecs/mk-component ::drawing entity-or-id key ::path-history)
+     :path-history-kvs path-history-kvs
+     :color color))
+
+  (defmethod ecs/handle-event [:to-component ::path-history :update]
+    [world event component]
+    nil)
+
+  (defmethod ecs/handle-event [:to-component ::path-history ::draw]
+    [world event {:keys [path-history-kvs] :as component}]
+    (let [entity (ecs/get-entity world component)]
+      (when-let [path-history (get-in entity path-history-kvs)]
+        (doseq [path path-history]
+          (let [len (g/path-length path)
+                n (int (/ len 5))
+                d (/ len n)]
+            (js/push)
+            (js/stroke (js/color (:color component)))
+            (doseq [i (range (inc n))]
+              (apply js/point (g/path-point-at-length path (* i d))))
+            (js/pop)))
+
+        )) nil))

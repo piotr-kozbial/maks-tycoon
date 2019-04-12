@@ -13,11 +13,11 @@ return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"ru
 gamebase.virtual_timer.running_QMARK_ = (function gamebase$virtual_timer$running_QMARK_(timer){
 return new cljs.core.Keyword(null,"running?","running?",-257884763).cljs$core$IFn$_invoke$arity$1(timer);
 });
-gamebase.virtual_timer.get_time = (function gamebase$virtual_timer$get_time(p__19997){
-var map__19998 = p__19997;
-var map__19998__$1 = ((((!((map__19998 == null)))?(((((map__19998.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__19998.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__19998):map__19998);
-var running_QMARK_ = cljs.core.get.call(null,map__19998__$1,new cljs.core.Keyword(null,"running?","running?",-257884763));
-var offset = cljs.core.get.call(null,map__19998__$1,new cljs.core.Keyword(null,"offset","offset",296498311));
+gamebase.virtual_timer.get_time = (function gamebase$virtual_timer$get_time(p__28084){
+var map__28085 = p__28084;
+var map__28085__$1 = ((((!((map__28085 == null)))?(((((map__28085.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__28085.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__28085):map__28085);
+var running_QMARK_ = cljs.core.get.call(null,map__28085__$1,new cljs.core.Keyword(null,"running?","running?",-257884763));
+var offset = cljs.core.get.call(null,map__28085__$1,new cljs.core.Keyword(null,"offset","offset",296498311));
 
 if(cljs.core.truth_(running_QMARK_)){
 } else {

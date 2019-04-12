@@ -35,13 +35,13 @@ var this__4203__auto____$1 = this;
 return this__4203__auto____$1.cljs$core$ILookup$_lookup$arity$3(null,k__4204__auto__,null);
 });
 
-app.components.ui.UIComponent.prototype.cljs$core$ILookup$_lookup$arity$3 = (function (this__4205__auto__,k28593,else__4206__auto__){
+app.components.ui.UIComponent.prototype.cljs$core$ILookup$_lookup$arity$3 = (function (this__4205__auto__,k37539,else__4206__auto__){
 var self__ = this;
 var this__4205__auto____$1 = this;
-var G__28597 = k28593;
-switch (G__28597) {
+var G__37543 = k37539;
+switch (G__37543) {
 default:
-return cljs.core.get.call(null,self__.__extmap,k28593,else__4206__auto__);
+return cljs.core.get.call(null,self__.__extmap,k37539,else__4206__auto__);
 
 }
 });
@@ -57,10 +57,10 @@ return cljs.core.pr_sequential_writer.call(null,writer__4218__auto__,cljs.core.p
 return cljs.core.pr_sequential_writer.call(null,writer__4218__auto__,pr_pair__4220__auto__,"#app.components.ui.UIComponent{",", ","}",opts__4219__auto__,cljs.core.concat.call(null,cljs.core.PersistentVector.EMPTY,self__.__extmap));
 });
 
-app.components.ui.UIComponent.prototype.cljs$core$IIterable$_iterator$arity$1 = (function (G__28592){
+app.components.ui.UIComponent.prototype.cljs$core$IIterable$_iterator$arity$1 = (function (G__37538){
 var self__ = this;
-var G__28592__$1 = this;
-return (new cljs.core.RecordIter((0),G__28592__$1,0,cljs.core.PersistentVector.EMPTY,(cljs.core.truth_(self__.__extmap)?cljs.core._iterator.call(null,self__.__extmap):cljs.core.nil_iter.call(null))));
+var G__37538__$1 = this;
+return (new cljs.core.RecordIter((0),G__37538__$1,0,cljs.core.PersistentVector.EMPTY,(cljs.core.truth_(self__.__extmap)?cljs.core._iterator.call(null,self__.__extmap):cljs.core.nil_iter.call(null))));
 });
 
 app.components.ui.UIComponent.prototype.cljs$core$IMeta$_meta$arity$1 = (function (this__4201__auto__){
@@ -99,10 +99,10 @@ return h__4061__auto____$1;
 }
 });
 
-app.components.ui.UIComponent.prototype.cljs$core$IEquiv$_equiv$arity$2 = (function (this28594,other28595){
+app.components.ui.UIComponent.prototype.cljs$core$IEquiv$_equiv$arity$2 = (function (this37540,other37541){
 var self__ = this;
-var this28594__$1 = this;
-return ((!((other28595 == null))) && ((this28594__$1.constructor === other28595.constructor)) && (cljs.core._EQ_.call(null,this28594__$1.__extmap,other28595.__extmap)));
+var this37540__$1 = this;
+return ((!((other37541 == null))) && ((this37540__$1.constructor === other37541.constructor)) && (cljs.core._EQ_.call(null,this37540__$1.__extmap,other37541.__extmap)));
 });
 
 app.components.ui.UIComponent.prototype.cljs$core$IMap$_dissoc$arity$2 = (function (this__4212__auto__,k__4213__auto__){
@@ -115,12 +115,12 @@ return (new app.components.ui.UIComponent(self__.__meta,cljs.core.not_empty.call
 }
 });
 
-app.components.ui.UIComponent.prototype.cljs$core$IAssociative$_assoc$arity$3 = (function (this__4210__auto__,k__4211__auto__,G__28592){
+app.components.ui.UIComponent.prototype.cljs$core$IAssociative$_assoc$arity$3 = (function (this__4210__auto__,k__4211__auto__,G__37538){
 var self__ = this;
 var this__4210__auto____$1 = this;
-var pred__28598 = cljs.core.keyword_identical_QMARK_;
-var expr__28599 = k__4211__auto__;
-return (new app.components.ui.UIComponent(self__.__meta,cljs.core.assoc.call(null,self__.__extmap,k__4211__auto__,G__28592),null));
+var pred__37544 = cljs.core.keyword_identical_QMARK_;
+var expr__37545 = k__4211__auto__;
+return (new app.components.ui.UIComponent(self__.__meta,cljs.core.assoc.call(null,self__.__extmap,k__4211__auto__,G__37538),null));
 });
 
 app.components.ui.UIComponent.prototype.cljs$core$ISeqable$_seq$arity$1 = (function (this__4215__auto__){
@@ -129,10 +129,10 @@ var this__4215__auto____$1 = this;
 return cljs.core.seq.call(null,cljs.core.concat.call(null,cljs.core.PersistentVector.EMPTY,self__.__extmap));
 });
 
-app.components.ui.UIComponent.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = (function (this__4202__auto__,G__28592){
+app.components.ui.UIComponent.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = (function (this__4202__auto__,G__37538){
 var self__ = this;
 var this__4202__auto____$1 = this;
-return (new app.components.ui.UIComponent(G__28592,self__.__extmap,self__.__hash));
+return (new app.components.ui.UIComponent(G__37538,self__.__extmap,self__.__hash));
 });
 
 app.components.ui.UIComponent.prototype.cljs$core$ICollection$_conj$arity$2 = (function (this__4208__auto__,entry__4209__auto__){
@@ -185,12 +185,12 @@ return (new app.components.ui.UIComponent(null,null,null));
 /**
  * Factory function for app.components.ui/UIComponent, taking a map of keywords to field values.
  */
-app.components.ui.map__GT_UIComponent = (function app$components$ui$map__GT_UIComponent(G__28596){
-var extmap__4236__auto__ = (function (){var G__28601 = cljs.core.dissoc.call(null,G__28596);
-if(cljs.core.record_QMARK_.call(null,G__28596)){
-return cljs.core.into.call(null,cljs.core.PersistentArrayMap.EMPTY,G__28601);
+app.components.ui.map__GT_UIComponent = (function app$components$ui$map__GT_UIComponent(G__37542){
+var extmap__4236__auto__ = (function (){var G__37547 = cljs.core.dissoc.call(null,G__37542);
+if(cljs.core.record_QMARK_.call(null,G__37542)){
+return cljs.core.into.call(null,cljs.core.PersistentArrayMap.EMPTY,G__37547);
 } else {
-return G__28601;
+return G__37547;
 }
 })();
 return (new app.components.ui.UIComponent(null,cljs.core.not_empty.call(null,extmap__4236__auto__),null));

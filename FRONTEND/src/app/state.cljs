@@ -3,7 +3,14 @@
    [gamebase.layers :as layers]
    [app.tiles.general :as tiles]
    [gamebase.virtual-timer :as vt]
-   [gamebase.event-queue :as eq]))
+   [gamebase.event-queue :as eq]
+
+   [devcards.core]
+   [sablono.core :as sab])
+  (:require-macros
+   [devcards.core :refer [defcard]])
+
+  )
 
 ;; App state
 
@@ -58,4 +65,7 @@
               [tile-x tile-y]
               (some #(tiles/initialize-tile-extra % tile-x tile-y tile) (:ids tile)))))))
 
+
+(defcard my-first-card
+  (sab/html [:h1 "Devcards is awesome!"]))
 

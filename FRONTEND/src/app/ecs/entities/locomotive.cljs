@@ -17,7 +17,7 @@
      entity
 
      :gamebase.ecs/components
-     {:move (sys-move/mk-path-follower entity :move {:path-history-size 2})
+     {:move (sys-move/mk-path-follower entity :move {:path-history-size 10})
 
       :img (sys-drawing/mk-static-image-component entity :img
                               {:point-kvs (ecs/ck-kvs :move :position)
@@ -25,15 +25,14 @@
                                :center [16 8]
                                :resource-name-kvs [:image]})
 
-      ;; :debug-path (sys-drawing/mk-path-component entity :debug-path
-      ;;                                {:path-kvs (ecs/ck-kvs :move :path)
-      ;;                                 :color "magenta"})
-      ;; :debug-path-history-1 (sys-drawing/mk-path-component entity :debug-path-history-1
-      ;;                                          {:path-kvs (ecs/ck-kvs :move :path-history 1)
-      ;;                                           :color "blue"})
-      ;; :debug-path-history-0 (sys-drawing/mk-path-component entity :debug-path-history-0
-      ;;                                          {:path-kvs (ecs/ck-kvs :move :path-history 0)
-      ;;                                           :color "blue"})
+      :debug-path (sys-drawing/mk-path-component entity :debug-path
+                                     {:path-kvs (ecs/ck-kvs :move :path)
+                                      :color "magenta"})
+      :debug-path-history (sys-drawing/mk-path-history-component
+                           entity
+                           :debug-path-history
+                           {:path-history-kvs (ecs/ck-kvs :move :path-history)
+                            :color "blue"})
 
       }
 
@@ -46,7 +45,7 @@
      :front-coupling nil
      :rear-coupling nil
 
-     :image "loco1.png")))
+      :image "loco1.png")))
 
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ecs/init]

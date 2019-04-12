@@ -69,14 +69,14 @@ cljs.core.alter_meta_BANG_.call(null,new cljs.core.Var(function(){return clojure
  */
 clojure.data.xml.parse_str = (function clojure$data$xml$parse_str(var_args){
 var args__4534__auto__ = [];
-var len__4531__auto___20208 = arguments.length;
-var i__4532__auto___20209 = (0);
+var len__4531__auto___28264 = arguments.length;
+var i__4532__auto___28265 = (0);
 while(true){
-if((i__4532__auto___20209 < len__4531__auto___20208)){
-args__4534__auto__.push((arguments[i__4532__auto___20209]));
+if((i__4532__auto___28265 < len__4531__auto___28264)){
+args__4534__auto__.push((arguments[i__4532__auto___28265]));
 
-var G__20210 = (i__4532__auto___20209 + (1));
-i__4532__auto___20209 = G__20210;
+var G__28266 = (i__4532__auto___28265 + (1));
+i__4532__auto___28265 = G__28266;
 continue;
 } else {
 }
@@ -87,16 +87,16 @@ var argseq__4535__auto__ = ((((1) < args__4534__auto__.length))?(new cljs.core.I
 return clojure.data.xml.parse_str.cljs$core$IFn$_invoke$arity$variadic((arguments[(0)]),argseq__4535__auto__);
 });
 
-clojure.data.xml.parse_str.cljs$core$IFn$_invoke$arity$variadic = (function (s,p__20205){
-var map__20206 = p__20205;
-var map__20206__$1 = ((((!((map__20206 == null)))?(((((map__20206.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__20206.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__20206):map__20206);
-var content_type = cljs.core.get.call(null,map__20206__$1,new cljs.core.Keyword(null,"content-type","content-type",-508222634),"text/xml");
-var on_error = cljs.core.get.call(null,map__20206__$1,new cljs.core.Keyword(null,"on-error","on-error",1728533530),((function (map__20206,map__20206__$1,content_type){
-return (function (p1__20202_SHARP_){
-throw cljs.core.ex_info.call(null,"XML parser error",new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"doc","doc",1913296891),p1__20202_SHARP_,new cljs.core.Keyword(null,"input","input",556931961),s], null));
-});})(map__20206,map__20206__$1,content_type))
+clojure.data.xml.parse_str.cljs$core$IFn$_invoke$arity$variadic = (function (s,p__28261){
+var map__28262 = p__28261;
+var map__28262__$1 = ((((!((map__28262 == null)))?(((((map__28262.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__28262.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__28262):map__28262);
+var content_type = cljs.core.get.call(null,map__28262__$1,new cljs.core.Keyword(null,"content-type","content-type",-508222634),"text/xml");
+var on_error = cljs.core.get.call(null,map__28262__$1,new cljs.core.Keyword(null,"on-error","on-error",1728533530),((function (map__28262,map__28262__$1,content_type){
+return (function (p1__28258_SHARP_){
+throw cljs.core.ex_info.call(null,"XML parser error",new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"doc","doc",1913296891),p1__28258_SHARP_,new cljs.core.Keyword(null,"input","input",556931961),s], null));
+});})(map__28262,map__28262__$1,content_type))
 );
-var raw = cljs.core.get.call(null,map__20206__$1,new cljs.core.Keyword(null,"raw","raw",1604651272));
+var raw = cljs.core.get.call(null,map__28262__$1,new cljs.core.Keyword(null,"raw","raw",1604651272));
 var dom = (new DOMParser()).parseFromString(s,content_type);
 var doc = dom.documentElement;
 if(cljs.core._EQ_.call(null,"parsererror",doc.nodeName)){
@@ -114,11 +114,11 @@ return clojure.data.xml.element_data.call(null,doc);
 clojure.data.xml.parse_str.cljs$lang$maxFixedArity = (1);
 
 /** @this {Function} */
-clojure.data.xml.parse_str.cljs$lang$applyTo = (function (seq20203){
-var G__20204 = cljs.core.first.call(null,seq20203);
-var seq20203__$1 = cljs.core.next.call(null,seq20203);
+clojure.data.xml.parse_str.cljs$lang$applyTo = (function (seq28259){
+var G__28260 = cljs.core.first.call(null,seq28259);
+var seq28259__$1 = cljs.core.next.call(null,seq28259);
 var self__4518__auto__ = this;
-return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__20204,seq20203__$1);
+return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__28260,seq28259__$1);
 });
 
 /**
@@ -126,14 +126,14 @@ return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__20204,seq20203
  */
 clojure.data.xml.emit_str = (function clojure$data$xml$emit_str(var_args){
 var args__4534__auto__ = [];
-var len__4531__auto___20216 = arguments.length;
-var i__4532__auto___20217 = (0);
+var len__4531__auto___28272 = arguments.length;
+var i__4532__auto___28273 = (0);
 while(true){
-if((i__4532__auto___20217 < len__4531__auto___20216)){
-args__4534__auto__.push((arguments[i__4532__auto___20217]));
+if((i__4532__auto___28273 < len__4531__auto___28272)){
+args__4534__auto__.push((arguments[i__4532__auto___28273]));
 
-var G__20218 = (i__4532__auto___20217 + (1));
-i__4532__auto___20217 = G__20218;
+var G__28274 = (i__4532__auto___28273 + (1));
+i__4532__auto___28273 = G__28274;
 continue;
 } else {
 }
@@ -144,20 +144,20 @@ var argseq__4535__auto__ = ((((1) < args__4534__auto__.length))?(new cljs.core.I
 return clojure.data.xml.emit_str.cljs$core$IFn$_invoke$arity$variadic((arguments[(0)]),argseq__4535__auto__);
 });
 
-clojure.data.xml.emit_str.cljs$core$IFn$_invoke$arity$variadic = (function (e,p__20213){
-var map__20214 = p__20213;
-var map__20214__$1 = ((((!((map__20214 == null)))?(((((map__20214.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__20214.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__20214):map__20214);
+clojure.data.xml.emit_str.cljs$core$IFn$_invoke$arity$variadic = (function (e,p__28269){
+var map__28270 = p__28269;
+var map__28270__$1 = ((((!((map__28270 == null)))?(((((map__28270.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__28270.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__28270):map__28270);
 return (new XMLSerializer()).serializeToString(clojure.data.xml.element_node.call(null,e));
 });
 
 clojure.data.xml.emit_str.cljs$lang$maxFixedArity = (1);
 
 /** @this {Function} */
-clojure.data.xml.emit_str.cljs$lang$applyTo = (function (seq20211){
-var G__20212 = cljs.core.first.call(null,seq20211);
-var seq20211__$1 = cljs.core.next.call(null,seq20211);
+clojure.data.xml.emit_str.cljs$lang$applyTo = (function (seq28267){
+var G__28268 = cljs.core.first.call(null,seq28267);
+var seq28267__$1 = cljs.core.next.call(null,seq28267);
 var self__4518__auto__ = this;
-return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__20212,seq20211__$1);
+return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__28268,seq28267__$1);
 });
 
 

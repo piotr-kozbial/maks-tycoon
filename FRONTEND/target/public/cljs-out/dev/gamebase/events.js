@@ -3,8 +3,8 @@ goog.provide('gamebase.events');
 goog.require('cljs.core');
 gamebase.events.all_handlers = cljs.core.atom.call(null,cljs.core.PersistentArrayMap.EMPTY);
 gamebase.events.add_handler = (function gamebase$events$add_handler(event_key,handler){
-return cljs.core.swap_BANG_.call(null,gamebase.events.all_handlers,cljs.core.update_in,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [event_key], null),(function (p1__20534_SHARP_){
-return cljs.core.conj.call(null,(function (){var or__3949__auto__ = p1__20534_SHARP_;
+return cljs.core.swap_BANG_.call(null,gamebase.events.all_handlers,cljs.core.update_in,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [event_key], null),(function (p1__28622_SHARP_){
+return cljs.core.conj.call(null,(function (){var or__3949__auto__ = p1__28622_SHARP_;
 if(cljs.core.truth_(or__3949__auto__)){
 return or__3949__auto__;
 } else {
@@ -49,56 +49,56 @@ return event_key;
 })();
 }
 gamebase.events.callback = (function gamebase$events$callback(event_name){
-var event_key_20539 = cljs.core.keyword.call(null,event_name);
-var handlers_20540 = event_key_20539.call(null,cljs.core.deref.call(null,gamebase.events.all_handlers));
-if(cljs.core.truth_(gamebase.events.precondition_for_event.call(null,event_key_20539))){
-var seq__20535_20541 = cljs.core.seq.call(null,handlers_20540);
-var chunk__20536_20542 = null;
-var count__20537_20543 = (0);
-var i__20538_20544 = (0);
+var event_key_28627 = cljs.core.keyword.call(null,event_name);
+var handlers_28628 = event_key_28627.call(null,cljs.core.deref.call(null,gamebase.events.all_handlers));
+if(cljs.core.truth_(gamebase.events.precondition_for_event.call(null,event_key_28627))){
+var seq__28623_28629 = cljs.core.seq.call(null,handlers_28628);
+var chunk__28624_28630 = null;
+var count__28625_28631 = (0);
+var i__28626_28632 = (0);
 while(true){
-if((i__20538_20544 < count__20537_20543)){
-var h_20545 = cljs.core._nth.call(null,chunk__20536_20542,i__20538_20544);
-h_20545.call(null,gamebase.events.data_for_event.call(null,event_key_20539));
+if((i__28626_28632 < count__28625_28631)){
+var h_28633 = cljs.core._nth.call(null,chunk__28624_28630,i__28626_28632);
+h_28633.call(null,gamebase.events.data_for_event.call(null,event_key_28627));
 
 
-var G__20546 = seq__20535_20541;
-var G__20547 = chunk__20536_20542;
-var G__20548 = count__20537_20543;
-var G__20549 = (i__20538_20544 + (1));
-seq__20535_20541 = G__20546;
-chunk__20536_20542 = G__20547;
-count__20537_20543 = G__20548;
-i__20538_20544 = G__20549;
+var G__28634 = seq__28623_28629;
+var G__28635 = chunk__28624_28630;
+var G__28636 = count__28625_28631;
+var G__28637 = (i__28626_28632 + (1));
+seq__28623_28629 = G__28634;
+chunk__28624_28630 = G__28635;
+count__28625_28631 = G__28636;
+i__28626_28632 = G__28637;
 continue;
 } else {
-var temp__5457__auto___20550 = cljs.core.seq.call(null,seq__20535_20541);
-if(temp__5457__auto___20550){
-var seq__20535_20551__$1 = temp__5457__auto___20550;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__20535_20551__$1)){
-var c__4351__auto___20552 = cljs.core.chunk_first.call(null,seq__20535_20551__$1);
-var G__20553 = cljs.core.chunk_rest.call(null,seq__20535_20551__$1);
-var G__20554 = c__4351__auto___20552;
-var G__20555 = cljs.core.count.call(null,c__4351__auto___20552);
-var G__20556 = (0);
-seq__20535_20541 = G__20553;
-chunk__20536_20542 = G__20554;
-count__20537_20543 = G__20555;
-i__20538_20544 = G__20556;
+var temp__5457__auto___28638 = cljs.core.seq.call(null,seq__28623_28629);
+if(temp__5457__auto___28638){
+var seq__28623_28639__$1 = temp__5457__auto___28638;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__28623_28639__$1)){
+var c__4351__auto___28640 = cljs.core.chunk_first.call(null,seq__28623_28639__$1);
+var G__28641 = cljs.core.chunk_rest.call(null,seq__28623_28639__$1);
+var G__28642 = c__4351__auto___28640;
+var G__28643 = cljs.core.count.call(null,c__4351__auto___28640);
+var G__28644 = (0);
+seq__28623_28629 = G__28641;
+chunk__28624_28630 = G__28642;
+count__28625_28631 = G__28643;
+i__28626_28632 = G__28644;
 continue;
 } else {
-var h_20557 = cljs.core.first.call(null,seq__20535_20551__$1);
-h_20557.call(null,gamebase.events.data_for_event.call(null,event_key_20539));
+var h_28645 = cljs.core.first.call(null,seq__28623_28639__$1);
+h_28645.call(null,gamebase.events.data_for_event.call(null,event_key_28627));
 
 
-var G__20558 = cljs.core.next.call(null,seq__20535_20551__$1);
-var G__20559 = null;
-var G__20560 = (0);
-var G__20561 = (0);
-seq__20535_20541 = G__20558;
-chunk__20536_20542 = G__20559;
-count__20537_20543 = G__20560;
-i__20538_20544 = G__20561;
+var G__28646 = cljs.core.next.call(null,seq__28623_28639__$1);
+var G__28647 = null;
+var G__28648 = (0);
+var G__28649 = (0);
+seq__28623_28629 = G__28646;
+chunk__28624_28630 = G__28647;
+count__28625_28631 = G__28648;
+i__28626_28632 = G__28649;
 continue;
 }
 } else {

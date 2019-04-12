@@ -4,14 +4,14 @@ goog.require('cljs.core');
 goog.require('gamebase.events');
 gamebase.layouts.sidebar_and_bottombar.mk_html = (function gamebase$layouts$sidebar_and_bottombar$mk_html(var_args){
 var args__4534__auto__ = [];
-var len__4531__auto___25843 = arguments.length;
-var i__4532__auto___25844 = (0);
+var len__4531__auto___31347 = arguments.length;
+var i__4532__auto___31348 = (0);
 while(true){
-if((i__4532__auto___25844 < len__4531__auto___25843)){
-args__4534__auto__.push((arguments[i__4532__auto___25844]));
+if((i__4532__auto___31348 < len__4531__auto___31347)){
+args__4534__auto__.push((arguments[i__4532__auto___31348]));
 
-var G__25845 = (i__4532__auto___25844 + (1));
-i__4532__auto___25844 = G__25845;
+var G__31349 = (i__4532__auto___31348 + (1));
+i__4532__auto___31348 = G__31349;
 continue;
 } else {
 }
@@ -22,22 +22,22 @@ var argseq__4535__auto__ = ((((2) < args__4534__auto__.length))?(new cljs.core.I
 return gamebase.layouts.sidebar_and_bottombar.mk_html.cljs$core$IFn$_invoke$arity$variadic((arguments[(0)]),(arguments[(1)]),argseq__4535__auto__);
 });
 
-gamebase.layouts.sidebar_and_bottombar.mk_html.cljs$core$IFn$_invoke$arity$variadic = (function (sidebar_content,bottombar_content,p__25839){
-var vec__25840 = p__25839;
-var splash_image = cljs.core.nth.call(null,vec__25840,(0),null);
+gamebase.layouts.sidebar_and_bottombar.mk_html.cljs$core$IFn$_invoke$arity$variadic = (function (sidebar_content,bottombar_content,p__31343){
+var vec__31344 = p__31343;
+var splash_image = cljs.core.nth.call(null,vec__31344,(0),null);
 return new cljs.core.PersistentVector(null, 7, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),cljs.core.PersistentArrayMap.EMPTY,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"id","id",-1388402092),"gamebase/canvas-holder",new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"position","position",-2011731912),"absolute",new cljs.core.Keyword(null,"backgroundColor","backgroundColor",1738438491),"#888888"], null)], null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"id","id",-1388402092),"gamebase/bottom-bar",new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"position","position",-2011731912),"absolute",new cljs.core.Keyword(null,"backgroundColor","backgroundColor",1738438491),"#BBA415",new cljs.core.Keyword(null,"overflow","overflow",2058931880),"auto"], null)], null),bottombar_content], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"id","id",-1388402092),"gamebase/bottom-bar-border",new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"position","position",-2011731912),"absolute",new cljs.core.Keyword(null,"backgroundColor","backgroundColor",1738438491),"#BB4400",new cljs.core.Keyword(null,"cursor","cursor",1011937484),"ns-resize"], null)], null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"id","id",-1388402092),"gamebase/side-bar",new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"position","position",-2011731912),"absolute",new cljs.core.Keyword(null,"backgroundColor","backgroundColor",1738438491),"#C6AF20",new cljs.core.Keyword(null,"overflow","overflow",2058931880),"auto"], null)], null),sidebar_content], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"id","id",-1388402092),"gamebase/side-bar-border",new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"position","position",-2011731912),"absolute",new cljs.core.Keyword(null,"backgroundColor","backgroundColor",1738438491),"#BB4400",new cljs.core.Keyword(null,"cursor","cursor",1011937484),"ew-resize"], null)], null)], null)], null);
 });
 
 gamebase.layouts.sidebar_and_bottombar.mk_html.cljs$lang$maxFixedArity = (2);
 
 /** @this {Function} */
-gamebase.layouts.sidebar_and_bottombar.mk_html.cljs$lang$applyTo = (function (seq25836){
-var G__25837 = cljs.core.first.call(null,seq25836);
-var seq25836__$1 = cljs.core.next.call(null,seq25836);
-var G__25838 = cljs.core.first.call(null,seq25836__$1);
-var seq25836__$2 = cljs.core.next.call(null,seq25836__$1);
+gamebase.layouts.sidebar_and_bottombar.mk_html.cljs$lang$applyTo = (function (seq31340){
+var G__31341 = cljs.core.first.call(null,seq31340);
+var seq31340__$1 = cljs.core.next.call(null,seq31340);
+var G__31342 = cljs.core.first.call(null,seq31340__$1);
+var seq31340__$2 = cljs.core.next.call(null,seq31340__$1);
 var self__4518__auto__ = this;
-return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__25837,G__25838,seq25836__$2);
+return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__31341,G__31342,seq31340__$2);
 });
 
 
@@ -99,32 +99,32 @@ var canvas_holder = gamebase.layouts.sidebar_and_bottombar.get_canvas_holder_ele
 return canvas_holder.style.display = "none";
 });
 gamebase.layouts.sidebar_and_bottombar.get_canvas_rectangle = (function gamebase$layouts$sidebar_and_bottombar$get_canvas_rectangle(){
-var map__25846 = cljs.core.deref.call(null,gamebase.layouts.sidebar_and_bottombar.state);
-var map__25846__$1 = ((((!((map__25846 == null)))?(((((map__25846.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__25846.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__25846):map__25846);
-var base_atom = cljs.core.get.call(null,map__25846__$1,new cljs.core.Keyword(null,"base-atom","base-atom",1557951289));
-var kvs = cljs.core.get.call(null,map__25846__$1,new cljs.core.Keyword(null,"kvs","kvs",958455492));
+var map__31350 = cljs.core.deref.call(null,gamebase.layouts.sidebar_and_bottombar.state);
+var map__31350__$1 = ((((!((map__31350 == null)))?(((((map__31350.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__31350.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__31350):map__31350);
+var base_atom = cljs.core.get.call(null,map__31350__$1,new cljs.core.Keyword(null,"base-atom","base-atom",1557951289));
+var kvs = cljs.core.get.call(null,map__31350__$1,new cljs.core.Keyword(null,"kvs","kvs",958455492));
 var temp__5455__auto__ = cljs.core.get_in.call(null,cljs.core.deref.call(null,base_atom),kvs);
 if(cljs.core.truth_(temp__5455__auto__)){
-var map__25848 = temp__5455__auto__;
-var map__25848__$1 = ((((!((map__25848 == null)))?(((((map__25848.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__25848.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__25848):map__25848);
-var canvas_x = cljs.core.get.call(null,map__25848__$1,new cljs.core.Keyword(null,"canvas-x","canvas-x",-773330711));
-var canvas_y = cljs.core.get.call(null,map__25848__$1,new cljs.core.Keyword(null,"canvas-y","canvas-y",-1092734438));
-var canvas_width = cljs.core.get.call(null,map__25848__$1,new cljs.core.Keyword(null,"canvas-width","canvas-width",1321931102));
-var canvas_height = cljs.core.get.call(null,map__25848__$1,new cljs.core.Keyword(null,"canvas-height","canvas-height",291287231));
+var map__31352 = temp__5455__auto__;
+var map__31352__$1 = ((((!((map__31352 == null)))?(((((map__31352.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__31352.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__31352):map__31352);
+var canvas_x = cljs.core.get.call(null,map__31352__$1,new cljs.core.Keyword(null,"canvas-x","canvas-x",-773330711));
+var canvas_y = cljs.core.get.call(null,map__31352__$1,new cljs.core.Keyword(null,"canvas-y","canvas-y",-1092734438));
+var canvas_width = cljs.core.get.call(null,map__31352__$1,new cljs.core.Keyword(null,"canvas-width","canvas-width",1321931102));
+var canvas_height = cljs.core.get.call(null,map__31352__$1,new cljs.core.Keyword(null,"canvas-height","canvas-height",291287231));
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [canvas_x,canvas_y], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(canvas_x + canvas_width),(canvas_y + canvas_height)], null)], null);
 } else {
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(0),(0)], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(0),(0)], null)], null);
 }
 });
 gamebase.layouts.sidebar_and_bottombar.get_canvas_size = (function gamebase$layouts$sidebar_and_bottombar$get_canvas_size(){
-var map__25850 = cljs.core.deref.call(null,gamebase.layouts.sidebar_and_bottombar.state);
-var map__25850__$1 = ((((!((map__25850 == null)))?(((((map__25850.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__25850.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__25850):map__25850);
-var base_atom = cljs.core.get.call(null,map__25850__$1,new cljs.core.Keyword(null,"base-atom","base-atom",1557951289));
-var kvs = cljs.core.get.call(null,map__25850__$1,new cljs.core.Keyword(null,"kvs","kvs",958455492));
-var map__25851 = cljs.core.get_in.call(null,cljs.core.deref.call(null,base_atom),kvs);
-var map__25851__$1 = ((((!((map__25851 == null)))?(((((map__25851.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__25851.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__25851):map__25851);
-var canvas_width = cljs.core.get.call(null,map__25851__$1,new cljs.core.Keyword(null,"canvas-width","canvas-width",1321931102));
-var canvas_height = cljs.core.get.call(null,map__25851__$1,new cljs.core.Keyword(null,"canvas-height","canvas-height",291287231));
+var map__31354 = cljs.core.deref.call(null,gamebase.layouts.sidebar_and_bottombar.state);
+var map__31354__$1 = ((((!((map__31354 == null)))?(((((map__31354.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__31354.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__31354):map__31354);
+var base_atom = cljs.core.get.call(null,map__31354__$1,new cljs.core.Keyword(null,"base-atom","base-atom",1557951289));
+var kvs = cljs.core.get.call(null,map__31354__$1,new cljs.core.Keyword(null,"kvs","kvs",958455492));
+var map__31355 = cljs.core.get_in.call(null,cljs.core.deref.call(null,base_atom),kvs);
+var map__31355__$1 = ((((!((map__31355 == null)))?(((((map__31355.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__31355.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__31355):map__31355);
+var canvas_width = cljs.core.get.call(null,map__31355__$1,new cljs.core.Keyword(null,"canvas-width","canvas-width",1321931102));
+var canvas_height = cljs.core.get.call(null,map__31355__$1,new cljs.core.Keyword(null,"canvas-height","canvas-height",291287231));
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [canvas_width,canvas_height], null);
 });
 gamebase.layouts.sidebar_and_bottombar.position_element = (function gamebase$layouts$sidebar_and_bottombar$position_element(element,x,y,width,height){
@@ -137,13 +137,13 @@ element.style.left = [cljs.core.str.cljs$core$IFn$_invoke$arity$1(x),"px"].join(
 return element.style.width = [cljs.core.str.cljs$core$IFn$_invoke$arity$1(width),"px"].join('');
 });
 gamebase.layouts.sidebar_and_bottombar.update_canvas_size = (function gamebase$layouts$sidebar_and_bottombar$update_canvas_size(){
-var map__25854 = cljs.core.deref.call(null,gamebase.layouts.sidebar_and_bottombar.state);
-var map__25854__$1 = ((((!((map__25854 == null)))?(((((map__25854.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__25854.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__25854):map__25854);
-var base_atom = cljs.core.get.call(null,map__25854__$1,new cljs.core.Keyword(null,"base-atom","base-atom",1557951289));
-var kvs = cljs.core.get.call(null,map__25854__$1,new cljs.core.Keyword(null,"kvs","kvs",958455492));
-var bottom_bar_height = cljs.core.get.call(null,map__25854__$1,new cljs.core.Keyword(null,"bottom-bar-height","bottom-bar-height",757803900));
-var side_bar_width = cljs.core.get.call(null,map__25854__$1,new cljs.core.Keyword(null,"side-bar-width","side-bar-width",130602106));
-var after_canvas_resize = cljs.core.get.call(null,map__25854__$1,new cljs.core.Keyword(null,"after-canvas-resize","after-canvas-resize",546295223));
+var map__31358 = cljs.core.deref.call(null,gamebase.layouts.sidebar_and_bottombar.state);
+var map__31358__$1 = ((((!((map__31358 == null)))?(((((map__31358.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__31358.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__31358):map__31358);
+var base_atom = cljs.core.get.call(null,map__31358__$1,new cljs.core.Keyword(null,"base-atom","base-atom",1557951289));
+var kvs = cljs.core.get.call(null,map__31358__$1,new cljs.core.Keyword(null,"kvs","kvs",958455492));
+var bottom_bar_height = cljs.core.get.call(null,map__31358__$1,new cljs.core.Keyword(null,"bottom-bar-height","bottom-bar-height",757803900));
+var side_bar_width = cljs.core.get.call(null,map__31358__$1,new cljs.core.Keyword(null,"side-bar-width","side-bar-width",130602106));
+var after_canvas_resize = cljs.core.get.call(null,map__31358__$1,new cljs.core.Keyword(null,"after-canvas-resize","after-canvas-resize",546295223));
 var width = window.innerWidth;
 var height = window.innerHeight;
 var canvas_width = (width - side_bar_width);
@@ -164,10 +164,10 @@ resizeCanvas(canvas_width,canvas_height);
 
 cljs.core.swap_BANG_.call(null,gamebase.layouts.sidebar_and_bottombar.state,cljs.core.assoc,new cljs.core.Keyword(null,"screen-width","screen-width",1557963263),width,new cljs.core.Keyword(null,"screen-height","screen-height",141363033),height,new cljs.core.Keyword(null,"bottom-bar-border-left","bottom-bar-border-left",337202346),bottom_bar_border_left,new cljs.core.Keyword(null,"bottom-bar-border-width","bottom-bar-border-width",986522068),bottom_bar_border_width,new cljs.core.Keyword(null,"canvas-width","canvas-width",1321931102),canvas_width,new cljs.core.Keyword(null,"canvas-height","canvas-height",291287231),canvas_height);
 
-cljs.core.swap_BANG_.call(null,base_atom,cljs.core.update_in,kvs,((function (map__25854,map__25854__$1,base_atom,kvs,bottom_bar_height,side_bar_width,after_canvas_resize,width,height,canvas_width,canvas_height,bottom_bar_border_left,bottom_bar_border_width){
+cljs.core.swap_BANG_.call(null,base_atom,cljs.core.update_in,kvs,((function (map__31358,map__31358__$1,base_atom,kvs,bottom_bar_height,side_bar_width,after_canvas_resize,width,height,canvas_width,canvas_height,bottom_bar_border_left,bottom_bar_border_width){
 return (function (s){
 return cljs.core.assoc.call(null,s,new cljs.core.Keyword(null,"canvas-x","canvas-x",-773330711),side_bar_width,new cljs.core.Keyword(null,"canvas-y","canvas-y",-1092734438),(1),new cljs.core.Keyword(null,"canvas-width","canvas-width",1321931102),canvas_width,new cljs.core.Keyword(null,"canvas-height","canvas-height",291287231),canvas_height);
-});})(map__25854,map__25854__$1,base_atom,kvs,bottom_bar_height,side_bar_width,after_canvas_resize,width,height,canvas_width,canvas_height,bottom_bar_border_left,bottom_bar_border_width))
+});})(map__31358,map__31358__$1,base_atom,kvs,bottom_bar_height,side_bar_width,after_canvas_resize,width,height,canvas_width,canvas_height,bottom_bar_border_left,bottom_bar_border_width))
 );
 
 return after_canvas_resize.call(null);
@@ -177,27 +177,27 @@ gamebase.events.add_handler.call(null,new cljs.core.Keyword(null,"window-resized
 return gamebase.layouts.sidebar_and_bottombar.update_canvas_size.call(null);
 }));
 
-return gamebase.events.add_handler.call(null,new cljs.core.Keyword(null,"mouse-dragged","mouse-dragged",-1220073441),(function (p__25858){
-var map__25859 = p__25858;
-var map__25859__$1 = ((((!((map__25859 == null)))?(((((map__25859.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__25859.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__25859):map__25859);
-var event = map__25859__$1;
-var prev_x = cljs.core.get.call(null,map__25859__$1,new cljs.core.Keyword(null,"prev-x","prev-x",253040489));
-var prev_y = cljs.core.get.call(null,map__25859__$1,new cljs.core.Keyword(null,"prev-y","prev-y",1338732167));
-var x = cljs.core.get.call(null,map__25859__$1,new cljs.core.Keyword(null,"x","x",2099068185));
-var y = cljs.core.get.call(null,map__25859__$1,new cljs.core.Keyword(null,"y","y",-1757859776));
-var map__25861 = cljs.core.deref.call(null,gamebase.layouts.sidebar_and_bottombar.state);
-var map__25861__$1 = ((((!((map__25861 == null)))?(((((map__25861.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__25861.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__25861):map__25861);
-var base_atom = cljs.core.get.call(null,map__25861__$1,new cljs.core.Keyword(null,"base-atom","base-atom",1557951289));
-var kvs = cljs.core.get.call(null,map__25861__$1,new cljs.core.Keyword(null,"kvs","kvs",958455492));
-var bottom_bar_height = cljs.core.get.call(null,map__25861__$1,new cljs.core.Keyword(null,"bottom-bar-height","bottom-bar-height",757803900));
-var bottom_bar_border_left = cljs.core.get.call(null,map__25861__$1,new cljs.core.Keyword(null,"bottom-bar-border-left","bottom-bar-border-left",337202346));
-var bottom_bar_border_width = cljs.core.get.call(null,map__25861__$1,new cljs.core.Keyword(null,"bottom-bar-border-width","bottom-bar-border-width",986522068));
-var canvas_height = cljs.core.get.call(null,map__25861__$1,new cljs.core.Keyword(null,"canvas-height","canvas-height",291287231));
+return gamebase.events.add_handler.call(null,new cljs.core.Keyword(null,"mouse-dragged","mouse-dragged",-1220073441),(function (p__31362){
+var map__31363 = p__31362;
+var map__31363__$1 = ((((!((map__31363 == null)))?(((((map__31363.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__31363.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__31363):map__31363);
+var event = map__31363__$1;
+var prev_x = cljs.core.get.call(null,map__31363__$1,new cljs.core.Keyword(null,"prev-x","prev-x",253040489));
+var prev_y = cljs.core.get.call(null,map__31363__$1,new cljs.core.Keyword(null,"prev-y","prev-y",1338732167));
+var x = cljs.core.get.call(null,map__31363__$1,new cljs.core.Keyword(null,"x","x",2099068185));
+var y = cljs.core.get.call(null,map__31363__$1,new cljs.core.Keyword(null,"y","y",-1757859776));
+var map__31365 = cljs.core.deref.call(null,gamebase.layouts.sidebar_and_bottombar.state);
+var map__31365__$1 = ((((!((map__31365 == null)))?(((((map__31365.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__31365.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__31365):map__31365);
+var base_atom = cljs.core.get.call(null,map__31365__$1,new cljs.core.Keyword(null,"base-atom","base-atom",1557951289));
+var kvs = cljs.core.get.call(null,map__31365__$1,new cljs.core.Keyword(null,"kvs","kvs",958455492));
+var bottom_bar_height = cljs.core.get.call(null,map__31365__$1,new cljs.core.Keyword(null,"bottom-bar-height","bottom-bar-height",757803900));
+var bottom_bar_border_left = cljs.core.get.call(null,map__31365__$1,new cljs.core.Keyword(null,"bottom-bar-border-left","bottom-bar-border-left",337202346));
+var bottom_bar_border_width = cljs.core.get.call(null,map__31365__$1,new cljs.core.Keyword(null,"bottom-bar-border-width","bottom-bar-border-width",986522068));
+var canvas_height = cljs.core.get.call(null,map__31365__$1,new cljs.core.Keyword(null,"canvas-height","canvas-height",291287231));
 if(((((((0) < prev_x)) && ((prev_x < bottom_bar_border_width)))) && ((((canvas_height < prev_y)) && ((prev_y < ((5) + canvas_height))))))){
-cljs.core.swap_BANG_.call(null,gamebase.layouts.sidebar_and_bottombar.state,cljs.core.update_in,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"bottom-bar-height","bottom-bar-height",757803900)], null),((function (map__25861,map__25861__$1,base_atom,kvs,bottom_bar_height,bottom_bar_border_left,bottom_bar_border_width,canvas_height,map__25859,map__25859__$1,event,prev_x,prev_y,x,y){
-return (function (p1__25856_SHARP_){
-return (p1__25856_SHARP_ + (prev_y - y));
-});})(map__25861,map__25861__$1,base_atom,kvs,bottom_bar_height,bottom_bar_border_left,bottom_bar_border_width,canvas_height,map__25859,map__25859__$1,event,prev_x,prev_y,x,y))
+cljs.core.swap_BANG_.call(null,gamebase.layouts.sidebar_and_bottombar.state,cljs.core.update_in,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"bottom-bar-height","bottom-bar-height",757803900)], null),((function (map__31365,map__31365__$1,base_atom,kvs,bottom_bar_height,bottom_bar_border_left,bottom_bar_border_width,canvas_height,map__31363,map__31363__$1,event,prev_x,prev_y,x,y){
+return (function (p1__31360_SHARP_){
+return (p1__31360_SHARP_ + (prev_y - y));
+});})(map__31365,map__31365__$1,base_atom,kvs,bottom_bar_height,bottom_bar_border_left,bottom_bar_border_width,canvas_height,map__31363,map__31363__$1,event,prev_x,prev_y,x,y))
 );
 
 gamebase.layouts.sidebar_and_bottombar.update_canvas_size.call(null);
@@ -205,10 +205,10 @@ gamebase.layouts.sidebar_and_bottombar.update_canvas_size.call(null);
 }
 
 if(((((((-35) < prev_x)) && ((prev_x < (30))))) && (((((0) < prev_y)) && ((prev_y < canvas_height)))))){
-cljs.core.swap_BANG_.call(null,gamebase.layouts.sidebar_and_bottombar.state,cljs.core.update_in,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"side-bar-width","side-bar-width",130602106)], null),((function (map__25861,map__25861__$1,base_atom,kvs,bottom_bar_height,bottom_bar_border_left,bottom_bar_border_width,canvas_height,map__25859,map__25859__$1,event,prev_x,prev_y,x,y){
-return (function (p1__25857_SHARP_){
-return (p1__25857_SHARP_ + (x - prev_x));
-});})(map__25861,map__25861__$1,base_atom,kvs,bottom_bar_height,bottom_bar_border_left,bottom_bar_border_width,canvas_height,map__25859,map__25859__$1,event,prev_x,prev_y,x,y))
+cljs.core.swap_BANG_.call(null,gamebase.layouts.sidebar_and_bottombar.state,cljs.core.update_in,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"side-bar-width","side-bar-width",130602106)], null),((function (map__31365,map__31365__$1,base_atom,kvs,bottom_bar_height,bottom_bar_border_left,bottom_bar_border_width,canvas_height,map__31363,map__31363__$1,event,prev_x,prev_y,x,y){
+return (function (p1__31361_SHARP_){
+return (p1__31361_SHARP_ + (x - prev_x));
+});})(map__31365,map__31365__$1,base_atom,kvs,bottom_bar_height,bottom_bar_border_left,bottom_bar_border_width,canvas_height,map__31363,map__31363__$1,event,prev_x,prev_y,x,y))
 );
 
 return gamebase.layouts.sidebar_and_bottombar.update_canvas_size.call(null);

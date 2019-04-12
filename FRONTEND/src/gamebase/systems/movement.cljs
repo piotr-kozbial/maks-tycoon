@@ -3,7 +3,16 @@
    [gamebase.ecs :as ecs]
    [gamebase.event-queue :as eq]
    [gamebase.geometry :as g]
-   [app.ecs.common-events :as ci]))
+   [app.ecs.common-events :as ci]
+
+   [sablono.core :as sab]
+   [devcards.core]
+   )
+  (:require-macros
+   [devcards.core :refer [defcard]])
+
+  )
+
 
 (defn mk-system []
   (ecs/mk-system ::movement))
@@ -48,7 +57,9 @@
 
 (defn set-path [this time path path-start-length]
   (let [history (:path-history this)
-        history' (into history [(:path this)])
+        history' (if (:path this)
+                   (into history [(:path this)])
+                   history)
         history'' (if (<= (count history') (:path-history-size this))
                     history'
                     (apply vector (rest history')))
@@ -153,3 +164,5 @@
     ))
 
 
+(defcard my-first-card
+  (sab/html [:h1 "Devcards is awesome!"]))

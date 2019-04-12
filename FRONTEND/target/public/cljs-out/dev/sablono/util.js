@@ -66,14 +66,14 @@ throw cljs.core.missing_protocol.call(null,"ToURI.to-uri",x);
  */
 sablono.util.as_str = (function sablono$util$as_str(var_args){
 var args__4534__auto__ = [];
-var len__4531__auto___22796 = arguments.length;
-var i__4532__auto___22797 = (0);
+var len__4531__auto___24750 = arguments.length;
+var i__4532__auto___24751 = (0);
 while(true){
-if((i__4532__auto___22797 < len__4531__auto___22796)){
-args__4534__auto__.push((arguments[i__4532__auto___22797]));
+if((i__4532__auto___24751 < len__4531__auto___24750)){
+args__4534__auto__.push((arguments[i__4532__auto___24751]));
 
-var G__22798 = (i__4532__auto___22797 + (1));
-i__4532__auto___22797 = G__22798;
+var G__24752 = (i__4532__auto___24751 + (1));
+i__4532__auto___24751 = G__24752;
 continue;
 } else {
 }
@@ -91,9 +91,9 @@ return clojure.string.join.call(null,cljs.core.map.call(null,sablono.util.to_str
 sablono.util.as_str.cljs$lang$maxFixedArity = (0);
 
 /** @this {Function} */
-sablono.util.as_str.cljs$lang$applyTo = (function (seq22795){
+sablono.util.as_str.cljs$lang$applyTo = (function (seq24749){
 var self__4519__auto__ = this;
-return self__4519__auto__.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq.call(null,seq22795));
+return self__4519__auto__.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq.call(null,seq24749));
 });
 
 /**
@@ -101,12 +101,12 @@ return self__4519__auto__.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq.cal
  */
 sablono.util.camel_case = (function sablono$util$camel_case(k){
 if((((k instanceof cljs.core.Keyword)) || (typeof k === 'string') || ((k instanceof cljs.core.Symbol)))){
-var vec__22799 = cljs.core.name.call(null,k).split("-");
-var seq__22800 = cljs.core.seq.call(null,vec__22799);
-var first__22801 = cljs.core.first.call(null,seq__22800);
-var seq__22800__$1 = cljs.core.next.call(null,seq__22800);
-var first_word = first__22801;
-var words = seq__22800__$1;
+var vec__24753 = cljs.core.name.call(null,k).split("-");
+var seq__24754 = cljs.core.seq.call(null,vec__24753);
+var first__24755 = cljs.core.first.call(null,seq__24754);
+var seq__24754__$1 = cljs.core.next.call(null,seq__24754);
+var first_word = first__24755;
+var words = seq__24754__$1;
 if(((cljs.core.empty_QMARK_.call(null,words)) || (cljs.core._EQ_.call(null,"aria",first_word)) || (cljs.core._EQ_.call(null,"data",first_word)))){
 return k;
 } else {
@@ -121,17 +121,17 @@ return k;
  */
 sablono.util.camel_case_keys = (function sablono$util$camel_case_keys(m){
 if(cljs.core.map_QMARK_.call(null,m)){
-var m__$1 = cljs.core.into.call(null,cljs.core.PersistentArrayMap.EMPTY,cljs.core.map.call(null,(function (p__22802){
-var vec__22803 = p__22802;
-var k = cljs.core.nth.call(null,vec__22803,(0),null);
-var v = cljs.core.nth.call(null,vec__22803,(1),null);
+var m__$1 = cljs.core.into.call(null,cljs.core.PersistentArrayMap.EMPTY,cljs.core.map.call(null,(function (p__24756){
+var vec__24757 = p__24756;
+var k = cljs.core.nth.call(null,vec__24757,(0),null);
+var v = cljs.core.nth.call(null,vec__24757,(1),null);
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [sablono.util.camel_case.call(null,k),v], null);
 })),m);
-var G__22806 = m__$1;
+var G__24760 = m__$1;
 if(cljs.core.map_QMARK_.call(null,new cljs.core.Keyword(null,"style","style",-496642736).cljs$core$IFn$_invoke$arity$1(m__$1))){
-return cljs.core.update.call(null,G__22806,new cljs.core.Keyword(null,"style","style",-496642736),sablono.util.camel_case_keys);
+return cljs.core.update.call(null,G__24760,new cljs.core.Keyword(null,"style","style",-496642736),sablono.util.camel_case_keys);
 } else {
-return G__22806;
+return G__24760;
 }
 } else {
 return m;
@@ -161,16 +161,6 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 return cljs.core.seq.call(null,x);
 }
 })),cljs.core.remove.call(null,cljs.core.nil_QMARK_)),classes));
-});
-/**
- * Return the symbol of a fn that build a React element. 
- */
-sablono.util.react_fn = (function sablono$util$react_fn(type){
-if(cljs.core.contains_QMARK_.call(null,new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"textarea","textarea",-650375824),null,new cljs.core.Keyword(null,"input","input",556931961),null,new cljs.core.Keyword(null,"select","select",1147833503),null], null), null),cljs.core.keyword.call(null,type))){
-return new cljs.core.Symbol("sablono.interpreter","create-element","sablono.interpreter/create-element",748785555,null);
-} else {
-return new cljs.core.Symbol("js","React.createElement","js/React.createElement",1766367641,null);
-}
 });
 cljs.core.Keyword.prototype.sablono$util$ToString$ = cljs.core.PROTOCOL_SENTINEL;
 

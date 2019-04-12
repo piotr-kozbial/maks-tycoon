@@ -14,8 +14,8 @@ return clojure.data.xml.js.dom.doc.createTextNode(s);
  * Create an xml element from a content collection and optional metadata
  */
 clojure.data.xml.js.dom.element_STAR_ = (function clojure$data$xml$js$dom$element_STAR_(var_args){
-var G__20146 = arguments.length;
-switch (G__20146) {
+var G__28202 = arguments.length;
+switch (G__28202) {
 case 4:
 return clojure.data.xml.js.dom.element_STAR_.cljs$core$IFn$_invoke$arity$4((arguments[(0)]),(arguments[(1)]),(arguments[(2)]),(arguments[(3)]));
 
@@ -32,42 +32,42 @@ throw (new Error(["Invalid arity: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(
 
 clojure.data.xml.js.dom.element_STAR_.cljs$core$IFn$_invoke$arity$4 = (function (tag,attrs,content,meta){
 var el = clojure.data.xml.js.dom.element_STAR_.call(null,tag,attrs,content);
-var x20147_20150 = el;
-x20147_20150.cljs$core$IMeta$ = cljs.core.PROTOCOL_SENTINEL;
+var x28203_28206 = el;
+x28203_28206.cljs$core$IMeta$ = cljs.core.PROTOCOL_SENTINEL;
 
-x20147_20150.cljs$core$IMeta$_meta$arity$1 = ((function (x20147_20150,el){
+x28203_28206.cljs$core$IMeta$_meta$arity$1 = ((function (x28203_28206,el){
 return (function (_){
 var ___$1 = this;
 return meta;
-});})(x20147_20150,el))
+});})(x28203_28206,el))
 ;
 
-x20147_20150.cljs$core$IWithMeta$ = cljs.core.PROTOCOL_SENTINEL;
+x28203_28206.cljs$core$IWithMeta$ = cljs.core.PROTOCOL_SENTINEL;
 
-x20147_20150.cljs$core$IWithMeta$_with_meta$arity$2 = ((function (x20147_20150,el){
+x28203_28206.cljs$core$IWithMeta$_with_meta$arity$2 = ((function (x28203_28206,el){
 return (function (_,meta__$1){
 var ___$1 = this;
-var x20148 = cljs.core.clone.call(null,el);
-x20148.cljs$core$IMeta$ = cljs.core.PROTOCOL_SENTINEL;
+var x28204 = cljs.core.clone.call(null,el);
+x28204.cljs$core$IMeta$ = cljs.core.PROTOCOL_SENTINEL;
 
-x20148.cljs$core$IMeta$_meta$arity$1 = ((function (x20148,___$1,x20147_20150,el){
+x28204.cljs$core$IMeta$_meta$arity$1 = ((function (x28204,___$1,x28203_28206,el){
 return (function (___$2){
 var ___$3 = this;
 return meta__$1;
-});})(x20148,___$1,x20147_20150,el))
+});})(x28204,___$1,x28203_28206,el))
 ;
 
-x20148.cljs$core$IWithMeta$ = cljs.core.PROTOCOL_SENTINEL;
+x28204.cljs$core$IWithMeta$ = cljs.core.PROTOCOL_SENTINEL;
 
-x20148.cljs$core$IWithMeta$_with_meta$arity$2 = ((function (x20148,___$1,x20147_20150,el){
+x28204.cljs$core$IWithMeta$_with_meta$arity$2 = ((function (x28204,___$1,x28203_28206,el){
 return (function (___$2,meta__$2){
 var ___$3 = this;
 return cljs.core._with_meta.call(null,el,meta__$2);
-});})(x20148,___$1,x20147_20150,el))
+});})(x28204,___$1,x28203_28206,el))
 ;
 
-return x20148;
-});})(x20147_20150,el))
+return x28204;
+});})(x28203_28206,el))
 ;
 
 
@@ -102,8 +102,8 @@ clojure.data.xml.js.dom.element_STAR_.cljs$lang$maxFixedArity = 4;
  * Create an xml Element from content varargs
  */
 clojure.data.xml.js.dom.element = (function clojure$data$xml$js$dom$element(var_args){
-var G__20155 = arguments.length;
-switch (G__20155) {
+var G__28211 = arguments.length;
+switch (G__28211) {
 case 1:
 return clojure.data.xml.js.dom.element.cljs$core$IFn$_invoke$arity$1((arguments[(0)]));
 
@@ -114,14 +114,14 @@ return clojure.data.xml.js.dom.element.cljs$core$IFn$_invoke$arity$2((arguments[
 break;
 default:
 var args_arr__4546__auto__ = [];
-var len__4531__auto___20157 = arguments.length;
-var i__4532__auto___20158 = (0);
+var len__4531__auto___28213 = arguments.length;
+var i__4532__auto___28214 = (0);
 while(true){
-if((i__4532__auto___20158 < len__4531__auto___20157)){
-args_arr__4546__auto__.push((arguments[i__4532__auto___20158]));
+if((i__4532__auto___28214 < len__4531__auto___28213)){
+args_arr__4546__auto__.push((arguments[i__4532__auto___28214]));
 
-var G__20159 = (i__4532__auto___20158 + (1));
-i__4532__auto___20158 = G__20159;
+var G__28215 = (i__4532__auto___28214 + (1));
+i__4532__auto___28214 = G__28215;
 continue;
 } else {
 }
@@ -147,13 +147,13 @@ return clojure.data.xml.js.dom.element_STAR_.call(null,tag,attrs,content);
 });
 
 /** @this {Function} */
-clojure.data.xml.js.dom.element.cljs$lang$applyTo = (function (seq20152){
-var G__20153 = cljs.core.first.call(null,seq20152);
-var seq20152__$1 = cljs.core.next.call(null,seq20152);
-var G__20154 = cljs.core.first.call(null,seq20152__$1);
-var seq20152__$2 = cljs.core.next.call(null,seq20152__$1);
+clojure.data.xml.js.dom.element.cljs$lang$applyTo = (function (seq28208){
+var G__28209 = cljs.core.first.call(null,seq28208);
+var seq28208__$1 = cljs.core.next.call(null,seq28208);
+var G__28210 = cljs.core.first.call(null,seq28208__$1);
+var seq28208__$2 = cljs.core.next.call(null,seq28208__$1);
 var self__4518__auto__ = this;
-return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__20153,G__20154,seq20152__$2);
+return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__28209,G__28210,seq28208__$2);
 });
 
 clojure.data.xml.js.dom.element.cljs$lang$maxFixedArity = (2);
@@ -175,53 +175,53 @@ return clojure.data.xml.js.dom.doc.createComment(content);
  */
 clojure.data.xml.js.dom.node_list = (function clojure$data$xml$js$dom$node_list(elements){
 var f = clojure.data.xml.js.dom.doc.createDocumentFragment();
-var seq__20160_20164 = cljs.core.seq.call(null,elements);
-var chunk__20161_20165 = null;
-var count__20162_20166 = (0);
-var i__20163_20167 = (0);
+var seq__28216_28220 = cljs.core.seq.call(null,elements);
+var chunk__28217_28221 = null;
+var count__28218_28222 = (0);
+var i__28219_28223 = (0);
 while(true){
-if((i__20163_20167 < count__20162_20166)){
-var el_20168 = cljs.core._nth.call(null,chunk__20161_20165,i__20163_20167);
-f.appendChild(clojure.data.xml.js.dom.element_node.call(null,el_20168));
+if((i__28219_28223 < count__28218_28222)){
+var el_28224 = cljs.core._nth.call(null,chunk__28217_28221,i__28219_28223);
+f.appendChild(clojure.data.xml.js.dom.element_node.call(null,el_28224));
 
 
-var G__20169 = seq__20160_20164;
-var G__20170 = chunk__20161_20165;
-var G__20171 = count__20162_20166;
-var G__20172 = (i__20163_20167 + (1));
-seq__20160_20164 = G__20169;
-chunk__20161_20165 = G__20170;
-count__20162_20166 = G__20171;
-i__20163_20167 = G__20172;
+var G__28225 = seq__28216_28220;
+var G__28226 = chunk__28217_28221;
+var G__28227 = count__28218_28222;
+var G__28228 = (i__28219_28223 + (1));
+seq__28216_28220 = G__28225;
+chunk__28217_28221 = G__28226;
+count__28218_28222 = G__28227;
+i__28219_28223 = G__28228;
 continue;
 } else {
-var temp__5457__auto___20173 = cljs.core.seq.call(null,seq__20160_20164);
-if(temp__5457__auto___20173){
-var seq__20160_20174__$1 = temp__5457__auto___20173;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__20160_20174__$1)){
-var c__4351__auto___20175 = cljs.core.chunk_first.call(null,seq__20160_20174__$1);
-var G__20176 = cljs.core.chunk_rest.call(null,seq__20160_20174__$1);
-var G__20177 = c__4351__auto___20175;
-var G__20178 = cljs.core.count.call(null,c__4351__auto___20175);
-var G__20179 = (0);
-seq__20160_20164 = G__20176;
-chunk__20161_20165 = G__20177;
-count__20162_20166 = G__20178;
-i__20163_20167 = G__20179;
+var temp__5457__auto___28229 = cljs.core.seq.call(null,seq__28216_28220);
+if(temp__5457__auto___28229){
+var seq__28216_28230__$1 = temp__5457__auto___28229;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__28216_28230__$1)){
+var c__4351__auto___28231 = cljs.core.chunk_first.call(null,seq__28216_28230__$1);
+var G__28232 = cljs.core.chunk_rest.call(null,seq__28216_28230__$1);
+var G__28233 = c__4351__auto___28231;
+var G__28234 = cljs.core.count.call(null,c__4351__auto___28231);
+var G__28235 = (0);
+seq__28216_28220 = G__28232;
+chunk__28217_28221 = G__28233;
+count__28218_28222 = G__28234;
+i__28219_28223 = G__28235;
 continue;
 } else {
-var el_20180 = cljs.core.first.call(null,seq__20160_20174__$1);
-f.appendChild(clojure.data.xml.js.dom.element_node.call(null,el_20180));
+var el_28236 = cljs.core.first.call(null,seq__28216_28230__$1);
+f.appendChild(clojure.data.xml.js.dom.element_node.call(null,el_28236));
 
 
-var G__20181 = cljs.core.next.call(null,seq__20160_20174__$1);
-var G__20182 = null;
-var G__20183 = (0);
-var G__20184 = (0);
-seq__20160_20164 = G__20181;
-chunk__20161_20165 = G__20182;
-count__20162_20166 = G__20183;
-i__20163_20167 = G__20184;
+var G__28237 = cljs.core.next.call(null,seq__28216_28230__$1);
+var G__28238 = null;
+var G__28239 = (0);
+var G__28240 = (0);
+seq__28216_28220 = G__28237;
+chunk__28217_28221 = G__28238;
+count__28218_28222 = G__28239;
+i__28219_28223 = G__28240;
 continue;
 }
 } else {
@@ -279,8 +279,8 @@ clojure.data.xml.js.dom.remove_xmlns_attrs = cljs.core.partial.call(null,cljs.co
 clojure.data.xml.js.dom.filter_xmlns_attrs_xf = cljs.core.filter.call(null,clojure.data.xml.js.dom.xmlns_attr_QMARK_);
 clojure.data.xml.js.dom.filter_xmlns_attrs = cljs.core.partial.call(null,cljs.core.into,cljs.core.PersistentArrayMap.EMPTY,clojure.data.xml.js.dom.filter_xmlns_attrs_xf);
 clojure.data.xml.js.dom.dom_element_attrs = (function clojure$data$xml$js$dom$dom_element_attrs(var_args){
-var G__20188 = arguments.length;
-switch (G__20188) {
+var G__28244 = arguments.length;
+switch (G__28244) {
 case 1:
 return clojure.data.xml.js.dom.dom_element_attrs.cljs$core$IFn$_invoke$arity$1((arguments[(0)]));
 
@@ -366,9 +366,9 @@ clojure.data.xml.js.dom.Element.prototype.cljs$core$ILookup$ = cljs.core.PROTOCO
 
 clojure.data.xml.js.dom.Element.prototype.cljs$core$ILookup$_lookup$arity$2 = (function (el,k){
 var el__$1 = this;
-var G__20192 = k;
-var G__20192__$1 = (((G__20192 instanceof cljs.core.Keyword))?G__20192.fqn:null);
-switch (G__20192__$1) {
+var G__28248 = k;
+var G__28248__$1 = (((G__28248 instanceof cljs.core.Keyword))?G__28248.fqn:null);
+switch (G__28248__$1) {
 case "tag":
 return clojure.data.xml.js.dom.dom_element_tag.call(null,el__$1);
 
@@ -389,9 +389,9 @@ throw cljs.core.ex_info.call(null,"XML tag has no key",new cljs.core.PersistentA
 
 clojure.data.xml.js.dom.Element.prototype.cljs$core$ILookup$_lookup$arity$3 = (function (el,k,nf){
 var el__$1 = this;
-var G__20193 = k;
-var G__20193__$1 = (((G__20193 instanceof cljs.core.Keyword))?G__20193.fqn:null);
-switch (G__20193__$1) {
+var G__28249 = k;
+var G__28249__$1 = (((G__28249 instanceof cljs.core.Keyword))?G__28249.fqn:null);
+switch (G__28249__$1) {
 case "tag":
 return clojure.data.xml.js.dom.dom_element_tag.call(null,el__$1);
 
@@ -611,8 +611,8 @@ clojure.data.xml.js.dom.Attr.prototype.cljs$core$IIndexed$ = cljs.core.PROTOCOL_
 
 clojure.data.xml.js.dom.Attr.prototype.cljs$core$IIndexed$_nth$arity$2 = (function (attr,n){
 var attr__$1 = this;
-var G__20194 = n;
-switch (G__20194) {
+var G__28250 = n;
+switch (G__28250) {
 case (0):
 return cljs.core.key.call(null,attr__$1);
 
@@ -622,15 +622,15 @@ return cljs.core.val.call(null,attr__$1);
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__20194)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__28250)].join('')));
 
 }
 });
 
 clojure.data.xml.js.dom.Attr.prototype.cljs$core$IIndexed$_nth$arity$3 = (function (attr,n,nf){
 var attr__$1 = this;
-var G__20195 = n;
-switch (G__20195) {
+var G__28251 = n;
+switch (G__28251) {
 case (0):
 return clojure.data.xml.js.dom.dom_element_tag.call(null,attr__$1);
 
