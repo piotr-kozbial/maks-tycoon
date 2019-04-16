@@ -3,6 +3,7 @@
 (ns gamebase.geometry
   (:require-macros [gamebase.helpers :refer [examples]]))
 
+(def ^:dynamic *with-xprint* false)
 
 ;;;# Overview
 (do
@@ -395,9 +396,13 @@
 ;;; extending from one point to another:
 
   (defn line-segment [p1 p2]
-    {:path-type :line-segment
-     :p1 p1
-     :p2 p2})
+    (let [v {:path-type :line-segment
+             :p1 p1
+             :p2 p2}]
+      (if *with-xprint*
+        (with-meta v
+          {:app.xprint.core/key-order [:path-type :p1 :p2]})
+        v)))
 
 ;;; TODO !!! - zrobic to, wyliczac full-length, x-factor, y-factor.
 ;;; Potem w funkcjach ponizej uzywac (precomputed path)

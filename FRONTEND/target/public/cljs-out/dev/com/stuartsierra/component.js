@@ -137,8 +137,8 @@ return cljs.core.assoc.call(null,system__$1,key,com.stuartsierra.component.using
  */
 com.stuartsierra.component.dependency_graph = (function com$stuartsierra$component$dependency_graph(system,component_keys){
 return cljs.core.reduce_kv.call(null,(function (graph,key,component){
-return cljs.core.reduce.call(null,(function (p1__31409_SHARP_,p2__31410_SHARP_){
-return com.stuartsierra.dependency.depend.call(null,p1__31409_SHARP_,key,p2__31410_SHARP_);
+return cljs.core.reduce.call(null,(function (p1__24942_SHARP_,p2__24943_SHARP_){
+return com.stuartsierra.dependency.depend.call(null,p1__24942_SHARP_,key,p2__24943_SHARP_);
 }),graph,cljs.core.vals.call(null,com.stuartsierra.component.dependencies.call(null,component)));
 }),com.stuartsierra.dependency.graph.call(null),cljs.core.select_keys.call(null,system,component_keys));
 });
@@ -147,13 +147,13 @@ var dependency = com.stuartsierra.component.get_dependency.call(null,system,syst
 return cljs.core.assoc.call(null,component,dependency_key,dependency);
 });
 com.stuartsierra.component.assoc_dependencies = (function com$stuartsierra$component$assoc_dependencies(component,system){
-return cljs.core.reduce_kv.call(null,(function (p1__31411_SHARP_,p2__31412_SHARP_,p3__31413_SHARP_){
-return com.stuartsierra.component.assoc_dependency.call(null,system,p1__31411_SHARP_,p2__31412_SHARP_,p3__31413_SHARP_);
+return cljs.core.reduce_kv.call(null,(function (p1__24944_SHARP_,p2__24945_SHARP_,p3__24946_SHARP_){
+return com.stuartsierra.component.assoc_dependency.call(null,system,p1__24944_SHARP_,p2__24945_SHARP_,p3__24946_SHARP_);
 }),component,com.stuartsierra.component.dependencies.call(null,component));
 });
 com.stuartsierra.component.try_action = (function com$stuartsierra$component$try_action(component,system,key,f,args){
 try{return cljs.core.apply.call(null,f,component,args);
-}catch (e31414){var t = e31414;
+}catch (e24947){var t = e24947;
 throw cljs.core.ex_info.call(null,["Error in component ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(key)," in system ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(com.stuartsierra.component.platform.type_name.call(null,system))," calling ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(f)].join(''),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword(null,"reason","reason",-2070751759),new cljs.core.Keyword("com.stuartsierra.component","component-function-threw-exception","com.stuartsierra.component/component-function-threw-exception",1285478818),new cljs.core.Keyword(null,"function","function",-2127255473),f,new cljs.core.Keyword(null,"system-key","system-key",-334147604),key,new cljs.core.Keyword(null,"component","component",1555936782),component,new cljs.core.Keyword(null,"system","system",-29381724),system], null),t);
 }});
 /**
@@ -163,14 +163,14 @@ throw cljs.core.ex_info.call(null,["Error in component ",cljs.core.str.cljs$core
  */
 com.stuartsierra.component.update_system = (function com$stuartsierra$component$update_system(var_args){
 var args__4534__auto__ = [];
-var len__4531__auto___31419 = arguments.length;
-var i__4532__auto___31420 = (0);
+var len__4531__auto___24952 = arguments.length;
+var i__4532__auto___24953 = (0);
 while(true){
-if((i__4532__auto___31420 < len__4531__auto___31419)){
-args__4534__auto__.push((arguments[i__4532__auto___31420]));
+if((i__4532__auto___24953 < len__4531__auto___24952)){
+args__4534__auto__.push((arguments[i__4532__auto___24953]));
 
-var G__31421 = (i__4532__auto___31420 + (1));
-i__4532__auto___31420 = G__31421;
+var G__24954 = (i__4532__auto___24953 + (1));
+i__4532__auto___24953 = G__24954;
 continue;
 } else {
 }
@@ -193,15 +193,15 @@ return cljs.core.assoc.call(null,system__$1,key,com.stuartsierra.component.try_a
 com.stuartsierra.component.update_system.cljs$lang$maxFixedArity = (3);
 
 /** @this {Function} */
-com.stuartsierra.component.update_system.cljs$lang$applyTo = (function (seq31415){
-var G__31416 = cljs.core.first.call(null,seq31415);
-var seq31415__$1 = cljs.core.next.call(null,seq31415);
-var G__31417 = cljs.core.first.call(null,seq31415__$1);
-var seq31415__$2 = cljs.core.next.call(null,seq31415__$1);
-var G__31418 = cljs.core.first.call(null,seq31415__$2);
-var seq31415__$3 = cljs.core.next.call(null,seq31415__$2);
+com.stuartsierra.component.update_system.cljs$lang$applyTo = (function (seq24948){
+var G__24949 = cljs.core.first.call(null,seq24948);
+var seq24948__$1 = cljs.core.next.call(null,seq24948);
+var G__24950 = cljs.core.first.call(null,seq24948__$1);
+var seq24948__$2 = cljs.core.next.call(null,seq24948__$1);
+var G__24951 = cljs.core.first.call(null,seq24948__$2);
+var seq24948__$3 = cljs.core.next.call(null,seq24948__$2);
 var self__4518__auto__ = this;
-return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__31416,G__31417,G__31418,seq31415__$3);
+return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__24949,G__24950,G__24951,seq24948__$3);
 });
 
 /**
@@ -209,14 +209,14 @@ return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__31416,G__31417
  */
 com.stuartsierra.component.update_system_reverse = (function com$stuartsierra$component$update_system_reverse(var_args){
 var args__4534__auto__ = [];
-var len__4531__auto___31426 = arguments.length;
-var i__4532__auto___31427 = (0);
+var len__4531__auto___24959 = arguments.length;
+var i__4532__auto___24960 = (0);
 while(true){
-if((i__4532__auto___31427 < len__4531__auto___31426)){
-args__4534__auto__.push((arguments[i__4532__auto___31427]));
+if((i__4532__auto___24960 < len__4531__auto___24959)){
+args__4534__auto__.push((arguments[i__4532__auto___24960]));
 
-var G__31428 = (i__4532__auto___31427 + (1));
-i__4532__auto___31427 = G__31428;
+var G__24961 = (i__4532__auto___24960 + (1));
+i__4532__auto___24960 = G__24961;
 continue;
 } else {
 }
@@ -239,15 +239,15 @@ return cljs.core.assoc.call(null,system__$1,key,com.stuartsierra.component.try_a
 com.stuartsierra.component.update_system_reverse.cljs$lang$maxFixedArity = (3);
 
 /** @this {Function} */
-com.stuartsierra.component.update_system_reverse.cljs$lang$applyTo = (function (seq31422){
-var G__31423 = cljs.core.first.call(null,seq31422);
-var seq31422__$1 = cljs.core.next.call(null,seq31422);
-var G__31424 = cljs.core.first.call(null,seq31422__$1);
-var seq31422__$2 = cljs.core.next.call(null,seq31422__$1);
-var G__31425 = cljs.core.first.call(null,seq31422__$2);
-var seq31422__$3 = cljs.core.next.call(null,seq31422__$2);
+com.stuartsierra.component.update_system_reverse.cljs$lang$applyTo = (function (seq24955){
+var G__24956 = cljs.core.first.call(null,seq24955);
+var seq24955__$1 = cljs.core.next.call(null,seq24955);
+var G__24957 = cljs.core.first.call(null,seq24955__$1);
+var seq24955__$2 = cljs.core.next.call(null,seq24955__$1);
+var G__24958 = cljs.core.first.call(null,seq24955__$2);
+var seq24955__$3 = cljs.core.next.call(null,seq24955__$2);
 var self__4518__auto__ = this;
-return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__31423,G__31424,G__31425,seq31422__$3);
+return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__24956,G__24957,G__24958,seq24955__$3);
 });
 
 /**
@@ -257,8 +257,8 @@ return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__31423,G__31424
  *   the components to start, defaults to all keys in the system.
  */
 com.stuartsierra.component.start_system = (function com$stuartsierra$component$start_system(var_args){
-var G__31430 = arguments.length;
-switch (G__31430) {
+var G__24963 = arguments.length;
+switch (G__24963) {
 case 1:
 return com.stuartsierra.component.start_system.cljs$core$IFn$_invoke$arity$1((arguments[(0)]));
 
@@ -290,8 +290,8 @@ com.stuartsierra.component.start_system.cljs$lang$maxFixedArity = 2;
  *   keys in the system.
  */
 com.stuartsierra.component.stop_system = (function com$stuartsierra$component$stop_system(var_args){
-var G__31433 = arguments.length;
-switch (G__31433) {
+var G__24966 = arguments.length;
+switch (G__24966) {
 case 1:
 return com.stuartsierra.component.stop_system.cljs$core$IFn$_invoke$arity$1((arguments[(0)]));
 
@@ -362,13 +362,13 @@ var this__4203__auto____$1 = this;
 return this__4203__auto____$1.cljs$core$ILookup$_lookup$arity$3(null,k__4204__auto__,null);
 });
 
-com.stuartsierra.component.SystemMap.prototype.cljs$core$ILookup$_lookup$arity$3 = (function (this__4205__auto__,k31436,else__4206__auto__){
+com.stuartsierra.component.SystemMap.prototype.cljs$core$ILookup$_lookup$arity$3 = (function (this__4205__auto__,k24969,else__4206__auto__){
 var self__ = this;
 var this__4205__auto____$1 = this;
-var G__31440 = k31436;
-switch (G__31440) {
+var G__24973 = k24969;
+switch (G__24973) {
 default:
-return cljs.core.get.call(null,self__.__extmap,k31436,else__4206__auto__);
+return cljs.core.get.call(null,self__.__extmap,k24969,else__4206__auto__);
 
 }
 });
@@ -384,10 +384,10 @@ return cljs.core.pr_sequential_writer.call(null,writer__4218__auto__,cljs.core.p
 return cljs.core.pr_sequential_writer.call(null,writer__4218__auto__,pr_pair__4220__auto__,"#com.stuartsierra.component.SystemMap{",", ","}",opts__4219__auto__,cljs.core.concat.call(null,cljs.core.PersistentVector.EMPTY,self__.__extmap));
 });
 
-com.stuartsierra.component.SystemMap.prototype.cljs$core$IIterable$_iterator$arity$1 = (function (G__31435){
+com.stuartsierra.component.SystemMap.prototype.cljs$core$IIterable$_iterator$arity$1 = (function (G__24968){
 var self__ = this;
-var G__31435__$1 = this;
-return (new cljs.core.RecordIter((0),G__31435__$1,0,cljs.core.PersistentVector.EMPTY,(cljs.core.truth_(self__.__extmap)?cljs.core._iterator.call(null,self__.__extmap):cljs.core.nil_iter.call(null))));
+var G__24968__$1 = this;
+return (new cljs.core.RecordIter((0),G__24968__$1,0,cljs.core.PersistentVector.EMPTY,(cljs.core.truth_(self__.__extmap)?cljs.core._iterator.call(null,self__.__extmap):cljs.core.nil_iter.call(null))));
 });
 
 com.stuartsierra.component.SystemMap.prototype.cljs$core$IMeta$_meta$arity$1 = (function (this__4201__auto__){
@@ -426,10 +426,10 @@ return h__4061__auto____$1;
 }
 });
 
-com.stuartsierra.component.SystemMap.prototype.cljs$core$IEquiv$_equiv$arity$2 = (function (this31437,other31438){
+com.stuartsierra.component.SystemMap.prototype.cljs$core$IEquiv$_equiv$arity$2 = (function (this24970,other24971){
 var self__ = this;
-var this31437__$1 = this;
-return ((!((other31438 == null))) && ((this31437__$1.constructor === other31438.constructor)) && (cljs.core._EQ_.call(null,this31437__$1.__extmap,other31438.__extmap)));
+var this24970__$1 = this;
+return ((!((other24971 == null))) && ((this24970__$1.constructor === other24971.constructor)) && (cljs.core._EQ_.call(null,this24970__$1.__extmap,other24971.__extmap)));
 });
 
 com.stuartsierra.component.SystemMap.prototype.cljs$core$IMap$_dissoc$arity$2 = (function (this__4212__auto__,k__4213__auto__){
@@ -442,12 +442,12 @@ return (new com.stuartsierra.component.SystemMap(self__.__meta,cljs.core.not_emp
 }
 });
 
-com.stuartsierra.component.SystemMap.prototype.cljs$core$IAssociative$_assoc$arity$3 = (function (this__4210__auto__,k__4211__auto__,G__31435){
+com.stuartsierra.component.SystemMap.prototype.cljs$core$IAssociative$_assoc$arity$3 = (function (this__4210__auto__,k__4211__auto__,G__24968){
 var self__ = this;
 var this__4210__auto____$1 = this;
-var pred__31441 = cljs.core.keyword_identical_QMARK_;
-var expr__31442 = k__4211__auto__;
-return (new com.stuartsierra.component.SystemMap(self__.__meta,cljs.core.assoc.call(null,self__.__extmap,k__4211__auto__,G__31435),null));
+var pred__24974 = cljs.core.keyword_identical_QMARK_;
+var expr__24975 = k__4211__auto__;
+return (new com.stuartsierra.component.SystemMap(self__.__meta,cljs.core.assoc.call(null,self__.__extmap,k__4211__auto__,G__24968),null));
 });
 
 com.stuartsierra.component.SystemMap.prototype.cljs$core$ISeqable$_seq$arity$1 = (function (this__4215__auto__){
@@ -456,10 +456,10 @@ var this__4215__auto____$1 = this;
 return cljs.core.seq.call(null,cljs.core.concat.call(null,cljs.core.PersistentVector.EMPTY,self__.__extmap));
 });
 
-com.stuartsierra.component.SystemMap.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = (function (this__4202__auto__,G__31435){
+com.stuartsierra.component.SystemMap.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = (function (this__4202__auto__,G__24968){
 var self__ = this;
 var this__4202__auto____$1 = this;
-return (new com.stuartsierra.component.SystemMap(G__31435,self__.__extmap,self__.__hash));
+return (new com.stuartsierra.component.SystemMap(G__24968,self__.__extmap,self__.__hash));
 });
 
 com.stuartsierra.component.SystemMap.prototype.cljs$core$ICollection$_conj$arity$2 = (function (this__4208__auto__,entry__4209__auto__){
@@ -496,12 +496,12 @@ return (new com.stuartsierra.component.SystemMap(null,null,null));
 /**
  * Factory function for com.stuartsierra.component/SystemMap, taking a map of keywords to field values.
  */
-com.stuartsierra.component.map__GT_SystemMap = (function com$stuartsierra$component$map__GT_SystemMap(G__31439){
-var extmap__4236__auto__ = (function (){var G__31444 = cljs.core.dissoc.call(null,G__31439);
-if(cljs.core.record_QMARK_.call(null,G__31439)){
-return cljs.core.into.call(null,cljs.core.PersistentArrayMap.EMPTY,G__31444);
+com.stuartsierra.component.map__GT_SystemMap = (function com$stuartsierra$component$map__GT_SystemMap(G__24972){
+var extmap__4236__auto__ = (function (){var G__24977 = cljs.core.dissoc.call(null,G__24972);
+if(cljs.core.record_QMARK_.call(null,G__24972)){
+return cljs.core.into.call(null,cljs.core.PersistentArrayMap.EMPTY,G__24977);
 } else {
-return G__31444;
+return G__24977;
 }
 })();
 return (new com.stuartsierra.component.SystemMap(null,cljs.core.not_empty.call(null,extmap__4236__auto__),null));
@@ -526,14 +526,14 @@ return cljs.core._write.call(null,writer,"#<SystemMap>");
  */
 com.stuartsierra.component.system_map = (function com$stuartsierra$component$system_map(var_args){
 var args__4534__auto__ = [];
-var len__4531__auto___31447 = arguments.length;
-var i__4532__auto___31448 = (0);
+var len__4531__auto___24980 = arguments.length;
+var i__4532__auto___24981 = (0);
 while(true){
-if((i__4532__auto___31448 < len__4531__auto___31447)){
-args__4534__auto__.push((arguments[i__4532__auto___31448]));
+if((i__4532__auto___24981 < len__4531__auto___24980)){
+args__4534__auto__.push((arguments[i__4532__auto___24981]));
 
-var G__31449 = (i__4532__auto___31448 + (1));
-i__4532__auto___31448 = G__31449;
+var G__24982 = (i__4532__auto___24981 + (1));
+i__4532__auto___24981 = G__24982;
 continue;
 } else {
 }
@@ -556,9 +556,9 @@ return com.stuartsierra.component.map__GT_SystemMap.call(null,cljs.core.apply.ca
 com.stuartsierra.component.system_map.cljs$lang$maxFixedArity = (0);
 
 /** @this {Function} */
-com.stuartsierra.component.system_map.cljs$lang$applyTo = (function (seq31446){
+com.stuartsierra.component.system_map.cljs$lang$applyTo = (function (seq24979){
 var self__4519__auto__ = this;
-return self__4519__auto__.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq.call(null,seq31446));
+return self__4519__auto__.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq.call(null,seq24979));
 });
 
 /**
@@ -566,9 +566,9 @@ return self__4519__auto__.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq.cal
  *   in the com.stuartsierra.component namespace.
  */
 com.stuartsierra.component.ex_component_QMARK_ = (function com$stuartsierra$component$ex_component_QMARK_(error){
-var map__31450 = cljs.core.ex_data.call(null,error);
-var map__31450__$1 = ((((!((map__31450 == null)))?(((((map__31450.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__31450.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__31450):map__31450);
-var reason = cljs.core.get.call(null,map__31450__$1,new cljs.core.Keyword(null,"reason","reason",-2070751759));
+var map__24983 = cljs.core.ex_data.call(null,error);
+var map__24983__$1 = ((((!((map__24983 == null)))?(((((map__24983.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__24983.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__24983):map__24983);
+var reason = cljs.core.get.call(null,map__24983__$1,new cljs.core.Keyword(null,"reason","reason",-2070751759));
 return (((reason instanceof cljs.core.Keyword)) && (cljs.core._EQ_.call(null,"com.stuartsierra.component",cljs.core.namespace.call(null,reason))));
 });
 /**

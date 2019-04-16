@@ -16,14 +16,14 @@ return cljs.core.type__GT_str.call(null,cljs.core.type.call(null,x));
  */
 com.stuartsierra.component.platform.alter_ex_data = (function com$stuartsierra$component$platform$alter_ex_data(var_args){
 var args__4534__auto__ = [];
-var len__4531__auto___31329 = arguments.length;
-var i__4532__auto___31330 = (0);
+var len__4531__auto___24868 = arguments.length;
+var i__4532__auto___24869 = (0);
 while(true){
-if((i__4532__auto___31330 < len__4531__auto___31329)){
-args__4534__auto__.push((arguments[i__4532__auto___31330]));
+if((i__4532__auto___24869 < len__4531__auto___24868)){
+args__4534__auto__.push((arguments[i__4532__auto___24869]));
 
-var G__31331 = (i__4532__auto___31330 + (1));
-i__4532__auto___31330 = G__31331;
+var G__24870 = (i__4532__auto___24869 + (1));
+i__4532__auto___24869 = G__24870;
 continue;
 } else {
 }
@@ -56,13 +56,13 @@ return ex;
 com.stuartsierra.component.platform.alter_ex_data.cljs$lang$maxFixedArity = (2);
 
 /** @this {Function} */
-com.stuartsierra.component.platform.alter_ex_data.cljs$lang$applyTo = (function (seq31326){
-var G__31327 = cljs.core.first.call(null,seq31326);
-var seq31326__$1 = cljs.core.next.call(null,seq31326);
-var G__31328 = cljs.core.first.call(null,seq31326__$1);
-var seq31326__$2 = cljs.core.next.call(null,seq31326__$1);
+com.stuartsierra.component.platform.alter_ex_data.cljs$lang$applyTo = (function (seq24865){
+var G__24866 = cljs.core.first.call(null,seq24865);
+var seq24865__$1 = cljs.core.next.call(null,seq24865);
+var G__24867 = cljs.core.first.call(null,seq24865__$1);
+var seq24865__$2 = cljs.core.next.call(null,seq24865__$1);
 var self__4518__auto__ = this;
-return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__31327,G__31328,seq31326__$2);
+return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__24866,G__24867,seq24865__$2);
 });
 
 

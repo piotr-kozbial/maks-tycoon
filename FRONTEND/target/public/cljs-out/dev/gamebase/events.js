@@ -14,6 +14,13 @@ return cljs.core.PersistentVector.EMPTY;
 }));
 });
 gamebase.events.canvas_events_on_QMARK_ = cljs.core.atom.call(null,true);
+gamebase.events.event_handling_active_QMARK_ = cljs.core.atom.call(null,true);
+gamebase.events.suspend_event_handling = (function gamebase$events$suspend_event_handling(){
+return cljs.core.reset_BANG_.call(null,gamebase.events.event_handling_active_QMARK_,false);
+});
+gamebase.events.resume_event_handling = (function gamebase$events$resume_event_handling(){
+return cljs.core.reset_BANG_.call(null,gamebase.events.event_handling_active_QMARK_,true);
+});
 gamebase.events.stop_canvas_events = (function gamebase$events$stop_canvas_events(){
 return cljs.core.reset_BANG_.call(null,gamebase.events.canvas_events_on_QMARK_,false);
 });
@@ -49,56 +56,57 @@ return event_key;
 })();
 }
 gamebase.events.callback = (function gamebase$events$callback(event_name){
-var event_key_28627 = cljs.core.keyword.call(null,event_name);
-var handlers_28628 = event_key_28627.call(null,cljs.core.deref.call(null,gamebase.events.all_handlers));
-if(cljs.core.truth_(gamebase.events.precondition_for_event.call(null,event_key_28627))){
-var seq__28623_28629 = cljs.core.seq.call(null,handlers_28628);
-var chunk__28624_28630 = null;
-var count__28625_28631 = (0);
-var i__28626_28632 = (0);
+if(cljs.core.truth_(cljs.core.deref.call(null,gamebase.events.event_handling_active_QMARK_))){
+var event_key = cljs.core.keyword.call(null,event_name);
+var handlers = event_key.call(null,cljs.core.deref.call(null,gamebase.events.all_handlers));
+if(cljs.core.truth_(gamebase.events.precondition_for_event.call(null,event_key))){
+var seq__28623_28627 = cljs.core.seq.call(null,handlers);
+var chunk__28624_28628 = null;
+var count__28625_28629 = (0);
+var i__28626_28630 = (0);
 while(true){
-if((i__28626_28632 < count__28625_28631)){
-var h_28633 = cljs.core._nth.call(null,chunk__28624_28630,i__28626_28632);
-h_28633.call(null,gamebase.events.data_for_event.call(null,event_key_28627));
+if((i__28626_28630 < count__28625_28629)){
+var h_28631 = cljs.core._nth.call(null,chunk__28624_28628,i__28626_28630);
+h_28631.call(null,gamebase.events.data_for_event.call(null,event_key));
 
 
-var G__28634 = seq__28623_28629;
-var G__28635 = chunk__28624_28630;
-var G__28636 = count__28625_28631;
-var G__28637 = (i__28626_28632 + (1));
-seq__28623_28629 = G__28634;
-chunk__28624_28630 = G__28635;
-count__28625_28631 = G__28636;
-i__28626_28632 = G__28637;
+var G__28632 = seq__28623_28627;
+var G__28633 = chunk__28624_28628;
+var G__28634 = count__28625_28629;
+var G__28635 = (i__28626_28630 + (1));
+seq__28623_28627 = G__28632;
+chunk__28624_28628 = G__28633;
+count__28625_28629 = G__28634;
+i__28626_28630 = G__28635;
 continue;
 } else {
-var temp__5457__auto___28638 = cljs.core.seq.call(null,seq__28623_28629);
-if(temp__5457__auto___28638){
-var seq__28623_28639__$1 = temp__5457__auto___28638;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__28623_28639__$1)){
-var c__4351__auto___28640 = cljs.core.chunk_first.call(null,seq__28623_28639__$1);
-var G__28641 = cljs.core.chunk_rest.call(null,seq__28623_28639__$1);
-var G__28642 = c__4351__auto___28640;
-var G__28643 = cljs.core.count.call(null,c__4351__auto___28640);
-var G__28644 = (0);
-seq__28623_28629 = G__28641;
-chunk__28624_28630 = G__28642;
-count__28625_28631 = G__28643;
-i__28626_28632 = G__28644;
+var temp__5457__auto___28636 = cljs.core.seq.call(null,seq__28623_28627);
+if(temp__5457__auto___28636){
+var seq__28623_28637__$1 = temp__5457__auto___28636;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__28623_28637__$1)){
+var c__4351__auto___28638 = cljs.core.chunk_first.call(null,seq__28623_28637__$1);
+var G__28639 = cljs.core.chunk_rest.call(null,seq__28623_28637__$1);
+var G__28640 = c__4351__auto___28638;
+var G__28641 = cljs.core.count.call(null,c__4351__auto___28638);
+var G__28642 = (0);
+seq__28623_28627 = G__28639;
+chunk__28624_28628 = G__28640;
+count__28625_28629 = G__28641;
+i__28626_28630 = G__28642;
 continue;
 } else {
-var h_28645 = cljs.core.first.call(null,seq__28623_28639__$1);
-h_28645.call(null,gamebase.events.data_for_event.call(null,event_key_28627));
+var h_28643 = cljs.core.first.call(null,seq__28623_28637__$1);
+h_28643.call(null,gamebase.events.data_for_event.call(null,event_key));
 
 
-var G__28646 = cljs.core.next.call(null,seq__28623_28639__$1);
-var G__28647 = null;
-var G__28648 = (0);
-var G__28649 = (0);
-seq__28623_28629 = G__28646;
-chunk__28624_28630 = G__28647;
-count__28625_28631 = G__28648;
-i__28626_28632 = G__28649;
+var G__28644 = cljs.core.next.call(null,seq__28623_28637__$1);
+var G__28645 = null;
+var G__28646 = (0);
+var G__28647 = (0);
+seq__28623_28627 = G__28644;
+chunk__28624_28628 = G__28645;
+count__28625_28629 = G__28646;
+i__28626_28630 = G__28647;
 continue;
 }
 } else {
@@ -109,7 +117,10 @@ break;
 } else {
 }
 
-return null;
+return false;
+} else {
+return true;
+}
 });
 goog.exportSymbol('gamebase.events.callback', gamebase.events.callback);
 cljs.core._add_method.call(null,gamebase.events.data_for_event,new cljs.core.Keyword(null,"draw","draw",1358331674),(function (_){

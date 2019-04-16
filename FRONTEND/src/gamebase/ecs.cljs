@@ -6,7 +6,8 @@
             ))
 
 ;;;;;;;;;;;;;;;;;;;;;; P U B L I C ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-nil
+
+(def ^:dynamic *with-xprint* false)
 
 ;;;;; Generic schema utilities
 
@@ -151,11 +152,15 @@ nil
 ;;   )
 
 (defn mk-component [system-or-id entity-or-id key type]
-  {::kind :component
-   ::system-id (id system-or-id)
-   ::type type
-   ::entity-id (id entity-or-id)
-   ::component-key key})
+  (let [v {::kind :component
+           ::system-id (id system-or-id)
+           ::type type
+           ::entity-id (id entity-or-id)
+           ::component-key key}]
+    (if *with-xprint*
+      (with-meta v
+        {:app.xprint.core/key-order [::kind ::system-id ::type ::entity-id ::component-key]})
+      v)))
 
 ;;;;; Event handling
 

@@ -7,6 +7,12 @@
 
 (def canvas-events-on? (atom true))
 
+(def event-handling-active? (atom true))
+(defn suspend-event-handling []
+  (reset! event-handling-active? false))
+(defn resume-event-handling []
+  (reset! event-handling-active? true))
+
 (defn stop-canvas-events []
   (reset! canvas-events-on? false))
 
@@ -19,12 +25,14 @@
 (defn ^:export callback [event-name]
   ;; (when (not= event-name "draw")
   ;;   (.log js/console (str "callback >" event-name "<")))
-  (let [event-key (keyword event-name)
-        handlers (event-key @all-handlers)]
-    (when (precondition-for-event event-key)
-      (doseq [h handlers]
-        (h (data-for-event event-key)))))
-  nil)
+  (if @event-handling-active?
+    (let [event-key (keyword event-name)
+          handlers (event-key @all-handlers)]
+      (when (precondition-for-event event-key)
+        (doseq [h handlers]
+          (h (data-for-event event-key))))
+      false)
+    true))
 
 ;;-------------------------------------------------------------------
 

@@ -2,6 +2,7 @@
 goog.provide('gamebase.ecs');
 goog.require('cljs.core');
 goog.require('gamebase.event_queue');
+gamebase.ecs._STAR_with_xprint_STAR_ = false;
 gamebase.ecs.to_world = (function gamebase$ecs$to_world(){
 return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875),new cljs.core.Keyword(null,"to-world","to-world",-430459984)], null);
 });
@@ -16,9 +17,9 @@ return new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword("gamebas
 });
 gamebase.ecs.to = (function gamebase$ecs$to(object_or_target_id){
 if(cljs.core.map_QMARK_.call(null,object_or_target_id)){
-var G__28286 = new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875).cljs$core$IFn$_invoke$arity$1(object_or_target_id);
-var G__28286__$1 = (((G__28286 instanceof cljs.core.Keyword))?G__28286.fqn:null);
-switch (G__28286__$1) {
+var G__34571 = new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875).cljs$core$IFn$_invoke$arity$1(object_or_target_id);
+var G__34571__$1 = (((G__34571 instanceof cljs.core.Keyword))?G__34571.fqn:null);
+switch (G__34571__$1) {
 case "world":
 return gamebase.ecs.to_world.call(null);
 
@@ -52,7 +53,7 @@ return object_or_target_id;
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__28286__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__34571__$1)].join('')));
 
 }
 } else {
@@ -64,9 +65,9 @@ return cljs.core.assoc.call(null,event,new cljs.core.Keyword("gamebase.ecs","tar
 });
 gamebase.ecs.id = (function gamebase$ecs$id(object_or_object_id){
 if(cljs.core.map_QMARK_.call(null,object_or_object_id)){
-var G__28288 = new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875).cljs$core$IFn$_invoke$arity$1(object_or_object_id);
-var G__28288__$1 = (((G__28288 instanceof cljs.core.Keyword))?G__28288.fqn:null);
-switch (G__28288__$1) {
+var G__34573 = new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875).cljs$core$IFn$_invoke$arity$1(object_or_object_id);
+var G__34573__$1 = (((G__34573 instanceof cljs.core.Keyword))?G__34573.fqn:null);
+switch (G__34573__$1) {
 case "world":
 return null;
 
@@ -101,7 +102,12 @@ gamebase.ecs.mk_entity = (function gamebase$ecs$mk_entity(id,type){
 return new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875),new cljs.core.Keyword(null,"entity","entity",-450970276),new cljs.core.Keyword("gamebase.ecs","type","gamebase.ecs/type",-1539780986),type,new cljs.core.Keyword("gamebase.ecs","entity-id","gamebase.ecs/entity-id",-1186455917),id,new cljs.core.Keyword("gamebase.ecs","components","gamebase.ecs/components",-523279412),cljs.core.PersistentArrayMap.EMPTY], null);
 });
 gamebase.ecs.mk_component = (function gamebase$ecs$mk_component(system_or_id,entity_or_id,key,type){
-return new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875),new cljs.core.Keyword(null,"component","component",1555936782),new cljs.core.Keyword("gamebase.ecs","system-id","gamebase.ecs/system-id",1737692001),gamebase.ecs.id.call(null,system_or_id),new cljs.core.Keyword("gamebase.ecs","type","gamebase.ecs/type",-1539780986),type,new cljs.core.Keyword("gamebase.ecs","entity-id","gamebase.ecs/entity-id",-1186455917),gamebase.ecs.id.call(null,entity_or_id),new cljs.core.Keyword("gamebase.ecs","component-key","gamebase.ecs/component-key",-1450608268),key], null);
+var v = new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875),new cljs.core.Keyword(null,"component","component",1555936782),new cljs.core.Keyword("gamebase.ecs","system-id","gamebase.ecs/system-id",1737692001),gamebase.ecs.id.call(null,system_or_id),new cljs.core.Keyword("gamebase.ecs","type","gamebase.ecs/type",-1539780986),type,new cljs.core.Keyword("gamebase.ecs","entity-id","gamebase.ecs/entity-id",-1186455917),gamebase.ecs.id.call(null,entity_or_id),new cljs.core.Keyword("gamebase.ecs","component-key","gamebase.ecs/component-key",-1450608268),key], null);
+if(gamebase.ecs._STAR_with_xprint_STAR_){
+return cljs.core.with_meta.call(null,v,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword("app.xprint.core","key-order","app.xprint.core/key-order",2050044103),new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875),new cljs.core.Keyword("gamebase.ecs","system-id","gamebase.ecs/system-id",1737692001),new cljs.core.Keyword("gamebase.ecs","type","gamebase.ecs/type",-1539780986),new cljs.core.Keyword("gamebase.ecs","entity-id","gamebase.ecs/entity-id",-1186455917),new cljs.core.Keyword("gamebase.ecs","component-key","gamebase.ecs/component-key",-1450608268)], null)], null));
+} else {
+return v;
+}
 });
 if((typeof gamebase !== 'undefined') && (typeof gamebase.ecs !== 'undefined') && (typeof gamebase.ecs.handle_event !== 'undefined')){
 } else {
@@ -113,9 +119,9 @@ var hierarchy__4418__auto__ = cljs.core.get.call(null,cljs.core.PersistentArrayM
 return (new cljs.core.MultiFn(cljs.core.symbol.call(null,"gamebase.ecs","handle-event"),((function (method_table__4414__auto__,prefer_table__4415__auto__,method_cache__4416__auto__,cached_hierarchy__4417__auto__,hierarchy__4418__auto__){
 return (function (world,event,object){
 var target_id = new cljs.core.Keyword("gamebase.ecs","target-id","gamebase.ecs/target-id",200150503).cljs$core$IFn$_invoke$arity$1(event);
-var G__28290 = new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875).cljs$core$IFn$_invoke$arity$1(target_id);
-var G__28290__$1 = (((G__28290 instanceof cljs.core.Keyword))?G__28290.fqn:null);
-switch (G__28290__$1) {
+var G__34575 = new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875).cljs$core$IFn$_invoke$arity$1(target_id);
+var G__34575__$1 = (((G__34575 instanceof cljs.core.Keyword))?G__34575.fqn:null);
+switch (G__34575__$1) {
 case "to-world":
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"to-world","to-world",-430459984),new cljs.core.Keyword("gamebase.ecs","msg","gamebase.ecs/msg",1284168338).cljs$core$IFn$_invoke$arity$1(event)], null);
 
@@ -164,12 +170,12 @@ var temp__5455__auto__ = gamebase.event_queue.soonest_event_time.call(null,new c
 if(cljs.core.truth_(temp__5455__auto__)){
 var s_t = temp__5455__auto__;
 if((s_t <= time)){
-var vec__28292 = gamebase.event_queue.take_event.call(null,new cljs.core.Keyword("gamebase.ecs","event-queue","gamebase.ecs/event-queue",-548435763).cljs$core$IFn$_invoke$arity$1(wrl));
-var event = cljs.core.nth.call(null,vec__28292,(0),null);
-var event_queue_SINGLEQUOTE_ = cljs.core.nth.call(null,vec__28292,(1),null);
+var vec__34577 = gamebase.event_queue.take_event.call(null,new cljs.core.Keyword("gamebase.ecs","event-queue","gamebase.ecs/event-queue",-548435763).cljs$core$IFn$_invoke$arity$1(wrl));
+var event = cljs.core.nth.call(null,vec__34577,(0),null);
+var event_queue_SINGLEQUOTE_ = cljs.core.nth.call(null,vec__34577,(1),null);
 var wrl_SINGLEQUOTE_ = cljs.core.assoc.call(null,wrl,new cljs.core.Keyword("gamebase.ecs","event-queue","gamebase.ecs/event-queue",-548435763),event_queue_SINGLEQUOTE_,new cljs.core.Keyword("gamebase.ecs","time","gamebase.ecs/time",-1251896396),s_t);
-var G__28295 = gamebase.ecs.do_handle_event.call(null,wrl_SINGLEQUOTE_,event);
-wrl = G__28295;
+var G__34580 = gamebase.ecs.do_handle_event.call(null,wrl_SINGLEQUOTE_,event);
+wrl = G__34580;
 continue;
 } else {
 return wrl;
@@ -221,8 +227,8 @@ gamebase.ecs.all_components = (function gamebase$ecs$all_components(world){
 return cljs.core.mapcat.call(null,cljs.core.comp.call(null,cljs.core.vals,new cljs.core.Keyword("gamebase.ecs","components","gamebase.ecs/components",-523279412)),cljs.core.vals.call(null,new cljs.core.Keyword("gamebase.ecs","entities","gamebase.ecs/entities",343273233).cljs$core$IFn$_invoke$arity$1(world)));
 });
 gamebase.ecs.all_components_of_system = (function gamebase$ecs$all_components_of_system(world,system){
-return cljs.core.filter.call(null,(function (p1__28296_SHARP_){
-return cljs.core._EQ_.call(null,gamebase.ecs.id.call(null,system),new cljs.core.Keyword("gamebase.ecs","system-id","gamebase.ecs/system-id",1737692001).cljs$core$IFn$_invoke$arity$1(p1__28296_SHARP_));
+return cljs.core.filter.call(null,(function (p1__34581_SHARP_){
+return cljs.core._EQ_.call(null,gamebase.ecs.id.call(null,system),new cljs.core.Keyword("gamebase.ecs","system-id","gamebase.ecs/system-id",1737692001).cljs$core$IFn$_invoke$arity$1(p1__34581_SHARP_));
 }),gamebase.ecs.all_components.call(null,world));
 });
 gamebase.ecs.get_entity = (function gamebase$ecs$get_entity(world,component){
@@ -231,14 +237,14 @@ return new cljs.core.Keyword("gamebase.ecs","entities","gamebase.ecs/entities",3
 });
 gamebase.ecs.ck_kvs = (function gamebase$ecs$ck_kvs(var_args){
 var args__4534__auto__ = [];
-var len__4531__auto___28299 = arguments.length;
-var i__4532__auto___28300 = (0);
+var len__4531__auto___34584 = arguments.length;
+var i__4532__auto___34585 = (0);
 while(true){
-if((i__4532__auto___28300 < len__4531__auto___28299)){
-args__4534__auto__.push((arguments[i__4532__auto___28300]));
+if((i__4532__auto___34585 < len__4531__auto___34584)){
+args__4534__auto__.push((arguments[i__4532__auto___34585]));
 
-var G__28301 = (i__4532__auto___28300 + (1));
-i__4532__auto___28300 = G__28301;
+var G__34586 = (i__4532__auto___34585 + (1));
+i__4532__auto___34585 = G__34586;
 continue;
 } else {
 }
@@ -256,17 +262,17 @@ return cljs.core.into.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.
 gamebase.ecs.ck_kvs.cljs$lang$maxFixedArity = (1);
 
 /** @this {Function} */
-gamebase.ecs.ck_kvs.cljs$lang$applyTo = (function (seq28297){
-var G__28298 = cljs.core.first.call(null,seq28297);
-var seq28297__$1 = cljs.core.next.call(null,seq28297);
+gamebase.ecs.ck_kvs.cljs$lang$applyTo = (function (seq34582){
+var G__34583 = cljs.core.first.call(null,seq34582);
+var seq34582__$1 = cljs.core.next.call(null,seq34582);
 var self__4518__auto__ = this;
-return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__28298,seq28297__$1);
+return self__4518__auto__.cljs$core$IFn$_invoke$arity$variadic(G__34583,seq34582__$1);
 });
 
 gamebase.ecs.resolve_target_id = (function gamebase$ecs$resolve_target_id(world,target_id){
-var G__28302 = new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875).cljs$core$IFn$_invoke$arity$1(target_id);
-var G__28302__$1 = (((G__28302 instanceof cljs.core.Keyword))?G__28302.fqn:null);
-switch (G__28302__$1) {
+var G__34587 = new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875).cljs$core$IFn$_invoke$arity$1(target_id);
+var G__34587__$1 = (((G__34587 instanceof cljs.core.Keyword))?G__34587.fqn:null);
+switch (G__34587__$1) {
 case "to-world":
 return world;
 
@@ -292,9 +298,9 @@ return null;
 }
 });
 gamebase.ecs.insert_object = (function gamebase$ecs$insert_object(world,object){
-var G__28304 = new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875).cljs$core$IFn$_invoke$arity$1(object);
-var G__28304__$1 = (((G__28304 instanceof cljs.core.Keyword))?G__28304.fqn:null);
-switch (G__28304__$1) {
+var G__34589 = new cljs.core.Keyword("gamebase.ecs","kind","gamebase.ecs/kind",846742875).cljs$core$IFn$_invoke$arity$1(object);
+var G__34589__$1 = (((G__34589 instanceof cljs.core.Keyword))?G__34589.fqn:null);
+switch (G__34589__$1) {
 case "world":
 return object;
 
@@ -312,7 +318,7 @@ return cljs.core.assoc_in.call(null,world,new cljs.core.PersistentVector(null, 4
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__28304__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__34589__$1)].join('')));
 
 }
 });

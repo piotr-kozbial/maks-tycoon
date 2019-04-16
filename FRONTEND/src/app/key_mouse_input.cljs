@@ -13,7 +13,7 @@
 
    [app.ui.ui-state :as uis]
 
-   [app.scratch :as scratch]))
+   [app.scratch.scratch :as scratch]))
 
 (defn takeover-mouse-click [owner-id handler]
   (swap! uis/ui-state assoc-in [:key-mouse :click-owner] owner-id)
@@ -75,7 +75,9 @@
 
                  )
 
-           "=" (scratch/toggle)
+           "=" (do
+                 (events/suspend-event-handling)
+                 (scratch/toggle))
 
            ))))))
 

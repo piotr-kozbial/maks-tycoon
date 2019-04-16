@@ -39,7 +39,8 @@
 
                        {:id "dev"
                         :source-paths ["src"]
-                        :figwheel true
+                        :figwheel true ;;{ :on-jsload "app.dev/on-jsload" }
+
                         :compiler {:main       "app.core"
                                    :asset-path "js/compiled/out"
                                    :output-to  "resources/public/js/compiled/app.js"
@@ -57,5 +58,5 @@
                                   [com.bhauman/rebel-readline-cljs "0.1.4"]]
                    :resource-paths ["target"]
                    ;; need to add the compliled assets to the :clean-targets
-                   :cleadevcardsn-targets ^{:protect false} ["target"]}})
+                   :clean-targets ^{:protect false} ["target"]}})
 

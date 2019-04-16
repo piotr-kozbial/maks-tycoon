@@ -2,7 +2,10 @@
   (:require [rum.core :as rum]
             ;; [schema.core :as s :include-macros true]
 
-            [app.scratch :as scratch]
+            [app.my-figwheel-hooks]
+
+
+            [app.scratch.scratch :as scratch]
 
             [app.state :refer [app-state ui-refresh-tick
                                get-fresh-entity-id update-tile-extra]]
@@ -140,16 +143,20 @@
 
   )
 
-(rum/defc main-component < my-mixin rum/reactive []
+(rum/defc game-component < rum/reactive []
   (rum/react ui-refresh-tick)
-  [:dev
-   (our-layout/mk-html
-    ;; sidebar
-    (sidebar-component)
-    ;; bottom bar
-    (bottombar-component))
+  (our-layout/mk-html
+   ;; sidebar
+   (sidebar-component)
+   ;; bottom bar
+   (bottombar-component)))
 
-   (scratch/component)])
+
+(rum/defc main-component < my-mixin rum/reactive []
+  (rum/react scratch/state)
+  [:dev
+   (game-component)
+   (scratch/scratch-component)])
 
 (defn render []
   (.log js/console "RENDER")

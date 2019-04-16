@@ -79,7 +79,8 @@
                 path-start-length
                 path-end-time
                 speed
-                driving?]} <this>]
+                driving?
+                ]} <this>]
     (when (and path driving?)
       (let [time-of-travel (- <time> path-start-time)
             length-on-path (+ path-start-length (* time-of-travel speed))
@@ -88,7 +89,10 @@
             after-end? (>= <time> path-end-time)]
 
         [(when at-end?
-           (ecs/mk-event (ecs/get-entity <world> <this>) ::at-path-end <time>))
+           (ecs/mk-event ;;(ecs/get-entity <world> <this>)
+            (ecs/to-entity (::ecs/entity-id <this>))
+
+                         ::at-path-end <time>))
          (assoc <this>
 
                 :length-on-path length-on-path
@@ -106,12 +110,23 @@
                  (if after-end? total-path-length length-on-path)))]))))
 
 (defn mk-path-follower [entity-or-id key {:keys [path-history-size]}]
-  (assoc
-   (ecs/mk-component ::movement entity-or-id key ::path-follower)
-   :driving? true
-   :speed 0.02
-   :path-history-size path-history-size
-   :path-history []))
+  (let [v (assoc
+           (ecs/mk-component ::movement entity-or-id key ::path-follower)
+           :driving? true
+           :speed 0.02
+           :path-history-size path-history-size
+           :path-history [])]
+    (if :gamebase.ecs/*with-xprint*
+      (vary-meta v
+                 update-in [:app.xprint.core/key-order]
+                 concat [:path-history-size
+                         :driving? :speed
+                         :path
+                         :path-start-length :path-start-time :path-end-time
+                         :path-history
+                         :length-on-path :position :angle
+                         :at-end? :after-end?]) 
+      v)))
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::ecs/init] [_ _ this] [])
 
