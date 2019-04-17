@@ -20,14 +20,14 @@ cljs.core._add_method.call(null,app.tiles.general.initialize_tile_extra,new cljs
 return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"state","state",-1988618099),new cljs.core.Keyword(null,"straight-left","straight-left",-1759089169)], null);
 }));
 cljs.core._add_method.call(null,gamebase.systems.drawing.draw_tile_extra,new cljs.core.Keyword(null,"track-wt","track-wt",1610890285),(function (tile_id,tx,ty,tile_info){
-var map__36486_36492 = app.state.get_tile_extra.call(null,tx,ty);
-var map__36486_36493__$1 = ((((!((map__36486_36492 == null)))?(((((map__36486_36492.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36486_36492.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36486_36492):map__36486_36492);
-var state_36494 = cljs.core.get.call(null,map__36486_36493__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
-var x_36495 = ((32) * tx);
-var y_36496 = ((32) * ty);
-var vec__36487_36497 = (function (){var G__36491 = state_36494;
-var G__36491__$1 = (((G__36491 instanceof cljs.core.Keyword))?G__36491.fqn:null);
-switch (G__36491__$1) {
+var map__45518_45524 = app.state.get_tile_extra.call(null,tx,ty);
+var map__45518_45525__$1 = ((((!((map__45518_45524 == null)))?(((((map__45518_45524.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45518_45524.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45518_45524):map__45518_45524);
+var state_45526 = cljs.core.get.call(null,map__45518_45525__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
+var x_45527 = ((32) * tx);
+var y_45528 = ((32) * ty);
+var vec__45519_45529 = (function (){var G__45523 = state_45526;
+var G__45523__$1 = (((G__45523 instanceof cljs.core.Keyword))?G__45523.fqn:null);
+switch (G__45523__$1) {
 case "right":
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(384),(0)], null);
 
@@ -49,21 +49,21 @@ return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMP
 
 }
 })();
-var src_x_36498 = cljs.core.nth.call(null,vec__36487_36497,(0),null);
-var src_y_36499 = cljs.core.nth.call(null,vec__36487_36497,(1),null);
-gamebase.systems.drawing._put_image.call(null,gamebase.resources.get_resource.call(null,"tiles.png"),src_x_36498,src_y_36499,(8),(8),(x_36495 + (23)),(y_36496 + (12)));
+var src_x_45530 = cljs.core.nth.call(null,vec__45519_45529,(0),null);
+var src_y_45531 = cljs.core.nth.call(null,vec__45519_45529,(1),null);
+gamebase.systems.drawing._put_image.call(null,gamebase.resources.get_resource.call(null,"tiles.png"),src_x_45530,src_y_45531,(8),(8),(x_45527 + (23)),(y_45528 + (12)));
 
 return true;
 }));
 cljs.core._add_method.call(null,gamebase.systems.drawing.draw_tile_extra,new cljs.core.Keyword(null,"track-et","track-et",1115037128),(function (tile_id,tx,ty,tile_info){
-var map__36501_36507 = app.state.get_tile_extra.call(null,tx,ty);
-var map__36501_36508__$1 = ((((!((map__36501_36507 == null)))?(((((map__36501_36507.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36501_36507.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36501_36507):map__36501_36507);
-var state_36509 = cljs.core.get.call(null,map__36501_36508__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
-var x_36510 = ((32) * tx);
-var y_36511 = ((32) * ty);
-var vec__36502_36512 = (function (){var G__36506 = state_36509;
-var G__36506__$1 = (((G__36506 instanceof cljs.core.Keyword))?G__36506.fqn:null);
-switch (G__36506__$1) {
+var map__45533_45539 = app.state.get_tile_extra.call(null,tx,ty);
+var map__45533_45540__$1 = ((((!((map__45533_45539 == null)))?(((((map__45533_45539.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45533_45539.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45533_45539):map__45533_45539);
+var state_45541 = cljs.core.get.call(null,map__45533_45540__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
+var x_45542 = ((32) * tx);
+var y_45543 = ((32) * ty);
+var vec__45534_45544 = (function (){var G__45538 = state_45541;
+var G__45538__$1 = (((G__45538 instanceof cljs.core.Keyword))?G__45538.fqn:null);
+switch (G__45538__$1) {
 case "right":
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(404),(0)], null);
 
@@ -85,21 +85,21 @@ return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMP
 
 }
 })();
-var src_x_36513 = cljs.core.nth.call(null,vec__36502_36512,(0),null);
-var src_y_36514 = cljs.core.nth.call(null,vec__36502_36512,(1),null);
-gamebase.systems.drawing._put_image.call(null,gamebase.resources.get_resource.call(null,"tiles.png"),src_x_36513,src_y_36514,(8),(8),(x_36510 + (1)),(y_36511 + (12)));
+var src_x_45545 = cljs.core.nth.call(null,vec__45534_45544,(0),null);
+var src_y_45546 = cljs.core.nth.call(null,vec__45534_45544,(1),null);
+gamebase.systems.drawing._put_image.call(null,gamebase.resources.get_resource.call(null,"tiles.png"),src_x_45545,src_y_45546,(8),(8),(x_45542 + (1)),(y_45543 + (12)));
 
 return true;
 }));
 cljs.core._add_method.call(null,gamebase.systems.drawing.draw_tile_extra,new cljs.core.Keyword(null,"track-nt","track-nt",581283090),(function (tile_id,tx,ty,tile_info){
-var map__36516_36522 = app.state.get_tile_extra.call(null,tx,ty);
-var map__36516_36523__$1 = ((((!((map__36516_36522 == null)))?(((((map__36516_36522.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36516_36522.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36516_36522):map__36516_36522);
-var state_36524 = cljs.core.get.call(null,map__36516_36523__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
-var x_36525 = ((32) * tx);
-var y_36526 = ((32) * ty);
-var vec__36517_36527 = (function (){var G__36521 = state_36524;
-var G__36521__$1 = (((G__36521 instanceof cljs.core.Keyword))?G__36521.fqn:null);
-switch (G__36521__$1) {
+var map__45548_45554 = app.state.get_tile_extra.call(null,tx,ty);
+var map__45548_45555__$1 = ((((!((map__45548_45554 == null)))?(((((map__45548_45554.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45548_45554.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45548_45554):map__45548_45554);
+var state_45556 = cljs.core.get.call(null,map__45548_45555__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
+var x_45557 = ((32) * tx);
+var y_45558 = ((32) * ty);
+var vec__45549_45559 = (function (){var G__45553 = state_45556;
+var G__45553__$1 = (((G__45553 instanceof cljs.core.Keyword))?G__45553.fqn:null);
+switch (G__45553__$1) {
 case "right":
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(404),(20)], null);
 
@@ -121,21 +121,21 @@ return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMP
 
 }
 })();
-var src_x_36528 = cljs.core.nth.call(null,vec__36517_36527,(0),null);
-var src_y_36529 = cljs.core.nth.call(null,vec__36517_36527,(1),null);
-gamebase.systems.drawing._put_image.call(null,gamebase.resources.get_resource.call(null,"tiles.png"),src_x_36528,src_y_36529,(8),(8),(x_36525 + (12)),(y_36526 + (1)));
+var src_x_45560 = cljs.core.nth.call(null,vec__45549_45559,(0),null);
+var src_y_45561 = cljs.core.nth.call(null,vec__45549_45559,(1),null);
+gamebase.systems.drawing._put_image.call(null,gamebase.resources.get_resource.call(null,"tiles.png"),src_x_45560,src_y_45561,(8),(8),(x_45557 + (12)),(y_45558 + (1)));
 
 return true;
 }));
 cljs.core._add_method.call(null,gamebase.systems.drawing.draw_tile_extra,new cljs.core.Keyword(null,"track-st","track-st",-232758332),(function (tile_id,tx,ty,tile_info){
-var map__36531_36537 = app.state.get_tile_extra.call(null,tx,ty);
-var map__36531_36538__$1 = ((((!((map__36531_36537 == null)))?(((((map__36531_36537.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36531_36537.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36531_36537):map__36531_36537);
-var state_36539 = cljs.core.get.call(null,map__36531_36538__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
-var x_36540 = ((32) * tx);
-var y_36541 = ((32) * ty);
-var vec__36532_36542 = (function (){var G__36536 = state_36539;
-var G__36536__$1 = (((G__36536 instanceof cljs.core.Keyword))?G__36536.fqn:null);
-switch (G__36536__$1) {
+var map__45563_45569 = app.state.get_tile_extra.call(null,tx,ty);
+var map__45563_45570__$1 = ((((!((map__45563_45569 == null)))?(((((map__45563_45569.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45563_45569.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45563_45569):map__45563_45569);
+var state_45571 = cljs.core.get.call(null,map__45563_45570__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
+var x_45572 = ((32) * tx);
+var y_45573 = ((32) * ty);
+var vec__45564_45574 = (function (){var G__45568 = state_45571;
+var G__45568__$1 = (((G__45568 instanceof cljs.core.Keyword))?G__45568.fqn:null);
+switch (G__45568__$1) {
 case "right":
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(384),(20)], null);
 
@@ -157,24 +157,24 @@ return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMP
 
 }
 })();
-var src_x_36543 = cljs.core.nth.call(null,vec__36532_36542,(0),null);
-var src_y_36544 = cljs.core.nth.call(null,vec__36532_36542,(1),null);
-gamebase.systems.drawing._put_image.call(null,gamebase.resources.get_resource.call(null,"tiles.png"),src_x_36543,src_y_36544,(8),(8),(x_36540 + (12)),(y_36541 + (23)));
+var src_x_45575 = cljs.core.nth.call(null,vec__45564_45574,(0),null);
+var src_y_45576 = cljs.core.nth.call(null,vec__45564_45574,(1),null);
+gamebase.systems.drawing._put_image.call(null,gamebase.resources.get_resource.call(null,"tiles.png"),src_x_45575,src_y_45576,(8),(8),(x_45572 + (12)),(y_45573 + (23)));
 
 return true;
 }));
-cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-wt","track-wt",1610890285),(function (_,start_direction,___$1,___$2,___$3,p__36546){
-var map__36547 = p__36546;
-var map__36547__$1 = ((((!((map__36547 == null)))?(((((map__36547.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36547.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36547):map__36547);
-var tile_extra = map__36547__$1;
-var state = cljs.core.get.call(null,map__36547__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
-var G__36549 = start_direction;
-var G__36549__$1 = (((G__36549 instanceof cljs.core.Keyword))?G__36549.fqn:null);
-switch (G__36549__$1) {
+cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-wt","track-wt",1610890285),(function (_,start_direction,___$1,___$2,___$3,p__45578){
+var map__45579 = p__45578;
+var map__45579__$1 = ((((!((map__45579 == null)))?(((((map__45579.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45579.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45579):map__45579);
+var tile_extra = map__45579__$1;
+var state = cljs.core.get.call(null,map__45579__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
+var G__45581 = start_direction;
+var G__45581__$1 = (((G__45581 instanceof cljs.core.Keyword))?G__45581.fqn:null);
+switch (G__45581__$1) {
 case "w":
-var G__36550 = state;
-var G__36550__$1 = (((G__36550 instanceof cljs.core.Keyword))?G__36550.fqn:null);
-switch (G__36550__$1) {
+var G__45582 = state;
+var G__45582__$1 = (((G__45582 instanceof cljs.core.Keyword))?G__45582.fqn:null);
+switch (G__45582__$1) {
 case "right":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"w","w",354169001),new cljs.core.Keyword(null,"s","s",1705939918)], null)], null);
 
@@ -192,15 +192,15 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36550__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45582__$1)].join('')));
 
 }
 
 break;
 case "s":
-var G__36551 = state;
-var G__36551__$1 = (((G__36551 instanceof cljs.core.Keyword))?G__36551.fqn:null);
-switch (G__36551__$1) {
+var G__45583 = state;
+var G__45583__$1 = (((G__45583 instanceof cljs.core.Keyword))?G__45583.fqn:null);
+switch (G__45583__$1) {
 case "straight-right":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"s","s",1705939918),new cljs.core.Keyword(null,"n","n",562130025)], null)], null);
 
@@ -218,15 +218,15 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36551__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45583__$1)].join('')));
 
 }
 
 break;
 case "n":
-var G__36552 = state;
-var G__36552__$1 = (((G__36552 instanceof cljs.core.Keyword))?G__36552.fqn:null);
-switch (G__36552__$1) {
+var G__45584 = state;
+var G__45584__$1 = (((G__45584 instanceof cljs.core.Keyword))?G__45584.fqn:null);
+switch (G__45584__$1) {
 case "straight-right":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"n","n",562130025),new cljs.core.Keyword(null,"s","s",1705939918)], null)], null);
 
@@ -244,7 +244,7 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36552__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45584__$1)].join('')));
 
 }
 
@@ -254,18 +254,18 @@ return cljs.core.PersistentVector.EMPTY;
 
 }
 }));
-cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-et","track-et",1115037128),(function (_,start_direction,___$1,___$2,___$3,p__36557){
-var map__36558 = p__36557;
-var map__36558__$1 = ((((!((map__36558 == null)))?(((((map__36558.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36558.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36558):map__36558);
-var tile_extra = map__36558__$1;
-var state = cljs.core.get.call(null,map__36558__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
-var G__36560 = start_direction;
-var G__36560__$1 = (((G__36560 instanceof cljs.core.Keyword))?G__36560.fqn:null);
-switch (G__36560__$1) {
+cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-et","track-et",1115037128),(function (_,start_direction,___$1,___$2,___$3,p__45589){
+var map__45590 = p__45589;
+var map__45590__$1 = ((((!((map__45590 == null)))?(((((map__45590.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45590.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45590):map__45590);
+var tile_extra = map__45590__$1;
+var state = cljs.core.get.call(null,map__45590__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
+var G__45592 = start_direction;
+var G__45592__$1 = (((G__45592 instanceof cljs.core.Keyword))?G__45592.fqn:null);
+switch (G__45592__$1) {
 case "e":
-var G__36561 = state;
-var G__36561__$1 = (((G__36561 instanceof cljs.core.Keyword))?G__36561.fqn:null);
-switch (G__36561__$1) {
+var G__45593 = state;
+var G__45593__$1 = (((G__45593 instanceof cljs.core.Keyword))?G__45593.fqn:null);
+switch (G__45593__$1) {
 case "right":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"e","e",1381269198),new cljs.core.Keyword(null,"n","n",562130025)], null)], null);
 
@@ -283,15 +283,15 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36561__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45593__$1)].join('')));
 
 }
 
 break;
 case "s":
-var G__36562 = state;
-var G__36562__$1 = (((G__36562 instanceof cljs.core.Keyword))?G__36562.fqn:null);
-switch (G__36562__$1) {
+var G__45594 = state;
+var G__45594__$1 = (((G__45594 instanceof cljs.core.Keyword))?G__45594.fqn:null);
+switch (G__45594__$1) {
 case "straight-right":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"s","s",1705939918),new cljs.core.Keyword(null,"n","n",562130025)], null)], null);
 
@@ -309,15 +309,15 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36562__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45594__$1)].join('')));
 
 }
 
 break;
 case "n":
-var G__36563 = state;
-var G__36563__$1 = (((G__36563 instanceof cljs.core.Keyword))?G__36563.fqn:null);
-switch (G__36563__$1) {
+var G__45595 = state;
+var G__45595__$1 = (((G__45595 instanceof cljs.core.Keyword))?G__45595.fqn:null);
+switch (G__45595__$1) {
 case "straight-right":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"n","n",562130025),new cljs.core.Keyword(null,"s","s",1705939918)], null)], null);
 
@@ -335,7 +335,7 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36563__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45595__$1)].join('')));
 
 }
 
@@ -345,18 +345,18 @@ return cljs.core.PersistentVector.EMPTY;
 
 }
 }));
-cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-nt","track-nt",581283090),(function (_,start_direction,___$1,___$2,___$3,p__36568){
-var map__36569 = p__36568;
-var map__36569__$1 = ((((!((map__36569 == null)))?(((((map__36569.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36569.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36569):map__36569);
-var tile_extra = map__36569__$1;
-var state = cljs.core.get.call(null,map__36569__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
-var G__36571 = start_direction;
-var G__36571__$1 = (((G__36571 instanceof cljs.core.Keyword))?G__36571.fqn:null);
-switch (G__36571__$1) {
+cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-nt","track-nt",581283090),(function (_,start_direction,___$1,___$2,___$3,p__45600){
+var map__45601 = p__45600;
+var map__45601__$1 = ((((!((map__45601 == null)))?(((((map__45601.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45601.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45601):map__45601);
+var tile_extra = map__45601__$1;
+var state = cljs.core.get.call(null,map__45601__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
+var G__45603 = start_direction;
+var G__45603__$1 = (((G__45603 instanceof cljs.core.Keyword))?G__45603.fqn:null);
+switch (G__45603__$1) {
 case "e":
-var G__36572 = state;
-var G__36572__$1 = (((G__36572 instanceof cljs.core.Keyword))?G__36572.fqn:null);
-switch (G__36572__$1) {
+var G__45604 = state;
+var G__45604__$1 = (((G__45604 instanceof cljs.core.Keyword))?G__45604.fqn:null);
+switch (G__45604__$1) {
 case "right":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"e","e",1381269198),new cljs.core.Keyword(null,"w","w",354169001)], null)], null);
 
@@ -374,15 +374,15 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36572__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45604__$1)].join('')));
 
 }
 
 break;
 case "n":
-var G__36573 = state;
-var G__36573__$1 = (((G__36573 instanceof cljs.core.Keyword))?G__36573.fqn:null);
-switch (G__36573__$1) {
+var G__45605 = state;
+var G__45605__$1 = (((G__45605 instanceof cljs.core.Keyword))?G__45605.fqn:null);
+switch (G__45605__$1) {
 case "straight-right":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"n","n",562130025),new cljs.core.Keyword(null,"w","w",354169001)], null)], null);
 
@@ -400,15 +400,15 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36573__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45605__$1)].join('')));
 
 }
 
 break;
 case "w":
-var G__36574 = state;
-var G__36574__$1 = (((G__36574 instanceof cljs.core.Keyword))?G__36574.fqn:null);
-switch (G__36574__$1) {
+var G__45606 = state;
+var G__45606__$1 = (((G__45606 instanceof cljs.core.Keyword))?G__45606.fqn:null);
+switch (G__45606__$1) {
 case "straight-right":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"w","w",354169001),new cljs.core.Keyword(null,"e","e",1381269198)], null)], null);
 
@@ -426,7 +426,7 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36574__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45606__$1)].join('')));
 
 }
 
@@ -436,18 +436,18 @@ return cljs.core.PersistentVector.EMPTY;
 
 }
 }));
-cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-st","track-st",-232758332),(function (_,start_direction,___$1,___$2,___$3,p__36579){
-var map__36580 = p__36579;
-var map__36580__$1 = ((((!((map__36580 == null)))?(((((map__36580.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36580.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36580):map__36580);
-var tile_extra = map__36580__$1;
-var state = cljs.core.get.call(null,map__36580__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
-var G__36582 = start_direction;
-var G__36582__$1 = (((G__36582 instanceof cljs.core.Keyword))?G__36582.fqn:null);
-switch (G__36582__$1) {
+cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-st","track-st",-232758332),(function (_,start_direction,___$1,___$2,___$3,p__45611){
+var map__45612 = p__45611;
+var map__45612__$1 = ((((!((map__45612 == null)))?(((((map__45612.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45612.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45612):map__45612);
+var tile_extra = map__45612__$1;
+var state = cljs.core.get.call(null,map__45612__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
+var G__45614 = start_direction;
+var G__45614__$1 = (((G__45614 instanceof cljs.core.Keyword))?G__45614.fqn:null);
+switch (G__45614__$1) {
 case "e":
-var G__36583 = state;
-var G__36583__$1 = (((G__36583 instanceof cljs.core.Keyword))?G__36583.fqn:null);
-switch (G__36583__$1) {
+var G__45615 = state;
+var G__45615__$1 = (((G__45615 instanceof cljs.core.Keyword))?G__45615.fqn:null);
+switch (G__45615__$1) {
 case "right":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"e","e",1381269198),new cljs.core.Keyword(null,"s","s",1705939918)], null)], null);
 
@@ -465,15 +465,15 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36583__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45615__$1)].join('')));
 
 }
 
 break;
 case "s":
-var G__36584 = state;
-var G__36584__$1 = (((G__36584 instanceof cljs.core.Keyword))?G__36584.fqn:null);
-switch (G__36584__$1) {
+var G__45616 = state;
+var G__45616__$1 = (((G__45616 instanceof cljs.core.Keyword))?G__45616.fqn:null);
+switch (G__45616__$1) {
 case "straight-right":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"s","s",1705939918),new cljs.core.Keyword(null,"e","e",1381269198)], null)], null);
 
@@ -491,15 +491,15 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36584__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45616__$1)].join('')));
 
 }
 
 break;
 case "w":
-var G__36585 = state;
-var G__36585__$1 = (((G__36585 instanceof cljs.core.Keyword))?G__36585.fqn:null);
-switch (G__36585__$1) {
+var G__45617 = state;
+var G__45617__$1 = (((G__45617 instanceof cljs.core.Keyword))?G__45617.fqn:null);
+switch (G__45617__$1) {
 case "straight-right":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"w","w",354169001),new cljs.core.Keyword(null,"e","e",1381269198)], null)], null);
 
@@ -517,7 +517,7 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36585__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45617__$1)].join('')));
 
 }
 
@@ -528,14 +528,14 @@ return cljs.core.PersistentVector.EMPTY;
 }
 }));
 app.tiles.turnouts._get_layer = (function app$tiles$turnouts$_get_layer(world,layer_key){
-return cljs.core.second.call(null,cljs.core.first.call(null,cljs.core.filter.call(null,(function (p1__36590_SHARP_){
-return cljs.core._EQ_.call(null,cljs.core.first.call(null,p1__36590_SHARP_),layer_key);
+return cljs.core.second.call(null,cljs.core.first.call(null,cljs.core.filter.call(null,(function (p1__45622_SHARP_){
+return cljs.core._EQ_.call(null,cljs.core.first.call(null,p1__45622_SHARP_),layer_key);
 }),new cljs.core.Keyword(null,"layers","layers",1944875032).cljs$core$IFn$_invoke$arity$1(world))));
 });
 app.tiles.turnouts.is_turnout_QMARK_ = (function app$tiles$turnouts$is_turnout_QMARK_(tile_x,tile_y){
-var map__36591 = cljs.core.deref.call(null,app.state.app_state);
-var map__36591__$1 = ((((!((map__36591 == null)))?(((((map__36591.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36591.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36591):map__36591);
-var world = cljs.core.get.call(null,map__36591__$1,new cljs.core.Keyword(null,"world","world",-418292623));
+var map__45623 = cljs.core.deref.call(null,app.state.app_state);
+var map__45623__$1 = ((((!((map__45623 == null)))?(((((map__45623.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45623.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45623):map__45623);
+var world = cljs.core.get.call(null,map__45623__$1,new cljs.core.Keyword(null,"world","world",-418292623));
 var layer = app.tiles.turnouts._get_layer.call(null,world,new cljs.core.Keyword(null,"foreground","foreground",499022036));
 var info = gamebase.layers.get_tile_info_from_layer.call(null,new cljs.core.Keyword(null,"tile-context","tile-context",32165727).cljs$core$IFn$_invoke$arity$1(world),layer,tile_x,tile_y);
 return cljs.core.not_empty.call(null,clojure.set.intersection.call(null,new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"track-st","track-st",-232758332),null,new cljs.core.Keyword(null,"track-et","track-et",1115037128),null,new cljs.core.Keyword(null,"track-wt","track-wt",1610890285),null,new cljs.core.Keyword(null,"track-nt","track-nt",581283090),null], null), null),cljs.core.apply.call(null,cljs.core.hash_set,(function (){var or__3949__auto__ = new cljs.core.Keyword(null,"ids","ids",-998535796).cljs$core$IFn$_invoke$arity$1(info);
@@ -547,14 +547,14 @@ return cljs.core.PersistentVector.EMPTY;
 })())));
 });
 app.tiles.turnouts.cycle_turnout_state = (function app$tiles$turnouts$cycle_turnout_state(tile_x,tile_y){
-return app.state.update_tile_extra.call(null,tile_x,tile_y,(function (p__36593){
-var map__36594 = p__36593;
-var map__36594__$1 = ((((!((map__36594 == null)))?(((((map__36594.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36594.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36594):map__36594);
-var extra = map__36594__$1;
-var state = cljs.core.get.call(null,map__36594__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
-var new_state = (function (){var G__36596 = state;
-var G__36596__$1 = (((G__36596 instanceof cljs.core.Keyword))?G__36596.fqn:null);
-switch (G__36596__$1) {
+return app.state.update_tile_extra.call(null,tile_x,tile_y,(function (p__45625){
+var map__45626 = p__45625;
+var map__45626__$1 = ((((!((map__45626 == null)))?(((((map__45626.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45626.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45626):map__45626);
+var extra = map__45626__$1;
+var state = cljs.core.get.call(null,map__45626__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
+var new_state = (function (){var G__45628 = state;
+var G__45628__$1 = (((G__45628 instanceof cljs.core.Keyword))?G__45628.fqn:null);
+switch (G__45628__$1) {
 case "straight-right":
 return new cljs.core.Keyword(null,"straight-left","straight-left",-1759089169);
 
@@ -572,7 +572,7 @@ return new cljs.core.Keyword(null,"straight-right","straight-right",-423127994);
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36596__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45628__$1)].join('')));
 
 }
 })();

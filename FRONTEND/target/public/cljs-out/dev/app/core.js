@@ -30,11 +30,11 @@ goog.require('app.ecs.world');
 goog.require('app.key_mouse_input');
 goog.require('app.modules.construction');
 goog.require('sablono.core');
-app.core._draw_tile_box_under_mouse = (function app$core$_draw_tile_box_under_mouse(p__40991){
-var map__40992 = p__40991;
-var map__40992__$1 = ((((!((map__40992 == null)))?(((((map__40992.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__40992.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__40992):map__40992);
-var mouse_x = cljs.core.get.call(null,map__40992__$1,new cljs.core.Keyword(null,"mouse-x","mouse-x",-195915258));
-var mouse_y = cljs.core.get.call(null,map__40992__$1,new cljs.core.Keyword(null,"mouse-y","mouse-y",83174488));
+app.core._draw_tile_box_under_mouse = (function app$core$_draw_tile_box_under_mouse(p__48335){
+var map__48336 = p__48335;
+var map__48336__$1 = ((((!((map__48336 == null)))?(((((map__48336.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__48336.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__48336):map__48336);
+var mouse_x = cljs.core.get.call(null,map__48336__$1,new cljs.core.Keyword(null,"mouse-x","mouse-x",-195915258));
+var mouse_y = cljs.core.get.call(null,map__48336__$1,new cljs.core.Keyword(null,"mouse-y","mouse-y",83174488));
 noFill();
 
 strokeWeight((1));
@@ -72,18 +72,18 @@ stroke((255),(255),(255));
 
 return line((0),(0),(0),(0));
 });
-app.core.advance_simulation_and_draw = (function app$core$advance_simulation_and_draw(p__40994){
-var map__40995 = p__40994;
-var map__40995__$1 = ((((!((map__40995 == null)))?(((((map__40995.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__40995.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__40995):map__40995);
-var context = map__40995__$1;
-var min_x = cljs.core.get.call(null,map__40995__$1,new cljs.core.Keyword(null,"min-x","min-x",-1544012261));
-var max_x = cljs.core.get.call(null,map__40995__$1,new cljs.core.Keyword(null,"max-x","max-x",1609536425));
-var min_y = cljs.core.get.call(null,map__40995__$1,new cljs.core.Keyword(null,"min-y","min-y",-1969872948));
-var max_y = cljs.core.get.call(null,map__40995__$1,new cljs.core.Keyword(null,"max-y","max-y",1525628082));
-var map__40997 = cljs.core.deref.call(null,app.state.app_state);
-var map__40997__$1 = ((((!((map__40997 == null)))?(((((map__40997.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__40997.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__40997):map__40997);
-var world = cljs.core.get.call(null,map__40997__$1,new cljs.core.Keyword(null,"world","world",-418292623));
-var timer = cljs.core.get.call(null,map__40997__$1,new cljs.core.Keyword(null,"timer","timer",-1266967739));
+app.core.advance_simulation_and_draw = (function app$core$advance_simulation_and_draw(p__48338){
+var map__48339 = p__48338;
+var map__48339__$1 = ((((!((map__48339 == null)))?(((((map__48339.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__48339.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__48339):map__48339);
+var context = map__48339__$1;
+var min_x = cljs.core.get.call(null,map__48339__$1,new cljs.core.Keyword(null,"min-x","min-x",-1544012261));
+var max_x = cljs.core.get.call(null,map__48339__$1,new cljs.core.Keyword(null,"max-x","max-x",1609536425));
+var min_y = cljs.core.get.call(null,map__48339__$1,new cljs.core.Keyword(null,"min-y","min-y",-1969872948));
+var max_y = cljs.core.get.call(null,map__48339__$1,new cljs.core.Keyword(null,"max-y","max-y",1525628082));
+var map__48341 = cljs.core.deref.call(null,app.state.app_state);
+var map__48341__$1 = ((((!((map__48341 == null)))?(((((map__48341.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__48341.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__48341):map__48341);
+var world = cljs.core.get.call(null,map__48341__$1,new cljs.core.Keyword(null,"world","world",-418292623));
+var timer = cljs.core.get.call(null,map__48341__$1,new cljs.core.Keyword(null,"timer","timer",-1266967739));
 if(cljs.core.truth_(world)){
 var world_SINGLEQUOTE_ = (cljs.core.truth_(app.world_interop.running_QMARK_.call(null))?(function (){var time = app.world_interop.get_time.call(null);
 return gamebase.ecs.do_handle_event.call(null,gamebase.ecs.advance_until_time.call(null,world,time),gamebase.ecs.mk_event.call(null,gamebase.ecs.to_world.call(null),new cljs.core.Keyword(null,"update","update",1045576396),time));
@@ -120,8 +120,8 @@ return sablono.interpreter.interpret.call(null,gamebase.layouts.sidebar_and_bott
 app.core.main_component = rum.core.build_defc.call(null,(function (){
 rum.core.react.call(null,app.scratch.scratch.state);
 
-var attrs40999 = app.core.game_component.call(null);
-return cljs.core.apply.call(null,React.createElement,"dev",((cljs.core.map_QMARK_.call(null,attrs40999))?sablono.interpreter.attributes.call(null,attrs40999):null),((cljs.core.map_QMARK_.call(null,attrs40999))?new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [sablono.interpreter.interpret.call(null,app.scratch.scratch.scratch_component.call(null))], null):new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [sablono.interpreter.interpret.call(null,attrs40999),sablono.interpreter.interpret.call(null,app.scratch.scratch.scratch_component.call(null))], null)));
+var attrs48343 = app.core.game_component.call(null);
+return cljs.core.apply.call(null,React.createElement,"dev",((cljs.core.map_QMARK_.call(null,attrs48343))?sablono.interpreter.attributes.call(null,attrs48343):null),((cljs.core.map_QMARK_.call(null,attrs48343))?new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [sablono.interpreter.interpret.call(null,app.scratch.scratch.scratch_component.call(null))], null):new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [sablono.interpreter.interpret.call(null,attrs48343),sablono.interpreter.interpret.call(null,app.scratch.scratch.scratch_component.call(null))], null)));
 }),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [app.core.my_mixin,rum.core.reactive], null),"main-component");
 app.core.render = (function app$core$render(){
 console.log("RENDER");
@@ -131,14 +131,14 @@ return rum.core.mount.call(null,app.core.main_component.call(null),document.getE
 app.core.resource_fnames = cljs.core.concat.call(null,new cljs.core.PersistentVector(null, 13, 5, cljs.core.PersistentVector.EMPTY_NODE, ["background.png","tiles.png","loco1.png","loco1-coupled.png","loco1-crashed.png","loco1-debug.png","carriage1.png","carriage1-front-coupled.png","carriage1-rear-coupled.png","carriage1-both-coupled.png","carriage1-crashed.png","carriage2.png","level1.tmx"], null));
 app.core.main = (function app$core$main(var_args){
 var args__4534__auto__ = [];
-var len__4531__auto___41005 = arguments.length;
-var i__4532__auto___41006 = (0);
+var len__4531__auto___48349 = arguments.length;
+var i__4532__auto___48350 = (0);
 while(true){
-if((i__4532__auto___41006 < len__4531__auto___41005)){
-args__4534__auto__.push((arguments[i__4532__auto___41006]));
+if((i__4532__auto___48350 < len__4531__auto___48349)){
+args__4534__auto__.push((arguments[i__4532__auto___48350]));
 
-var G__41007 = (i__4532__auto___41006 + (1));
-i__4532__auto___41006 = G__41007;
+var G__48351 = (i__4532__auto___48350 + (1));
+i__4532__auto___48350 = G__48351;
 continue;
 } else {
 }
@@ -158,53 +158,53 @@ var rate_s = (((rate * (10)) | (0)) / (10));
 return cljs.core.swap_BANG_.call(null,app.state.app_state,cljs.core.assoc,new cljs.core.Keyword(null,"frame-rate","frame-rate",-994918942),rate_s);
 }),(1000));
 
-var seq__41001_41008 = cljs.core.seq.call(null,app.core.resource_fnames);
-var chunk__41002_41009 = null;
-var count__41003_41010 = (0);
-var i__41004_41011 = (0);
+var seq__48345_48352 = cljs.core.seq.call(null,app.core.resource_fnames);
+var chunk__48346_48353 = null;
+var count__48347_48354 = (0);
+var i__48348_48355 = (0);
 while(true){
-if((i__41004_41011 < count__41003_41010)){
-var fname_41012 = cljs.core._nth.call(null,chunk__41002_41009,i__41004_41011);
-gamebase.resources.add_resource.call(null,fname_41012);
+if((i__48348_48355 < count__48347_48354)){
+var fname_48356 = cljs.core._nth.call(null,chunk__48346_48353,i__48348_48355);
+gamebase.resources.add_resource.call(null,fname_48356);
 
 
-var G__41013 = seq__41001_41008;
-var G__41014 = chunk__41002_41009;
-var G__41015 = count__41003_41010;
-var G__41016 = (i__41004_41011 + (1));
-seq__41001_41008 = G__41013;
-chunk__41002_41009 = G__41014;
-count__41003_41010 = G__41015;
-i__41004_41011 = G__41016;
+var G__48357 = seq__48345_48352;
+var G__48358 = chunk__48346_48353;
+var G__48359 = count__48347_48354;
+var G__48360 = (i__48348_48355 + (1));
+seq__48345_48352 = G__48357;
+chunk__48346_48353 = G__48358;
+count__48347_48354 = G__48359;
+i__48348_48355 = G__48360;
 continue;
 } else {
-var temp__5457__auto___41017 = cljs.core.seq.call(null,seq__41001_41008);
-if(temp__5457__auto___41017){
-var seq__41001_41018__$1 = temp__5457__auto___41017;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__41001_41018__$1)){
-var c__4351__auto___41019 = cljs.core.chunk_first.call(null,seq__41001_41018__$1);
-var G__41020 = cljs.core.chunk_rest.call(null,seq__41001_41018__$1);
-var G__41021 = c__4351__auto___41019;
-var G__41022 = cljs.core.count.call(null,c__4351__auto___41019);
-var G__41023 = (0);
-seq__41001_41008 = G__41020;
-chunk__41002_41009 = G__41021;
-count__41003_41010 = G__41022;
-i__41004_41011 = G__41023;
+var temp__5457__auto___48361 = cljs.core.seq.call(null,seq__48345_48352);
+if(temp__5457__auto___48361){
+var seq__48345_48362__$1 = temp__5457__auto___48361;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__48345_48362__$1)){
+var c__4351__auto___48363 = cljs.core.chunk_first.call(null,seq__48345_48362__$1);
+var G__48364 = cljs.core.chunk_rest.call(null,seq__48345_48362__$1);
+var G__48365 = c__4351__auto___48363;
+var G__48366 = cljs.core.count.call(null,c__4351__auto___48363);
+var G__48367 = (0);
+seq__48345_48352 = G__48364;
+chunk__48346_48353 = G__48365;
+count__48347_48354 = G__48366;
+i__48348_48355 = G__48367;
 continue;
 } else {
-var fname_41024 = cljs.core.first.call(null,seq__41001_41018__$1);
-gamebase.resources.add_resource.call(null,fname_41024);
+var fname_48368 = cljs.core.first.call(null,seq__48345_48362__$1);
+gamebase.resources.add_resource.call(null,fname_48368);
 
 
-var G__41025 = cljs.core.next.call(null,seq__41001_41018__$1);
-var G__41026 = null;
-var G__41027 = (0);
-var G__41028 = (0);
-seq__41001_41008 = G__41025;
-chunk__41002_41009 = G__41026;
-count__41003_41010 = G__41027;
-i__41004_41011 = G__41028;
+var G__48369 = cljs.core.next.call(null,seq__48345_48362__$1);
+var G__48370 = null;
+var G__48371 = (0);
+var G__48372 = (0);
+seq__48345_48352 = G__48369;
+chunk__48346_48353 = G__48370;
+count__48347_48354 = G__48371;
+i__48348_48355 = G__48372;
 continue;
 }
 } else {
@@ -241,9 +241,9 @@ return app.core.render.call(null);
 app.core.main.cljs$lang$maxFixedArity = (0);
 
 /** @this {Function} */
-app.core.main.cljs$lang$applyTo = (function (seq41000){
+app.core.main.cljs$lang$applyTo = (function (seq48344){
 var self__4519__auto__ = this;
-return self__4519__auto__.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq.call(null,seq41000));
+return self__4519__auto__.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq.call(null,seq48344));
 });
 
 app.core.initialize_layout = (function app$core$initialize_layout(){

@@ -3,9 +3,9 @@ goog.provide('app.tiles.tracks');
 goog.require('cljs.core');
 goog.require('app.tiles.general');
 cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-we","track-we",-989956370),(function (_,start_direction,___$1,___$2,___$3,___$4){
-var G__36606 = start_direction;
-var G__36606__$1 = (((G__36606 instanceof cljs.core.Keyword))?G__36606.fqn:null);
-switch (G__36606__$1) {
+var G__45638 = start_direction;
+var G__45638__$1 = (((G__45638 instanceof cljs.core.Keyword))?G__45638.fqn:null);
+switch (G__45638__$1) {
 case "w":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"w","w",354169001),new cljs.core.Keyword(null,"e","e",1381269198)], null)], null);
 
@@ -20,9 +20,9 @@ return cljs.core.PersistentVector.EMPTY;
 }
 }));
 cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-ns","track-ns",1918680372),(function (_,start_direction,___$1,___$2,___$3,___$4){
-var G__36608 = start_direction;
-var G__36608__$1 = (((G__36608 instanceof cljs.core.Keyword))?G__36608.fqn:null);
-switch (G__36608__$1) {
+var G__45640 = start_direction;
+var G__45640__$1 = (((G__45640 instanceof cljs.core.Keyword))?G__45640.fqn:null);
+switch (G__45640__$1) {
 case "n":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"n","n",562130025),new cljs.core.Keyword(null,"s","s",1705939918)], null)], null);
 
@@ -37,9 +37,9 @@ return cljs.core.PersistentVector.EMPTY;
 }
 }));
 cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-se","track-se",1774550657),(function (_,start_direction,___$1,___$2,___$3,___$4){
-var G__36610 = start_direction;
-var G__36610__$1 = (((G__36610 instanceof cljs.core.Keyword))?G__36610.fqn:null);
-switch (G__36610__$1) {
+var G__45642 = start_direction;
+var G__45642__$1 = (((G__45642 instanceof cljs.core.Keyword))?G__45642.fqn:null);
+switch (G__45642__$1) {
 case "s":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"s","s",1705939918),new cljs.core.Keyword(null,"e","e",1381269198)], null)], null);
 
@@ -54,9 +54,9 @@ return cljs.core.PersistentVector.EMPTY;
 }
 }));
 cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-sw","track-sw",304088878),(function (_,start_direction,___$1,___$2,___$3,___$4){
-var G__36612 = start_direction;
-var G__36612__$1 = (((G__36612 instanceof cljs.core.Keyword))?G__36612.fqn:null);
-switch (G__36612__$1) {
+var G__45644 = start_direction;
+var G__45644__$1 = (((G__45644 instanceof cljs.core.Keyword))?G__45644.fqn:null);
+switch (G__45644__$1) {
 case "s":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"s","s",1705939918),new cljs.core.Keyword(null,"w","w",354169001)], null)], null);
 
@@ -71,9 +71,9 @@ return cljs.core.PersistentVector.EMPTY;
 }
 }));
 cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-ne","track-ne",298136141),(function (_,start_direction,___$1,___$2,___$3,___$4){
-var G__36614 = start_direction;
-var G__36614__$1 = (((G__36614 instanceof cljs.core.Keyword))?G__36614.fqn:null);
-switch (G__36614__$1) {
+var G__45646 = start_direction;
+var G__45646__$1 = (((G__45646 instanceof cljs.core.Keyword))?G__45646.fqn:null);
+switch (G__45646__$1) {
 case "n":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"n","n",562130025),new cljs.core.Keyword(null,"e","e",1381269198)], null)], null);
 
@@ -88,9 +88,9 @@ return cljs.core.PersistentVector.EMPTY;
 }
 }));
 cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-nw","track-nw",-1783255069),(function (_,start_direction,___$1,___$2,___$3,___$4){
-var G__36616 = start_direction;
-var G__36616__$1 = (((G__36616 instanceof cljs.core.Keyword))?G__36616.fqn:null);
-switch (G__36616__$1) {
+var G__45648 = start_direction;
+var G__45648__$1 = (((G__45648 instanceof cljs.core.Keyword))?G__45648.fqn:null);
+switch (G__45648__$1) {
 case "n":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"n","n",562130025),new cljs.core.Keyword(null,"w","w",354169001)], null)], null);
 
@@ -105,9 +105,9 @@ return cljs.core.PersistentVector.EMPTY;
 }
 }));
 cljs.core._add_method.call(null,app.tiles.general._active_tracks_from,new cljs.core.Keyword(null,"track-cross","track-cross",-472197001),(function (_,start_direction,___$1,___$2,___$3,___$4){
-var G__36618 = start_direction;
-var G__36618__$1 = (((G__36618 instanceof cljs.core.Keyword))?G__36618.fqn:null);
-switch (G__36618__$1) {
+var G__45650 = start_direction;
+var G__45650__$1 = (((G__45650 instanceof cljs.core.Keyword))?G__45650.fqn:null);
+switch (G__45650__$1) {
 case "n":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"n","n",562130025),new cljs.core.Keyword(null,"s","s",1705939918)], null)], null);
 

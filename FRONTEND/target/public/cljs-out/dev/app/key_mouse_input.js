@@ -30,23 +30,23 @@ return null;
 }
 });
 app.key_mouse_input.setup_key_handler = (function app$key_mouse_input$setup_key_handler(){
-return gamebase.events.add_handler.call(null,new cljs.core.Keyword(null,"canvas-key-typed","canvas-key-typed",258203546),(function (p__40931){
-var map__40932 = p__40931;
-var map__40932__$1 = ((((!((map__40932 == null)))?(((((map__40932.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__40932.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__40932):map__40932);
-var key = cljs.core.get.call(null,map__40932__$1,new cljs.core.Keyword(null,"key","key",-1516042587));
-var x = cljs.core.get.call(null,map__40932__$1,new cljs.core.Keyword(null,"x","x",2099068185));
-var y = cljs.core.get.call(null,map__40932__$1,new cljs.core.Keyword(null,"y","y",-1757859776));
+return gamebase.events.add_handler.call(null,new cljs.core.Keyword(null,"canvas-key-typed","canvas-key-typed",258203546),(function (p__48275){
+var map__48276 = p__48275;
+var map__48276__$1 = ((((!((map__48276 == null)))?(((((map__48276.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__48276.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__48276):map__48276);
+var key = cljs.core.get.call(null,map__48276__$1,new cljs.core.Keyword(null,"key","key",-1516042587));
+var x = cljs.core.get.call(null,map__48276__$1,new cljs.core.Keyword(null,"x","x",2099068185));
+var y = cljs.core.get.call(null,map__48276__$1,new cljs.core.Keyword(null,"y","y",-1757859776));
 var temp__5457__auto__ = gamebase.canvas_control.get_canvas_to_world_converters.call(null);
 if(cljs.core.truth_(temp__5457__auto__)){
-var vec__40934 = temp__5457__auto__;
-var conv_x = cljs.core.nth.call(null,vec__40934,(0),null);
-var conv_y = cljs.core.nth.call(null,vec__40934,(1),null);
+var vec__48278 = temp__5457__auto__;
+var conv_x = cljs.core.nth.call(null,vec__48278,(0),null);
+var conv_y = cljs.core.nth.call(null,vec__48278,(1),null);
 var world_x = conv_x.call(null,x);
 var world_y = conv_y.call(null,y);
 var tile_x = cljs.core.quot.call(null,world_x,(32));
 var tile_y = cljs.core.quot.call(null,world_y,(32));
-var G__40937 = key;
-switch (G__40937) {
+var G__48281 = key;
+switch (G__48281) {
 case "a":
 var id = cljs.core.keyword.call(null,["loc-",cljs.core.str.cljs$core$IFn$_invoke$arity$1(app.state.get_fresh_entity_id.call(null))].join(''));
 var loc = app.ecs.entities.locomotive.mk_entity.call(null,id,(1),(1));
@@ -74,57 +74,57 @@ var car2_id = cljs.core.keyword.call(null,["car-",cljs.core.str.cljs$core$IFn$_i
 var car2 = app.ecs.entities.carriage.mk_entity.call(null,car2_id,(tile_x__$1 - (2)),tile_y__$1);
 var car3_id = cljs.core.keyword.call(null,["car-",cljs.core.str.cljs$core$IFn$_invoke$arity$1(app.state.get_fresh_entity_id.call(null))].join(''));
 var car3 = app.ecs.entities.carriage.mk_entity.call(null,car3_id,(tile_x__$1 - (3)),tile_y__$1);
-var seq__40938_40943 = cljs.core.seq.call(null,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [loc,car,car2,car3], null));
-var chunk__40939_40944 = null;
-var count__40940_40945 = (0);
-var i__40941_40946 = (0);
+var seq__48282_48287 = cljs.core.seq.call(null,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [loc,car,car2,car3], null));
+var chunk__48283_48288 = null;
+var count__48284_48289 = (0);
+var i__48285_48290 = (0);
 while(true){
-if((i__40941_40946 < count__40940_40945)){
-var e_40947 = cljs.core._nth.call(null,chunk__40939_40944,i__40941_40946);
-app.world_interop.inject_entity.call(null,e_40947);
+if((i__48285_48290 < count__48284_48289)){
+var e_48291 = cljs.core._nth.call(null,chunk__48283_48288,i__48285_48290);
+app.world_interop.inject_entity.call(null,e_48291);
 
-app.world_interop.send_to_entity.call(null,e_40947,new cljs.core.Keyword("gamebase.ecs","init","gamebase.ecs/init",-1371715660));
+app.world_interop.send_to_entity.call(null,e_48291,new cljs.core.Keyword("gamebase.ecs","init","gamebase.ecs/init",-1371715660));
 
 
-var G__40948 = seq__40938_40943;
-var G__40949 = chunk__40939_40944;
-var G__40950 = count__40940_40945;
-var G__40951 = (i__40941_40946 + (1));
-seq__40938_40943 = G__40948;
-chunk__40939_40944 = G__40949;
-count__40940_40945 = G__40950;
-i__40941_40946 = G__40951;
+var G__48292 = seq__48282_48287;
+var G__48293 = chunk__48283_48288;
+var G__48294 = count__48284_48289;
+var G__48295 = (i__48285_48290 + (1));
+seq__48282_48287 = G__48292;
+chunk__48283_48288 = G__48293;
+count__48284_48289 = G__48294;
+i__48285_48290 = G__48295;
 continue;
 } else {
-var temp__5457__auto___40952__$1 = cljs.core.seq.call(null,seq__40938_40943);
-if(temp__5457__auto___40952__$1){
-var seq__40938_40953__$1 = temp__5457__auto___40952__$1;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__40938_40953__$1)){
-var c__4351__auto___40954 = cljs.core.chunk_first.call(null,seq__40938_40953__$1);
-var G__40955 = cljs.core.chunk_rest.call(null,seq__40938_40953__$1);
-var G__40956 = c__4351__auto___40954;
-var G__40957 = cljs.core.count.call(null,c__4351__auto___40954);
-var G__40958 = (0);
-seq__40938_40943 = G__40955;
-chunk__40939_40944 = G__40956;
-count__40940_40945 = G__40957;
-i__40941_40946 = G__40958;
+var temp__5457__auto___48296__$1 = cljs.core.seq.call(null,seq__48282_48287);
+if(temp__5457__auto___48296__$1){
+var seq__48282_48297__$1 = temp__5457__auto___48296__$1;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__48282_48297__$1)){
+var c__4351__auto___48298 = cljs.core.chunk_first.call(null,seq__48282_48297__$1);
+var G__48299 = cljs.core.chunk_rest.call(null,seq__48282_48297__$1);
+var G__48300 = c__4351__auto___48298;
+var G__48301 = cljs.core.count.call(null,c__4351__auto___48298);
+var G__48302 = (0);
+seq__48282_48287 = G__48299;
+chunk__48283_48288 = G__48300;
+count__48284_48289 = G__48301;
+i__48285_48290 = G__48302;
 continue;
 } else {
-var e_40959 = cljs.core.first.call(null,seq__40938_40953__$1);
-app.world_interop.inject_entity.call(null,e_40959);
+var e_48303 = cljs.core.first.call(null,seq__48282_48297__$1);
+app.world_interop.inject_entity.call(null,e_48303);
 
-app.world_interop.send_to_entity.call(null,e_40959,new cljs.core.Keyword("gamebase.ecs","init","gamebase.ecs/init",-1371715660));
+app.world_interop.send_to_entity.call(null,e_48303,new cljs.core.Keyword("gamebase.ecs","init","gamebase.ecs/init",-1371715660));
 
 
-var G__40960 = cljs.core.next.call(null,seq__40938_40953__$1);
-var G__40961 = null;
-var G__40962 = (0);
-var G__40963 = (0);
-seq__40938_40943 = G__40960;
-chunk__40939_40944 = G__40961;
-count__40940_40945 = G__40962;
-i__40941_40946 = G__40963;
+var G__48304 = cljs.core.next.call(null,seq__48282_48297__$1);
+var G__48305 = null;
+var G__48306 = (0);
+var G__48307 = (0);
+seq__48282_48287 = G__48304;
+chunk__48283_48288 = G__48305;
+count__48284_48289 = G__48306;
+i__48285_48290 = G__48307;
 continue;
 }
 } else {
@@ -157,7 +157,7 @@ return app.scratch.scratch.toggle.call(null);
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__40937)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__48281)].join('')));
 
 }
 } else {
@@ -166,12 +166,12 @@ return null;
 }));
 });
 app.key_mouse_input.setup_mouse_handler = (function app$key_mouse_input$setup_mouse_handler(){
-return gamebase.events.add_handler.call(null,new cljs.core.Keyword(null,"canvas-mouse-clicked","canvas-mouse-clicked",-2064464393),(function (p__40964){
-var map__40965 = p__40964;
-var map__40965__$1 = ((((!((map__40965 == null)))?(((((map__40965.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__40965.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__40965):map__40965);
-var button = cljs.core.get.call(null,map__40965__$1,new cljs.core.Keyword(null,"button","button",1456579943));
-var x = cljs.core.get.call(null,map__40965__$1,new cljs.core.Keyword(null,"x","x",2099068185));
-var y = cljs.core.get.call(null,map__40965__$1,new cljs.core.Keyword(null,"y","y",-1757859776));
+return gamebase.events.add_handler.call(null,new cljs.core.Keyword(null,"canvas-mouse-clicked","canvas-mouse-clicked",-2064464393),(function (p__48308){
+var map__48309 = p__48308;
+var map__48309__$1 = ((((!((map__48309 == null)))?(((((map__48309.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__48309.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__48309):map__48309);
+var button = cljs.core.get.call(null,map__48309__$1,new cljs.core.Keyword(null,"button","button",1456579943));
+var x = cljs.core.get.call(null,map__48309__$1,new cljs.core.Keyword(null,"x","x",2099068185));
+var y = cljs.core.get.call(null,map__48309__$1,new cljs.core.Keyword(null,"y","y",-1757859776));
 var temp__5455__auto__ = cljs.core.get_in.call(null,cljs.core.deref.call(null,app.ui.ui_state.ui_state),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"key-mouse","key-mouse",-747855985),new cljs.core.Keyword(null,"click-handler","click-handler",1157178954)], null));
 if(cljs.core.truth_(temp__5455__auto__)){
 var handler = temp__5455__auto__;

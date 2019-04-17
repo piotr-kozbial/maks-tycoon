@@ -43,8 +43,8 @@ gamebase.geometry._normalize_radians = (function gamebase$geometry$_normalize_ra
 var out = radians;
 while(true){
 if((out >= gamebase.geometry.pi)){
-var G__36223 = (out - ((2) * gamebase.geometry.pi));
-out = G__36223;
+var G__45251 = (out - ((2) * gamebase.geometry.pi));
+out = G__45251;
 continue;
 } else {
 return out;
@@ -77,11 +77,11 @@ gamebase.geometry.in_radians = (function gamebase$geometry$in_radians(angle){
 if(typeof angle === 'number'){
 return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"radians","radians",1835725084),angle], null);
 } else {
-var map__36199 = angle;
-var map__36199__$1 = ((((!((map__36199 == null)))?(((((map__36199.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36199.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36199):map__36199);
-var radians = cljs.core.get.call(null,map__36199__$1,new cljs.core.Keyword(null,"radians","radians",1835725084));
-var degrees = cljs.core.get.call(null,map__36199__$1,new cljs.core.Keyword(null,"degrees","degrees",2015169884));
-var slope = cljs.core.get.call(null,map__36199__$1,new cljs.core.Keyword(null,"slope","slope",-1227938123));
+var map__45227 = angle;
+var map__45227__$1 = ((((!((map__45227 == null)))?(((((map__45227.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45227.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45227):map__45227);
+var radians = cljs.core.get.call(null,map__45227__$1,new cljs.core.Keyword(null,"radians","radians",1835725084));
+var degrees = cljs.core.get.call(null,map__45227__$1,new cljs.core.Keyword(null,"degrees","degrees",2015169884));
+var slope = cljs.core.get.call(null,map__45227__$1,new cljs.core.Keyword(null,"slope","slope",-1227938123));
 if(cljs.core.truth_(radians)){
 return angle;
 } else {
@@ -89,9 +89,9 @@ if(cljs.core.truth_(degrees)){
 return cljs.core.assoc.call(null,angle,new cljs.core.Keyword(null,"radians","radians",1835725084),(gamebase.geometry.radian_to_degree_coeff * degrees));
 } else {
 if(cljs.core.truth_(slope)){
-var vec__36201 = slope;
-var dx = cljs.core.nth.call(null,vec__36201,(0),null);
-var dy = cljs.core.nth.call(null,vec__36201,(1),null);
+var vec__45229 = slope;
+var dx = cljs.core.nth.call(null,vec__45229,(0),null);
+var dy = cljs.core.nth.call(null,vec__45229,(1),null);
 return cljs.core.assoc.call(null,angle,new cljs.core.Keyword(null,"radians","radians",1835725084),gamebase.geometry._slope_to_radians.call(null,dx,dy));
 } else {
 return null;
@@ -105,11 +105,11 @@ gamebase.geometry.get_radians = (function gamebase$geometry$get_radians(angle){
 if(typeof angle === 'number'){
 return angle;
 } else {
-var map__36204 = angle;
-var map__36204__$1 = ((((!((map__36204 == null)))?(((((map__36204.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36204.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36204):map__36204);
-var radians = cljs.core.get.call(null,map__36204__$1,new cljs.core.Keyword(null,"radians","radians",1835725084));
-var degrees = cljs.core.get.call(null,map__36204__$1,new cljs.core.Keyword(null,"degrees","degrees",2015169884));
-var slope = cljs.core.get.call(null,map__36204__$1,new cljs.core.Keyword(null,"slope","slope",-1227938123));
+var map__45232 = angle;
+var map__45232__$1 = ((((!((map__45232 == null)))?(((((map__45232.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45232.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45232):map__45232);
+var radians = cljs.core.get.call(null,map__45232__$1,new cljs.core.Keyword(null,"radians","radians",1835725084));
+var degrees = cljs.core.get.call(null,map__45232__$1,new cljs.core.Keyword(null,"degrees","degrees",2015169884));
+var slope = cljs.core.get.call(null,map__45232__$1,new cljs.core.Keyword(null,"slope","slope",-1227938123));
 if(cljs.core.truth_(radians)){
 return radians;
 } else {
@@ -117,9 +117,9 @@ if(cljs.core.truth_(degrees)){
 return (gamebase.geometry.radian_to_degree_coeff * degrees);
 } else {
 if(cljs.core.truth_(slope)){
-var vec__36206 = slope;
-var dx = cljs.core.nth.call(null,vec__36206,(0),null);
-var dy = cljs.core.nth.call(null,vec__36206,(1),null);
+var vec__45234 = slope;
+var dx = cljs.core.nth.call(null,vec__45234,(0),null);
+var dy = cljs.core.nth.call(null,vec__45234,(1),null);
 return gamebase.geometry._slope_to_radians.call(null,dx,dy);
 } else {
 return null;
@@ -187,11 +187,11 @@ gamebase.geometry.in_degrees = (function gamebase$geometry$in_degrees(angle){
 if(typeof angle === 'number'){
 return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"degrees","degrees",2015169884),(gamebase.geometry.degree_to_radian_coeff * angle)], null);
 } else {
-var map__36209 = angle;
-var map__36209__$1 = ((((!((map__36209 == null)))?(((((map__36209.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36209.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36209):map__36209);
-var radians = cljs.core.get.call(null,map__36209__$1,new cljs.core.Keyword(null,"radians","radians",1835725084));
-var degrees = cljs.core.get.call(null,map__36209__$1,new cljs.core.Keyword(null,"degrees","degrees",2015169884));
-var slope = cljs.core.get.call(null,map__36209__$1,new cljs.core.Keyword(null,"slope","slope",-1227938123));
+var map__45237 = angle;
+var map__45237__$1 = ((((!((map__45237 == null)))?(((((map__45237.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45237.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45237):map__45237);
+var radians = cljs.core.get.call(null,map__45237__$1,new cljs.core.Keyword(null,"radians","radians",1835725084));
+var degrees = cljs.core.get.call(null,map__45237__$1,new cljs.core.Keyword(null,"degrees","degrees",2015169884));
+var slope = cljs.core.get.call(null,map__45237__$1,new cljs.core.Keyword(null,"slope","slope",-1227938123));
 if(cljs.core.truth_(degrees)){
 return angle;
 } else {
@@ -199,9 +199,9 @@ if(cljs.core.truth_(radians)){
 return cljs.core.assoc.call(null,angle,new cljs.core.Keyword(null,"degrees","degrees",2015169884),(gamebase.geometry.degree_to_radian_coeff * radians));
 } else {
 if(cljs.core.truth_(slope)){
-var vec__36211 = slope;
-var dx = cljs.core.nth.call(null,vec__36211,(0),null);
-var dy = cljs.core.nth.call(null,vec__36211,(1),null);
+var vec__45239 = slope;
+var dx = cljs.core.nth.call(null,vec__45239,(0),null);
+var dy = cljs.core.nth.call(null,vec__45239,(1),null);
 return cljs.core.assoc.call(null,angle,new cljs.core.Keyword(null,"degrees","degrees",2015169884),(gamebase.geometry.degree_to_radian_coeff * gamebase.geometry._slope_to_radians.call(null,dx,dy)));
 } else {
 return null;
@@ -215,11 +215,11 @@ gamebase.geometry.get_degrees = (function gamebase$geometry$get_degrees(angle){
 if(typeof angle === 'number'){
 return (gamebase.geometry.degree_to_radian_coeff * angle);
 } else {
-var map__36214 = angle;
-var map__36214__$1 = ((((!((map__36214 == null)))?(((((map__36214.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36214.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36214):map__36214);
-var radians = cljs.core.get.call(null,map__36214__$1,new cljs.core.Keyword(null,"radians","radians",1835725084));
-var degrees = cljs.core.get.call(null,map__36214__$1,new cljs.core.Keyword(null,"degrees","degrees",2015169884));
-var slope = cljs.core.get.call(null,map__36214__$1,new cljs.core.Keyword(null,"slope","slope",-1227938123));
+var map__45242 = angle;
+var map__45242__$1 = ((((!((map__45242 == null)))?(((((map__45242.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45242.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45242):map__45242);
+var radians = cljs.core.get.call(null,map__45242__$1,new cljs.core.Keyword(null,"radians","radians",1835725084));
+var degrees = cljs.core.get.call(null,map__45242__$1,new cljs.core.Keyword(null,"degrees","degrees",2015169884));
+var slope = cljs.core.get.call(null,map__45242__$1,new cljs.core.Keyword(null,"slope","slope",-1227938123));
 if(cljs.core.truth_(degrees)){
 return degrees;
 } else {
@@ -227,9 +227,9 @@ if(cljs.core.truth_(radians)){
 return (gamebase.geometry.degree_to_radian_coeff * radians);
 } else {
 if(cljs.core.truth_(slope)){
-var vec__36216 = slope;
-var dx = cljs.core.nth.call(null,vec__36216,(0),null);
-var dy = cljs.core.nth.call(null,vec__36216,(1),null);
+var vec__45244 = slope;
+var dx = cljs.core.nth.call(null,vec__45244,(0),null);
+var dy = cljs.core.nth.call(null,vec__45244,(1),null);
 return (gamebase.geometry.degree_to_radian_coeff * gamebase.geometry._slope_to_radians.call(null,dx,dy));
 } else {
 return null;
@@ -292,11 +292,11 @@ gamebase.geometry.in_slope = (function gamebase$geometry$in_slope(angle){
 if(typeof angle === 'number'){
 return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"slope","slope",-1227938123),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [Math.cos(angle),Math.sin(angle)], null)], null);
 } else {
-var map__36219 = angle;
-var map__36219__$1 = ((((!((map__36219 == null)))?(((((map__36219.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36219.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36219):map__36219);
-var radians = cljs.core.get.call(null,map__36219__$1,new cljs.core.Keyword(null,"radians","radians",1835725084));
-var degrees = cljs.core.get.call(null,map__36219__$1,new cljs.core.Keyword(null,"degrees","degrees",2015169884));
-var slope = cljs.core.get.call(null,map__36219__$1,new cljs.core.Keyword(null,"slope","slope",-1227938123));
+var map__45247 = angle;
+var map__45247__$1 = ((((!((map__45247 == null)))?(((((map__45247.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45247.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45247):map__45247);
+var radians = cljs.core.get.call(null,map__45247__$1,new cljs.core.Keyword(null,"radians","radians",1835725084));
+var degrees = cljs.core.get.call(null,map__45247__$1,new cljs.core.Keyword(null,"degrees","degrees",2015169884));
+var slope = cljs.core.get.call(null,map__45247__$1,new cljs.core.Keyword(null,"slope","slope",-1227938123));
 if(cljs.core.truth_(slope)){
 return angle;
 } else {
@@ -318,11 +318,11 @@ gamebase.geometry.get_slope = (function gamebase$geometry$get_slope(angle){
 if(typeof angle === 'number'){
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [Math.cos(angle),Math.sin(angle)], null);
 } else {
-var map__36221 = angle;
-var map__36221__$1 = ((((!((map__36221 == null)))?(((((map__36221.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36221.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36221):map__36221);
-var radians = cljs.core.get.call(null,map__36221__$1,new cljs.core.Keyword(null,"radians","radians",1835725084));
-var degrees = cljs.core.get.call(null,map__36221__$1,new cljs.core.Keyword(null,"degrees","degrees",2015169884));
-var slope = cljs.core.get.call(null,map__36221__$1,new cljs.core.Keyword(null,"slope","slope",-1227938123));
+var map__45249 = angle;
+var map__45249__$1 = ((((!((map__45249 == null)))?(((((map__45249.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45249.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45249):map__45249);
+var radians = cljs.core.get.call(null,map__45249__$1,new cljs.core.Keyword(null,"radians","radians",1835725084));
+var degrees = cljs.core.get.call(null,map__45249__$1,new cljs.core.Keyword(null,"degrees","degrees",2015169884));
+var slope = cljs.core.get.call(null,map__45249__$1,new cljs.core.Keyword(null,"slope","slope",-1227938123));
 if(cljs.core.truth_(slope)){
 return slope;
 } else {
@@ -501,15 +501,15 @@ if(cljs.core._EQ_.call(null,gamebase.geometry.line_segment.call(null,new cljs.co
 throw (new Error("Assert failed: (= (line-segment [2 3] [4 -1]) {:path-type :line-segment, :p1 [2 3], :p2 [4 -1]})"));
 }
 
-cljs.core._add_method.call(null,gamebase.geometry.path_length,new cljs.core.Keyword(null,"line-segment","line-segment",-798085781),(function (p__36224){
-var map__36225 = p__36224;
-var map__36225__$1 = ((((!((map__36225 == null)))?(((((map__36225.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36225.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36225):map__36225);
-var vec__36226 = cljs.core.get.call(null,map__36225__$1,new cljs.core.Keyword(null,"p1","p1",-936759954));
-var x1 = cljs.core.nth.call(null,vec__36226,(0),null);
-var y1 = cljs.core.nth.call(null,vec__36226,(1),null);
-var vec__36229 = cljs.core.get.call(null,map__36225__$1,new cljs.core.Keyword(null,"p2","p2",905500641));
-var x2 = cljs.core.nth.call(null,vec__36229,(0),null);
-var y2 = cljs.core.nth.call(null,vec__36229,(1),null);
+cljs.core._add_method.call(null,gamebase.geometry.path_length,new cljs.core.Keyword(null,"line-segment","line-segment",-798085781),(function (p__45252){
+var map__45253 = p__45252;
+var map__45253__$1 = ((((!((map__45253 == null)))?(((((map__45253.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45253.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45253):map__45253);
+var vec__45254 = cljs.core.get.call(null,map__45253__$1,new cljs.core.Keyword(null,"p1","p1",-936759954));
+var x1 = cljs.core.nth.call(null,vec__45254,(0),null);
+var y1 = cljs.core.nth.call(null,vec__45254,(1),null);
+var vec__45257 = cljs.core.get.call(null,map__45253__$1,new cljs.core.Keyword(null,"p2","p2",905500641));
+var x2 = cljs.core.nth.call(null,vec__45257,(0),null);
+var y2 = cljs.core.nth.call(null,vec__45257,(1),null);
 var dx = (x2 - x1);
 var dy = (y2 - y1);
 return gamebase.geometry.sqrt.call(null,((dx * dx) + (dy * dy)));
@@ -525,16 +525,16 @@ if(cljs.core._EQ_.call(null,gamebase.geometry.path_length.call(null,gamebase.geo
 throw (new Error("Assert failed: (= (path-length (line-segment [-2 5] [1 9])) 5.0)"));
 }
 
-cljs.core._add_method.call(null,gamebase.geometry.path_point_at_length,new cljs.core.Keyword(null,"line-segment","line-segment",-798085781),(function (p__36233,length){
-var map__36234 = p__36233;
-var map__36234__$1 = ((((!((map__36234 == null)))?(((((map__36234.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36234.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36234):map__36234);
-var segment = map__36234__$1;
-var vec__36235 = cljs.core.get.call(null,map__36234__$1,new cljs.core.Keyword(null,"p1","p1",-936759954));
-var x1 = cljs.core.nth.call(null,vec__36235,(0),null);
-var y1 = cljs.core.nth.call(null,vec__36235,(1),null);
-var vec__36238 = cljs.core.get.call(null,map__36234__$1,new cljs.core.Keyword(null,"p2","p2",905500641));
-var x2 = cljs.core.nth.call(null,vec__36238,(0),null);
-var y2 = cljs.core.nth.call(null,vec__36238,(1),null);
+cljs.core._add_method.call(null,gamebase.geometry.path_point_at_length,new cljs.core.Keyword(null,"line-segment","line-segment",-798085781),(function (p__45261,length){
+var map__45262 = p__45261;
+var map__45262__$1 = ((((!((map__45262 == null)))?(((((map__45262.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45262.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45262):map__45262);
+var segment = map__45262__$1;
+var vec__45263 = cljs.core.get.call(null,map__45262__$1,new cljs.core.Keyword(null,"p1","p1",-936759954));
+var x1 = cljs.core.nth.call(null,vec__45263,(0),null);
+var y1 = cljs.core.nth.call(null,vec__45263,(1),null);
+var vec__45266 = cljs.core.get.call(null,map__45262__$1,new cljs.core.Keyword(null,"p2","p2",905500641));
+var x2 = cljs.core.nth.call(null,vec__45266,(0),null);
+var y2 = cljs.core.nth.call(null,vec__45266,(1),null);
 var dx = (x2 - x1);
 var dy = (y2 - y1);
 var full_length = gamebase.geometry.path_length.call(null,segment);
@@ -543,16 +543,16 @@ var y_factor = (dy / full_length);
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(x1 + (length * x_factor)),(y1 + (length * y_factor))], null);
 }));
 
-cljs.core._add_method.call(null,gamebase.geometry.angle_at_length,new cljs.core.Keyword(null,"line-segment","line-segment",-798085781),(function (p__36242,length){
-var map__36243 = p__36242;
-var map__36243__$1 = ((((!((map__36243 == null)))?(((((map__36243.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36243.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36243):map__36243);
-var segment = map__36243__$1;
-var vec__36244 = cljs.core.get.call(null,map__36243__$1,new cljs.core.Keyword(null,"p1","p1",-936759954));
-var x1 = cljs.core.nth.call(null,vec__36244,(0),null);
-var y1 = cljs.core.nth.call(null,vec__36244,(1),null);
-var vec__36247 = cljs.core.get.call(null,map__36243__$1,new cljs.core.Keyword(null,"p2","p2",905500641));
-var x2 = cljs.core.nth.call(null,vec__36247,(0),null);
-var y2 = cljs.core.nth.call(null,vec__36247,(1),null);
+cljs.core._add_method.call(null,gamebase.geometry.angle_at_length,new cljs.core.Keyword(null,"line-segment","line-segment",-798085781),(function (p__45270,length){
+var map__45271 = p__45270;
+var map__45271__$1 = ((((!((map__45271 == null)))?(((((map__45271.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45271.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45271):map__45271);
+var segment = map__45271__$1;
+var vec__45272 = cljs.core.get.call(null,map__45271__$1,new cljs.core.Keyword(null,"p1","p1",-936759954));
+var x1 = cljs.core.nth.call(null,vec__45272,(0),null);
+var y1 = cljs.core.nth.call(null,vec__45272,(1),null);
+var vec__45275 = cljs.core.get.call(null,map__45271__$1,new cljs.core.Keyword(null,"p2","p2",905500641));
+var x2 = cljs.core.nth.call(null,vec__45275,(0),null);
+var y2 = cljs.core.nth.call(null,vec__45275,(1),null);
 var dx = (x2 - x1);
 var dy = (y2 - y1);
 return gamebase.geometry.get_radians.call(null,gamebase.geometry.slope.call(null,dx,dy));
@@ -565,16 +565,16 @@ return gamebase.geometry.path_point_at_length.call(null,my_path,(gamebase.geomet
 throw (new Error("Assert failed: (= (let [my-path (line-segment [-2 5] [1 9])] (path-point-at-length my-path (/ (path-length my-path) 2))) [-0.5 7.0])"));
 }
 
-cljs.core._add_method.call(null,gamebase.geometry.translate_path,new cljs.core.Keyword(null,"line-segment","line-segment",-798085781),(function (p__36251,dx,dy){
-var map__36252 = p__36251;
-var map__36252__$1 = ((((!((map__36252 == null)))?(((((map__36252.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36252.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36252):map__36252);
-var segment = map__36252__$1;
-var vec__36253 = cljs.core.get.call(null,map__36252__$1,new cljs.core.Keyword(null,"p1","p1",-936759954));
-var x1 = cljs.core.nth.call(null,vec__36253,(0),null);
-var y1 = cljs.core.nth.call(null,vec__36253,(1),null);
-var vec__36256 = cljs.core.get.call(null,map__36252__$1,new cljs.core.Keyword(null,"p2","p2",905500641));
-var x2 = cljs.core.nth.call(null,vec__36256,(0),null);
-var y2 = cljs.core.nth.call(null,vec__36256,(1),null);
+cljs.core._add_method.call(null,gamebase.geometry.translate_path,new cljs.core.Keyword(null,"line-segment","line-segment",-798085781),(function (p__45279,dx,dy){
+var map__45280 = p__45279;
+var map__45280__$1 = ((((!((map__45280 == null)))?(((((map__45280.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45280.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45280):map__45280);
+var segment = map__45280__$1;
+var vec__45281 = cljs.core.get.call(null,map__45280__$1,new cljs.core.Keyword(null,"p1","p1",-936759954));
+var x1 = cljs.core.nth.call(null,vec__45281,(0),null);
+var y1 = cljs.core.nth.call(null,vec__45281,(1),null);
+var vec__45284 = cljs.core.get.call(null,map__45280__$1,new cljs.core.Keyword(null,"p2","p2",905500641));
+var x2 = cljs.core.nth.call(null,vec__45284,(0),null);
+var y2 = cljs.core.nth.call(null,vec__45284,(1),null);
 return cljs.core.assoc.call(null,segment,new cljs.core.Keyword(null,"p1","p1",-936759954),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(x1 + dx),(y1 + dy)], null),new cljs.core.Keyword(null,"p2","p2",905500641),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(x2 + dx),(y2 + dy)], null));
 }));
 gamebase.geometry.circle_arc = (function gamebase$geometry$circle_arc(center,radius,angle_start,angle_end,direction){
@@ -590,8 +590,8 @@ gamebase.geometry.normalize_to_2pi = (function gamebase$geometry$normalize_to_2p
 var radians_SINGLEQUOTE_ = (function (){var r = radians;
 while(true){
 if((r >= ((2) * gamebase.geometry.pi))){
-var G__36285 = (r - ((2) * gamebase.geometry.pi));
-r = G__36285;
+var G__45313 = (r - ((2) * gamebase.geometry.pi));
+r = G__45313;
 continue;
 } else {
 return r;
@@ -602,8 +602,8 @@ break;
 var radians_SINGLEQUOTE__SINGLEQUOTE_ = (function (){var r = radians_SINGLEQUOTE_;
 while(true){
 if((r < (0))){
-var G__36286 = (r + ((2) * gamebase.geometry.pi));
-r = G__36286;
+var G__45314 = (r + ((2) * gamebase.geometry.pi));
+r = G__45314;
 continue;
 } else {
 return r;
@@ -614,20 +614,20 @@ break;
 return radians_SINGLEQUOTE__SINGLEQUOTE_;
 });
 
-cljs.core._add_method.call(null,gamebase.geometry.precompute,new cljs.core.Keyword(null,"circle-arc","circle-arc",-1275950224),(function (p__36260){
-var map__36261 = p__36260;
-var map__36261__$1 = ((((!((map__36261 == null)))?(((((map__36261.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36261.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36261):map__36261);
-var path = map__36261__$1;
-var vec__36262 = cljs.core.get.call(null,map__36261__$1,new cljs.core.Keyword(null,"center","center",-748944368));
-var xc = cljs.core.nth.call(null,vec__36262,(0),null);
-var yc = cljs.core.nth.call(null,vec__36262,(1),null);
-var radius = cljs.core.get.call(null,map__36261__$1,new cljs.core.Keyword(null,"radius","radius",-2073122258));
-var angle_start = cljs.core.get.call(null,map__36261__$1,new cljs.core.Keyword(null,"angle-start","angle-start",1883445974));
-var angle_end = cljs.core.get.call(null,map__36261__$1,new cljs.core.Keyword(null,"angle-end","angle-end",1226780972));
-var direction = cljs.core.get.call(null,map__36261__$1,new cljs.core.Keyword(null,"direction","direction",-633359395));
-var G__36266 = direction;
-var G__36266__$1 = (((G__36266 instanceof cljs.core.Keyword))?G__36266.fqn:null);
-switch (G__36266__$1) {
+cljs.core._add_method.call(null,gamebase.geometry.precompute,new cljs.core.Keyword(null,"circle-arc","circle-arc",-1275950224),(function (p__45288){
+var map__45289 = p__45288;
+var map__45289__$1 = ((((!((map__45289 == null)))?(((((map__45289.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45289.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45289):map__45289);
+var path = map__45289__$1;
+var vec__45290 = cljs.core.get.call(null,map__45289__$1,new cljs.core.Keyword(null,"center","center",-748944368));
+var xc = cljs.core.nth.call(null,vec__45290,(0),null);
+var yc = cljs.core.nth.call(null,vec__45290,(1),null);
+var radius = cljs.core.get.call(null,map__45289__$1,new cljs.core.Keyword(null,"radius","radius",-2073122258));
+var angle_start = cljs.core.get.call(null,map__45289__$1,new cljs.core.Keyword(null,"angle-start","angle-start",1883445974));
+var angle_end = cljs.core.get.call(null,map__45289__$1,new cljs.core.Keyword(null,"angle-end","angle-end",1226780972));
+var direction = cljs.core.get.call(null,map__45289__$1,new cljs.core.Keyword(null,"direction","direction",-633359395));
+var G__45294 = direction;
+var G__45294__$1 = (((G__45294 instanceof cljs.core.Keyword))?G__45294.fqn:null);
+switch (G__45294__$1) {
 case "positive":
 var st = gamebase.geometry.normalize_to_2pi.call(null,gamebase.geometry.get_radians.call(null,angle_start));
 var en0 = gamebase.geometry.normalize_to_2pi.call(null,gamebase.geometry.get_radians.call(null,angle_end));
@@ -643,7 +643,7 @@ return cljs.core.assoc.call(null,path,new cljs.core.Keyword(null,"st","st",14552
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36266__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45294__$1)].join('')));
 
 }
 }));
@@ -673,18 +673,18 @@ throw (new Error("Assert failed: (= (path-length (circle-arc [0 0] 2 (degrees (-
 }
 
 cljs.core._add_method.call(null,gamebase.geometry.path_point_at_length,new cljs.core.Keyword(null,"circle-arc","circle-arc",-1275950224),(function (path,length){
-var map__36267 = gamebase.geometry.precomputed.call(null,path);
-var map__36267__$1 = ((((!((map__36267 == null)))?(((((map__36267.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36267.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36267):map__36267);
-var vec__36268 = cljs.core.get.call(null,map__36267__$1,new cljs.core.Keyword(null,"center","center",-748944368));
-var xc = cljs.core.nth.call(null,vec__36268,(0),null);
-var yc = cljs.core.nth.call(null,vec__36268,(1),null);
-var radius = cljs.core.get.call(null,map__36267__$1,new cljs.core.Keyword(null,"radius","radius",-2073122258));
-var st = cljs.core.get.call(null,map__36267__$1,new cljs.core.Keyword(null,"st","st",1455255828));
-var en = cljs.core.get.call(null,map__36267__$1,new cljs.core.Keyword(null,"en","en",88457073));
-var direction = cljs.core.get.call(null,map__36267__$1,new cljs.core.Keyword(null,"direction","direction",-633359395));
-var angle = (function (){var G__36272 = direction;
-var G__36272__$1 = (((G__36272 instanceof cljs.core.Keyword))?G__36272.fqn:null);
-switch (G__36272__$1) {
+var map__45295 = gamebase.geometry.precomputed.call(null,path);
+var map__45295__$1 = ((((!((map__45295 == null)))?(((((map__45295.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45295.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45295):map__45295);
+var vec__45296 = cljs.core.get.call(null,map__45295__$1,new cljs.core.Keyword(null,"center","center",-748944368));
+var xc = cljs.core.nth.call(null,vec__45296,(0),null);
+var yc = cljs.core.nth.call(null,vec__45296,(1),null);
+var radius = cljs.core.get.call(null,map__45295__$1,new cljs.core.Keyword(null,"radius","radius",-2073122258));
+var st = cljs.core.get.call(null,map__45295__$1,new cljs.core.Keyword(null,"st","st",1455255828));
+var en = cljs.core.get.call(null,map__45295__$1,new cljs.core.Keyword(null,"en","en",88457073));
+var direction = cljs.core.get.call(null,map__45295__$1,new cljs.core.Keyword(null,"direction","direction",-633359395));
+var angle = (function (){var G__45300 = direction;
+var G__45300__$1 = (((G__45300 instanceof cljs.core.Keyword))?G__45300.fqn:null);
+switch (G__45300__$1) {
 case "positive":
 return (st + (length / radius));
 
@@ -694,7 +694,7 @@ return (st - (length / radius));
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36272__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45300__$1)].join('')));
 
 }
 })();
@@ -702,17 +702,17 @@ return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMP
 }));
 
 cljs.core._add_method.call(null,gamebase.geometry.angle_at_length,new cljs.core.Keyword(null,"circle-arc","circle-arc",-1275950224),(function (path,length){
-var map__36273 = gamebase.geometry.precomputed.call(null,path);
-var map__36273__$1 = ((((!((map__36273 == null)))?(((((map__36273.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36273.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36273):map__36273);
-var vec__36274 = cljs.core.get.call(null,map__36273__$1,new cljs.core.Keyword(null,"center","center",-748944368));
-var xc = cljs.core.nth.call(null,vec__36274,(0),null);
-var yc = cljs.core.nth.call(null,vec__36274,(1),null);
-var radius = cljs.core.get.call(null,map__36273__$1,new cljs.core.Keyword(null,"radius","radius",-2073122258));
-var st = cljs.core.get.call(null,map__36273__$1,new cljs.core.Keyword(null,"st","st",1455255828));
-var direction = cljs.core.get.call(null,map__36273__$1,new cljs.core.Keyword(null,"direction","direction",-633359395));
-return gamebase.geometry.normalize_to_2pi.call(null,(function (){var G__36278 = direction;
-var G__36278__$1 = (((G__36278 instanceof cljs.core.Keyword))?G__36278.fqn:null);
-switch (G__36278__$1) {
+var map__45301 = gamebase.geometry.precomputed.call(null,path);
+var map__45301__$1 = ((((!((map__45301 == null)))?(((((map__45301.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45301.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45301):map__45301);
+var vec__45302 = cljs.core.get.call(null,map__45301__$1,new cljs.core.Keyword(null,"center","center",-748944368));
+var xc = cljs.core.nth.call(null,vec__45302,(0),null);
+var yc = cljs.core.nth.call(null,vec__45302,(1),null);
+var radius = cljs.core.get.call(null,map__45301__$1,new cljs.core.Keyword(null,"radius","radius",-2073122258));
+var st = cljs.core.get.call(null,map__45301__$1,new cljs.core.Keyword(null,"st","st",1455255828));
+var direction = cljs.core.get.call(null,map__45301__$1,new cljs.core.Keyword(null,"direction","direction",-633359395));
+return gamebase.geometry.normalize_to_2pi.call(null,(function (){var G__45306 = direction;
+var G__45306__$1 = (((G__45306 instanceof cljs.core.Keyword))?G__45306.fqn:null);
+switch (G__45306__$1) {
 case "positive":
 return ((st + (length / radius)) + (gamebase.geometry.pi / (2)));
 
@@ -722,30 +722,59 @@ return ((st - (length / radius)) - (gamebase.geometry.pi / (2)));
 
 break;
 default:
-throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__36278__$1)].join('')));
+throw (new Error(["No matching clause: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(G__45306__$1)].join('')));
 
 }
 })());
 }));
 
-cljs.core._add_method.call(null,gamebase.geometry.translate_path,new cljs.core.Keyword(null,"circle-arc","circle-arc",-1275950224),(function (p__36279,dx,dy){
-var map__36280 = p__36279;
-var map__36280__$1 = ((((!((map__36280 == null)))?(((((map__36280.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36280.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36280):map__36280);
-var arc = map__36280__$1;
-var vec__36281 = cljs.core.get.call(null,map__36280__$1,new cljs.core.Keyword(null,"center","center",-748944368));
-var xc = cljs.core.nth.call(null,vec__36281,(0),null);
-var yc = cljs.core.nth.call(null,vec__36281,(1),null);
+cljs.core._add_method.call(null,gamebase.geometry.translate_path,new cljs.core.Keyword(null,"circle-arc","circle-arc",-1275950224),(function (p__45307,dx,dy){
+var map__45308 = p__45307;
+var map__45308__$1 = ((((!((map__45308 == null)))?(((((map__45308.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45308.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45308):map__45308);
+var arc = map__45308__$1;
+var vec__45309 = cljs.core.get.call(null,map__45308__$1,new cljs.core.Keyword(null,"center","center",-748944368));
+var xc = cljs.core.nth.call(null,vec__45309,(0),null);
+var yc = cljs.core.nth.call(null,vec__45309,(1),null);
 return cljs.core.assoc.call(null,arc,new cljs.core.Keyword(null,"center","center",-748944368),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(xc + dx),(yc + dy)], null));
 }));
 gamebase.geometry.path_chain = (function gamebase$geometry$path_chain(paths){
 return new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"path-type","path-type",128945249),new cljs.core.Keyword(null,"path-chain","path-chain",-276161151),new cljs.core.Keyword(null,"paths","paths",-1807389588),cljs.core.apply.call(null,cljs.core.vector,paths)], null);
 });
 
-cljs.core._add_method.call(null,gamebase.geometry.path_length,new cljs.core.Keyword(null,"path-chain","path-chain",-276161151),(function (p__36290){
-var map__36291 = p__36290;
-var map__36291__$1 = ((((!((map__36291 == null)))?(((((map__36291.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__36291.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__36291):map__36291);
-var paths = cljs.core.get.call(null,map__36291__$1,new cljs.core.Keyword(null,"paths","paths",-1807389588));
-return cljs.core.reduce.call(null,cljs.core._PLUS_,cljs.core.map.call(null,gamebase.geometry.path_length,paths));
+cljs.core._add_method.call(null,gamebase.geometry.precompute,new cljs.core.Keyword(null,"path-chain","path-chain",-276161151),(function (p__45318){
+var map__45319 = p__45318;
+var map__45319__$1 = ((((!((map__45319 == null)))?(((((map__45319.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45319.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45319):map__45319);
+var path = map__45319__$1;
+var paths = cljs.core.get.call(null,map__45319__$1,new cljs.core.Keyword(null,"paths","paths",-1807389588));
+var lengths = cljs.core.into.call(null,cljs.core.PersistentVector.EMPTY,cljs.core.map.call(null,gamebase.geometry.path_length,paths));
+var length = cljs.core.apply.call(null,cljs.core._PLUS_,lengths);
+return cljs.core.assoc.call(null,path,new cljs.core.Keyword(null,"lengths","lengths",-851104122),lengths,new cljs.core.Keyword(null,"length","length",588987862),length);
+}));
+
+cljs.core._add_method.call(null,gamebase.geometry.path_length,new cljs.core.Keyword(null,"path-chain","path-chain",-276161151),(function (path){
+return new cljs.core.Keyword(null,"length","length",588987862).cljs$core$IFn$_invoke$arity$1(gamebase.geometry.precomputed.call(null,path));
+}));
+
+cljs.core._add_method.call(null,gamebase.geometry.path_point_at_length,new cljs.core.Keyword(null,"path-chain","path-chain",-276161151),(function (path,length){
+var map__45321 = gamebase.geometry.precomputed.call(null,path);
+var map__45321__$1 = ((((!((map__45321 == null)))?(((((map__45321.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__45321.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__45321):map__45321);
+var paths = cljs.core.get.call(null,map__45321__$1,new cljs.core.Keyword(null,"paths","paths",-1807389588));
+var lengths = cljs.core.get.call(null,map__45321__$1,new cljs.core.Keyword(null,"lengths","lengths",-851104122));
+var cnt = cljs.core.count.call(null,paths);
+var n = (0);
+var length_remaining = length;
+while(true){
+if((((length_remaining <= cljs.core.nth.call(null,lengths,n))) || (((n + (1)) === cnt)))){
+return gamebase.geometry.path_point_at_length.call(null,cljs.core.nth.call(null,paths,n),length_remaining);
+} else {
+var G__45323 = (n + (1));
+var G__45324 = (length_remaining - cljs.core.nth.call(null,lengths,n));
+n = G__45323;
+length_remaining = G__45324;
+continue;
+}
+break;
+}
 }));
 
 

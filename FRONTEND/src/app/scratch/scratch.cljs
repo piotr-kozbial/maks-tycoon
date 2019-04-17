@@ -14,33 +14,50 @@
 
 ;;;;;;;;; HELPERS :;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn svg-coord-system []
+(defn svg-coord-system [plusX plusY]
   [;; background
-   [:rect {:x -10 :y -10 :width 120 :height 120 :fill "#d5f2e8"}]
+   [:rect {:x -10 :y -10 :width (+ plusX 20) :height (+ plusY 20) :fill "#d5f2e8"}]
    ;; X axis
-   [:line {:x1 -10 :y1 0 :x2 110 :y2 0 :stroke "black" :stroke-width 1}]
+   [:line {:x1 -10 :y1 0 :x2 (+ plusX 10) :y2 0 :stroke "black" :stroke-width 1}]
    ;; Y axis
-   [:line {:x1 0 :y1 -10 :x2 0 :y2 110 :stroke "black" :stroke-width 1}]
+   [:line {:x1 0 :y1 -10 :x2 0 :y2 (+ plusY 10) :stroke "black" :stroke-width 1}]
    ;; Y=100
    [:line {:x1 -10 :y1 100 :x2 110 :y2 100 :stroke "black" :stroke-width 1 :stroke-dasharray "5,5"}]
    ;; X=100
    [:line {:x1 100 :y1 -10 :x2 100 :y2 110 :stroke "black" :stroke-width 1 :stroke-dasharray "5,5"}]])
 
 
-(defn svg-follower [{:as component :keys [position]} & [highlight?]]
+(defn svg-follower [{:as component :keys [position extra-xy]} & [highlight?]]
   (when position
     (let [[x y] position]
       [[:circle {:cx x :cy y :r 3 :stroke "blue" :fill "blue"}]
        (when highlight?
-         [:circle {:cx x :cy y :r 6 :stroke "#bf28c1" :fill "none"}])])))
+         [:circle {:cx x :cy y :r 6 :stroke "#bf28c1" :fill "none"}])
+       (when extra-xy
+         (for [[x y] (vals extra-xy)]
+           [[:circle {:cx x :cy y :r 1.5 :stroke "blue" :fill "blue"}]
+            (when highlight?
+              [:circle {:cx x :cy y :r 4 :stroke "#bf28c1" :fill "none"}])]))])))
 
 (defn svg-path [path & [highlight?]]
   (case (:path-type path)
     :line-segment (let [{:keys [p1 p2]} path
                         [x1 y1] p1
                         [x2 y2] p2]
-                    [:line {:x1 x1 :y1 y1 :x2 x2 :y2 y2 :stroke "black" :stroke-width 1}])
+                    [[:line {:x1 x1 :y1 y1 :x2 x2 :y2 y2 :stroke "black" :stroke-width 1}]
+                     (when highlight?
+                       [:line {:x1 x1 :y1 y1 :x2 x2 :y2 y2 :stroke "#bf28c1" :stroke-width 2
+                               :stroke-dasharray "4,6"
+                               }]
+                       )]
+                    )
+    :path-chain (for [p (:paths path)] (svg-path p highlight?))
     []))
+
+(defn svg-point [[x y :as point] & [highlight?]]
+  [[:circle {:cx x :cy y :r 3 :stroke "blue" :fill "blue"}]
+   (when highlight?
+     [:circle {:cx x :cy y :r 6 :stroke "#bf28c1" :fill "none"}])])
 
 ;;;;;;;;; CARDS ;;:;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -55,7 +72,61 @@
    []
    ["Select card from the drop-down list above ^"]))
 
-(defn card--movement--path-follower [get-val set-val]
+
+(defn card--geometry--paths [get-val set-val]
+  (binding [gamebase.geometry/*with-xprint* true]
+    (su/card
+     get-val
+     set-val
+     my-print-f
+     [[:svg
+       {:width 400, :height 200
+        :internal-coords [-10 -10 240 120]
+        :y-flip? true}
+       [[path1 svg-path]
+        [point0 svg-point]
+        [point1 svg-point]
+        [point2 svg-point]
+        ]
+       (svg-coord-system 200 100)]
+      [:value (get-val :selected-result)]
+      [:svg
+       {:width 400, :height 200
+        :internal-coords [-10 -10 240 120]
+        :y-flip? true}
+       [[path2 svg-path]
+        [point10 svg-point]
+        [point11 svg-point]
+        [point12 svg-point]
+        [point13 svg-point]
+        [point14 svg-point]
+        [point15 svg-point]
+        [point16 svg-point]
+        ]
+       (svg-coord-system 200 100)]]
+     [
+      [:h3 "Geometry: paths"]
+
+      [:h4 "Line segments"]
+      [VCV path1 (geom/line-segment [0 0] [100 100])]
+      [VCV point0 (geom/path-point-at-length path1 0)]
+      [VCV point1 (geom/path-point-at-length path1 50)]
+      [VCV point2 (geom/path-point-at-length path1 (geom/path-length path1))]
+
+      [:h4 "Path chains"]
+      [VCV path2 (geom/path-chain
+                  [(geom/line-segment [0 0] [100 100])
+                   (geom/line-segment [100 100] [200 0])])]
+      [VCV point10 (geom/path-point-at-length path2 0)]
+      [VCV point11 (geom/path-point-at-length path2 50)]
+      [VCV point12 (geom/path-point-at-length path2 100)]
+      [VCV point13 (geom/path-point-at-length path2 150)]
+      [VCV point14 (geom/path-point-at-length path2 200)]
+      [VCV point15 (geom/path-point-at-length path2 250)]
+      [VCV point16 (geom/path-point-at-length path2 290)]
+      "(The last one is extrapolated behind the last path.)"])))
+
+(defn card--movement--path-follower--basic [get-val set-val]
   (binding [gamebase.geometry/*with-xprint* true
             gamebase.ecs/*with-xprint* true]
     (su/card
@@ -73,18 +144,13 @@
         [component2 svg-follower]
         [component3 svg-follower]
         [component4 svg-follower]]
-       ;; [[:br]
-       ;;  "component2" [:br]
-       ;;  "z" [:br]
-       ;;  "component3" [:br]]
-       ;; fixed (background) drawing
-       (svg-coord-system)]
+       (svg-coord-system 100 100)]
       [:value (get-val :selected-result)]
 
       ]
 
      ;; segments
-     [[:h3 "Movement system: Path follower component"]
+     [[:h3 "Movement system: Path follower component, basic usage"]
       [:p "Here we will manually operate a component, without a world or entity, "
        "and also without an event queue (we will manually pass events if necessary)."]
       "Create:"
@@ -130,9 +196,73 @@
       "Here we pass it manually:"
       [VCV [event-to-entity component4] (ecs/handle-event :<dummy-world> event1 component3)]])))
 
+(defn card--movement--path-follower--extra-points [get-val set-val]
+  (binding [gamebase.geometry/*with-xprint* true
+            gamebase.ecs/*with-xprint* true]
+    (su/card
+     get-val
+     set-val
+     my-print-f
+     ;; visualizations
+     [[:svg
+       ;; props
+       {:width 400, :height 200
+        :internal-coords [-10 -10 240 120]
+        :y-flip? true}
+       ;; legend
+       [[path1 svg-path]
+        [path2 svg-path]
+        [component2 svg-follower]
+        [component3 svg-follower]
+        [component4 svg-follower]]
+       (svg-coord-system 200 100)]
+      [:value (get-val :selected-result)]
+
+      ]
+
+     ;; segments
+     [[:h3 "Movement system: Path follower component, extra points"]
+
+      [VCV path1 (geom/line-segment [0 0] [100 100])]
+      [VCV path2 (geom/line-segment [100 100] [200 0])]
+      
+      "Create, initialize, set path:"
+      [VCV component (sys-movement/mk-path-follower "entity-id" "comp-key"
+                                                    {:extra-points {:ahead-one 20
+                                                                    :ahead-two 30
+                                                                    :behind -10}})]
+      [VCV _ (ecs/handle-event :<dummy-world>
+                               (ecs/mk-event component
+                                             ::ecs/init
+                                             10000)
+                               component)]
+      [VCV path (geom/line-segment [0 0] [100 100])]
+      [VCV [component2 event1]
+       (ecs/handle-event :<dummy-world>
+                         (assoc
+                          (ecs/mk-event component
+                                        ::sys-movement/set-path
+                                        10005)
+                          :path path)
+                         component)]
+      [VCV [_ component3] (ecs/handle-event :<dummy-world>
+                                            (ecs/mk-event component2
+                                                          :update
+                                                          10000)
+                                            component2)]
+      "After some time:"
+      [VCV [_ component4] (ecs/handle-event :<dummy-world>
+                                            (ecs/mk-event component3
+                                                          :update
+                                                          14000)
+                                            component3)]
+      ])))
+
 (def cards
   [["Start card" #'start-card]
-   ["Movement system: Path follower component" #'card--movement--path-follower]])
+   ["Geometry: paths" #'card--geometry--paths]
+   ["Movement system: Path follower component, basic usage" #'card--movement--path-follower--basic]
+   ["Movement system: Path follower component, extra points" #'card--movement--path-follower--extra-points]])
 
 (def card-map
   (->> cards

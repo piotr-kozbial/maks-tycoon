@@ -618,11 +618,25 @@
     {:path-type :path-chain
      :paths (apply vector paths)})
 
-  ;; jeszcze precompute!
+  (defmethod precompute :path-chain [{:keys [paths] :as path}]
+    (let [lengths (into [] (map path-length paths))
+          length (apply + lengths)]
+      (assoc path
+             :lengths lengths
+             :length length)))
 
-  (defmethod path-length :path-chain
-    [{:keys [paths]}]
-    (reduce + (map path-length paths)))
+  (defmethod path-length :path-chain [path]
+    (:length (precomputed path)))
+
+  (defmethod path-point-at-length :path-chain [path length]
+    (let [{:keys [paths lengths]} (precomputed path)
+          cnt (count paths)]
+      (loop [n 0, length-remaining length]
+        (if (or
+             (<= length-remaining (nth lengths n)) ;; fits in this path
+             (== (inc n) cnt)) ;; last path, no choice
+          (path-point-at-length (nth paths n) length-remaining)
+          (recur (inc n) (- length-remaining (nth lengths n)))))))
 
   (comment
     (def p1 (line-segment [1 1] [3 1]))

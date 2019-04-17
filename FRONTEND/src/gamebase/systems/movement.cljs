@@ -73,23 +73,34 @@
      ;; ensure we'll get an :update event exactly at the end of the path
      (ecs/mk-event this :update path-end-time)]))
 
-(defn  do-update [<this> <time> <world>]
+(defn do-update [<this> <time> <world>]
   (let [{:keys [path
                 path-start-time
                 path-start-length
                 path-end-time
                 speed
                 driving?
+                extra-points
                 ]} <this>]
     (when (and path driving?)
       (let [time-of-travel (- <time> path-start-time)
             length-on-path (+ path-start-length (* time-of-travel speed))
             total-path-length (g/path-length path)
             at-end? (= <time> path-end-time)
-            after-end? (>= <time> path-end-time)]
+            after-end? (>= <time> path-end-time)
+
+            extra-xy (->> extra-points
+                          (mapcat (fn [[k dist]]
+                                    (let [length-on-path (+ length-on-path dist)
+                                          position (g/path-point-at-length
+                                                    path
+                                                    length-on-path)]
+
+                                      [k position])))
+                          (apply hash-map))]
 
         [(when at-end?
-           (ecs/mk-event ;;(ecs/get-entity <world> <this>)
+           (ecs/mk-event
             (ecs/to-entity (::ecs/entity-id <this>))
 
                          ::at-path-end <time>))
@@ -107,25 +118,31 @@
                 :angle
                 (g/angle-at-length
                  path
-                 (if after-end? total-path-length length-on-path)))]))))
+                 (if after-end? total-path-length length-on-path))
 
-(defn mk-path-follower [entity-or-id key {:keys [path-history-size]}]
+                :extra-xy extra-xy)]))))
+
+(defn mk-path-follower [entity-or-id key {:keys [path-history-size
+                                                 extra-points]}]
   (let [v (assoc
            (ecs/mk-component ::movement entity-or-id key ::path-follower)
            :driving? true
            :speed 0.02
+           :path-history []
            :path-history-size path-history-size
-           :path-history [])]
+           :extra-points extra-points)]
     (if :gamebase.ecs/*with-xprint*
       (vary-meta v
                  update-in [:app.xprint.core/key-order]
                  concat [:path-history-size
+                         :extra-points
                          :driving? :speed
                          :path
                          :path-start-length :path-start-time :path-end-time
                          :path-history
                          :length-on-path :position :angle
-                         :at-end? :after-end?]) 
+                         :at-end? :after-end?
+                         :extra-xy])
       v)))
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::ecs/init] [_ _ this] [])
