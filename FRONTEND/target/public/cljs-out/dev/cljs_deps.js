@@ -125,7 +125,7 @@ goog.addDependency("../rum/util.js", ['rum.util'], ['cljs.core']);
 goog.addDependency("../rum/core.js", ['rum.core'], ['rum.cursor', 'cljs.core', 'goog.object', 'cljsjs.react', 'rum.derived_atom', 'sablono.core', 'cljsjs.react.dom', 'rum.util']);
 goog.addDependency("../app/xprint/core.js", ['app.xprint.core'], ['cljs.core', 'clojure.string']);
 goog.addDependency("../app/scratch/util.js", ['app.scratch.util'], ['cljs.core', 'clojure.string']);
-goog.addDependency("../app/scratch/scratch.js", ['app.scratch.scratch'], ['gamebase.event_queue', 'gamebase.systems.movement', 'rum.core', 'cljs.core', 'gamebase.ecs', 'cljs.pprint', 'app.xprint.core', 'app.scratch.util', 'gamebase.geometry']);
+goog.addDependency("../app/scratch/scratch.js", ['app.scratch.scratch'], ['gamebase.event_queue', 'gamebase.systems.movement', 'rum.core', 'cljs.core', 'gamebase.ecs', 'cljs.pprint', 'app.xprint.core', 'app.scratch.util', 'gamebase.geometry', 'clojure.string']);
 goog.addDependency("../app/ui/ui_state.js", ['app.ui.ui_state'], ['cljs.core']);
 goog.addDependency("../app/ecs/entities/carriage.js", ['app.ecs.entities.carriage'], ['app.state', 'gamebase.event_queue', 'gamebase.systems.movement', 'app.ecs.common_events', 'gamebase.layers', 'cljs.core', 'app.tiles.general', 'gamebase.ecs', 'gamebase.systems.drawing', 'gamebase.geometry', 'app.world_interop']);
 goog.addDependency("../app/key_mouse_input.js", ['app.key_mouse_input'], ['app.state', 'gamebase.event_queue', 'app.tiles.turnouts', 'cljs.core', 'gamebase.events', 'app.scratch.scratch', 'gamebase.ecs', 'app.ui.ui_state', 'app.ecs.entities.carriage', 'gamebase.canvas_control', 'app.ecs.entities.locomotive', 'app.world_interop']);

@@ -44,24 +44,24 @@ return cljs.core.assoc.call(null,m,new cljs.core.PersistentVector(null, 2, 5, cl
 return null;
 });
 app.state._get_layer = (function app$state$_get_layer(world,layer_key){
-return cljs.core.second.call(null,cljs.core.first.call(null,cljs.core.filter.call(null,(function (p1__45335_SHARP_){
-return cljs.core._EQ_.call(null,cljs.core.first.call(null,p1__45335_SHARP_),layer_key);
+return cljs.core.second.call(null,cljs.core.first.call(null,cljs.core.filter.call(null,(function (p1__65203_SHARP_){
+return cljs.core._EQ_.call(null,cljs.core.first.call(null,p1__65203_SHARP_),layer_key);
 }),new cljs.core.Keyword(null,"layers","layers",1944875032).cljs$core$IFn$_invoke$arity$1(world))));
 });
 app.state.init_tile_extra = (function app$state$init_tile_extra(tile_x,tile_y){
 var layer = app.state._get_layer.call(null,new cljs.core.Keyword(null,"world","world",-418292623).cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null,app.state.app_state)),new cljs.core.Keyword(null,"foreground","foreground",499022036));
-var vec__45337 = gamebase.layers.get_tile_from_layer.call(null,layer,tile_x,tile_y);
-var _ = cljs.core.nth.call(null,vec__45337,(0),null);
-var tile_number = cljs.core.nth.call(null,vec__45337,(1),null);
+var vec__65205 = gamebase.layers.get_tile_from_layer.call(null,layer,tile_x,tile_y);
+var _ = cljs.core.nth.call(null,vec__65205,(0),null);
+var tile_number = cljs.core.nth.call(null,vec__65205,(1),null);
 var tile = app.tiles.general.tiles_by_number.call(null,tile_number);
-return cljs.core.swap_BANG_.call(null,app.state.app_state,cljs.core.update_in,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"world","world",-418292623),new cljs.core.Keyword(null,"tile-extra","tile-extra",1451483079)], null),((function (layer,vec__45337,_,tile_number,tile){
+return cljs.core.swap_BANG_.call(null,app.state.app_state,cljs.core.update_in,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"world","world",-418292623),new cljs.core.Keyword(null,"tile-extra","tile-extra",1451483079)], null),((function (layer,vec__65205,_,tile_number,tile){
 return (function (m){
-return cljs.core.assoc.call(null,m,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [tile_x,tile_y], null),cljs.core.some.call(null,((function (layer,vec__45337,_,tile_number,tile){
-return (function (p1__45336_SHARP_){
-return app.tiles.general.initialize_tile_extra.call(null,p1__45336_SHARP_,tile_x,tile_y,tile);
-});})(layer,vec__45337,_,tile_number,tile))
+return cljs.core.assoc.call(null,m,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [tile_x,tile_y], null),cljs.core.some.call(null,((function (layer,vec__65205,_,tile_number,tile){
+return (function (p1__65204_SHARP_){
+return app.tiles.general.initialize_tile_extra.call(null,p1__65204_SHARP_,tile_x,tile_y,tile);
+});})(layer,vec__65205,_,tile_number,tile))
 ,new cljs.core.Keyword(null,"ids","ids",-998535796).cljs$core$IFn$_invoke$arity$1(tile)));
-});})(layer,vec__45337,_,tile_number,tile))
+});})(layer,vec__65205,_,tile_number,tile))
 );
 });
 

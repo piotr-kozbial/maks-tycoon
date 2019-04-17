@@ -638,6 +638,16 @@
           (path-point-at-length (nth paths n) length-remaining)
           (recur (inc n) (- length-remaining (nth lengths n)))))))
 
+  (defmethod angle-at-length :path-chain [path length]
+    (let [{:keys [paths lengths]} (precomputed path)
+          cnt (count paths)]
+      (loop [n 0, length-remaining length]
+        (if (or
+             (<= length-remaining (nth lengths n)) ;; fits in this path
+             (== (inc n) cnt)) ;; last path, no choice
+          (angle-at-length (nth paths n) length-remaining)
+          (recur (inc n) (- length-remaining (nth lengths n)))))))
+
   (comment
     (def p1 (line-segment [1 1] [3 1]))
     (def p2 (line-segment [3 1] [3 4]))

@@ -9,7 +9,8 @@
             [app.xprint.core :refer [xprint]
 
 
-             ])
+             ]
+            [clojure.string :as str])
   (:require-macros [app.scratch.util :refer [card VIS]]))
 
 ;;;;;;;;; HELPERS :;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -27,7 +28,7 @@
    [:line {:x1 100 :y1 -10 :x2 100 :y2 110 :stroke "black" :stroke-width 1 :stroke-dasharray "5,5"}]])
 
 
-(defn svg-follower [{:as component :keys [position extra-xy]} & [highlight?]]
+(defn svg-follower [{:as component :keys [position angle extra-xy]} & [highlight?]]
   (when position
     (let [[x y] position]
       [[:circle {:cx x :cy y :r 3 :stroke "blue" :fill "blue"}]
@@ -37,7 +38,16 @@
          (for [[x y] (vals extra-xy)]
            [[:circle {:cx x :cy y :r 1.5 :stroke "blue" :fill "blue"}]
             (when highlight?
-              [:circle {:cx x :cy y :r 4 :stroke "#bf28c1" :fill "none"}])]))])))
+              [:circle {:cx x :cy y :r 4 :stroke "#bf28c1" :fill "none"}])]))
+       (let [angle-in-degrees (geom/get-degrees (geom/in-radians angle))]
+         [:g
+          {:transform (str/join "\n" [(str "translate(" x " " y ")")
+                                      (str "rotate(" angle-in-degrees " 0 0)")])}
+          [:line {:x1 0 :y1 0 :x2 10 :y2 0  :stroke "blue"}]
+          [:line {:x1 10 :y1 0 :x2 7 :y2 2  :stroke "blue"}]
+          [:line {:x1 10 :y1 0 :x2 7 :y2 -2  :stroke "blue"}]])
+
+       ])))
 
 (defn svg-path [path & [highlight?]]
   (case (:path-type path)
@@ -206,16 +216,20 @@
      ;; visualizations
      [[:svg
        ;; props
-       {:width 400, :height 200
-        :internal-coords [-10 -10 240 120]
+       {:width 400, :height 300
+        :internal-coords [-10 -10 240 180]
         :y-flip? true}
        ;; legend
        [[path1 svg-path]
         [path2 svg-path]
         [component2 svg-follower]
         [component3 svg-follower]
-        [component4 svg-follower]]
-       (svg-coord-system 200 100)]
+        [component4 svg-follower]
+        [component5 svg-follower]
+        [component6 svg-follower]
+        [component7 svg-follower]
+        ]
+       (svg-coord-system 200 150)]
       [:value (get-val :selected-result)]
 
       ]
@@ -243,7 +257,7 @@
                           (ecs/mk-event component
                                         ::sys-movement/set-path
                                         10005)
-                          :path path)
+                          :path path1)
                          component)]
       [VCV [_ component3] (ecs/handle-event :<dummy-world>
                                             (ecs/mk-event component2
@@ -254,8 +268,38 @@
       [VCV [_ component4] (ecs/handle-event :<dummy-world>
                                             (ecs/mk-event component3
                                                           :update
-                                                          14000)
+                                                          13000)
                                             component3)]
+      "And at 'path end', that should be for the further extra point:"
+      [VCV [endEvent component5] (ecs/handle-event :<dummy-world>
+                                            event1
+                                            component4)]
+      "and we can see that the :at-path-end event has been emitted with the same timestamp. "
+      "At this point whoever owns the component (typically an entity) should give it another path:"
+      [VCV component5'
+       (ecs/handle-event :<dummy-world>
+                         (assoc
+                          (ecs/mk-event component
+                                        ::sys-movement/add-path
+                                        (:gamebase.event-queue/time endEvent))
+                          :path path2)
+                         component5)]
+
+
+      [:p "Now let's go a bit further, so that points ahead move to the next path, "
+       "but not the main point:"]
+      [VCV [_ component6] (ecs/handle-event :<dummy-world>
+                                            (ecs/mk-event component5'
+                                                          :update
+                                                          16000)
+                                            component5')]
+      "And further still, to push the main point to the next path:"
+      [VCV [_ component7] (ecs/handle-event :<dummy-world>
+                                            (ecs/mk-event component6
+                                                          :update
+                                                          20000)
+                                            component6)]
+
       ])))
 
 (def cards

@@ -49,14 +49,14 @@ rum.core.react.call(null,app.state.ui_refresh_tick);
 var ui_state = rum.core.react.call(null,app.ui.ui_state.ui_state);
 var game_id = app.ui.ui_state.get_game_id.call(null,ui_state);
 var game_name = app.ui.ui_state.get_game_name.call(null,ui_state);
-var map__46186 = new cljs.core.Keyword(null,"loc-selector","loc-selector",-222053855).cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"sidebar","sidebar",35784458).cljs$core$IFn$_invoke$arity$1(rum.core.react.call(null,app.ui.ui_state.ui_state)));
-var map__46186__$1 = ((((!((map__46186 == null)))?(((((map__46186.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__46186.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__46186):map__46186);
-var open_QMARK_ = cljs.core.get.call(null,map__46186__$1,new cljs.core.Keyword(null,"open?","open?",1238443125));
-var selected_id = cljs.core.get.call(null,map__46186__$1,new cljs.core.Keyword(null,"selected-id","selected-id",-1028389044));
-var map__46187 = cljs.core.deref.call(null,app.state.app_state);
-var map__46187__$1 = ((((!((map__46187 == null)))?(((((map__46187.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__46187.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__46187):map__46187);
-var frame_rate = cljs.core.get.call(null,map__46187__$1,new cljs.core.Keyword(null,"frame-rate","frame-rate",-994918942));
-var world = cljs.core.get.call(null,map__46187__$1,new cljs.core.Keyword(null,"world","world",-418292623));
+var map__67317 = new cljs.core.Keyword(null,"loc-selector","loc-selector",-222053855).cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"sidebar","sidebar",35784458).cljs$core$IFn$_invoke$arity$1(rum.core.react.call(null,app.ui.ui_state.ui_state)));
+var map__67317__$1 = ((((!((map__67317 == null)))?(((((map__67317.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__67317.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__67317):map__67317);
+var open_QMARK_ = cljs.core.get.call(null,map__67317__$1,new cljs.core.Keyword(null,"open?","open?",1238443125));
+var selected_id = cljs.core.get.call(null,map__67317__$1,new cljs.core.Keyword(null,"selected-id","selected-id",-1028389044));
+var map__67318 = cljs.core.deref.call(null,app.state.app_state);
+var map__67318__$1 = ((((!((map__67318 == null)))?(((((map__67318.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__67318.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__67318):map__67318);
+var frame_rate = cljs.core.get.call(null,map__67318__$1,new cljs.core.Keyword(null,"frame-rate","frame-rate",-994918942));
+var world = cljs.core.get.call(null,map__67318__$1,new cljs.core.Keyword(null,"world","world",-418292623));
 var loc = gamebase.ecs.get_entity_by_key.call(null,world,selected_id);
 var driving_QMARK_ = new cljs.core.Keyword(null,"driving?","driving?",-428410284).cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"move","move",-2110884309).cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword("gamebase.ecs","components","gamebase.ecs/components",-523279412).cljs$core$IFn$_invoke$arity$1(loc)));
 return React.createElement("div",null,React.createElement("div",({"style": ({"fontSize": "larger", "fontWeight": "bold"})}),(cljs.core.truth_(game_id)?sablono.interpreter.interpret.call(null,(function (){var or__3949__auto__ = game_name;
@@ -65,54 +65,54 @@ return or__3949__auto__;
 } else {
 return "";
 }
-})()):React.createElement("i",null,"(unsaved game)",sablono.interpreter.interpret.call(null,game_id),sablono.interpreter.interpret.call(null,game_name)))),React.createElement("br",null),(function (){var attrs46192 = ["FRAME RATE: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(frame_rate)].join('');
-return cljs.core.apply.call(null,React.createElement,"div",((cljs.core.map_QMARK_.call(null,attrs46192))?sablono.interpreter.attributes.call(null,attrs46192):null),((cljs.core.map_QMARK_.call(null,attrs46192))?null:new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [sablono.interpreter.interpret.call(null,attrs46192)], null)));
-})(),React.createElement("div",null,"scale: ",sablono.interpreter.interpret.call(null,gamebase.canvas_control.get_scale.call(null))," ",React.createElement("a",({"href": "#", "onClick": ((function (ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_){
+})()):React.createElement("i",null,"(unsaved game)",sablono.interpreter.interpret.call(null,game_id),sablono.interpreter.interpret.call(null,game_name)))),React.createElement("br",null),(function (){var attrs67323 = ["FRAME RATE: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(frame_rate)].join('');
+return cljs.core.apply.call(null,React.createElement,"div",((cljs.core.map_QMARK_.call(null,attrs67323))?sablono.interpreter.attributes.call(null,attrs67323):null),((cljs.core.map_QMARK_.call(null,attrs67323))?null:new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [sablono.interpreter.interpret.call(null,attrs67323)], null)));
+})(),React.createElement("div",null,"scale: ",sablono.interpreter.interpret.call(null,gamebase.canvas_control.get_scale.call(null))," ",React.createElement("a",({"href": "#", "onClick": ((function (ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_){
 return (function (_){
 return gamebase.canvas_control.set_scale.call(null,0.5);
-});})(ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_))
-}),"50%")," ",React.createElement("a",({"href": "#", "onClick": ((function (ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_){
+});})(ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_))
+}),"50%")," ",React.createElement("a",({"href": "#", "onClick": ((function (ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_){
 return (function (_){
 return gamebase.canvas_control.set_scale.call(null,1.0);
-});})(ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_))
-}),"100%")," ",React.createElement("a",({"href": "#", "onClick": ((function (ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_){
+});})(ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_))
+}),"100%")," ",React.createElement("a",({"href": "#", "onClick": ((function (ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_){
 return (function (_){
 return gamebase.canvas_control.set_scale.call(null,2.0);
-});})(ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_))
-}),"200%")),React.createElement("br",null),React.createElement("br",null),React.createElement("br",null),React.createElement("br",null),React.createElement("br",null),React.createElement("br",null),cljs.core.into_array.call(null,(function (){var iter__4324__auto__ = ((function (ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_){
-return (function app$ui$sidebar$iter__46207(s__46208){
-return (new cljs.core.LazySeq(null,((function (ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_){
+});})(ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_))
+}),"200%")),React.createElement("br",null),React.createElement("br",null),React.createElement("br",null),React.createElement("br",null),React.createElement("br",null),React.createElement("br",null),cljs.core.into_array.call(null,(function (){var iter__4324__auto__ = ((function (ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_){
+return (function app$ui$sidebar$iter__67338(s__67339){
+return (new cljs.core.LazySeq(null,((function (ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_){
 return (function (){
-var s__46208__$1 = s__46208;
+var s__67339__$1 = s__67339;
 while(true){
-var temp__5457__auto__ = cljs.core.seq.call(null,s__46208__$1);
+var temp__5457__auto__ = cljs.core.seq.call(null,s__67339__$1);
 if(temp__5457__auto__){
-var s__46208__$2 = temp__5457__auto__;
-if(cljs.core.chunked_seq_QMARK_.call(null,s__46208__$2)){
-var c__4322__auto__ = cljs.core.chunk_first.call(null,s__46208__$2);
+var s__67339__$2 = temp__5457__auto__;
+if(cljs.core.chunked_seq_QMARK_.call(null,s__67339__$2)){
+var c__4322__auto__ = cljs.core.chunk_first.call(null,s__67339__$2);
 var size__4323__auto__ = cljs.core.count.call(null,c__4322__auto__);
-var b__46210 = cljs.core.chunk_buffer.call(null,size__4323__auto__);
-if((function (){var i__46209 = (0);
+var b__67341 = cljs.core.chunk_buffer.call(null,size__4323__auto__);
+if((function (){var i__67340 = (0);
 while(true){
-if((i__46209 < size__4323__auto__)){
-var tab_key = cljs.core._nth.call(null,c__4322__auto__,i__46209);
-cljs.core.chunk_append.call(null,b__46210,(function (){var map__46211 = app.ui.sidebar.get_tab.call(null,ui_state,tab_key);
-var map__46211__$1 = ((((!((map__46211 == null)))?(((((map__46211.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__46211.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__46211):map__46211);
-var component = cljs.core.get.call(null,map__46211__$1,new cljs.core.Keyword(null,"component","component",1555936782));
-var title = cljs.core.get.call(null,map__46211__$1,new cljs.core.Keyword(null,"title","title",636505583));
-return React.createElement("div",null,React.createElement("hr",({"style": ({"border": "1px solid #BB4400"})})),(cljs.core.truth_(app.ui.sidebar.tab_open_QMARK_.call(null,ui_state,tab_key))?React.createElement("div",null,React.createElement("div",({"style": ({"marginBottom": "10px"})}),React.createElement("span",({"style": ({"color": "#993300", "cursor": "pointer"}), "onClick": ((function (i__46209,map__46211,map__46211__$1,component,title,tab_key,c__4322__auto__,size__4323__auto__,b__46210,s__46208__$2,temp__5457__auto__,ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_){
+if((i__67340 < size__4323__auto__)){
+var tab_key = cljs.core._nth.call(null,c__4322__auto__,i__67340);
+cljs.core.chunk_append.call(null,b__67341,(function (){var map__67342 = app.ui.sidebar.get_tab.call(null,ui_state,tab_key);
+var map__67342__$1 = ((((!((map__67342 == null)))?(((((map__67342.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__67342.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__67342):map__67342);
+var component = cljs.core.get.call(null,map__67342__$1,new cljs.core.Keyword(null,"component","component",1555936782));
+var title = cljs.core.get.call(null,map__67342__$1,new cljs.core.Keyword(null,"title","title",636505583));
+return React.createElement("div",null,React.createElement("hr",({"style": ({"border": "1px solid #BB4400"})})),(cljs.core.truth_(app.ui.sidebar.tab_open_QMARK_.call(null,ui_state,tab_key))?React.createElement("div",null,React.createElement("div",({"style": ({"marginBottom": "10px"})}),React.createElement("span",({"style": ({"color": "#993300", "cursor": "pointer"}), "onClick": ((function (i__67340,map__67342,map__67342__$1,component,title,tab_key,c__4322__auto__,size__4323__auto__,b__67341,s__67339__$2,temp__5457__auto__,ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_){
 return (function (_){
 return app.ui.sidebar.close_tab.call(null,tab_key);
-});})(i__46209,map__46211,map__46211__$1,component,title,tab_key,c__4322__auto__,size__4323__auto__,b__46210,s__46208__$2,temp__5457__auto__,ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_))
-}),sablono.interpreter.interpret.call(null,["[-] ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(title)].join('')))),(cljs.core.truth_(component)?sablono.interpreter.interpret.call(null,component.call(null)):null)):React.createElement("div",({"style": ({"marginBottom": "10px"})}),React.createElement("span",({"style": ({"color": "#993300", "cursor": "pointer"}), "onClick": ((function (i__46209,map__46211,map__46211__$1,component,title,tab_key,c__4322__auto__,size__4323__auto__,b__46210,s__46208__$2,temp__5457__auto__,ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_){
+});})(i__67340,map__67342,map__67342__$1,component,title,tab_key,c__4322__auto__,size__4323__auto__,b__67341,s__67339__$2,temp__5457__auto__,ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_))
+}),sablono.interpreter.interpret.call(null,["[-] ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(title)].join('')))),(cljs.core.truth_(component)?sablono.interpreter.interpret.call(null,component.call(null)):null)):React.createElement("div",({"style": ({"marginBottom": "10px"})}),React.createElement("span",({"style": ({"color": "#993300", "cursor": "pointer"}), "onClick": ((function (i__67340,map__67342,map__67342__$1,component,title,tab_key,c__4322__auto__,size__4323__auto__,b__67341,s__67339__$2,temp__5457__auto__,ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_){
 return (function (_){
 return app.ui.sidebar.open_tab.call(null,tab_key);
-});})(i__46209,map__46211,map__46211__$1,component,title,tab_key,c__4322__auto__,size__4323__auto__,b__46210,s__46208__$2,temp__5457__auto__,ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_))
+});})(i__67340,map__67342,map__67342__$1,component,title,tab_key,c__4322__auto__,size__4323__auto__,b__67341,s__67339__$2,temp__5457__auto__,ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_))
 }),sablono.interpreter.interpret.call(null,["[+] ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(title)].join(''))))));
 })());
 
-var G__46217 = (i__46209 + (1));
-i__46209 = G__46217;
+var G__67348 = (i__67340 + (1));
+i__67340 = G__67348;
 continue;
 } else {
 return true;
@@ -120,35 +120,35 @@ return true;
 break;
 }
 })()){
-return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__46210),app$ui$sidebar$iter__46207.call(null,cljs.core.chunk_rest.call(null,s__46208__$2)));
+return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__67341),app$ui$sidebar$iter__67338.call(null,cljs.core.chunk_rest.call(null,s__67339__$2)));
 } else {
-return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__46210),null);
+return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__67341),null);
 }
 } else {
-var tab_key = cljs.core.first.call(null,s__46208__$2);
-return cljs.core.cons.call(null,(function (){var map__46215 = app.ui.sidebar.get_tab.call(null,ui_state,tab_key);
-var map__46215__$1 = ((((!((map__46215 == null)))?(((((map__46215.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__46215.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__46215):map__46215);
-var component = cljs.core.get.call(null,map__46215__$1,new cljs.core.Keyword(null,"component","component",1555936782));
-var title = cljs.core.get.call(null,map__46215__$1,new cljs.core.Keyword(null,"title","title",636505583));
-return React.createElement("div",null,React.createElement("hr",({"style": ({"border": "1px solid #BB4400"})})),(cljs.core.truth_(app.ui.sidebar.tab_open_QMARK_.call(null,ui_state,tab_key))?React.createElement("div",null,React.createElement("div",({"style": ({"marginBottom": "10px"})}),React.createElement("span",({"style": ({"color": "#993300", "cursor": "pointer"}), "onClick": ((function (map__46215,map__46215__$1,component,title,tab_key,s__46208__$2,temp__5457__auto__,ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_){
+var tab_key = cljs.core.first.call(null,s__67339__$2);
+return cljs.core.cons.call(null,(function (){var map__67346 = app.ui.sidebar.get_tab.call(null,ui_state,tab_key);
+var map__67346__$1 = ((((!((map__67346 == null)))?(((((map__67346.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__67346.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__67346):map__67346);
+var component = cljs.core.get.call(null,map__67346__$1,new cljs.core.Keyword(null,"component","component",1555936782));
+var title = cljs.core.get.call(null,map__67346__$1,new cljs.core.Keyword(null,"title","title",636505583));
+return React.createElement("div",null,React.createElement("hr",({"style": ({"border": "1px solid #BB4400"})})),(cljs.core.truth_(app.ui.sidebar.tab_open_QMARK_.call(null,ui_state,tab_key))?React.createElement("div",null,React.createElement("div",({"style": ({"marginBottom": "10px"})}),React.createElement("span",({"style": ({"color": "#993300", "cursor": "pointer"}), "onClick": ((function (map__67346,map__67346__$1,component,title,tab_key,s__67339__$2,temp__5457__auto__,ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_){
 return (function (_){
 return app.ui.sidebar.close_tab.call(null,tab_key);
-});})(map__46215,map__46215__$1,component,title,tab_key,s__46208__$2,temp__5457__auto__,ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_))
-}),sablono.interpreter.interpret.call(null,["[-] ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(title)].join('')))),(cljs.core.truth_(component)?sablono.interpreter.interpret.call(null,component.call(null)):null)):React.createElement("div",({"style": ({"marginBottom": "10px"})}),React.createElement("span",({"style": ({"color": "#993300", "cursor": "pointer"}), "onClick": ((function (map__46215,map__46215__$1,component,title,tab_key,s__46208__$2,temp__5457__auto__,ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_){
+});})(map__67346,map__67346__$1,component,title,tab_key,s__67339__$2,temp__5457__auto__,ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_))
+}),sablono.interpreter.interpret.call(null,["[-] ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(title)].join('')))),(cljs.core.truth_(component)?sablono.interpreter.interpret.call(null,component.call(null)):null)):React.createElement("div",({"style": ({"marginBottom": "10px"})}),React.createElement("span",({"style": ({"color": "#993300", "cursor": "pointer"}), "onClick": ((function (map__67346,map__67346__$1,component,title,tab_key,s__67339__$2,temp__5457__auto__,ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_){
 return (function (_){
 return app.ui.sidebar.open_tab.call(null,tab_key);
-});})(map__46215,map__46215__$1,component,title,tab_key,s__46208__$2,temp__5457__auto__,ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_))
+});})(map__67346,map__67346__$1,component,title,tab_key,s__67339__$2,temp__5457__auto__,ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_))
 }),sablono.interpreter.interpret.call(null,["[+] ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(title)].join(''))))));
-})(),app$ui$sidebar$iter__46207.call(null,cljs.core.rest.call(null,s__46208__$2)));
+})(),app$ui$sidebar$iter__67338.call(null,cljs.core.rest.call(null,s__67339__$2)));
 }
 } else {
 return null;
 }
 break;
 }
-});})(ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_))
+});})(ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_))
 ,null,null));
-});})(ui_state,game_id,game_name,map__46186,map__46186__$1,open_QMARK_,selected_id,map__46187,map__46187__$1,frame_rate,world,loc,driving_QMARK_))
+});})(ui_state,game_id,game_name,map__67317,map__67317__$1,open_QMARK_,selected_id,map__67318,map__67318__$1,frame_rate,world,loc,driving_QMARK_))
 ;
 return iter__4324__auto__.call(null,app.ui.sidebar.effective_tab_order.call(null,ui_state));
 })()),React.createElement("hr",({"style": ({"border": "1px solid #BB4400"})})));

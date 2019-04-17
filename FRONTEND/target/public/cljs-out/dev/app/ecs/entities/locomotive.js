@@ -21,8 +21,8 @@ cljs.core.println.call(null,"LOCOMOTIVE INIT");
 return cljs.core.assoc.call(null,gamebase.ecs.mk_event.call(null,new cljs.core.Keyword(null,"move","move",-2110884309).cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword("gamebase.ecs","components","gamebase.ecs/components",-523279412).cljs$core$IFn$_invoke$arity$1(this$)),new cljs.core.Keyword("gamebase.systems.movement","set-path","gamebase.systems.movement/set-path",-1213286642),new cljs.core.Keyword("gamebase.event-queue","time","gamebase.event-queue/time",-1714294787).cljs$core$IFn$_invoke$arity$1(event)),new cljs.core.Keyword(null,"path","path",-188191168),app.tiles.general.track_path.call(null,new cljs.core.Keyword(null,"track","track",195787487).cljs$core$IFn$_invoke$arity$1(this$),new cljs.core.Keyword(null,"tile-x","tile-x",1338121882).cljs$core$IFn$_invoke$arity$1(this$),new cljs.core.Keyword(null,"tile-y","tile-y",-1293098706).cljs$core$IFn$_invoke$arity$1(this$)));
 }));
 app.ecs.entities.locomotive._get_layer = (function app$ecs$entities$locomotive$_get_layer(world,layer_key){
-return cljs.core.second.call(null,cljs.core.first.call(null,cljs.core.filter.call(null,(function (p1__46093_SHARP_){
-return cljs.core._EQ_.call(null,cljs.core.first.call(null,p1__46093_SHARP_),layer_key);
+return cljs.core.second.call(null,cljs.core.first.call(null,cljs.core.filter.call(null,(function (p1__67224_SHARP_){
+return cljs.core._EQ_.call(null,cljs.core.first.call(null,p1__67224_SHARP_),layer_key);
 }),new cljs.core.Keyword(null,"layers","layers",1944875032).cljs$core$IFn$_invoke$arity$1(world))));
 });
 app.ecs.entities.locomotive._put_to_history = (function app$ecs$entities$locomotive$_put_to_history(history,tile_x,tile_y,track){
@@ -30,32 +30,32 @@ var history_SINGLEQUOTE_ = (((cljs.core.count.call(null,history) >= (2)))?cljs.c
 return cljs.core.into.call(null,history_SINGLEQUOTE_,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [tile_x,tile_y,track], null)], null));
 });
 app.ecs.entities.locomotive._history_to_map = (function app$ecs$entities$locomotive$_history_to_map(history){
-return cljs.core.apply.call(null,cljs.core.hash_map,cljs.core.mapcat.call(null,(function (p__46094){
-var vec__46095 = p__46094;
-var tx = cljs.core.nth.call(null,vec__46095,(0),null);
-var ty = cljs.core.nth.call(null,vec__46095,(1),null);
-var track = cljs.core.nth.call(null,vec__46095,(2),null);
+return cljs.core.apply.call(null,cljs.core.hash_map,cljs.core.mapcat.call(null,(function (p__67225){
+var vec__67226 = p__67225;
+var tx = cljs.core.nth.call(null,vec__67226,(0),null);
+var ty = cljs.core.nth.call(null,vec__67226,(1),null);
+var track = cljs.core.nth.call(null,vec__67226,(2),null);
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [tx,ty], null),track], null);
 }),history));
 });
 cljs.core._add_method.call(null,gamebase.ecs.handle_event,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"to-entity","to-entity",-34052624),new cljs.core.Keyword("app.ecs.entities.locomotive","locomotive","app.ecs.entities.locomotive/locomotive",1809697705),new cljs.core.Keyword("gamebase.systems.movement","at-path-end","gamebase.systems.movement/at-path-end",379756653)], null),(function (world,event,this$){
 var path = new cljs.core.Keyword(null,"path","path",-188191168).cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"move","move",-2110884309).cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword("gamebase.ecs","components","gamebase.ecs/components",-523279412).cljs$core$IFn$_invoke$arity$1(this$)));
-var map__46098 = this$;
-var map__46098__$1 = ((((!((map__46098 == null)))?(((((map__46098.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__46098.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__46098):map__46098);
-var track = cljs.core.get.call(null,map__46098__$1,new cljs.core.Keyword(null,"track","track",195787487));
-var tile_x = cljs.core.get.call(null,map__46098__$1,new cljs.core.Keyword(null,"tile-x","tile-x",1338121882));
-var tile_y = cljs.core.get.call(null,map__46098__$1,new cljs.core.Keyword(null,"tile-y","tile-y",-1293098706));
-var vec__46099 = app.tiles.general.track_destination_tile.call(null,track,tile_x,tile_y);
-var new_tile_x = cljs.core.nth.call(null,vec__46099,(0),null);
-var new_tile_y = cljs.core.nth.call(null,vec__46099,(1),null);
+var map__67229 = this$;
+var map__67229__$1 = ((((!((map__67229 == null)))?(((((map__67229.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__67229.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__67229):map__67229);
+var track = cljs.core.get.call(null,map__67229__$1,new cljs.core.Keyword(null,"track","track",195787487));
+var tile_x = cljs.core.get.call(null,map__67229__$1,new cljs.core.Keyword(null,"tile-x","tile-x",1338121882));
+var tile_y = cljs.core.get.call(null,map__67229__$1,new cljs.core.Keyword(null,"tile-y","tile-y",-1293098706));
+var vec__67230 = app.tiles.general.track_destination_tile.call(null,track,tile_x,tile_y);
+var new_tile_x = cljs.core.nth.call(null,vec__67230,(0),null);
+var new_tile_y = cljs.core.nth.call(null,vec__67230,(1),null);
 var layer = app.ecs.entities.locomotive._get_layer.call(null,world,new cljs.core.Keyword(null,"foreground","foreground",499022036));
 var tile_context = new cljs.core.Keyword(null,"tile-context","tile-context",32165727).cljs$core$IFn$_invoke$arity$1(world);
 var new_tile = gamebase.layers.get_tile_from_layer.call(null,layer,new_tile_x,new_tile_y);
 var info = gamebase.layers.get_tile_info_from_layer.call(null,tile_context,layer,new_tile_x,new_tile_y);
 var extra = app.state.get_tile_extra.call(null,new_tile_x,new_tile_y);
-var vec__46102 = new cljs.core.Keyword(null,"track","track",195787487).cljs$core$IFn$_invoke$arity$1(this$);
-var _ = cljs.core.nth.call(null,vec__46102,(0),null);
-var tile_end = cljs.core.nth.call(null,vec__46102,(1),null);
+var vec__67233 = new cljs.core.Keyword(null,"track","track",195787487).cljs$core$IFn$_invoke$arity$1(this$);
+var _ = cljs.core.nth.call(null,vec__67233,(0),null);
+var tile_end = cljs.core.nth.call(null,vec__67233,(1),null);
 var new_tile_start = new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"w","w",354169001),new cljs.core.Keyword(null,"e","e",1381269198),new cljs.core.Keyword(null,"e","e",1381269198),new cljs.core.Keyword(null,"w","w",354169001),new cljs.core.Keyword(null,"n","n",562130025),new cljs.core.Keyword(null,"s","s",1705939918),new cljs.core.Keyword(null,"s","s",1705939918),new cljs.core.Keyword(null,"n","n",562130025)], null).call(null,tile_end);
 var possible_new_tracks = app.tiles.general.active_tracks_from.call(null,new_tile_start,new_tile_x,new_tile_y,info,extra);
 var new_track = cljs.core.first.call(null,possible_new_tracks);
@@ -70,27 +70,27 @@ console.log("NO NEW TRACK!!!");
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [gamebase.ecs.mk_event.call(null,this$,new cljs.core.Keyword("app.ecs.common-events","stop","app.ecs.common-events/stop",-1144685785),new cljs.core.Keyword("gamebase.event-queue","time","gamebase.event-queue/time",-1714294787).cljs$core$IFn$_invoke$arity$1(event))], null);
 }
 }));
-cljs.core._add_method.call(null,gamebase.ecs.handle_event,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"to-entity","to-entity",-34052624),new cljs.core.Keyword("app.ecs.entities.locomotive","locomotive","app.ecs.entities.locomotive/locomotive",1809697705),new cljs.core.Keyword("app.ecs.common-events","stop","app.ecs.common-events/stop",-1144685785)], null),(function (world,event,p__46106){
-var map__46107 = p__46106;
-var map__46107__$1 = ((((!((map__46107 == null)))?(((((map__46107.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__46107.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__46107):map__46107);
-var this$ = map__46107__$1;
-var rear_coupling = cljs.core.get.call(null,map__46107__$1,new cljs.core.Keyword(null,"rear-coupling","rear-coupling",1106253524));
+cljs.core._add_method.call(null,gamebase.ecs.handle_event,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"to-entity","to-entity",-34052624),new cljs.core.Keyword("app.ecs.entities.locomotive","locomotive","app.ecs.entities.locomotive/locomotive",1809697705),new cljs.core.Keyword("app.ecs.common-events","stop","app.ecs.common-events/stop",-1144685785)], null),(function (world,event,p__67237){
+var map__67238 = p__67237;
+var map__67238__$1 = ((((!((map__67238 == null)))?(((((map__67238.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__67238.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__67238):map__67238);
+var this$ = map__67238__$1;
+var rear_coupling = cljs.core.get.call(null,map__67238__$1,new cljs.core.Keyword(null,"rear-coupling","rear-coupling",1106253524));
 console.log("LOC GOT STOP, sending to ",rear_coupling);
 
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [gamebase.ecs.mk_event.call(null,new cljs.core.Keyword(null,"move","move",-2110884309).cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword("gamebase.ecs","components","gamebase.ecs/components",-523279412).cljs$core$IFn$_invoke$arity$1(this$)),new cljs.core.Keyword("app.ecs.common-events","stop","app.ecs.common-events/stop",-1144685785),new cljs.core.Keyword("gamebase.event-queue","time","gamebase.event-queue/time",-1714294787).cljs$core$IFn$_invoke$arity$1(event)),(cljs.core.truth_(rear_coupling)?gamebase.ecs.mk_event.call(null,gamebase.ecs.to_entity.call(null,rear_coupling),new cljs.core.Keyword("app.ecs.common-events","stop","app.ecs.common-events/stop",-1144685785),new cljs.core.Keyword("gamebase.event-queue","time","gamebase.event-queue/time",-1714294787).cljs$core$IFn$_invoke$arity$1(event)):null)], null);
 }));
-cljs.core._add_method.call(null,gamebase.ecs.handle_event,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"to-entity","to-entity",-34052624),new cljs.core.Keyword("app.ecs.entities.locomotive","locomotive","app.ecs.entities.locomotive/locomotive",1809697705),new cljs.core.Keyword("app.ecs.common-events","drive","app.ecs.common-events/drive",-677702491)], null),(function (world,event,p__46109){
-var map__46110 = p__46109;
-var map__46110__$1 = ((((!((map__46110 == null)))?(((((map__46110.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__46110.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__46110):map__46110);
-var this$ = map__46110__$1;
-var rear_coupling = cljs.core.get.call(null,map__46110__$1,new cljs.core.Keyword(null,"rear-coupling","rear-coupling",1106253524));
+cljs.core._add_method.call(null,gamebase.ecs.handle_event,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"to-entity","to-entity",-34052624),new cljs.core.Keyword("app.ecs.entities.locomotive","locomotive","app.ecs.entities.locomotive/locomotive",1809697705),new cljs.core.Keyword("app.ecs.common-events","drive","app.ecs.common-events/drive",-677702491)], null),(function (world,event,p__67240){
+var map__67241 = p__67240;
+var map__67241__$1 = ((((!((map__67241 == null)))?(((((map__67241.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__67241.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__67241):map__67241);
+var this$ = map__67241__$1;
+var rear_coupling = cljs.core.get.call(null,map__67241__$1,new cljs.core.Keyword(null,"rear-coupling","rear-coupling",1106253524));
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [gamebase.ecs.mk_event.call(null,new cljs.core.Keyword(null,"move","move",-2110884309).cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword("gamebase.ecs","components","gamebase.ecs/components",-523279412).cljs$core$IFn$_invoke$arity$1(this$)),new cljs.core.Keyword("app.ecs.common-events","drive","app.ecs.common-events/drive",-677702491),new cljs.core.Keyword("gamebase.event-queue","time","gamebase.event-queue/time",-1714294787).cljs$core$IFn$_invoke$arity$1(event)),(cljs.core.truth_(rear_coupling)?gamebase.ecs.mk_event.call(null,gamebase.ecs.to_entity.call(null,rear_coupling),new cljs.core.Keyword("app.ecs.common-events","drive","app.ecs.common-events/drive",-677702491),new cljs.core.Keyword("gamebase.event-queue","time","gamebase.event-queue/time",-1714294787).cljs$core$IFn$_invoke$arity$1(event)):null)], null);
 }));
-cljs.core._add_method.call(null,gamebase.ecs.handle_event,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"to-entity","to-entity",-34052624),new cljs.core.Keyword("app.ecs.entities.locomotive","locomotive","app.ecs.entities.locomotive/locomotive",1809697705),new cljs.core.Keyword("app.ecs.entities.locomotive","couple-rear","app.ecs.entities.locomotive/couple-rear",884965625)], null),(function (world,p__46112,this$){
-var map__46113 = p__46112;
-var map__46113__$1 = ((((!((map__46113 == null)))?(((((map__46113.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__46113.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__46113):map__46113);
-var event = map__46113__$1;
-var the_other_id = cljs.core.get.call(null,map__46113__$1,new cljs.core.Keyword(null,"the-other-id","the-other-id",-1798540769));
+cljs.core._add_method.call(null,gamebase.ecs.handle_event,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"to-entity","to-entity",-34052624),new cljs.core.Keyword("app.ecs.entities.locomotive","locomotive","app.ecs.entities.locomotive/locomotive",1809697705),new cljs.core.Keyword("app.ecs.entities.locomotive","couple-rear","app.ecs.entities.locomotive/couple-rear",884965625)], null),(function (world,p__67243,this$){
+var map__67244 = p__67243;
+var map__67244__$1 = ((((!((map__67244 == null)))?(((((map__67244.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__67244.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__67244):map__67244);
+var event = map__67244__$1;
+var the_other_id = cljs.core.get.call(null,map__67244__$1,new cljs.core.Keyword(null,"the-other-id","the-other-id",-1798540769));
 var the_other = gamebase.ecs.get_entity_by_key.call(null,world,the_other_id);
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.assoc.call(null,this$,new cljs.core.Keyword(null,"rear-coupling","rear-coupling",1106253524),the_other_id),cljs.core.assoc.call(null,the_other,new cljs.core.Keyword(null,"front-coupling","front-coupling",2000992378),new cljs.core.Keyword("gamebase.ecs","entity-id","gamebase.ecs/entity-id",-1186455917).cljs$core$IFn$_invoke$arity$1(this$))], null);
 }));

@@ -7,7 +7,8 @@
 
    [sablono.core :as sab]
    [devcards.core]
-   )
+
+   [gamebase.geometry :as geom])
   (:require-macros
    [devcards.core :refer [defcard]])
 
@@ -51,9 +52,11 @@
 ;; ::out-of-path {:follower <my key>}
 
 (defn calculate-path-end-time
-  [{:keys [path path-start-length path-start-time speed] :as component} time]
-  (when (> speed 0)
-    (int (+ time (/ (- (g/path-length path) path-start-length) speed)))))
+  [{:keys [path path-start-length path-start-time speed extra-points] :as component} time]
+  (let [furthest-extra-point-distance (apply max (conj (vals (or extra-points {})) 0))
+        length-to-go (- (g/path-length path) path-start-length furthest-extra-point-distance)]
+    (when (> speed 0)
+      (int (+ time (/ length-to-go speed))))))
 
 (defn set-path [this time path path-start-length]
   (let [history (:path-history this)
@@ -75,6 +78,7 @@
 
 (defn do-update [<this> <time> <world>]
   (let [{:keys [path
+                paths-ahead
                 path-start-time
                 path-start-length
                 path-end-time
@@ -87,13 +91,15 @@
             length-on-path (+ path-start-length (* time-of-travel speed))
             total-path-length (g/path-length path)
             at-end? (= <time> path-end-time)
-            after-end? (>= <time> path-end-time)
+            at-or-after-end? (>= <time> path-end-time)
 
+            path-this-and-ahead (g/path-chain
+                                 (concat [path] (or paths-ahead [])))
             extra-xy (->> extra-points
                           (mapcat (fn [[k dist]]
                                     (let [length-on-path (+ length-on-path dist)
                                           position (g/path-point-at-length
-                                                    path
+                                                    path-this-and-ahead
                                                     length-on-path)]
 
                                       [k position])))
@@ -108,17 +114,21 @@
 
                 :length-on-path length-on-path
                 :at-end? at-end?
-                :after-end? after-end?
+                :at-or-after-end? at-or-after-end?
 
                 :position
                 (g/path-point-at-length
-                 path
-                 (if after-end? total-path-length length-on-path))
+                 path-this-and-ahead
+                 length-on-path
+                 ;;(if at-or-after-end? total-path-length length-on-path)
+                 )
 
                 :angle
                 (g/angle-at-length
-                 path
-                 (if after-end? total-path-length length-on-path))
+                 path-this-and-ahead
+                 length-on-path
+                 ;;(if at-or-after-end? total-path-length length-on-path)
+                 )
 
                 :extra-xy extra-xy)]))))
 
@@ -137,11 +147,13 @@
                  concat [:path-history-size
                          :extra-points
                          :driving? :speed
+                         :paths-behind
                          :path
+                         :paths-ahead
                          :path-start-length :path-start-time :path-end-time
                          :path-history
                          :length-on-path :position :angle
-                         :at-end? :after-end?
+                         :at-end? :at-or-after-end?
                          :extra-xy])
       v)))
 
@@ -170,7 +182,14 @@
   (let [{:keys [path]} event]
     (set-path this (::eq/time event) path 0)))
 
- (defn mk-path-trailer
+(defmethod ecs/handle-event [:to-component ::path-follower ::add-path]
+  [world event this]
+  (let [{:keys [path]} event
+        {:keys [paths-ahead]} this]
+    (assoc this
+           :paths-ahead (conj (or paths-ahead []) path))))
+
+(defn mk-path-trailer
    [entity-or-id key {:keys [path-history-size]}]
    (assoc
     (ecs/mk-component ::movement entity-or-id key ::path-trailer)
