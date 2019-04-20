@@ -85,6 +85,21 @@
      ;; ensure we'll get an :update event exactly at the end of the path
      (ecs/mk-event this :update path-end-time)]))
 
+(defn truncate-path
+  [{:keys [path paths-ahead extra-points length-on-path] :as this} time]
+  (if (path (> (count paths-ahead) 0))
+    (let [path-length (g/path-length path)
+          last-point-distance (apply min (into [0] (map second  extra-points)))
+          last-point-length-on-path (+ length-on-path last-point-distance)]
+      (if (>= last-point-length-on-path path-length)
+        (assoc this
+               :path (first paths-ahead)
+               :paths-ahead (into [] (rest paths-ahead))
+               :path-start-time time
+               :path-start-length (- length-on-path path-length))
+        this))
+    this))
+
 (defn do-update [<this> <time> <world>]
   (let [{:keys [path
                 paths-ahead
@@ -118,28 +133,30 @@
            (ecs/mk-event
             (ecs/to-entity (::ecs/entity-id <this>))
 
-                         ::at-path-end <time>))
-         (assoc <this>
+            ::at-path-end <time>))
+         (truncate-path
+          (assoc <this>
 
-                :length-on-path length-on-path
-                :at-end? at-end?
-                :at-or-after-end? at-or-after-end?
+                 :length-on-path length-on-path
+                 :at-end? at-end?
+                 :at-or-after-end? at-or-after-end?
 
-                :position
-                (g/path-point-at-length
-                 path-this-and-ahead
-                 length-on-path
-                 ;;(if at-or-after-end? total-path-length length-on-path)
-                 )
+                 :position
+                 (g/path-point-at-length
+                  path-this-and-ahead
+                  length-on-path
+                  ;;(if at-or-after-end? total-path-length length-on-path)
+                  )
 
-                :angle
-                (g/angle-at-length
-                 path-this-and-ahead
-                 length-on-path
-                 ;;(if at-or-after-end? total-path-length length-on-path)
-                 )
+                 :angle
+                 (g/angle-at-length
+                  path-this-and-ahead
+                  length-on-path
+                  ;;(if at-or-after-end? total-path-length length-on-path)
+                  )
 
-                :extra-xy extra-xy)]))))
+                 :extra-xy extra-xy)
+          <time>)]))))
 
 (defn mk-path-follower [entity-or-id key {:keys [path-history-size
                                                  extra-points]}]

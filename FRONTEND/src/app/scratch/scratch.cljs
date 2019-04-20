@@ -235,6 +235,7 @@
         [component7 svg-follower]
         [component8 svg-follower]
 
+
         ]
        (svg-coord-system 200 150)]
       [:value (get-val :selected-result)]]
@@ -309,6 +310,7 @@
       [VCV [_ component8] (ecs/handle-event :<dummy-world>
                                                    event2
                                                    component7)]
+
 
       ])))
 
