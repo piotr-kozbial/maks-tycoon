@@ -76,6 +76,7 @@
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::sys-move/at-path-end]
   [world event this]
+  (.log js/console "AT PATH END")
   (let [path (-> this ::ecs/components :move :path)
         {:keys [track tile-x tile-y]} this
         [new-tile-x new-tile-y] (tiles/track-destination-tile track tile-x tile-y)
@@ -88,12 +89,10 @@
 
         [_ tile-end] (:track this)
 
-
         new-tile-start ({:w :e
                          :e :w
                          :n :s
                          :s :n} tile-end)
-
 
         possible-new-tracks (tiles/active-tracks-from
                              new-tile-start
@@ -115,20 +114,14 @@
                                                      new-tile-x new-tile-y new-track))
          (assoc
           (ecs/mk-event (-> this ::ecs/components :move)
-                        ::sys-move/set-path
+                        ::sys-move/add-path
                         (::eq/time event))
           :path new-path)])
       (do
         (.log js/console "NO NEW TRACK!!!")
-        [
-         ;; (ecs/mk-event (-> this ::ecs/components :move)
-         ;;               ::ci/stop
-         ;;               (::eq/time event))
-         (ecs/mk-event this
+        [(ecs/mk-event this
                        ::ci/stop
-                       (::eq/time event))
-
-         ]))))
+                       (::eq/time event))]))))
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ci/stop]
   [world event {:keys [rear-coupling] :as this}]

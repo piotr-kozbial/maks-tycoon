@@ -28,10 +28,36 @@
    [:line {:x1 100 :y1 -10 :x2 100 :y2 110 :stroke "black" :stroke-width 1 :stroke-dasharray "5,5"}]])
 
 
-(defn svg-follower [{:as component :keys [position angle extra-xy]} & [highlight?]]
+
+
+(defn svg-path [path & [highlight?]]
+  (case (:path-type path)
+    :line-segment (let [{:keys [p1 p2]} path
+                        [x1 y1] p1
+                        [x2 y2] p2]
+                    [[:line {:x1 x1 :y1 y1 :x2 x2 :y2 y2 :stroke "black" :stroke-width 1}]
+                     (when highlight?
+                       [:line {:x1 x1 :y1 y1 :x2 x2 :y2 y2 :stroke "#bf28c1" :stroke-width 3
+                               :stroke-dasharray "4,6"}])])
+    :path-chain (for [p (:paths path)] (svg-path p highlight?))
+    []))
+
+(defn svg-point [[x y :as point] & [highlight?]]
+  [[:circle {:cx x :cy y :r 3 :stroke "blue" :fill "blue"}]
+   (when highlight?
+     [:circle {:cx x :cy y :r 6 :stroke "#bf28c1" :fill "none"}])])
+
+
+(defn svg-follower
+  [{:as component :keys [position angle extra-xy path paths-ahead paths-behind]} & [highlight?]]
   (when position
     (let [[x y] position]
-      [[:circle {:cx x :cy y :r 3 :stroke "blue" :fill "blue"}]
+      [(svg-path path highlight?)
+       (for [p paths-ahead]
+         (svg-path p highlight?))
+       (for [p paths-behind]
+         (svg-path p highlight?))
+       [:circle {:cx x :cy y :r 3 :stroke "blue" :fill "blue"}]
        (when highlight?
          [:circle {:cx x :cy y :r 6 :stroke "#bf28c1" :fill "none"}])
        (when extra-xy
@@ -46,28 +72,7 @@
           [:line {:x1 0 :y1 0 :x2 10 :y2 0  :stroke "blue"}]
           [:line {:x1 10 :y1 0 :x2 7 :y2 2  :stroke "blue"}]
           [:line {:x1 10 :y1 0 :x2 7 :y2 -2  :stroke "blue"}]])
-
        ])))
-
-(defn svg-path [path & [highlight?]]
-  (case (:path-type path)
-    :line-segment (let [{:keys [p1 p2]} path
-                        [x1 y1] p1
-                        [x2 y2] p2]
-                    [[:line {:x1 x1 :y1 y1 :x2 x2 :y2 y2 :stroke "black" :stroke-width 1}]
-                     (when highlight?
-                       [:line {:x1 x1 :y1 y1 :x2 x2 :y2 y2 :stroke "#bf28c1" :stroke-width 2
-                               :stroke-dasharray "4,6"
-                               }]
-                       )]
-                    )
-    :path-chain (for [p (:paths path)] (svg-path p highlight?))
-    []))
-
-(defn svg-point [[x y :as point] & [highlight?]]
-  [[:circle {:cx x :cy y :r 3 :stroke "blue" :fill "blue"}]
-   (when highlight?
-     [:circle {:cx x :cy y :r 6 :stroke "#bf28c1" :fill "none"}])])
 
 ;;;;;;;;; CARDS ;;:;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -228,18 +233,18 @@
         [component5 svg-follower]
         [component6 svg-follower]
         [component7 svg-follower]
+        [component8 svg-follower]
+
         ]
        (svg-coord-system 200 150)]
-      [:value (get-val :selected-result)]
-
-      ]
+      [:value (get-val :selected-result)]]
 
      ;; segments
      [[:h3 "Movement system: Path follower component, extra points"]
 
       [VCV path1 (geom/line-segment [0 0] [100 100])]
       [VCV path2 (geom/line-segment [100 100] [200 0])]
-      
+
       "Create, initialize, set path:"
       [VCV component (sys-movement/mk-path-follower "entity-id" "comp-key"
                                                     {:extra-points {:ahead-one 20
@@ -276,7 +281,7 @@
                                             component4)]
       "and we can see that the :at-path-end event has been emitted with the same timestamp. "
       "At this point whoever owns the component (typically an entity) should give it another path:"
-      [VCV component5'
+      [VCV [component5' event2]
        (ecs/handle-event :<dummy-world>
                          (assoc
                           (ecs/mk-event component
@@ -286,7 +291,8 @@
                          component5)]
 
 
-      [:p "Now let's go a bit further, so that points ahead move to the next path, "
+      [:p "Now let's go a bit further, "
+       "so that points ahead move to the next path, "
        "but not the main point:"]
       [VCV [_ component6] (ecs/handle-event :<dummy-world>
                                             (ecs/mk-event component5'
@@ -299,6 +305,10 @@
                                                           :update
                                                           20000)
                                             component6)]
+      "And at the new 'path end'..."
+      [VCV [_ component8] (ecs/handle-event :<dummy-world>
+                                                   event2
+                                                   component7)]
 
       ])))
 

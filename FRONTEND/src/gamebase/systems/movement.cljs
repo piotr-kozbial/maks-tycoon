@@ -52,11 +52,12 @@
 ;; ::out-of-path {:follower <my key>}
 
 (defn calculate-path-end-time
-  [{:keys [path path-start-length path-start-time speed extra-points] :as component} time]
-  (let [furthest-extra-point-distance (apply max (conj (vals (or extra-points {})) 0))
+  [{:keys [path paths-ahead path-start-length path-start-time speed extra-points] :as component}]
+  (let [path (g/path-chain (concat [path] (or paths-ahead [])))
+        furthest-extra-point-distance (apply max (conj (vals (or extra-points {})) 0))
         length-to-go (- (g/path-length path) path-start-length furthest-extra-point-distance)]
     (when (> speed 0)
-      (int (+ time (/ length-to-go speed))))))
+      (int (+ path-start-time (/ length-to-go speed))))))
 
 (defn set-path [this time path path-start-length]
   (let [history (:path-history this)
@@ -71,7 +72,15 @@
                      :path path
                      :path-start-length path-start-length
                      :path-start-time time)
-        path-end-time (calculate-path-end-time this' time)]
+        path-end-time (calculate-path-end-time this')]
+    [(assoc this' :path-end-time path-end-time)
+     ;; ensure we'll get an :update event exactly at the end of the path
+     (ecs/mk-event this :update path-end-time)]))
+
+(defn add-path [this time path]
+  (let [this' (assoc this
+                     :paths-ahead (conj (or (:paths-ahead this) []) path))
+        path-end-time (calculate-path-end-time this')]
     [(assoc this' :path-end-time path-end-time)
      ;; ensure we'll get an :update event exactly at the end of the path
      (ecs/mk-event this :update path-end-time)]))
@@ -186,8 +195,7 @@
   [world event this]
   (let [{:keys [path]} event
         {:keys [paths-ahead]} this]
-    (assoc this
-           :paths-ahead (conj (or paths-ahead []) path))))
+    (add-path this (::eq/time event) path)))
 
 (defn mk-path-trailer
    [entity-or-id key {:keys [path-history-size]}]

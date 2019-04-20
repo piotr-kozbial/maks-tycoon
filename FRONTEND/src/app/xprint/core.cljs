@@ -66,7 +66,7 @@
 
 (comment
   (def key-order [:a :b :c])
-  (def key-fn (apply hash-map (mapcat vector key-order (iterate inc 0))))
+  (def key-fn (apply hash-map (mapcat vectotur key-order (iterate inc 0))))
   (def m [[:b 3] [:c 4] [:a 2]])
   (sort-by (comp key-fn first) m)
   )
