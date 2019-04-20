@@ -49,30 +49,26 @@
 
 
 (defn svg-follower
-  [{:as component :keys [position angle extra-xy path paths-ahead paths-behind]} & [highlight?]]
-  (when position
-    (let [[x y] position]
-      [(svg-path path highlight?)
-       (for [p paths-ahead]
-         (svg-path p highlight?))
-       (for [p paths-behind]
-         (svg-path p highlight?))
-       [:circle {:cx x :cy y :r 3 :stroke "blue" :fill "blue"}]
-       (when highlight?
-         [:circle {:cx x :cy y :r 6 :stroke "#bf28c1" :fill "none"}])
-       (when extra-xy
-         (for [[x y] (vals extra-xy)]
-           [[:circle {:cx x :cy y :r 1.5 :stroke "blue" :fill "blue"}]
-            (when highlight?
-              [:circle {:cx x :cy y :r 4 :stroke "#bf28c1" :fill "none"}])]))
-       (let [angle-in-degrees (geom/get-degrees (geom/in-radians angle))]
-         [:g
-          {:transform (str/join "\n" [(str "translate(" x " " y ")")
-                                      (str "rotate(" angle-in-degrees " 0 0)")])}
-          [:line {:x1 0 :y1 0 :x2 10 :y2 0  :stroke "blue"}]
-          [:line {:x1 10 :y1 0 :x2 7 :y2 2  :stroke "blue"}]
-          [:line {:x1 10 :y1 0 :x2 7 :y2 -2  :stroke "blue"}]])
-       ])))
+  [{:as component :keys [position angle extra-xy path-chain]}
+   & [highlight?]]
+  (when-let [[x y] position]
+    [(svg-path path-chain highlight?)
+     [:circle {:cx x :cy y :r 3 :stroke "blue" :fill "blue"}]
+     (when highlight?
+       [:circle {:cx x :cy y :r 6 :stroke "#bf28c1" :fill "none"}])
+     (when extra-xy
+       (for [[x y] (vals extra-xy)]
+         [[:circle {:cx x :cy y :r 1.5 :stroke "blue" :fill "blue"}]
+          (when highlight?
+            [:circle {:cx x :cy y :r 4 :stroke "#bf28c1" :fill "none"}])]))
+     (let [angle-in-degrees (geom/get-degrees (geom/in-radians angle))]
+       [:g
+        {:transform (str/join "\n" [(str "translate(" x " " y ")")
+                                    (str "rotate(" angle-in-degrees " 0 0)")])}
+        [:line {:x1 0 :y1 0 :x2 10 :y2 0  :stroke "blue"}]
+        [:line {:x1 10 :y1 0 :x2 7 :y2 2  :stroke "blue"}]
+        [:line {:x1 10 :y1 0 :x2 7 :y2 -2  :stroke "blue"}]])
+     ]))
 
 ;;;;;;;;; CARDS ;;:;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -155,10 +151,11 @@
         :internal-coords [-10 -10 120 120]
         :y-flip? true}
        ;; legend
-       [[path svg-path]
-        [component2 svg-follower]
-        [component3 svg-follower]
-        [component4 svg-follower]]
+       [
+        [component0 svg-follower]
+        ;; [component3 svg-follower]
+        ;; [component4 svg-follower]
+        ]
        (svg-coord-system 100 100)]
       [:value (get-val :selected-result)]
 
@@ -169,47 +166,52 @@
       [:p "Here we will manually operate a component, without a world or entity, "
        "and also without an event queue (we will manually pass events if necessary)."]
       "Create:"
-      [VCV component (sys-movement/mk-path-follower "entity-id" "comp-key" {})]
+      [VCV path (geom/line-segment [0 0] [100 100])]
+      [VCV component (sys-movement/mk-path-follower "entity-id" "comp-key"
+                                                    {:path-or-paths path
+                                                     :driving? true})]
       ;;(svg-follower component)
       "Initialize:"
-      [VCV _ (ecs/handle-event :<dummy-world>
-                               (ecs/mk-event component
-                                             ::ecs/init
-                                             10000)
-                               component)]
+      [VCV [component0 event0] (ecs/handle-event :<dummy-world>
+                                                  (ecs/mk-event component
+                                                                ::ecs/init
+                                                                10000)
+                                                  component)]
 
       "The above returns [], i.e. no object changes and no events. "
       "This is because the path follower does nothing until it gets a path; "
       "doesn't even need to know the time of creation."
       [:br] [:br]
-      "Setting path:"
-      [VCV path (geom/line-segment [0 0] [100 100])]
-      [VCV [component2 event1]
-       (ecs/handle-event :<dummy-world>
-                         (assoc
-                          (ecs/mk-event component
-                                        ::sys-movement/set-path
-                                        10005)
-                          :path path)
-                         component)]
-      "The above modifies the component and also wants to schedule an :update event "
-      "at the time it should reach the end of the path. This time is calculated now "
-      "and saved also in the component. "
-      "On the other hand, there is no position calculated yet, although it could be; "
-      "but it is postponed until an :update event happens."
-      [:br] [:br]
 
-      "Update event after some time:"
-      [VCV [_ component3] (ecs/handle-event :<dummy-world>
-                                            (ecs/mk-event component2
-                                                          :update
-                                                          11000)
-                                            component2)]
-      "Update at path end. "
-      "This event would normally be yielded from the event queue "
-      "at the appropriate time (corresponding to the game time specified in the event). "
-      "Here we pass it manually:"
-      [VCV [event-to-entity component4] (ecs/handle-event :<dummy-world> event1 component3)]])))
+      ;; "Setting path:"
+      ;; [VCV [component2 event1]
+      ;;  (ecs/handle-event :<dummy-world>
+      ;;                    (assoc
+      ;;                     (ecs/mk-event component
+      ;;                                   ::sys-movement/set-path
+      ;;                                   10005)
+      ;;                     :path path)
+      ;;                    component)]
+      ;; "The above modifies the component and also wants to schedule an :update event "
+      ;; "at the time it should reach the end of the path. This time is calculated now "
+      ;; "and saved also in the component. "
+      ;; "On the other hand, there is no position calculated yet, although it could be; "
+      ;; "but it is postponed until an :update event happens."
+      ;; [:br] [:br]
+
+      ;; "Update event after some time:"
+      ;; [VCV [_ component3] (ecs/handle-event :<dummy-world>
+      ;;                                       (ecs/mk-event component2
+      ;;                                                     :update
+      ;;                                                     11000)
+      ;;                                       component2)]
+      ;; "Update at path end. "
+      ;; "This event would normally be yielded from the event queue "
+      ;; "at the appropriate time (corresponding to the game time specified in the event). "
+      ;; "Here we pass it manually:"
+      ;; [VCV [event-to-entity component4] (ecs/handle-event :<dummy-world> event1 component3)]
+
+      ])))
 
 (defn card--movement--path-follower--extra-points [get-val set-val]
   (binding [gamebase.geometry/*with-xprint* true

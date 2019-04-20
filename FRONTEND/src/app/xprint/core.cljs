@@ -1,5 +1,6 @@
 (ns app.xprint.core
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [clojure.set :as set]))
 
 (declare do-xprint)
 
@@ -60,9 +61,19 @@
 ;;   )
 
 (defn map-to-ordered-kv-pairs [m key-order]
-  (let [key-order-map (apply hash-map (mapcat vector (reverse key-order) (iterate dec -1)))
-        key-fn (fn [k] (or (key-order-map k) 0))]
-    (sort-by (comp key-fn first) m)))
+  (concat
+   (->> (for [k key-order]
+          (cond
+            (and (vector? k) (= (first k) ::comment))
+            k
+            :else
+            (when (contains? m k)
+              [k (m k)])))
+        (remove nil?))
+   (map
+    #(vector % (m %))
+    (set/difference (apply hash-set (keys m))
+                    (apply hash-set key-order)))))
 
 (comment
   (def key-order [:a :b :c])
@@ -71,26 +82,45 @@
   (sort-by (comp key-fn first) m)
   )
 
+
+(defn span [style & body]
+  (apply vector :span
+    {:style (assoc style :font-family "monospace")}
+    body))
+
+
+(defn xprint-map [value xprint' {:keys [level]}]
+  (let [key-order (when-let [m (meta value)] (::key-order m))
+        value' (map-to-ordered-kv-pairs value key-order)
+        print-kv
+        (fn [[k v]]
+          (if (= k ::comment)
+            (span {:color "#777"} (str ";; " v))
+
+            
+            [(xprint' k) " " (xprint' v)]))]
+    (span
+     {}
+     (concat
+      [(span {:color "white"} "{")]
+      (when-not (empty? value')
+        (concat
+         (print-kv  (first value'))
+         (mapcat #(vector (if (= 0 level) "\n " " ")
+                          (print-kv %))
+                 (rest value'))))
+      [(span {:color "white"} "}")]))))
+
+
 (defn do-xprint
   [{:as context :keys [level]} value]
 
-  (let [xprint' (partial do-xprint (assoc context :level (inc level)))
-        span (fn [style & body] (apply vector :span
-                                 {:style (assoc style :font-family "monospace")}
-                                 body))]
+  (let [xprint' (partial do-xprint (assoc context :level (inc level)))]
 
     (cond
 
-      ;; (symbol? value) (str value)
-
       (keyword? value) (span {:color "#e67fff"
                               } (pr-str value))
-
-      ;; (list? value) (apply str
-      ;;                 (concat
-      ;;                  ["("]
-      ;;                  (str/join " " (map xprint' value))
-      ;;                  [")"]))
 
       (vector? value)
       (span
@@ -106,22 +136,8 @@
 
 
 
-      (map? value)
-      (let [key-order (when-let [m (meta value)] (::key-order m))
-            value' (map-to-ordered-kv-pairs value key-order)]
-        (span
-         {}
-         (concat
-          [(span {:color "white"} "{")]
-          (when-let [[k v] (first value')]
-            [(xprint' k) " " (xprint' v)])
-          ;; (when (= 0 level) [[:br]])
-          (mapcat #(vector (if (= 0 level) "\n " " ")
-                           (xprint' (first %))
-                           " "
-                           (xprint' (second %)))
-                  (rest value'))
-          [(span {:color "white"} "}")])))
+      (map? value) (xprint-map value xprint' context)
+ 
 
       :else (pr-str value)))
 

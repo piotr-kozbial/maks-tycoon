@@ -14,7 +14,6 @@
 
   )
 
-
 (defn mk-system []
   (ecs/mk-system ::movement))
 
@@ -27,8 +26,8 @@
                               (ecs/all-components-of-system
                                world system)))
 
-;;;;;----------------------------------------------
 ;;;;; Component: test-diagonal
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn mk-test-diagonal-component
   [entity-or-id key _]
@@ -45,45 +44,20 @@
     (assoc component
            :position [d d])))
 
-;;;;;----------------------------------------------
 ;;;;; Component: path-follower
-
-;; Will send the following events to its owning entity:
-;; ::out-of-path {:follower <my key>}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn calculate-path-end-time
-  [{:keys [path paths-ahead path-start-length path-start-time speed extra-points] :as component}]
-  (let [path (g/path-chain (concat [path] (or paths-ahead [])))
-        furthest-extra-point-distance (apply max (conj (vals (or extra-points {})) 0))
-        length-to-go (- (g/path-length path) path-start-length furthest-extra-point-distance)]
+  [{:keys [path-chain path-start-length path-start-time speed extra-points]
+    :as component}]
+  (let [furthest-extra-point-distance
+        ,   (apply max (conj (vals (or extra-points {})) 0))
+        length-to-go
+        ,   (- (g/path-length path-chain)
+               path-start-length
+               furthest-extra-point-distance)]
     (when (> speed 0)
       (int (+ path-start-time (/ length-to-go speed))))))
-
-(defn set-path [this time path path-start-length]
-  (let [history (:path-history this)
-        history' (if (:path this)
-                   (into history [(:path this)])
-                   history)
-        history'' (if (<= (count history') (:path-history-size this))
-                    history'
-                    (apply vector (rest history')))
-        this' (assoc this
-                     :path-history history''
-                     :path path
-                     :path-start-length path-start-length
-                     :path-start-time time)
-        path-end-time (calculate-path-end-time this')]
-    [(assoc this' :path-end-time path-end-time)
-     ;; ensure we'll get an :update event exactly at the end of the path
-     (ecs/mk-event this :update path-end-time)]))
-
-(defn add-path [this time path]
-  (let [this' (assoc this
-                     :paths-ahead (conj (or (:paths-ahead this) []) path))
-        path-end-time (calculate-path-end-time this')]
-    [(assoc this' :path-end-time path-end-time)
-     ;; ensure we'll get an :update event exactly at the end of the path
-     (ecs/mk-event this :update path-end-time)]))
 
 (defn truncate-path
   [{:keys [path paths-ahead extra-points length-on-path] :as this} time]
@@ -153,32 +127,109 @@
                  :extra-xy extra-xy)
           <time>)]))))
 
-(defn mk-path-follower [entity-or-id key {:keys [path-history-size
-                                                 extra-points]}]
+
+(defn update-path-end-time
+  [{:keys [path-chain path-start-length path-start-time
+           speed extra-points driving?] :as this}]
+  (assoc this
+         :path-end-time
+         (when driving?
+           (let [furthest-extra-point-distance
+                 ,   (apply max (conj (vals (or extra-points {})) 0))
+                 length-to-go
+                 ,   (- (g/path-length path-chain)
+                        path-start-length
+                        furthest-extra-point-distance)]
+             (int (+ path-start-time (/ length-to-go speed)))))))
+
+(defn mk-update-event-for-path-end
+  [{:keys [path-end-time] :as this}]
+  (when path-end-time
+    (ecs/mk-event this :update path-end-time)))
+
+(defn update-positions
+  [{:keys [driving? path-chain path-start-time path-start-length
+           extra-points speed] :as this}
+   time]
+  (if driving?
+    (let [time-of-travel (- time path-start-time)
+          length-on-path (+ path-start-length (* time-of-travel speed))
+          total-path-length (g/path-length path-chain)
+       ]
+      (assoc
+       this
+       :position (g/path-point-at-length path-chain length-on-path)
+       :angle (g/angle-at-length path-chain length-on-path)
+       :extra-xy (->> extra-points
+                      (mapcat (fn [[k dist]]
+                                (let [len (+ length-on-path dist)
+                                      position (g/path-point-at-length
+                                                path-chain
+                                                len)]
+                                  [k position])))
+                      (apply hash-map))))
+    this))
+
+(defn update-topology
+  [{:keys [path-end-time] :as this}
+   time]
+  (assoc
+   this
+   :at-end? (= time path-end-time)
+   :at-or-after-end? (>= time path-end-time)))
+
+(defn mk-path-follower [entity-or-id key {:keys [path-or-paths
+                                                 path-start-length
+                                                 extra-points
+                                                 speed
+                                                 driving?]}]
+  (assert path-or-paths)
   (let [v (assoc
            (ecs/mk-component ::movement entity-or-id key ::path-follower)
-           :driving? true
-           :speed 0.02
-           :path-history []
-           :path-history-size path-history-size
-           :extra-points extra-points)]
+           :driving? driving?
+           :speed (or speed 0.02)
+           :extra-points extra-points
+           :path-chain (geom/precompute
+                        (geom/path-chain
+                         (if (or (list? path-or-paths)
+                                 (vector? path-or-paths))
+                           (into [] path-or-paths)
+                           [path-or-paths])))
+           ;; TODO - chcemy wlasciwie, zeby klient podal numer path z tych co podal
+           ;; i length wzgledem tego path, a my sobie przeliczymy
+           :path-start-length (or path-start-length 0))]
     (if :gamebase.ecs/*with-xprint*
       (vary-meta v
                  update-in [:app.xprint.core/key-order]
-                 concat [:path-history-size
+                 concat [[:app.xprint.core/comment
+                          "configuration"]
                          :extra-points
+                         [:app.xprint.core/comment "raw state"]
+                         :path-chain :path-start-length
                          :driving? :speed
-                         :paths-behind
-                         :path
-                         :paths-ahead
-                         :path-start-length :path-start-time :path-end-time
-                         :path-history
+                         :path-start-time
+                         [:app.xprint.core/comment
+                          "derived state - events"]
+                         :path-end-time
+                         [:app.xprint.core/comment
+                          "derived state - positions"]
                          :length-on-path :position :angle
+                         :extra-xy
+                         [:app.xprint.core/comment
+                          "derived state - topology"]
                          :at-end? :at-or-after-end?
-                         :extra-xy])
+                         ])
       v)))
 
-(defmethod ecs/handle-event [:to-component ::path-follower ::ecs/init] [_ _ this] [])
+(defmethod ecs/handle-event [:to-component ::path-follower ::ecs/init]
+  [_ event this]
+  (let [this' (-> this
+                  (assoc :path-start-time (::eq/time event))
+                  (update-path-end-time)
+                  (update-positions (::eq/time event))
+                  (update-topology (::eq/time event)))]
+    [this'
+     (mk-update-event-for-path-end this')]))
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::ci/stop]
   [world event this]
@@ -187,30 +238,50 @@
       [maybe-event (assoc this' :driving? false)])))
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::ci/drive]
-  [world event this]
+  [world event {:keys [path length-on-path] :as this}]
   (when-not (:driving? this)
-    (set-path
-     (assoc this :driving? true)
-     (::eq/time event)
-     (:path this)
-     (:length-on-path this))))
+    (let [this' (assoc this
+                       :driving? true
+                       :path-start-length length-on-path
+                       :path-start-time (::eq/time event))
+          path-end-time (calculate-path-end-time this')]
+      [(assoc this' :path-end-time path-end-time)
+       ;; ensure we'll get an :update event exactly at the end of the path
+       (ecs/mk-event this :update path-end-time)])))
 
 (defmethod ecs/handle-event [:to-component ::path-follower :update] [world event this]
   (do-update this (::eq/time event) world))
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::set-path]
   [world event this]
-  (let [{:keys [path]} event]
-    (set-path this (::eq/time event) path 0)))
+  (let [{:keys [path path-start-length]} event
+        time (::eq/time event)]
+    (let [this' (assoc this
+                       :path path
+                       :path-start-length (or path-start-length 0)
+                       :path-start-time time)
+          path-end-time (calculate-path-end-time this')]
+      [(assoc this' :path-end-time path-end-time)
+       ;; ensure we'll get an :update event exactly at the end of the path
+       (ecs/mk-event this :update path-end-time)])))
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::add-path]
   [world event this]
   (let [{:keys [path]} event
-        {:keys [paths-ahead]} this]
-    (add-path this (::eq/time event) path)))
+        {:keys [paths-ahead]} this
+        time (::eq/time event)]
+    (let [this' (assoc this
+                       :paths-ahead (conj (or (:paths-ahead this) []) path))
+          path-end-time (calculate-path-end-time this')]
+      [(assoc this' :path-end-time path-end-time)
+       ;; ensure we'll get an :update event exactly at the end of the path
+       (ecs/mk-event this :update path-end-time)])))
+
+;;;;; Component: path-trailer
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn mk-path-trailer
-   [entity-or-id key {:keys [path-history-size]}]
+   [entity-or-id key {:keys []}]
    (assoc
     (ecs/mk-component ::movement entity-or-id key ::path-trailer)
     ;; TODO - podpiecie do czegos, do innego komponentu, ktory potrafilby powiedziec
@@ -234,6 +305,3 @@
     :a :b
     ))
 
-
-(defcard my-first-card
-  (sab/html [:h1 "Devcards is awesome!"]))
