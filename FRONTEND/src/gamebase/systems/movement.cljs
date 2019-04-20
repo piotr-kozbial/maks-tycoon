@@ -87,7 +87,7 @@
 
 (defn truncate-path
   [{:keys [path paths-ahead extra-points length-on-path] :as this} time]
-  (if (path (> (count paths-ahead) 0))
+  (if (and path (> (count paths-ahead) 0))
     (let [path-length (g/path-length path)
           last-point-distance (apply min (into [0] (map second  extra-points)))
           last-point-length-on-path (+ length-on-path last-point-distance)]
@@ -108,8 +108,7 @@
                 path-end-time
                 speed
                 driving?
-                extra-points
-                ]} <this>]
+                extra-points]} <this>]
     (when (and path driving?)
       (let [time-of-travel (- <time> path-start-time)
             length-on-path (+ path-start-length (* time-of-travel speed))
@@ -144,16 +143,12 @@
                  :position
                  (g/path-point-at-length
                   path-this-and-ahead
-                  length-on-path
-                  ;;(if at-or-after-end? total-path-length length-on-path)
-                  )
+                  length-on-path)
 
                  :angle
                  (g/angle-at-length
                   path-this-and-ahead
-                  length-on-path
-                  ;;(if at-or-after-end? total-path-length length-on-path)
-                  )
+                  length-on-path)
 
                  :extra-xy extra-xy)
           <time>)]))))
