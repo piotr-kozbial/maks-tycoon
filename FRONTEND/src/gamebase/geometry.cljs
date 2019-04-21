@@ -648,6 +648,11 @@
           (angle-at-length (nth paths n) length-remaining)
           (recur (inc n) (- length-remaining (nth lengths n)))))))
 
+  (defn path-chain-add [{:keys [paths] :as path-chain} path]
+    (assoc
+     path-chain
+     :paths (conj paths path)))
+
   (comment
     (def p1 (line-segment [1 1] [3 1]))
     (def p2 (line-segment [3 1] [3 4]))

@@ -247,7 +247,11 @@
      this']))
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::add-path]
-  [world {:keys [path] :as event} this]
+  [world {:keys [path] :as event} {:keys [path-chain] :as this}]
+
+  (-> this
+      (assoc :path-chain (geom/path-chain-add path-chain path)))
+
 
   ;; (let [{:keys [path]} event
   ;;       {:keys [paths-ahead]} this
@@ -259,7 +263,7 @@
   ;;      ;; ensure we'll get an :update event exactly at the end of the path
   ;;      (ecs/mk-event this :update path-end-time)]))
 
-  this)
+)
 
 
 
