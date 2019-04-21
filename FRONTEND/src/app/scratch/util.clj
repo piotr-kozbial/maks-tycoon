@@ -58,13 +58,13 @@
                                      :font-size "120%"}}
                       (list print-f (list 'quote expr))]])
                   segment)))
-             (into [:div {:style {:height "95%"
+             (into [:div {:style {:height "100%"
                                   :width "100%"
                                  :background-color "#BBB"
                                  :overflow "auto"}}] ))
         vbody
         (into [:div
-               {:style {:height "95%"
+               {:style {:height "100%"
                         :width "100%"
                         :background-color "#BBB"
                         :overflow "auto"}} ]
@@ -77,7 +77,7 @@
                           [:hr]))))]
 
     (list 'let (into [] bindings)
-          [:table {:style {:height "95%" :width "100%"
+          [:table {:style {:height "100%" :width "100%"
                            :table-layout "fixed"}}
            [:tbody
             [:tr

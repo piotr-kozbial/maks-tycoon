@@ -142,10 +142,10 @@
                         furthest-extra-point-distance)]
              (int (+ path-start-time (/ length-to-go speed)))))))
 
-(defn mk-update-event-for-path-end
-  [{:keys [path-end-time] :as this}]
-  (when path-end-time
-    (ecs/mk-event this :update path-end-time)))
+(defn mk-topology-event
+  [this key]
+  (when-let [t (key this)]
+    (ecs/mk-event this ::topology-event t)))
 
 (defn update-positions
   [{:keys [driving? path-chain path-start-time path-start-length
@@ -228,8 +228,45 @@
                   (update-path-end-time)
                   (update-positions (::eq/time event))
                   (update-topology (::eq/time event)))]
-    [this'
-     (mk-update-event-for-path-end this')]))
+    [this' (mk-topology-event this' :path-end-time)]))
+
+(defmethod ecs/handle-event [:to-component ::path-follower :update]
+  [world event this]
+  (-> this
+      (update-positions (::eq/time event))))
+
+(defmethod ecs/handle-event [:to-component ::path-follower ::topology-event]
+  [world event this]
+  (let [this'(-> this
+                 (update-positions (::eq/time event))
+                 (update-topology (::eq/time event)))]
+    [(when (:at-end? this')
+       (ecs/mk-event (ecs/to-entity (::ecs/entity-id this'))
+                     ::at-path-end
+                     (::eq/time event)))
+     this']))
+
+(defmethod ecs/handle-event [:to-component ::path-follower ::add-path]
+  [world {:keys [path] :as event} this]
+
+  ;; (let [{:keys [path]} event
+  ;;       {:keys [paths-ahead]} this
+  ;;       time (::eq/time event)]
+  ;;   (let [this' (assoc this
+  ;;                      :paths-ahead (conj (or (:paths-ahead this) []) path))
+  ;;         path-end-time (calculate-path-end-time this')]
+  ;;     [(assoc this' :path-end-time path-end-time)
+  ;;      ;; ensure we'll get an :update event exactly at the end of the path
+  ;;      (ecs/mk-event this :update path-end-time)]))
+
+  this)
+
+
+
+
+
+
+
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::ci/stop]
   [world event this]
@@ -249,8 +286,7 @@
        ;; ensure we'll get an :update event exactly at the end of the path
        (ecs/mk-event this :update path-end-time)])))
 
-(defmethod ecs/handle-event [:to-component ::path-follower :update] [world event this]
-  (do-update this (::eq/time event) world))
+
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::set-path]
   [world event this]
@@ -265,17 +301,7 @@
        ;; ensure we'll get an :update event exactly at the end of the path
        (ecs/mk-event this :update path-end-time)])))
 
-(defmethod ecs/handle-event [:to-component ::path-follower ::add-path]
-  [world event this]
-  (let [{:keys [path]} event
-        {:keys [paths-ahead]} this
-        time (::eq/time event)]
-    (let [this' (assoc this
-                       :paths-ahead (conj (or (:paths-ahead this) []) path))
-          path-end-time (calculate-path-end-time this')]
-      [(assoc this' :path-end-time path-end-time)
-       ;; ensure we'll get an :update event exactly at the end of the path
-       (ecs/mk-event this :update path-end-time)])))
+
 
 ;;;;; Component: path-trailer
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

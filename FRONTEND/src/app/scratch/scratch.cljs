@@ -147,16 +147,17 @@
      ;; visualizations
      [[:svg
        ;; props
-       {:width 200, :height 200
-        :internal-coords [-10 -10 120 120]
+       {:width 400, :height 200
+        :internal-coords [-10 -10 220 120]
         :y-flip? true}
        ;; legend
        [
         [component0 svg-follower]
-        ;; [component3 svg-follower]
-        ;; [component4 svg-follower]
+        [component1 svg-follower]
+        [component2 svg-follower]
+        [component2' svg-follower]
         ]
-       (svg-coord-system 100 100)]
+       (svg-coord-system 200 100)]
       [:value (get-val :selected-result)]
 
       ]
@@ -178,10 +179,23 @@
                                                                 10000)
                                                   component)]
 
-      "The above returns [], i.e. no object changes and no events. "
-      "This is because the path follower does nothing until it gets a path; "
-      "doesn't even need to know the time of creation."
-      [:br] [:br]
+      "After some time"
+      [VCV component1 (ecs/handle-event :<dummy-world>
+                                                 (ecs/mk-event component0
+                                                               :update
+                                                               12000)
+                                                 component0)]
+      "At path end"
+      [VCV [event2 component2] (ecs/handle-event
+                                :<dummy-world> event0 component1)]
+      [VCV component2' (ecs/handle-event
+                        :<dummy-world>
+                        (assoc
+                         (ecs/mk-event component2
+                                       ::sys-movement/add-path
+                                       (::eq/time event2))
+                         :path (geom/line-segment [100 100] [200 0]))
+                        component2)]
 
       ;; "Setting path:"
       ;; [VCV [component2 event1]
