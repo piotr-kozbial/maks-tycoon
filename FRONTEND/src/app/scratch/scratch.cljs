@@ -147,8 +147,8 @@
      ;; visualizations
      [[:svg
        ;; props
-       {:width 400, :height 200
-        :internal-coords [-10 -10 220 120]
+       {:width 600, :height 200
+        :internal-coords [-10 -10 320 120]
         :y-flip? true}
        ;; legend
        [
@@ -156,11 +156,13 @@
         [component1 svg-follower]
         [component2 svg-follower]
         [component2' svg-follower]
+        [component3 svg-follower]
+        [component4 svg-follower]
+        [component5 svg-follower]
+        [component6 svg-follower]
         ]
-       (svg-coord-system 200 100)]
-      [:value (get-val :selected-result)]
-
-      ]
+       (svg-coord-system 300 100)]
+      [:value (get-val :selected-result)]]
 
      ;; segments
      [[:h3 "Movement system: Path follower component, basic usage"]
@@ -173,7 +175,7 @@
                                                      :driving? true})]
       ;;(svg-follower component)
       "Initialize:"
-      [VCV [component0 event0] (ecs/handle-event :<dummy-world>
+      [VCV [component0 event-topo-0] (ecs/handle-event :<dummy-world>
                                                   (ecs/mk-event component
                                                                 ::ecs/init
                                                                 10000)
@@ -186,44 +188,40 @@
                                                                12000)
                                                  component0)]
       "At path end"
-      [VCV [event2 component2] (ecs/handle-event
-                                :<dummy-world> event0 component1)]
-      [VCV component2' (ecs/handle-event
-                        :<dummy-world>
-                        (assoc
-                         (ecs/mk-event component2
-                                       ::sys-movement/add-path
-                                       (::eq/time event2))
-                         :path (geom/line-segment [100 100] [200 0]))
-                        component2)]
+      [VCV [event-path-end-2 component2] (ecs/handle-event
+                                :<dummy-world> event-topo-0 component1)]
+      [VCV [event-topo-2' component2'] (ecs/handle-event
+                                  :<dummy-world>
+                                  (assoc
+                                   (ecs/mk-event component2
+                                                 ::sys-movement/add-path
+                                                 (::eq/time event-path-end-2))
+                                   :path (geom/line-segment [100 100] [200 0]))
+                                  component2)]
 
-      ;; "Setting path:"
-      ;; [VCV [component2 event1]
-      ;;  (ecs/handle-event :<dummy-world>
-      ;;                    (assoc
-      ;;                     (ecs/mk-event component
-      ;;                                   ::sys-movement/set-path
-      ;;                                   10005)
-      ;;                     :path path)
-      ;;                    component)]
-      ;; "The above modifies the component and also wants to schedule an :update event "
-      ;; "at the time it should reach the end of the path. This time is calculated now "
-      ;; "and saved also in the component. "
-      ;; "On the other hand, there is no position calculated yet, although it could be; "
-      ;; "but it is postponed until an :update event happens."
-      ;; [:br] [:br]
+      [VCV component3 (ecs/handle-event :<dummy-world>
+                                        (ecs/mk-event component2'
+                                                      :update
+                                                      19000)
+                                        component2')]
 
-      ;; "Update event after some time:"
-      ;; [VCV [_ component3] (ecs/handle-event :<dummy-world>
-      ;;                                       (ecs/mk-event component2
-      ;;                                                     :update
-      ;;                                                     11000)
-      ;;                                       component2)]
-      ;; "Update at path end. "
-      ;; "This event would normally be yielded from the event queue "
-      ;; "at the appropriate time (corresponding to the game time specified in the event). "
-      ;; "Here we pass it manually:"
-      ;; [VCV [event-to-entity component4] (ecs/handle-event :<dummy-world> event1 component3)]
+      [VCV [event-path-end-4 component4] (ecs/handle-event :<dummy-world> event-topo-2' component3)]
+
+      "At path end"
+      [VCV [event-topo-5 component5] (ecs/handle-event
+                                        :<dummy-world>
+                                        (assoc
+                                         (ecs/mk-event component4
+                                                       ::sys-movement/add-path
+                                                       (::eq/time event-path-end-4))
+                                         :path (geom/line-segment [200 0] [300 100]))
+                                        component4)]
+
+      [VCV component6 (ecs/handle-event :<dummy-world>
+                                        (ecs/mk-event component5
+                                                      :update
+                                                      28000)
+                                        component5)]
 
       ])))
 

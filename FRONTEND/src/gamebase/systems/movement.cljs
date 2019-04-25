@@ -59,7 +59,7 @@
     (when (> speed 0)
       (int (+ path-start-time (/ length-to-go speed))))))
 
-(defn truncate-path
+(comment defn truncate-path
   [{:keys [path paths-ahead extra-points length-on-path] :as this} time]
   (if (and path (> (count paths-ahead) 0))
     (let [path-length (g/path-length path)
@@ -107,25 +107,24 @@
             (ecs/to-entity (::ecs/entity-id <this>))
 
             ::at-path-end <time>))
-         (truncate-path
-          (assoc <this>
+         (assoc <this>
 
-                 :length-on-path length-on-path
-                 :at-end? at-end?
-                 :at-or-after-end? at-or-after-end?
+                :length-on-path length-on-path
+                :at-end? at-end?
+                :at-or-after-end? at-or-after-end?
 
-                 :position
-                 (g/path-point-at-length
-                  path-this-and-ahead
-                  length-on-path)
+                :position
+                (g/path-point-at-length
+                 path-this-and-ahead
+                 length-on-path)
 
-                 :angle
-                 (g/angle-at-length
-                  path-this-and-ahead
-                  length-on-path)
+                :angle
+                (g/angle-at-length
+                 path-this-and-ahead
+                 length-on-path)
 
-                 :extra-xy extra-xy)
-          <time>)]))))
+                :extra-xy extra-xy)
+]))))
 
 
 (defn update-path-end-time
@@ -134,18 +133,36 @@
   (assoc this
          :path-end-time
          (when driving?
-           (let [furthest-extra-point-distance
+           (let [furthest-point-distance
                  ,   (apply max (conj (vals (or extra-points {})) 0))
                  length-to-go
                  ,   (- (g/path-length path-chain)
                         path-start-length
-                        furthest-extra-point-distance)]
+                        furthest-point-distance)]
+             (int (+ path-start-time (/ length-to-go speed)))))))
+
+(defn update-path-free-time
+  [{:keys [extra-points path-chain driving? speed
+           path-start-time path-start-length] :as this}]
+  (assoc this
+         :path-free-time
+         (when driving?
+           (let [path (first (:paths path-chain))
+                 furthest-back-point-distance
+                 ,   (apply min (conj (vals (or extra-points {})) 0))
+                 length-to-go
+                 ,   (- (g/path-length path)
+                        path-start-length
+                        furthest-back-point-distance)]
              (int (+ path-start-time (/ length-to-go speed)))))))
 
 (defn mk-topology-event
   [this key]
-  (when-let [t (key this)]
-    (ecs/mk-event this ::topology-event t)))
+  (let [times (map this [:path-end-time
+                         :path-free-time])]
+    (when-not (empty? times)
+      (ecs/mk-event this ::topology-event
+                    (apply min times)))))
 
 (defn update-positions
   [{:keys [driving? path-chain path-start-time path-start-length
@@ -177,6 +194,19 @@
    this
    :at-end? (= time path-end-time)
    :at-or-after-end? (>= time path-end-time)))
+
+(defn truncate-path
+  [{:as this :keys [path-free-time path-chain extra-points]}
+   time]
+  (if (= path-free-time time)
+    (let [furthest-back-point-distance
+          ,   (apply min (conj (vals (or extra-points {})) 0))]
+      (assoc this
+             :path-chain (geom/path-chain-remove-first path-chain)
+             :path-start-time time
+             :path-start-length (- furthest-back-point-distance)))
+    this))
+
 
 (defn mk-path-follower [entity-or-id key {:keys [path-or-paths
                                                  path-start-length
@@ -210,15 +240,14 @@
                          :path-start-time
                          [:app.xprint.core/comment
                           "derived state - events"]
-                         :path-end-time
+                         :path-end-time :path-free-time
                          [:app.xprint.core/comment
                           "derived state - positions"]
                          :length-on-path :position :angle
                          :extra-xy
                          [:app.xprint.core/comment
                           "derived state - topology"]
-                         :at-end? :at-or-after-end?
-                         ])
+                         :at-end? :at-or-after-end?])
       v)))
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::ecs/init]
@@ -226,6 +255,7 @@
   (let [this' (-> this
                   (assoc :path-start-time (::eq/time event))
                   (update-path-end-time)
+                  (update-path-free-time)
                   (update-positions (::eq/time event))
                   (update-topology (::eq/time event)))]
     [this' (mk-topology-event this' :path-end-time)]))
@@ -238,8 +268,10 @@
 (defmethod ecs/handle-event [:to-component ::path-follower ::topology-event]
   [world event this]
   (let [this'(-> this
+                 (update-path-free-time)
                  (update-positions (::eq/time event))
-                 (update-topology (::eq/time event)))]
+                 (update-topology (::eq/time event))
+                 (truncate-path (::eq/time event)))]
     [(when (:at-end? this')
        (ecs/mk-event (ecs/to-entity (::ecs/entity-id this'))
                      ::at-path-end
@@ -248,20 +280,16 @@
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::add-path]
   [world {:keys [path] :as event} {:keys [path-chain] :as this}]
+  (let [this' (-> this
+                  (assoc :path-chain (geom/path-chain-add path-chain path))
+                  (update-path-end-time)
+                  (update-path-free-time)
+                  (update-positions (::eq/time event))
+                  (update-topology (::eq/time event))
+                  )]
+    [(mk-topology-event this' :path-end-time)
+     this'])
 
-  (-> this
-      (assoc :path-chain (geom/path-chain-add path-chain path)))
-
-
-  ;; (let [{:keys [path]} event
-  ;;       {:keys [paths-ahead]} this
-  ;;       time (::eq/time event)]
-  ;;   (let [this' (assoc this
-  ;;                      :paths-ahead (conj (or (:paths-ahead this) []) path))
-  ;;         path-end-time (calculate-path-end-time this')]
-  ;;     [(assoc this' :path-end-time path-end-time)
-  ;;      ;; ensure we'll get an :update event exactly at the end of the path
-  ;;      (ecs/mk-event this :update path-end-time)]))
 
 )
 

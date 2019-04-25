@@ -653,6 +653,11 @@
      path-chain
      :paths (conj paths path)))
 
+  (defn path-chain-remove-first [{:keys [paths] :as path-chain}]
+    (assoc
+     path-chain
+     :paths (into [] (rest paths))))
+
   (comment
     (def p1 (line-segment [1 1] [3 1]))
     (def p2 (line-segment [3 1] [3 4]))
