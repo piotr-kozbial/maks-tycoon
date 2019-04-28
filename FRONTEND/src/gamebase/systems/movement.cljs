@@ -168,7 +168,7 @@
   [{:keys [driving? path-chain path-start-time path-start-length
            extra-points speed] :as this}
    time]
-  (if driving?
+  (if (and driving? (not (empty? (:paths path-chain))))
     (let [time-of-travel (- time path-start-time)
           length-on-path (+ path-start-length (* time-of-travel speed))
           total-path-length (g/path-length path-chain)

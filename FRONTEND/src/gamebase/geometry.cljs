@@ -648,15 +648,22 @@
           (angle-at-length (nth paths n) length-remaining)
           (recur (inc n) (- length-remaining (nth lengths n)))))))
 
-  (defn path-chain-add [{:keys [paths] :as path-chain} path]
-    (assoc
-     path-chain
-     :paths (conj paths path)))
 
-  (defn path-chain-remove-first [{:keys [paths] :as path-chain}]
-    (assoc
-     path-chain
-     :paths (into [] (rest paths))))
+  (defn path-chain-add [{:keys [paths precomputed?] :as path-chain} path]
+    (let [path-chain'(assoc
+                      path-chain
+                      :paths (conj paths path))]
+      (if precomputed?
+        (precompute path-chain')
+        path-chain')))
+
+  (defn path-chain-remove-first [{:keys [paths precomputed?] :as path-chain}]
+    (let [path-chain'(assoc
+                      path-chain
+                      :paths (into [] (rest paths)))]
+      (if precomputed?
+        (precompute path-chain')
+        path-chain')))
 
   (comment
     (def p1 (line-segment [1 1] [3 1]))

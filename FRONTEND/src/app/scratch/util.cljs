@@ -7,7 +7,7 @@
    :font-size "120%" :font-weight "bold"
    :cursor "pointer"})
 
-(defn code-result [get-val set-val result-edn]
+(defn code-result [get-val set-val result-edn result-val & [error?]]
   (if (vector? result-edn)
     (concat
      [[:span {:style code-result-style} "["]]
@@ -15,18 +15,22 @@
           (map (partial code-result get-val set-val))
           (interpose " "))
      [[:span {:style code-result-style} "]"]])
-    [:span
-     {:style {:font-family "monospace"
-              :color (if (= (get-val :selected-result) result-edn)
-                       "yellow"
-                       "white")
-              :border (when (= (get-val :selected-result) result-edn)
-                        "1px solid yellow")
-              :font-size "120%" :font-weight "bold"
-              :cursor "pointer"}
-      :on-click (fn [_] (set-val :selected-result result-edn))}
+    (if (and (vector? result-val) (= (first result-val) :app.scratch.util/error))
+      (code-result get-val set-val result-edn (second result-val) true)
+      [:span
+       {:style {:font-family "monospace"
+                :color (if error?
+                         "red"
+                         (if (= (get-val :selected-result) result-edn)
+                           "yellow"
+                           "white"))
+                :border (when (= (get-val :selected-result) result-edn)
+                          "1px solid yellow")
+                :font-size "120%" :font-weight "bold"
+                :cursor "pointer"}
+        :on-click (fn [_] (set-val :selected-result result-edn))}
 
-     (str result-edn)]))
+       (str result-edn)])))
 
 
 

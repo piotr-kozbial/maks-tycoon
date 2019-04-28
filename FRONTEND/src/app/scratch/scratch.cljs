@@ -158,6 +158,7 @@
         [component2' svg-follower]
         [component3 svg-follower]
         [component4 svg-follower]
+        [component4' svg-follower]
         [component5 svg-follower]
         [component6 svg-follower]
         ]
@@ -166,6 +167,7 @@
 
      ;; segments
      [[:h3 "Movement system: Path follower component, basic usage"]
+
       [:p "Here we will manually operate a component, without a world or entity, "
        "and also without an event queue (we will manually pass events if necessary)."]
       "Create:"
@@ -206,6 +208,13 @@
                                         component2')]
 
       [VCV [event-path-end-4 component4] (ecs/handle-event :<dummy-world> event-topo-2' component3)]
+
+      "Now we have empty path chain. Let's try to update - it should be safe and change nothing:"
+      [VCV component4' (ecs/handle-event :<dummy-world>
+                                         (ecs/mk-event component4
+                                                       :update
+                                                       (::eq/time event-topo-2'))
+                                         component4)]
 
       "At path end"
       [VCV [event-topo-5 component5] (ecs/handle-event
