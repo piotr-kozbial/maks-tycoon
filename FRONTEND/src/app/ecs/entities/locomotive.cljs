@@ -20,9 +20,13 @@
      {:move (sys-move/mk-path-follower
              entity
              :move
-             {:path-or-paths (tiles/track-path [:w :e] tile-x tile-y)
+             {:path-or-paths (assoc (tiles/track-path [:w :e] tile-x tile-y)
+                                    ::tile-x tile-x
+                                    ::tile-y tile-y
+                                    ::track [:w :e])
               :path-start-length 0
-              :driving? true})
+              :extra-points {:rear -16, :front 16}
+              :driving? false})
 
       :img (sys-drawing/mk-static-image-component
             entity :img
@@ -68,9 +72,13 @@
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::sys-move/at-path-end]
   [world event this]
-  (.log js/console "AT PATH END")
-  (let [path (-> this ::ecs/components :move :path)
-        {:keys [track tile-x tile-y]} this
+  (let [move-component (-> this ::ecs/components :move)
+        path (last (:paths (:path-chain move-component)))
+        tile-x (::tile-x path)
+        tile-y (::tile-y path)
+        track (::track path)
+        ;; {:keys [track tile-x tile-y]} this
+        _ (.log js/console (str "AT PATH END [" tile-x ", " tile-y "] @" (::eq/time event)))
         [new-tile-x new-tile-y] (tiles/track-destination-tile track tile-x tile-y)
 
         layer (-get-layer world :foreground)
@@ -96,7 +104,10 @@
         new-track (first possible-new-tracks)]
 
     (if new-track
-      (let [new-path (tiles/track-path new-track new-tile-x new-tile-y)]
+      (let [new-path (assoc (tiles/track-path new-track new-tile-x new-tile-y)
+                            ::tile-x new-tile-x
+                            ::tile-y new-tile-y
+                            ::track new-track)]
 
         [(assoc this
                 :tile-x new-tile-x

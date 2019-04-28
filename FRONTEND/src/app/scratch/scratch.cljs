@@ -201,7 +201,7 @@
                                                                12000)
                                                  component0')]
       "At path end"
-      [VCV [event-path-end-2 component2] (ecs/handle-event
+      [VCV [event-path-end-2 aaa component2] (ecs/handle-event
                                 :<dummy-world> event-topo-0 component1)]
       [VCV [event-topo-2' component2'] (ecs/handle-event
                                   :<dummy-world>
@@ -218,7 +218,7 @@
                                                       19000)
                                         component2')]
 
-      [VCV [event-path-end-4 component4] (ecs/handle-event :<dummy-world> event-topo-2' component3)]
+      [VCV [event-path-end-4 eee component4] (ecs/handle-event :<dummy-world> event-topo-2' component3)]
 
       "Now we have empty path chain. Let's try to update - it should be safe and change nothing:"
       [VCV component4' (ecs/handle-event :<dummy-world>
@@ -282,97 +282,74 @@
      ;; visualizations
      [[:svg
        ;; props
-       {:width 400, :height 300
-        :internal-coords [-10 -10 240 180]
+       {:width 600, :height 200
+        :internal-coords [-10 -10 320 120]
         :y-flip? true}
        ;; legend
-       [[path1 svg-path]
-        [path2 svg-path]
+       [
+        [component0 svg-follower]
+        [component0' svg-follower]
+        [component1 svg-follower]
         [component2 svg-follower]
+        [component2' svg-follower]
+        [component2a svg-follower]
         [component3 svg-follower]
         [component4 svg-follower]
-        [component5 svg-follower]
-        [component6 svg-follower]
-        [component7 svg-follower]
-        [component8 svg-follower]
-
-
 
         ]
-       (svg-coord-system 200 150)]
+       (svg-coord-system 300 100)]
       [:value (get-val :selected-result)]]
 
      ;; segments
      [[:h3 "Movement system: Path follower component, extra points"]
 
-      [VCV path1 (geom/line-segment [0 0] [100 100])]
-      [VCV path2 (geom/line-segment [100 100] [200 0])]
-
-      "Create, initialize, set path:"
+      "Create:"
+      [VCV path (geom/line-segment [0 0] [100 100])]
       [VCV component (sys-movement/mk-path-follower "entity-id" "comp-key"
-                                                    {:extra-points {:ahead-one 20
+                                                    {:path-or-paths path
+                                                     :driving? true
+                                                     :extra-points {:ahead-one 20
                                                                     :ahead-two 30
                                                                     :behind -10}})]
-      [VCV _ (ecs/handle-event :<dummy-world>
+      "Initialize:"
+      [VCV [component0 event-topo-0] (ecs/handle-event :<dummy-world>
                                (ecs/mk-event component
                                              ::ecs/init
                                              10000)
                                component)]
-      [VCV path (geom/line-segment [0 0] [100 100])]
-      [VCV [component2 event1]
-       (ecs/handle-event :<dummy-world>
-                         (assoc
-                          (ecs/mk-event component
-                                        ::sys-movement/set-path
-                                        10005)
-                          :path path1)
-                         component)]
-      [VCV [_ component3] (ecs/handle-event :<dummy-world>
-                                            (ecs/mk-event component2
-                                                          :update
-                                                          10000)
-                                            component2)]
-      "After some time:"
-      [VCV [_ component4] (ecs/handle-event :<dummy-world>
-                                            (ecs/mk-event component3
-                                                          :update
-                                                          13000)
-                                            component3)]
-      "And at 'path end', that should be for the further extra point:"
-      [VCV [endEvent component5] (ecs/handle-event :<dummy-world>
-                                            event1
-                                            component4)]
-      "and we can see that the :at-path-end event has been emitted with the same timestamp. "
-      "At this point whoever owns the component (typically an entity) should give it another path:"
-      [VCV [component5' event2]
-       (ecs/handle-event :<dummy-world>
-                         (assoc
-                          (ecs/mk-event component
-                                        ::sys-movement/add-path
-                                        (:gamebase.event-queue/time endEvent))
-                          :path path2)
-                         component5)]
+      [VCV component0' (ecs/handle-event :<dummy-world>
+                                         (ecs/mk-event component0
+                                                       :update
+                                                       10000)
+                                         component0)]
 
+      "After some time"
+      [VCV component1 (ecs/handle-event :<dummy-world>
+                                        (ecs/mk-event component0'
+                                                      :update
+                                                      12000)
+                                        component0')]
 
-      [:p "Now let's go a bit further, "
-       "so that points ahead move to the next path, "
-       "but not the main point:"]
-      [VCV [_ component6] (ecs/handle-event :<dummy-world>
-                                            (ecs/mk-event component5'
-                                                          :update
-                                                          16000)
-                                            component5')]
-      "And further still, to push the main point to the next path:"
-      [VCV [_ component7] (ecs/handle-event :<dummy-world>
-                                            (ecs/mk-event component6
-                                                          :update
-                                                          20000)
-                                            component6)]
-      "And at the new 'path end'..."
-      [VCV [_ component8] (ecs/handle-event :<dummy-world>
-                                                   event2
-                                                   component7)]
+      "At path end"
+      [VCV [event-path-end-2 event-topo-2 component2] (ecs/handle-event
+                                          :<dummy-world> event-topo-0 component1)]
+      [VCV [event-topo-2' component2'] (ecs/handle-event
+                                        :<dummy-world>
+                                        (assoc
+                                         (ecs/mk-event component2
+                                                       ::sys-movement/add-path
+                                                       (::eq/time event-path-end-2))
+                                         :path (geom/line-segment [100 100] [200 0]))
+                                        component2)]
+      [VCV [_ component2a] (ecs/handle-event :<dummy-world> event-topo-2' component2')]
 
+      [VCV component3 (ecs/handle-event :<dummy-world>
+                                        (ecs/mk-event component2'
+                                                      :update
+                                                      19000)
+                                        component2')]
+
+      [VCV [event-path-end-4 component4] (ecs/handle-event :<dummy-world> event-topo-2' component3)]
 
 
       ])))

@@ -59,57 +59,57 @@
     (when (> speed 0)
       (int (+ path-start-time (/ length-to-go speed))))))
 
-(defn do-update [<this> <time> <world>]
-  (let [{:keys [path
-                paths-ahead
-                path-start-time
-                path-start-length
-                path-end-time
-                speed
-                driving?
-                extra-points]} <this>]
-    (when (and path driving?)
-      (let [time-of-travel (- <time> path-start-time)
-            length-on-path (+ path-start-length (* time-of-travel speed))
-            total-path-length (g/path-length path)
-            at-end? (= <time> path-end-time)
-            at-or-after-end? (>= <time> path-end-time)
+;; (defn do-update [<this> <time> <world>]
+;;   (let [{:keys [path
+;;                 paths-ahead
+;;                 path-start-time
+;;                 path-start-length
+;;                 path-end-time
+;;                 speed
+;;                 driving?
+;;                 extra-points]} <this>]
+;;     (when (and path driving?)
+;;       (let [time-of-travel (- <time> path-start-time)
+;;             length-on-path (+ path-start-length (* time-of-travel speed))
+;;             total-path-length (g/path-length path)
+;;             at-end? (= <time> path-end-time)
+;;             at-or-after-end? (>= <time> path-end-time)
 
-            path-this-and-ahead (g/path-chain
-                                 (concat [path] (or paths-ahead [])))
-            extra-xy (->> extra-points
-                          (mapcat (fn [[k dist]]
-                                    (let [length-on-path (+ length-on-path dist)
-                                          position (g/path-point-at-length
-                                                    path-this-and-ahead
-                                                    length-on-path)]
+;;             path-this-and-ahead (g/path-chain
+;;                                  (concat [path] (or paths-ahead [])))
+;;             extra-xy (->> extra-points
+;;                           (mapcat (fn [[k dist]]
+;;                                     (let [length-on-path (+ length-on-path dist)
+;;                                           position (g/path-point-at-length
+;;                                                     path-this-and-ahead
+;;                                                     length-on-path)]
 
-                                      [k position])))
-                          (apply hash-map))]
+;;                                       [k position])))
+;;                           (apply hash-map))]
 
-        [(when at-end?
-           (ecs/mk-event
-            (ecs/to-entity (::ecs/entity-id <this>))
+;;         [(when at-end?
+;;            (ecs/mk-event
+;;             (ecs/to-entity (::ecs/entity-id <this>))
 
-            ::at-path-end <time>))
-         (assoc <this>
+;;             ::at-path-end <time>))
+;;          (assoc <this>
 
-                :length-on-path length-on-path
-                :at-end? at-end?
-                :at-or-after-end? at-or-after-end?
+;;                 :length-on-path length-on-path
+;;                 :at-end? at-end?
+;;                 :at-or-after-end? at-or-after-end?
 
-                :position
-                (g/path-point-at-length
-                 path-this-and-ahead
-                 length-on-path)
+;;                 :position
+;;                 (g/path-point-at-length
+;;                  path-this-and-ahead
+;;                  length-on-path)
 
-                :angle
-                (g/angle-at-length
-                 path-this-and-ahead
-                 length-on-path)
+;;                 :angle
+;;                 (g/angle-at-length
+;;                  path-this-and-ahead
+;;                  length-on-path)
 
-                :extra-xy extra-xy)
-]))))
+;;                 :extra-xy extra-xy)
+;; ]))))
 
 
 (defn update-path-end-time
@@ -142,8 +142,10 @@
              (int (+ path-start-time (/ length-to-go speed)))))))
 
 (defn mk-topology-event
-  [this]
-  (let [times (remove nil? (map this [:path-end-time :path-free-time]))]
+  [this time]
+  (let [times (->> (map this [:path-end-time :path-free-time])
+                   (remove nil?)
+                   (remove #(<= % time)))]
     (when-not (empty? times)
       (ecs/mk-event this ::topology-event
                     (apply min times)))))
@@ -172,17 +174,18 @@
     this))
 
 (defn update-topology
-  [{:keys [path-end-time] :as this}
+  [{:keys [path-end-time at-or-after-end?] :as this}
    time]
   (assoc
    this
    :at-end? (= time path-end-time)
-   :at-or-after-end? (>= time path-end-time)))
+   :at-or-after-end? (or at-or-after-end?
+                         (when path-end-time (>= time path-end-time)))))
 
 (defn truncate-path
-  [{:as this :keys [path-free-time path-chain extra-points]}
+  [{:as this :keys [path-free-time path-chain extra-points speed]}
    time]
-  (if (= path-free-time time)
+  (if (and (= path-free-time time) (> (count (:paths path-chain)) 1))
     (let [furthest-back-point-distance
           ,   (apply min (conj (vals (or extra-points {})) 0))]
       (assoc this
@@ -242,7 +245,7 @@
                   (update-path-free-time)
                   (update-positions (::eq/time event))
                   (update-topology (::eq/time event)))]
-    [this' (mk-topology-event this')]))
+    [this' (mk-topology-event this' (::eq/time event))]))
 
 (defmethod ecs/handle-event [:to-component ::path-follower :update]
   [world event this]
@@ -251,27 +254,36 @@
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::topology-event]
   [world event this]
-  (let [this'(-> this
-                 (update-path-free-time)
-                 (update-positions (::eq/time event))
-                 (update-topology (::eq/time event))
-                 (truncate-path (::eq/time event)))]
-    [(when (:at-end? this')
-       (ecs/mk-event (ecs/to-entity (::ecs/entity-id this'))
-                     ::at-path-end
-                     (::eq/time event)))
-     this']))
+  (if (= (::eq/time event) (:last-topology-event-handled-time this))
+    this
+    (let [this'(-> this
+                   (truncate-path (::eq/time event))
+                   (update-path-end-time)
+                   (update-path-free-time)
+                   (update-positions (::eq/time event))
+                   (update-topology (::eq/time event))
+                   (assoc :last-topology-event-handled-time (::eq/time event))
+                   )]
+      [(when (:at-end? this')
+         (ecs/mk-event (ecs/to-entity (::ecs/entity-id this'))
+                       ::at-path-end
+                       (::eq/time event)))
+       (mk-topology-event this' (::eq/time event))
+       this'])))
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::add-path]
   [world {:keys [path] :as event} {:keys [path-chain] :as this}]
   (let [this' (-> this
-                  (assoc :path-chain (geom/path-chain-add path-chain path))
+                  (assoc :path-chain (geom/path-chain-add path-chain path)
+                         :at-end? false
+                         :at-or-after-end? false)
+                  (truncate-path (::eq/time event))
                   (update-path-end-time)
                   (update-path-free-time)
                   (update-positions (::eq/time event))
                   (update-topology (::eq/time event))
                   )]
-    [(mk-topology-event this')
+    [(mk-topology-event this' (::eq/time event))
      this'])
 
 
@@ -291,8 +303,8 @@
                :path-start-time nil))))
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::ci/drive]
-  [world event {:as this :keys [path-chain driving?]}]
-  (if (empty? (:paths path-chain))
+  [world event {:as this :keys [path-chain driving? at-end? at-or-after-end?]}]
+  (if (or at-end? at-or-after-end? (empty? (:paths path-chain)))
     [(ecs/mk-event (ecs/to-entity (::ecs/entity-id this))
                     ::at-path-end
                     (::eq/time event))]
@@ -304,7 +316,7 @@
                      (update-path-end-time)
                      (update-path-free-time)
                      (update-topology (::eq/time event)))]
-        [(mk-topology-event this') this']))))
+        [(mk-topology-event this' (::eq/time event)) this']))))
 
 
 
