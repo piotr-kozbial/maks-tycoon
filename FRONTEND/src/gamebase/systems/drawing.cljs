@@ -166,6 +166,31 @@
         (js/pop)))
     component))
 
+(do ;; COMPONENT: dot
+
+  (defn mk-dot-component
+    [entity-or-id key {:keys [point-kvs color]}]
+    (assoc
+     (ecs/mk-component ::drawing entity-or-id key ::dot)
+     :point-kvs point-kvs
+     :color color))
+
+  (defmethod ecs/handle-event [:to-component ::dot :update]
+    [world event component]
+    component)
+
+  (defmethod ecs/handle-event [:to-component ::dot ::draw]
+    [world event {:keys [point-kvs] :as component}]
+    (let [entity (ecs/get-entity world component)
+          [point-x point-y] (get-in entity point-kvs)
+          [r g b] (:color component)]
+      (js/push)
+      (js/fill (js/color r g b))
+      (js/stroke r g b)
+      (js/point point-x point-y)
+      (js/pop))
+    component))
+
 (do ;; COMPONENT: path
 
   ;; draws a path as defined in gamebase.geometry

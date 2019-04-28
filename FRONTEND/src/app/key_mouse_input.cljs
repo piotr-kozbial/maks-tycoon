@@ -42,7 +42,7 @@
              tile-y (quot world-y 32)]
          (case key
            "a" (let [id (keyword (str "loc-" (get-fresh-entity-id)))
-                     loc (locomotive/mk-entity id 1 1)]
+                     loc (locomotive/mk-entity id 0 1)]
                  (wo/inject-entity loc)
                  (wo/send-to-entity loc ::ecs/init))
 

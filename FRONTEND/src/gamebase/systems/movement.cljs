@@ -150,27 +150,32 @@
       (ecs/mk-event this ::topology-event
                     (apply min times)))))
 
+(defn force-update-positions
+  [{:keys [driving? path-chain path-start-time path-start-length
+           extra-points speed] :as this}
+   time]
+  (let [time-of-travel (- time path-start-time)
+        length-on-path (+ path-start-length (* time-of-travel speed))
+        total-path-length (g/path-length path-chain)]
+    (assoc
+     this
+     :position (g/path-point-at-length path-chain length-on-path)
+     :angle (g/angle-at-length path-chain length-on-path)
+     :extra-xy (->> extra-points
+                    (mapcat (fn [[k dist]]
+                              (let [len (+ length-on-path dist)
+                                    position (g/path-point-at-length
+                                              path-chain
+                                              len)]
+                                [k position])))
+                    (apply hash-map)))))
+
 (defn update-positions
   [{:keys [driving? path-chain path-start-time path-start-length
            extra-points speed] :as this}
    time]
   (if (and driving? (not (empty? (:paths path-chain))))
-    (let [time-of-travel (- time path-start-time)
-          length-on-path (+ path-start-length (* time-of-travel speed))
-          total-path-length (g/path-length path-chain)
-       ]
-      (assoc
-       this
-       :position (g/path-point-at-length path-chain length-on-path)
-       :angle (g/angle-at-length path-chain length-on-path)
-       :extra-xy (->> extra-points
-                      (mapcat (fn [[k dist]]
-                                (let [len (+ length-on-path dist)
-                                      position (g/path-point-at-length
-                                                path-chain
-                                                len)]
-                                  [k position])))
-                      (apply hash-map))))
+    (force-update-positions this time)
     this))
 
 (defn update-topology
@@ -194,6 +199,16 @@
              :path-start-length (- furthest-back-point-distance)))
     this))
 
+(defn path-follower-check [{:as this :keys [extra-points path-chain path-start-length]}]
+  (let [furthest-point-distance
+        ,   (apply max (conj (vals (or extra-points {})) 0))
+        length-to-go
+        ,   (- (g/path-length path-chain)
+               path-start-length
+               furthest-point-distance)]
+    (when (<= length-to-go 0)
+      (.log js/console "PATH FOLLOWER: extra points ahead exceed given path!")
+      (assert false))))
 
 (defn mk-path-follower [entity-or-id key {:keys [path-or-paths
                                                  path-start-length
@@ -215,6 +230,7 @@
            ;; TODO - chcemy wlasciwie, zeby klient podal numer path z tych co podal
            ;; i length wzgledem tego path, a my sobie przeliczymy
            :path-start-length (or path-start-length 0))]
+    (path-follower-check v)
     (if :gamebase.ecs/*with-xprint*
       (vary-meta v
                  update-in [:app.xprint.core/key-order]
@@ -243,7 +259,7 @@
                   (assoc :path-start-time (::eq/time event))
                   (update-path-end-time)
                   (update-path-free-time)
-                  (update-positions (::eq/time event))
+                  (force-update-positions (::eq/time event))
                   (update-topology (::eq/time event)))]
     [this' (mk-topology-event this' (::eq/time event))]))
 

@@ -24,8 +24,8 @@
                                     ::tile-x tile-x
                                     ::tile-y tile-y
                                     ::track [:w :e])
-              :path-start-length 0
-              :extra-points {:rear -16, :front 16}
+              :path-start-length 16
+              :extra-points {:rear -15, :front 15}
               :driving? false})
 
       :img (sys-drawing/mk-static-image-component
@@ -33,7 +33,19 @@
             {:point-kvs (ecs/ck-kvs :move :position)
              :angle-kvs (ecs/ck-kvs :move :angle)
              :center [16 8]
-             :resource-name-kvs [:image]})}
+             :resource-name-kvs [:image]})
+
+      :debug-rear (sys-drawing/mk-dot-component
+                   entity :debug-rear
+                   {:point-kvs (ecs/ck-kvs :move :extra-xy :rear)
+                    :color [200 0 0]})
+
+      :debug-front (sys-drawing/mk-dot-component
+                    entity :debug-front
+                    {:point-kvs (ecs/ck-kvs :move :extra-xy :front)
+                     :color [255 255 255]})
+
+      }
 
      :tile-x tile-x
      :tile-y tile-y
