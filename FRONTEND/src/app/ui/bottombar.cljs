@@ -93,4 +93,4 @@
              ]))
        ]
       [:td [:span {:style {:white-space "pre"}} "   "]]
-      [:td "szczegoly"]]]))
+      [:td (pr-str loc)]]]))

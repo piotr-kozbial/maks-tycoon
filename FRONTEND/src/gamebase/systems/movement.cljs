@@ -143,8 +143,7 @@
 
 (defn mk-topology-event
   [this]
-  (let [times (map this [:path-end-time
-                         :path-free-time])]
+  (let [times (remove nil? (map this [:path-end-time :path-free-time]))]
     (when-not (empty? times)
       (ecs/mk-event this ::topology-event
                     (apply min times)))))
@@ -292,37 +291,22 @@
                :path-start-time nil))))
 
 (defmethod ecs/handle-event [:to-component ::path-follower ::ci/drive]
-  [world event this]
-  (let [this'(-> this
-                 (assoc :driving? true
-                        :path-start-time (::eq/time event))
-                 (update-path-end-time)
-                 (update-path-free-time)
-                 (update-topology (::eq/time event)))]
-    [(mk-topology-event this') this']))
+  [world event {:as this :keys [path-chain driving?]}]
+  (if (empty? (:paths path-chain))
+    [(ecs/mk-event (ecs/to-entity (::ecs/entity-id this))
+                    ::at-path-end
+                    (::eq/time event))]
+    (if driving?
+      this
+      (let [this'(-> this
+                     (assoc :driving? true
+                            :path-start-time (::eq/time event))
+                     (update-path-end-time)
+                     (update-path-free-time)
+                     (update-topology (::eq/time event)))]
+        [(mk-topology-event this') this']))))
 
 
-
-
-
-
-;; (defmethod ecs/handle-event [:to-component ::path-follower ::ci/stop]
-;;   [world event this]
-;;   (when (:driving? this)
-;;     (when-let [[maybe-event this'] (do-update this (::eq/time event) world)]
-;;       [maybe-event (assoc this' :driving? false)])))
-
-;; (defmethod ecs/handle-event [:to-component ::path-follower ::ci/drive]
-;;   [world event {:keys [path length-on-path] :as this}]
-;;   (when-not (:driving? this)
-;;     (let [this' (assoc this
-;;                        :driving? true
-;;                        :path-start-length length-on-path
-;;                        :path-start-time (::eq/time event))
-;;           path-end-time (calculate-path-end-time this')]
-;;       [(assoc this' :path-end-time path-end-time)
-;;        ;; ensure we'll get an :update event exactly at the end of the path
-;;        (ecs/mk-event this :update path-end-time)])))
 
 
 ;; TO BE DELETED

@@ -17,7 +17,12 @@
      entity
 
      :gamebase.ecs/components
-     {:move (sys-move/mk-path-follower entity :move {:path-history-size 10})
+     {:move (sys-move/mk-path-follower
+             entity
+             :move
+             {:path-or-paths (tiles/track-path [:w :e] tile-x tile-y)
+              :path-start-length 0
+              :driving? true})
 
       :img (sys-drawing/mk-static-image-component
             entity :img
@@ -40,14 +45,9 @@
 (defmethod ecs/handle-event
   [:to-entity ::locomotive ::ecs/init]
   [world event this]
-  (println "LOCOMOTIVE INIT")
-  (assoc
-   (ecs/mk-event (-> this ::ecs/components :move)
-                 ::sys-move/set-path
-                 (::eq/time event))
-   :path (tiles/track-path (:track this)
-                           (:tile-x this)
-                           (:tile-y this))))
+  (ecs/mk-event (-> this ::ecs/components :move)
+                ::ecs/init
+                (::eq/time event)))
 
 (defn- -get-layer [world layer-key]
   (->> (:layers world)
@@ -66,8 +66,7 @@
        (mapcat (fn [[tx ty track]] [[tx ty] track]))
        (apply hash-map)))
 
-(defmethod ecs/handle-event
-  [:to-entity ::locomotive ::sys-move/at-path-end]
+(defmethod ecs/handle-event [:to-entity ::locomotive ::sys-move/at-path-end]
   [world event this]
   (.log js/console "AT PATH END")
   (let [path (-> this ::ecs/components :move :path)
@@ -95,7 +94,7 @@
 
         ;; choose the first possible tracks
         new-track (first possible-new-tracks)]
-    (.log js/console (pr-str new-tile))
+
     (if new-track
       (let [new-path (tiles/track-path new-track new-tile-x new-tile-y)]
 
@@ -109,15 +108,16 @@
           (ecs/mk-event (-> this ::ecs/components :move)
                         ::sys-move/add-path
                         (::eq/time event))
-          :path new-path)])
+          :path new-path)
+         (ecs/mk-event (-> this ::ecs/components :move) ::ci/drive (::eq/time event))
+         ])
       (do
         (.log js/console "NO NEW TRACK!!!")
         [(ecs/mk-event this
                        ::ci/stop
                        (::eq/time event))]))))
 
-(defmethod ecs/handle-event
-  [:to-entity ::locomotive ::ci/stop]
+(defmethod ecs/handle-event [:to-entity ::locomotive ::ci/stop]
   [world event {:keys [rear-coupling] :as this}]
   (.log js/console "LOC GOT STOP, sending to " rear-coupling)
   [(ecs/mk-event (-> this ::ecs/components :move)
@@ -128,8 +128,7 @@
                    ::ci/stop
                    (::eq/time event)))])
 
-(defmethod ecs/handle-event
-  [:to-entity ::locomotive ::ci/drive]
+(defmethod ecs/handle-event [:to-entity ::locomotive ::ci/drive]
   [world event {:keys [rear-coupling] :as this}]
   [(ecs/mk-event (-> this ::ecs/components :move)
                  ::ci/drive
@@ -139,8 +138,7 @@
                    ::ci/drive
                    (::eq/time event)))])
 
-(defmethod ecs/handle-event
-  [:to-entity ::locomotive ::couple-rear]
+(defmethod ecs/handle-event [:to-entity ::locomotive ::couple-rear]
   [world {:keys [the-other-id] :as event} this]
   (let [the-other (ecs/get-entity-by-key world the-other-id)]
     [(assoc this :rear-coupling the-other-id)
