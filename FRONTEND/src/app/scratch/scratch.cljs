@@ -5,6 +5,7 @@
             [gamebase.geometry :as geom]
             [cljs.pprint :refer [pprint]]
             [gamebase.event-queue :as eq]
+            [app.ecs.common-events :as ci]
             [app.scratch.util :as su]
             [app.xprint.core :refer [xprint]
 
@@ -153,6 +154,7 @@
        ;; legend
        [
         [component0 svg-follower]
+        [component0' svg-follower]
         [component1 svg-follower]
         [component2 svg-follower]
         [component2' svg-follower]
@@ -161,6 +163,10 @@
         [component4' svg-follower]
         [component5 svg-follower]
         [component6 svg-follower]
+        [component7 svg-follower]
+        [component8 svg-follower]
+        [component9 svg-follower]
+        [component10 svg-follower]
         ]
        (svg-coord-system 300 100)]
       [:value (get-val :selected-result)]]
@@ -183,12 +189,17 @@
                                                                 10000)
                                                   component)]
 
+      [VCV component0' (ecs/handle-event :<dummy-world>
+                                        (ecs/mk-event component0
+                                                      :update
+                                                      10000)
+                                        component0)]
       "After some time"
       [VCV component1 (ecs/handle-event :<dummy-world>
-                                                 (ecs/mk-event component0
+                                                 (ecs/mk-event component0'
                                                                :update
                                                                12000)
-                                                 component0)]
+                                                 component0')]
       "At path end"
       [VCV [event-path-end-2 component2] (ecs/handle-event
                                 :<dummy-world> event-topo-0 component1)]
@@ -231,6 +242,33 @@
                                                       :update
                                                       28000)
                                         component5)]
+
+      "Now let's try to stop:"
+      [VCV component7 (ecs/handle-event :<dummy-world>
+                                        (ecs/mk-event component6
+                                                      ::ci/stop
+                                                      29000)
+                                        component6)]
+      "and after some time (should be in the same spot):"
+      [VCV component8 (ecs/handle-event :<dummy-world>
+                                        (ecs/mk-event component7
+                                                      :update
+                                                      30000)
+                                        component7)]
+
+      "Start again:"
+      [VCV [event9 component9] (ecs/handle-event :<dummy-world>
+                                           (ecs/mk-event component8
+                                                         ::ci/drive
+                                                         31000)
+                                           component8)]
+
+      "and after some time (should move):"
+      [VCV component10 (ecs/handle-event :<dummy-world>
+                                        (ecs/mk-event component9
+                                                      :update
+                                                      32000)
+                                        component9)]
 
       ])))
 
