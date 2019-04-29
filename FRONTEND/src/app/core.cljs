@@ -1,4 +1,4 @@
-(ns app.core
+(ns ^:figwheel-no-load app.core
   (:require [rum.core :as rum]
             ;; [schema.core :as s :include-macros true]
 
@@ -123,21 +123,24 @@
 
 (declare initialize-layout)
 
+(defonce already-loaded? (atom false))
 
 (def my-mixin
   { :did-mount (fn [state]
 
                  (.log js/console "DID MOUNT!")
-                 (initialize-layout)
 
-                 (canvas-control/initialize
-                  {:state-atom app-state
-                   :state-kvs [:canvas-control]
-                   :draw #'advance-simulation-and-draw
-                   :overlay-draw nil
-                   :get-canvas-size our-layout/get-canvas-size
-                   :get-world-size #'wo/get-world-size
-                   })
+                 (when-not @already-loaded?
+                   (initialize-layout)
+
+                   (canvas-control/initialize
+                    {:state-atom app-state
+                     :state-kvs [:canvas-control]
+                     :draw #'advance-simulation-and-draw
+                     :overlay-draw nil
+                     :get-canvas-size our-layout/get-canvas-size
+                     :get-world-size #'wo/get-world-size
+                     }))
                  state
                  )}
 

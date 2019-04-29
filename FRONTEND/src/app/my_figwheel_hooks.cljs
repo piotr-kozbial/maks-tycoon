@@ -6,5 +6,5 @@
 
 (defn ^:after-load my-after-reload-callback []
   (.log js/console "AFTER reload!!")
-  (scratch/tick))
-
+  (scratch/tick)
+ )

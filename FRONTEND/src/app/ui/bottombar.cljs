@@ -14,6 +14,7 @@
    [cljs.pprint :refer [pprint]]
    ))
 
+
 (rum/defc bottombar-component < rum/reactive []
   (rum/react ui-state)
   (let [{:keys [frame-rate world]} @app-state
@@ -93,4 +94,8 @@
              ]))
        ]
       [:td [:span {:style {:white-space "pre"}} "   "]]
-      [:td (pr-str loc)]]]))
+      [:td
+       "Front: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-xy :front)))
+       [:br]
+       "Rear: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-xy :rear)))
+       ]]]))

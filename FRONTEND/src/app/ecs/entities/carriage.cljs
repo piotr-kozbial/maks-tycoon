@@ -25,7 +25,15 @@
              :center [16 8]
              :resource-name-kvs [:image]})
 
-      :move (sys-move/mk-path-follower entity :move {:path-history-size 2})}
+      :move (sys-move/mk-path-trailer
+             entity
+             :move
+             {:path-or-paths (assoc (tiles/track-path [:w :e] tile-x tile-y)
+                                                             ::tile-x tile-x
+                                                             ::tile-y tile-y
+                                                             ::track [:w :e])})
+
+      }
 
      :tile-x tile-x
      :tile-y tile-y
@@ -42,18 +50,19 @@
 (defmethod ecs/handle-event [:to-entity ::carriage ::ecs/init]
   [world event this]
   (println "CARRIAGE INIT")
+  nil
+  ;; [(assoc
+  ;;   (ecs/mk-event (-> this ::ecs/components :move)
+  ;;                 ::sys-move/set-path
+  ;;                 (::eq/time event))
+  ;;   :path (tiles/track-path (:track this) (:tile-x this) (:tile-y this)))
 
-  [(assoc
-    (ecs/mk-event (-> this ::ecs/components :move)
-                  ::sys-move/set-path
-                  (::eq/time event))
-    :path (tiles/track-path (:track this) (:tile-x this) (:tile-y this)))
+  ;;  ;; (ecs/mk-event (-> this ::ecs/components :move)
+  ;;  ;;               ::ci/stop
+  ;;  ;;               (::eq/time event))
 
-   ;; (ecs/mk-event (-> this ::ecs/components :move)
-   ;;               ::ci/stop
-   ;;               (::eq/time event))
-
-   ])
+  ;;  ]
+  )
 
 (defn- -get-layer [world layer-key]
   (->> (:layers world)

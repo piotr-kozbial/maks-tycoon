@@ -46,6 +46,11 @@
                  (wo/inject-entity loc)
                  (wo/send-to-entity loc ::ecs/init))
 
+           "c" (let [id (keyword (str "car-" (get-fresh-entity-id)))
+                     car (carriage/mk-entity id tile-x tile-y)]
+                 (wo/inject-entity car)
+                 (wo/send-to-entity car ::ecs/init))
+
            "q" (let [id (keyword (str "car-" (get-fresh-entity-id)))
                      car (carriage/mk-entity id tile-x tile-y)]
                  (wo/inject-entity car)

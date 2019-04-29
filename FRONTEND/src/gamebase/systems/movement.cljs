@@ -381,3 +381,7 @@
     :a :b
     ))
 
+
+(defmethod ecs/handle-event [:to-component ::path-trailer :update]
+  [world event this]
+  nil)
