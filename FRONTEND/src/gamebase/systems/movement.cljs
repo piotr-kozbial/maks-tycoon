@@ -357,31 +357,38 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn mk-path-trailer
-   [entity-or-id key {:keys []}]
-   (assoc
-    (ecs/mk-component ::movement entity-or-id key ::path-trailer)
-    ;; TODO - podpiecie do czegos, do innego komponentu, ktory potrafilby powiedziec
-    ;; "prosze tu jest dlugi path history,
-    ;; a moj tylny koniec jest na takiej a takiej dlugosci do tylu od czola path history"
-    ;; Wtedy jeszcze path-trailer dolicza swoj offset od frontu do swojej pozycji
-    ;; i gotowe.
-    ;; A gdy sam path-trailer zostanie zapytany, to poda path history, ktore bierze
-    ;; od swojego poprzednika, oraz doliczy swoja dlugosc itd.
-    ;;
-    ;; Kwestia zarzadzenia usuwaniem starych wpisow z historii - potem.
-    ;; Prawdopodobnie gosc, ktory jest na czele (path-follower w lokomotywie)
-    ;; dodajac cos do historii bedzie jeszcze pytal swojego trailera, czy moze cos usunac,
-    ;; a ten bedzie pytal swojego i tak do konca. Koncowy (jak zobaczy, ze sam juz
-    ;; nie ma followera) powie, ze mozna usunac (powie ile segmentow, albo raczej powie
-    ;; od jakiej dlugosci.
-    ;;
-    ;; Tak! Niech pytanie od lokomotywy bedzie "na jaka odleglosc ktos uzywa sciezki?"
-    ;; I wtedy trailer za trailerem beda sie odpytywac, a ostatni po prostu powie,
-    ;; na jakiej dlugosci jest. Wtedy lokomotywa bedzie wiedziala, co usunac.
-    :a :b
-    ))
+  [entity-or-id key {:keys [leader-entity-key
+                            leader-position-kvs
+                            leader-path-kvs]}]
+  (let [v (assoc
+           (ecs/mk-component ::movement entity-or-id key ::path-trailer)
+           :leader-entity-key leader-entity-key
+           :leader-position-kvs leader-position-kvs
+           :leader-path-kvs leader-path-kvs)]
+    (if :gamebase.ecs/*with-xprint*
+      (vary-meta v
+                 update-in [:app.xprint.core/key-order]
+                 concat [
+                         [:app.xprint.core/comment
+                          "configuration"]
+                         :leader-entity-key :leader-position-kvs :leader-path-kvs
+                         [:app.xprint.core/comment
+                          "derived state"]
+                         :position :path
+                         ])
+      v)))
 
+(defmethod ecs/handle-event [:to-component ::path-trailer ::ecs/init]
+  [world event {:as this :keys [leader-entity-key leader-position-kvs leader-path-kvs]}]
+  (let [leader-entity (ecs/get-entity-by-key world leader-entity-key)
+        position (get-in leader-entity leader-position-kvs)
+        path "pat"]
+    (assoc this
+           :position position
+           :path path)))
 
 (defmethod ecs/handle-event [:to-component ::path-trailer :update]
   [world event this]
-  nil)
+  this)
+
+

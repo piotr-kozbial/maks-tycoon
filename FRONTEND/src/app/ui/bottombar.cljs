@@ -98,4 +98,6 @@
        "Front: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-xy :front)))
        [:br]
        "Rear: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-xy :rear)))
+       [:br]
+       "Path-chain: " (pr-str (get-in loc (ecs/ck-kvs :move :path-chain)))
        ]]]))

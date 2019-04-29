@@ -352,7 +352,7 @@ nil
                         ::components (::component-key object)] object)))
 
 ;; helper function
-(defn remove-entity-by-key[world entity-key]
+(defn remove-entity-by-key [world entity-key]
   (update-in world [::entities] dissoc entity-key))
 
 (defn get-entity-by-key [world entity-key]

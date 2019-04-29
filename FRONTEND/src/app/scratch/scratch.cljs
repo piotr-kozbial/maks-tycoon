@@ -71,6 +71,16 @@
         [:line {:x1 10 :y1 0 :x2 7 :y2 -2  :stroke "blue"}]])
      ]))
 
+(defn svg-trailer
+  [{:as component :keys [position]}
+   & [highlight?]]
+  (when-let [[x y] position]
+    [[:circle {:cx x :cy y :r 3 :stroke "cyan" :fill "cyan"}]
+     (when highlight?
+       [:circle {:cx x :cy y :r 6 :stroke "cyan" :fill "none"}])
+
+     ]))
+
 ;;;;;;;;; CARDS ;;:;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def my-print-f
@@ -354,11 +364,105 @@
 
       ])))
 
+(defn card--movement--path-trailer [get-val set-val]
+  (binding [gamebase.geometry/*with-xprint* true
+            gamebase.ecs/*with-xprint* true]
+    (su/card
+     get-val
+     set-val
+     my-print-f
+     ;; visualizations
+     [[:svg
+       ;; props
+       {:width 600, :height 200
+        :internal-coords [-10 -10 320 120]
+        :y-flip? true}
+       ;; legend
+       [
+        [follower0 svg-follower]
+        [follower10 svg-follower]
+        [follower11 svg-follower]
+        [trailer11 svg-trailer]
+        [follower12 svg-follower]
+        [trailer12 svg-trailer]
+        ]
+       (svg-coord-system 300 100)]
+      [:value (get-val :selected-result)]]
+
+     ;; segments
+     [[:h3 "Movement system: Path trailer component"]
+      "Plan"
+      [:ul
+       [:li "Podpinamy sie do czegos (path-followera?), co potrafi powiedziec, gdzie jest, "
+        "i na jakiej sciezce, w tym tile-x, tile-y chyba"]
+       [:li "Moze nie bedziemy uzywac extra-points, tylko glownego punktu lokomotywy?"]
+       [:li "No i zakladamy, ze ten punkt jest na tym samym kafelku co my, albo na sasiednim, "
+        "dalszych odleglosci nie supportujemy."]
+       [:li "Wtedy zawsze mozemy sobie zlozyc sciezke (1-2 kafelki), na ktorej jest punkt, "
+        "ktory sledzimy, no i my, wg. odleglosci"]
+       [:li "Tylko jeszcze schemat kontroli, aktualizacji, topology events, czy tylko update?"]]
+
+      "Create and initialize world:"
+      [VCV world (ecs/mk-world)]
+
+      "Create and insert entity:"
+      [VCV entity (ecs/mk-entity "entity-id" :dummy-type)]
+      [VCV world1 (ecs/insert-object world entity)]
+
+      "Create, initialize and insert follower:"
+      [VCV path (geom/line-segment [0 0] [100 100])]
+      [VCV follower (sys-movement/mk-path-follower "entity-id" "follower-key"
+                                                   {:path-or-paths path
+                                                    :path-start-length 50
+                                                    :driving? true})]
+      [VCV [follower0 event-topo-0] (ecs/handle-event world1
+                                                       (ecs/mk-event follower
+                                                                     ::ecs/init
+                                                                     10000)
+                                                       follower)]
+      [VCV world2 (ecs/insert-object world1 follower0)]
+
+      "Create and initialize trailer:"
+      [VCV trailer (sys-movement/mk-path-trailer "entity-id" "trailer-key"
+                                                 {:leader-entity-key "entity-id"
+                                                  :leader-position-kvs (ecs/ck-kvs "follower-key" :position)
+                                                  :leader-path-kvs (ecs/ck-kvs "follower-key" :path)})]
+      [VCV trailer0 (ecs/handle-event world2
+                                        (ecs/mk-event trailer
+                                                      ::ecs/init
+                                                      10000)
+                                                      trailer)]
+
+      [VCV world3 (ecs/insert-object world2 trailer0)]
+
+      "Ok, everything initialized. Let's see..."
+      [VCV world10 world3]
+      [VCV entity10 (ecs/get-entity-by-key world10 "entity-id")]
+      [VCV follower10 ((::ecs/components entity10) "follower-key")]
+      [VCV trailer10 ((::ecs/components entity10) "trailer-key")]
+
+      "Now for updates..."
+      [VCV world11 (ecs/do-handle-event world10 (ecs/mk-event follower10 :update 10000))]
+      [VCV entity11 (ecs/get-entity-by-key world11 "entity-id")]
+      [VCV follower11 ((::ecs/components entity11) "follower-key")]
+      [VCV trailer11 ((::ecs/components entity11) "trailer-key")]
+
+      "And after some time..."
+      [VCV world12 (ecs/do-handle-event world11 (ecs/mk-event follower11 :update 12000))]
+      [VCV entity12 (ecs/get-entity-by-key world12 "entity-id")]
+      [VCV follower12 ((::ecs/components entity12) "follower-key")]
+      [VCV trailer12 ((::ecs/components entity12) "trailer-key")]
+
+
+      ])))
+
 (def cards
   [["Start card" #'start-card]
    ["Geometry: paths" #'card--geometry--paths]
    ["Movement system: Path follower component, basic usage" #'card--movement--path-follower--basic]
-   ["Movement system: Path follower component, extra points" #'card--movement--path-follower--extra-points]])
+   ["Movement system: Path follower component, extra points" #'card--movement--path-follower--extra-points]
+   ["Movement system: Path trailer component" #'card--movement--path-trailer]
+   ])
 
 (def card-map
   (->> cards
