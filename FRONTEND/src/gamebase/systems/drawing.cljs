@@ -195,6 +195,33 @@
       (js/pop))
     component))
 
+(do ;; COMPONENT: dot
+
+  (defn mk-tile-component
+    [entity-or-id key {:keys [xy-kvs color]}]
+    (assoc
+     (ecs/mk-component ::drawing entity-or-id key ::tile)
+     :xy-kvs xy-kvs
+     :color color))
+
+  (defmethod ecs/handle-event [:to-component ::tile :update]
+    [world event component]
+    component)
+
+  (defmethod ecs/handle-event [:to-component ::tile ::draw]
+    [world event {:keys [xy-kvs] :as component}]
+    (let [entity (ecs/get-entity world component)
+          [x y] (get-in entity xy-kvs)
+          [r g b] (:color component)]
+      (when x
+        (js/push)
+        (js/noFill)
+        (js/stroke r g b)
+        (js/strokeWeight 2)
+        (js/rect (* 32 x) (* 32 y) 32 32)
+        (js/pop)))
+    component))
+
 (do ;; COMPONENT: path
 
   ;; draws a path as defined in gamebase.geometry

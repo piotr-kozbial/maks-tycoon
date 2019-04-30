@@ -21,8 +21,7 @@
              entity
              :move
              {:path-or-paths (assoc (tiles/track-path [:w :e] tile-x tile-y)
-                                    ::tile-x tile-x
-                                    ::tile-y tile-y
+                                    ::tile-xy [tile-x tile-y]
                                     ::track [:w :e])
               :path-start-length 16
               :extra-points {:rear -15, :front 15}
@@ -35,15 +34,30 @@
              :center [16 8]
              :resource-name-kvs [:image]})
 
-      ;; :debug-rear (sys-drawing/mk-dot-component
-      ;;              entity :debug-rear
-      ;;              {:point-kvs (ecs/ck-kvs :move :extra-xy :rear)
-      ;;               :color [200 0 0]})
+      :debug-rear (sys-drawing/mk-dot-component
+                   entity :debug-rear
+                   {:point-kvs (ecs/ck-kvs :move :extra-xy :rear)
+                    :color [200 0 0]})
 
-      ;; :debug-front (sys-drawing/mk-dot-component
-      ;;               entity :debug-front
-      ;;               {:point-kvs (ecs/ck-kvs :move :extra-xy :front)
-      ;;                :color [255 255 255]})
+      :debug-front (sys-drawing/mk-dot-component
+                    entity :debug-front
+                    {:point-kvs (ecs/ck-kvs :move :extra-xy :front)
+                     :color [255 255 255]})
+
+      :debug-tile (sys-drawing/mk-tile-component
+                   entity :debug-tile
+                   {:xy-kvs (ecs/ck-kvs :move :path ::tile-xy)
+                    :color [56 204 226]})
+
+      :debug-tile-front (sys-drawing/mk-tile-component
+                   entity :debug-tile-front
+                   {:xy-kvs (ecs/ck-kvs :move :extra-paths :front ::tile-xy)
+                    :color [56 204 226]})
+
+      :debug-tile-rear (sys-drawing/mk-tile-component
+                    entity :debug-tile-rear
+                    {:xy-kvs (ecs/ck-kvs :move :extra-paths :rear ::tile-xy)
+                     :color [56 204 226]})
 
       }
 
@@ -86,11 +100,8 @@
   [world event this]
   (let [move-component (-> this ::ecs/components :move)
         path (last (:paths (:path-chain move-component)))
-        tile-x (::tile-x path)
-        tile-y (::tile-y path)
+        [tile-x tile-y] (::tile-xy path)
         track (::track path)
-        ;; {:keys [track tile-x tile-y]} this
-        _ (.log js/console (str "AT PATH END [" tile-x ", " tile-y "] @" (::eq/time event)))
         [new-tile-x new-tile-y] (tiles/track-destination-tile track tile-x tile-y)
 
         layer (-get-layer world :foreground)
@@ -117,8 +128,7 @@
 
     (if new-track
       (let [new-path (assoc (tiles/track-path new-track new-tile-x new-tile-y)
-                            ::tile-x new-tile-x
-                            ::tile-y new-tile-y
+                            ::tile-xy [new-tile-x new-tile-y]
                             ::track new-track)]
 
         [(assoc this
