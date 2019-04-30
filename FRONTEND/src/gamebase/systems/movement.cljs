@@ -442,6 +442,24 @@
                          :at-end? :at-or-after-end?])
       v)))
 
+(defn path-follower2-cleanup-one-path
+  [{:as this :keys [path-chain extra-points length-on-path]}]
+  (when (> (count (:paths path-chain)) 1)
+    (let [first-path (first (:paths path-chain))
+          first-length (g/path-length first-path)
+          furthest-back-point-distance (apply min (conj (vals (or extra-points {})) 0))
+          furthest-back-point-length-on-path (+ length-on-path furthest-back-point-distance)]
+      (when (> furthest-back-point-length-on-path first-length)
+        (assoc this
+               :path-chain (geom/path-chain-remove-first path-chain)
+               :length-on-path (- length-on-path first-length))))))
+
+(defn path-follower2-cleanup-path-chain [component]
+  (loop [c component]
+    (if-let [c' (path-follower2-cleanup-one-path c)]
+      (recur c')
+      c)))
+
 (defmethod ecs/handle-event [:to-component ::path-follower2 ::ecs/init]
   [_ event {:as this :keys [path-chain length-on-path]}]
   (assoc this
@@ -451,6 +469,7 @@
   [world {:as event :keys [delta-t]} {:as this :keys [path-chain length-on-path speed past-end-notified? driving?]}]
   (if driving?
     (let [new-length-on-path (+ length-on-path (* delta-t speed))
+          new-angle (g/angle-at-length path-chain new-length-on-path)
           path-length (g/path-length path-chain)
           past-end? (> new-length-on-path path-length)]
       [(let [new-position (g/path-point-at-length path-chain new-length-on-path)]
@@ -458,7 +477,8 @@
                 :past-end? past-end?
                 :past-end-notified? past-end? ;; no mistake
                 :length-on-path new-length-on-path
-                :position new-position))
+                :position new-position
+                :angle new-angle))
        (when (and past-end? (not past-end-notified?))
          (ecs/mk-event (ecs/to-entity (::ecs/entity-id this)) ::at-path-end (::eq/time event)))])
     this))
@@ -470,7 +490,7 @@
                      :path-chain (geom/path-chain-add path-chain path)
                      :past-end? false
                      :past-end-notified? false)]
-    [this']))
+    (path-follower2-cleanup-path-chain this')))
 
 (defmethod ecs/handle-event [:to-component ::path-follower2 ::ci/stop]
   [world event this]
