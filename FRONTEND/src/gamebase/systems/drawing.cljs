@@ -7,7 +7,8 @@
    [app.tiles.general :as tiles]
    [app.state :as st]
    ;; [schema.core :as s :include-macros true]
-   ))
+
+   [app.ecs.common-events :as ci]))
 
 ;; utils
 
@@ -129,7 +130,10 @@
 
   (defmethod ecs/handle-event [:to-system ::drawing :update] [world event system]
     (let [world'(ecs/pass-event-through-all world event (ecs/all-components-of-system world system))]
-      world')))
+      world'))
+
+  (defmethod ecs/handle-event [:to-system ::drawing ::ci/delta-t] [world event system]
+    world))
 
 (do ;; COMPONENT: static image
 

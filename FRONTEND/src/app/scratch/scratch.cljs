@@ -456,12 +456,92 @@
 
       ])))
 
+(defn advance-one-frame [[component & events]]
+  (let [[component' & events'] (ecs/handle-event
+                                :<dummy-world>
+                                (assoc (ecs/mk-event component ::ci/delta-t :<dummy-time>) :delta-t 20)
+                                component)]
+    (into [component'] (concat events (remove nil? events')))))
+
+(defn advance-frames [component frame-count]
+  (->> (iterate advance-one-frame [component])
+       (drop frame-count)
+       (first)))
+
+(defn card--movement--path-follower2--basic [get-val set-val]
+  (binding [gamebase.geometry/*with-xprint* true
+            gamebase.ecs/*with-xprint* true]
+    (su/card
+     get-val
+     set-val
+     my-print-f
+     ;; visualizations
+     [[:svg
+       ;; props
+       {:width 600, :height 200
+        :internal-coords [-10 -10 320 120]
+        :y-flip? true}
+       ;; legend
+       [
+        [component0 svg-follower]
+        [component1 svg-follower]
+        [component2 svg-follower]
+        [component3 svg-follower]
+        [component4 svg-follower]
+        [component5 svg-follower]
+        [component6 svg-follower]
+        [component7 svg-follower]
+        ;; [component8 svg-follower]
+        ;; [component9 svg-follower]
+        ;; [component10 svg-follower]
+        ]
+       (svg-coord-system 300 100)]
+      [:value (get-val :selected-result)]]
+
+     ;; segments
+     [[:h3 "Movement system: Path follower 2 component, basic usage"]
+
+      [:p "Here we will manually operate a component, without a world or entity, "
+       "and also without an event queue (we will manually pass events if necessary)."]
+      "Create:"
+      [VCV path (geom/line-segment [0 0] [100 100])]
+      [VCV component (sys-movement/mk-path-follower2 "entity-id" "comp-key"
+                                                    {:path-or-paths path
+                                                     :driving? true})]
+
+      "Initialize:"
+      [VCV component0 (ecs/handle-event :<dummy-world>
+                                                  (ecs/mk-event component
+                                                                ::ecs/init
+                                                                :<dummy-time>)
+                                                  component)]
+
+      "After some time:"
+      [VCV [component1] (advance-frames component0 50)]
+      [VCV [component2] (advance-frames component1 50)]
+      [VCV [component3] (advance-frames component2 100)]
+      [VCV [component4] (advance-frames component3 100)]
+      "Now we go past our path:"
+      [VCV [component5 event5 event5'] (advance-frames component4 80)]
+      "So we have an event to the owner, and in return they send as a new path:"
+      [VCV [component6] (ecs/handle-event
+                         :<dummy-world>
+                         (assoc (ecs/mk-event component5 ::sys-movement/add-path (::eq/time event5))
+                                :path (geom/line-segment [100 100] [200 0]))
+                         component5)]
+      "And let time pass:"
+      [VCV [component7] (advance-frames component6 1)]
+
+      ])))
+
+
 (def cards
   [["Start card" #'start-card]
    ["Geometry: paths" #'card--geometry--paths]
    ["Movement system: Path follower component, basic usage" #'card--movement--path-follower--basic]
    ["Movement system: Path follower component, extra points" #'card--movement--path-follower--extra-points]
    ["Movement system: Path trailer component" #'card--movement--path-trailer]
+   ["Movement system: Path follower component 2, basic usage" #'card--movement--path-follower2--basic]
    ])
 
 (def card-map

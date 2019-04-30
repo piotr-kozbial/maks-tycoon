@@ -12,7 +12,8 @@
    [app.world-interop :as wo]
    [app.ui.ui-state :refer [ui-state] :as uis]
    [cljs.pprint :refer [pprint]]
-   ))
+
+   [gamebase.geometry :as geom]))
 
 
 (rum/defc bottombar-component < rum/reactive []
@@ -94,10 +95,13 @@
              ]))
        ]
       [:td [:span {:style {:white-space "pre"}} "   "]]
-      [:td
-       "Front: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-xy :front)))
-       [:br]
-       "Rear: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-xy :rear)))
-       [:br]
-       "Path-chain: " (pr-str (get-in loc (ecs/ck-kvs :move :path-chain)))
-       ]]]))
+      (when loc
+        [:td
+         "length-on-path: " (pr-str (get-in loc (ecs/ck-kvs :move :length-on-path)))
+         [:br]
+         "path-length: " (pr-str (geom/path-length (get-in loc (ecs/ck-kvs :move :path-chain))))
+         [:br]
+         "past-end?: " (pr-str (get-in loc (ecs/ck-kvs :move :past-end?)))
+         [:br]
+         "past-end-notified?: " (pr-str (get-in loc (ecs/ck-kvs :move :past-end-notified?)))
+         ])]]))

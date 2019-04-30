@@ -17,7 +17,7 @@
      entity
 
      :gamebase.ecs/components
-     {:move (sys-move/mk-path-follower
+     {:move (sys-move/mk-path-follower2
              entity
              :move
              {:path-or-paths (assoc (tiles/track-path [:w :e] tile-x tile-y)
@@ -35,15 +35,15 @@
              :center [16 8]
              :resource-name-kvs [:image]})
 
-      :debug-rear (sys-drawing/mk-dot-component
-                   entity :debug-rear
-                   {:point-kvs (ecs/ck-kvs :move :extra-xy :rear)
-                    :color [200 0 0]})
+      ;; :debug-rear (sys-drawing/mk-dot-component
+      ;;              entity :debug-rear
+      ;;              {:point-kvs (ecs/ck-kvs :move :extra-xy :rear)
+      ;;               :color [200 0 0]})
 
-      :debug-front (sys-drawing/mk-dot-component
-                    entity :debug-front
-                    {:point-kvs (ecs/ck-kvs :move :extra-xy :front)
-                     :color [255 255 255]})
+      ;; :debug-front (sys-drawing/mk-dot-component
+      ;;               entity :debug-front
+      ;;               {:point-kvs (ecs/ck-kvs :move :extra-xy :front)
+      ;;                :color [255 255 255]})
 
       }
 
@@ -181,3 +181,15 @@
            )])
 
 
+(defmethod ecs/handle-event [:to-entity ::locomotive ::ci/delta-t]
+  [world event this]
+
+  [(assoc this
+          :image
+          ;; "loco1-crashed.png"
+
+          (if (:rear-coupling this)
+            "loco1-coupled.png"
+            "loco1.png")
+
+          )])

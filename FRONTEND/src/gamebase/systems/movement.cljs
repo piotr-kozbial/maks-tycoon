@@ -26,6 +26,11 @@
                               (ecs/all-components-of-system
                                world system)))
 
+(defmethod ecs/handle-event [:to-system ::movement ::ci/delta-t]
+  [world event system]
+  (ecs/pass-event-through-all world event
+                              (ecs/all-components-of-system
+                               world system)))
 ;;;;; Component: test-diagonal
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -391,4 +396,92 @@
   [world event this]
   this)
 
+
+;;;;; Component: path-follower2
+
+(defn mk-path-follower2 [entity-or-id key {:keys [path-or-paths
+                                                 path-start-length
+                                                 extra-points
+                                                 speed
+                                                 driving?]}]
+  (assert path-or-paths)
+  (let [v (assoc
+           (ecs/mk-component ::movement entity-or-id key ::path-follower2)
+           :driving? driving?
+           :speed (or speed 0.02)
+           :extra-points extra-points
+           :path-chain (geom/precompute
+                        (geom/path-chain
+                         (if (or (list? path-or-paths)
+                                 (vector? path-or-paths))
+                           (into [] path-or-paths)
+                           [path-or-paths])))
+           ;; TODO - chcemy wlasciwie, zeby klient podal numer path z tych co podal
+           ;; i length wzgledem tego path, a my sobie przeliczymy
+           :length-on-path (or path-start-length 0))]
+    (path-follower-check v)
+    (if :gamebase.ecs/*with-xprint*
+      (vary-meta v
+                 update-in [:app.xprint.core/key-order]
+                 concat [[:app.xprint.core/comment
+                          "configuration"]
+                         :extra-points
+                         [:app.xprint.core/comment "raw state"]
+                         :path-chain
+                         :driving? :speed
+                         :length-on-path
+                         [:app.xprint.core/comment
+                          "derived state - events"]
+                         :path-end-time :path-free-time
+                         [:app.xprint.core/comment
+                          "derived state - positions"]
+                         :position :angle
+                         :extra-xy
+                         [:app.xprint.core/comment
+                          "derived state - topology"]
+                         :at-end? :at-or-after-end?])
+      v)))
+
+(defmethod ecs/handle-event [:to-component ::path-follower2 ::ecs/init]
+  [_ event {:as this :keys [path-chain length-on-path]}]
+  (assoc this
+         :position (g/path-point-at-length path-chain length-on-path)))
+
+(defmethod ecs/handle-event [:to-component ::path-follower2 ::ci/delta-t]
+  [world {:as event :keys [delta-t]} {:as this :keys [path-chain length-on-path speed past-end-notified? driving?]}]
+  (if driving?
+    (let [new-length-on-path (+ length-on-path (* delta-t speed))
+          path-length (g/path-length path-chain)
+          past-end? (> new-length-on-path path-length)]
+      [(let [new-position (g/path-point-at-length path-chain new-length-on-path)]
+         (assoc this
+                :past-end? past-end?
+                :past-end-notified? past-end? ;; no mistake
+                :length-on-path new-length-on-path
+                :position new-position))
+       (when (and past-end? (not past-end-notified?))
+         (ecs/mk-event (ecs/to-entity (::ecs/entity-id this)) ::at-path-end (::eq/time event)))])
+    this))
+
+(defmethod ecs/handle-event [:to-component ::path-follower2 ::add-path]
+  [world {:keys [path] :as event} {:keys [path-chain] :as this}]
+  (println "ADD PATH")
+  (let [this' (assoc this
+                     :path-chain (geom/path-chain-add path-chain path)
+                     :past-end? false
+                     :past-end-notified? false)]
+    [this']))
+
+(defmethod ecs/handle-event [:to-component ::path-follower2 ::ci/stop]
+  [world event this]
+  (assoc this :driving? false))
+
+(defmethod ecs/handle-event [:to-component ::path-follower2 ::ci/drive]
+  [world event {:as this :keys [driving? past-end?]}]
+  (if driving?
+    this
+    (if past-end?
+      [(assoc this :past-end-notified? true)
+       (ecs/mk-event (ecs/to-entity (::ecs/entity-id this)) ::at-path-end (::eq/time event))]
+      (assoc this :driving? true))))
 

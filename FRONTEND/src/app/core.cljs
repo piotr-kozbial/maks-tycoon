@@ -53,7 +53,8 @@
 
             [sablono.core :as sab]
 
-            )
+
+            [app.ecs.common-events :as ci])
   ;; (:require-macros
   ;;  [devcards.core :refer [defcard]])
 
@@ -98,7 +99,11 @@
                      (let [time (wo/get-time)]
                        (-> world
                            (ecs/advance-until-time time)
-                           (ecs/do-handle-event (ecs/mk-event (ecs/to-world) :update time))))
+                           ;; (ecs/do-handle-event (ecs/mk-event (ecs/to-world) :update time))
+                           (ecs/do-handle-event (assoc (ecs/mk-event (ecs/to-world) ::ci/delta-t time)
+                                                       :delta-t 20))
+
+                           ))
                      world)]
   ;;; validate...
         ;;(s/validate st/s-world world')
@@ -115,7 +120,6 @@
           (debug-draw-coord-system)))))
 
   )
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; UI root
@@ -153,7 +157,6 @@
    (sidebar-component)
    ;; bottom bar
    (bottombar-component)))
-
 
 (rum/defc main-component < my-mixin rum/reactive []
   (rum/react scratch/state)
