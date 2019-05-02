@@ -668,6 +668,17 @@
           (nth paths n)
           (recur (inc n) (- length-remaining (nth lengths n)))))))
 
+  (defn length-at-length [path-chain length]
+    (let [{:keys [paths lengths]} (precomputed path-chain)
+          cnt (count paths)]
+      (loop [n 0, length-remaining length]
+        (if (or
+             (<= length-remaining (nth lengths n)) ;; fits in this path
+             (= (inc n) cnt)) ;; last path, no choice
+          length-remaining
+          (recur (inc n) (- length-remaining (nth lengths n)))))))
+
+
   (defn path-chain-add [{:keys [paths precomputed?] :as path-chain} path]
     (let [path-chain'(assoc
                       path-chain

@@ -108,6 +108,8 @@
          ;; "past-end-notified?: " (pr-str (get-in loc (ecs/ck-kvs :move :past-end-notified?)))
          [:br]
          "extra-xy: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-xy)))
+         [:br]
+         "extra-lengths-on-paths: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-lengths-on-paths)))
          ;; [:br]
          ;; "extra-paths: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-paths)))
          ])]]))

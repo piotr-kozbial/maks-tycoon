@@ -525,11 +525,11 @@
       "Now we go past our path:"
       [VCV [component5 event5 event5'] (advance-frames component4 80)]
       "So we have an event to the owner, and in return they send as a new path:"
-      [VCV component6 (ecs/handle-event
-                         :<dummy-world>
-                         (assoc (ecs/mk-event component5 ::sys-movement/add-path (::eq/time event5))
-                                :path (geom/line-segment [100 100] [200 0]))
-                         component5)]
+      [VCV [component6 e6] (ecs/handle-event
+                          :<dummy-world>
+                          (assoc (ecs/mk-event component5 ::sys-movement/add-path (::eq/time event5))
+                                 :path (geom/line-segment [100 100] [200 0]))
+                          component5)]
       "And let time pass:"
       [VCV [component7] (advance-frames component6 1)]
 
@@ -606,7 +606,7 @@
                       world0
                       (assoc
                        (ecs/mk-event trailer0
-                                     ::sys-movement/connect
+                                     ::ci/connect
                                      :<dummy-time>)
                        :leader-entity-key "entity-id"
                        :leader-path-kvs (ecs/ck-kvs "follower-key" :path)
@@ -634,7 +634,7 @@
                      trailer1)]
 
       "and about now we're past the first path, so we add another"
-      [VCV follower2'
+      [VCV [follower2' e2']
        (ecs/handle-event
                          world2
                          (assoc (ecs/mk-event follower2 ::sys-movement/add-path

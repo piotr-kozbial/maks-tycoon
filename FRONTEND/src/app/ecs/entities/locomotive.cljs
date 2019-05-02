@@ -58,7 +58,6 @@
                     entity :debug-tile-rear
                     {:xy-kvs (ecs/ck-kvs :move :extra-paths :rear ::tile-xy)
                      :color [56 204 226]})
-
       }
 
      :tile-x tile-x

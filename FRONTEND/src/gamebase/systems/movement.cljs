@@ -119,39 +119,56 @@
          :position (g/path-point-at-length path-chain length-on-path)
          :path (g/path-at-length path-chain length-on-path)))
 
-(defmethod ecs/handle-event [:to-component ::path-follower2 ::ci/delta-t]
-  [world {:as event :keys [delta-t]} {:as this :keys [path-chain extra-points length-on-path speed
-                                                      past-end-notified? driving? extra-points]}]
+
+(defn follower2-full-update [{:as this :keys [path-chain extra-points length-on-path speed
+                                              past-end-notified? driving? extra-points]}
+                             time]
   (if driving?
-    (let [new-length-on-path (+ length-on-path (* delta-t speed))
-          new-angle (g/angle-at-length path-chain new-length-on-path)
-          new-position (g/path-point-at-length path-chain new-length-on-path)
-          new-path (g/path-at-length path-chain new-length-on-path)
+    (let [new-angle (g/angle-at-length path-chain length-on-path)
+          new-position (g/path-point-at-length path-chain length-on-path)
+          new-path (g/path-at-length path-chain length-on-path)
           new-extra-xy (->> extra-points
                             (mapcat (fn [[key dist]] [key (g/path-point-at-length
                                                           path-chain
-                                                          (+ new-length-on-path dist))]))
+                                                          (+ length-on-path dist))]))
                             (apply hash-map))
           new-extra-paths (->> extra-points
                                (mapcat (fn [[key dist]] [key (g/path-at-length
                                                              path-chain
-                                                             (+ new-length-on-path dist))]))
-                            (apply hash-map))
+                                                             (+ length-on-path dist))]))
+                               (apply hash-map))
+          new-extra-lengths-on-paths (->> extra-points
+                                          (mapcat (fn [[key dist]] [key (g/length-at-length
+                                                                        path-chain
+                                                                        (+ length-on-path dist))]))
+                                          (apply hash-map))
           furthest-point-distance (apply max (conj (vals (or extra-points {})) 0))
           path-length (g/path-length path-chain)
-          past-end? (> (+ new-length-on-path furthest-point-distance) path-length)]
+          past-end? (> (+ length-on-path furthest-point-distance) path-length)]
       [(assoc this
               :past-end? past-end?
               :past-end-notified? past-end? ;; no mistake
-              :length-on-path new-length-on-path
               :position new-position
               :angle new-angle
               :path new-path
               :extra-xy new-extra-xy
-              :extra-paths new-extra-paths)
+              :extra-paths new-extra-paths
+              :extra-lengths-on-paths new-extra-lengths-on-paths)
        (when (and past-end? (not past-end-notified?))
-         (ecs/mk-event (ecs/to-entity (::ecs/entity-id this)) ::at-path-end (::eq/time event)))])
-    this))
+         (ecs/mk-event (ecs/to-entity (::ecs/entity-id this)) ::at-path-end time))])
+    this)
+
+
+  )
+
+(defmethod ecs/handle-event [:to-component ::path-follower2 ::ci/delta-t]
+  [world {:as event :keys [delta-t]} {:as this :keys [length-on-path driving? speed]}]
+  (follower2-full-update
+   (if driving?
+     (let [new-length-on-path (+ length-on-path (* delta-t speed))]
+       (assoc this :length-on-path new-length-on-path))
+     this)
+   (::eq/time event)))
 
 (defmethod ecs/handle-event [:to-component ::path-follower2 ::add-path]
   [world {:keys [path] :as event} {:keys [path-chain] :as this}]
@@ -160,8 +177,7 @@
                      :past-end? false
                      :past-end-notified? false)
         this'' (path-follower2-cleanup-path-chain this')]
-    (assoc this''
-           :path (g/path-at-length (:path-chain this'') (:length-on-path this'')))))
+    (follower2-full-update this'' (::eq/time event))))
 
 (defmethod ecs/handle-event [:to-component ::path-follower2 ::ci/stop]
   [world event this]
@@ -180,14 +196,21 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn mk-path-trailer
-  [entity-or-id key {:keys [path length-on-path]}]
+  [entity-or-id key {:keys [;; either these:
+                            path length-on-path
+                            ;; or these:
+                            leader-entity-key
+                            leader-path-kvs
+                            leader-length-on-path-kvs
+                            distance]}]
   (let [v (assoc
            (ecs/mk-component ::movement entity-or-id key ::path-trailer)
            :path path
            :length-on-path length-on-path
-           :leader-entity-key nil
-           :leader-path-kvs nil
-           :leader-length-on-path-kvs nil)]
+           :leader-entity-key leader-entity-key
+           :leader-path-kvs leader-path-kvs
+           :leader-length-on-path-kvs leader-length-on-path-kvs
+           :distance distance)]
     (if :gamebase.ecs/*with-xprint*
       (vary-meta v
                  update-in [:app.xprint.core/key-order]
@@ -211,14 +234,18 @@
                 distance]} this]
     (if leader-entity-key
       ;; we are connected to a leader
-      (let [leader (ecs/get-entity-by-key world leader-entity-key)
-            leader-path (get-in leader leader-path-kvs)
+      (let [leader                (ecs/get-entity-by-key world leader-entity-key)
+            leader-path           (get-in leader leader-path-kvs)
             leader-length-on-path (get-in leader leader-length-on-path-kvs)
-            new-length-on-path (+ leader-length-on-path distance)]
+            new-length-on-path    (+ leader-length-on-path distance)]
         (if (>= new-length-on-path 0)
-          (let [new-position (g/path-point-at-length leader-path new-length-on-path)]
+          (let [new-position (g/path-point-at-length leader-path new-length-on-path)
+                new-angle    (g/angle-at-length leader-path new-length-on-path)]
+            (if (not= leader-path path)
+              (println (str "TRAILER: NEW PATH! " (pr-str leader-path))))
             (assoc this
                    :position new-position
+                   :angle new-angle
                    :path leader-path
                    :length-on-path new-length-on-path))
           ;; Negative length on path may happen when the leader goes to a new path.
@@ -229,12 +256,16 @@
           ;; So we can assume that we should count this negative length from the
           ;; end of the track that we're on.
           (let [newer-length-on-path (+ (g/path-length path) new-length-on-path)
-                newer-position (g/path-point-at-length path newer-length-on-path)]
+                newer-position       (g/path-point-at-length path newer-length-on-path)
+                newer-angle          (g/angle-at-length path newer-length-on-path)]
             (assoc this
                    :length-on-path newer-length-on-path
-                   :position newer-position))))
+                   :position newer-position
+                   :angle newer-angle))))
       ;; we are not connected, staying in place
-      (assoc this :position (g/path-point-at-length path length-on-path)))))
+      (assoc this
+             :position (g/path-point-at-length path length-on-path)
+             :angle (g/angle-at-length path length-on-path)))))
 
 
 (defmethod ecs/handle-event [:to-component ::path-trailer ::ecs/init]
@@ -245,9 +276,10 @@
   [world event this]
   (path-trailer-update world this))
 
-(defmethod ecs/handle-event [:to-component ::path-trailer ::connect]
+(defmethod ecs/handle-event [:to-component ::path-trailer ::ci/connect]
   [world {:as event :keys [leader-entity-key leader-path-kvs leader-length-on-path-kvs
                            distance]} this]
+  (println "TRAILER CONNECT!")
   (path-trailer-update
    world
    (assoc this
