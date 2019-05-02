@@ -72,10 +72,11 @@
      ]))
 
 (defn svg-trailer
-  [{:as component :keys [position]}
+  [{:as component :keys [position path]}
    & [highlight?]]
   (when-let [[x y] position]
-    [[:circle {:cx x :cy y :r 3 :stroke "cyan" :fill "cyan"}]
+    [(svg-path path highlight?)
+     [:circle {:cx x :cy y :r 3 :stroke "cyan" :fill "cyan"}]
      (when highlight?
        [:circle {:cx x :cy y :r 6 :stroke "cyan" :fill "none"}])
 
@@ -524,7 +525,7 @@
       "Now we go past our path:"
       [VCV [component5 event5 event5'] (advance-frames component4 80)]
       "So we have an event to the owner, and in return they send as a new path:"
-      [VCV [component6] (ecs/handle-event
+      [VCV component6 (ecs/handle-event
                          :<dummy-world>
                          (assoc (ecs/mk-event component5 ::sys-movement/add-path (::eq/time event5))
                                 :path (geom/line-segment [100 100] [200 0]))
@@ -534,15 +535,154 @@
 
       ])))
 
+(defn card--movement--path-trailer [get-val set-val]
+  (binding [gamebase.geometry/*with-xprint* true
+            gamebase.ecs/*with-xprint* true]
+    (su/card
+     get-val
+     set-val
+     my-print-f
+     ;; visualizations
+     [[:svg
+       ;; props
+       {:width 600, :height 250
+        :internal-coords [-10 -10 320 150]
+        :y-flip? true}
+       ;; legend
+       [
+        [follower0 svg-follower]
+        [trailer0 svg-trailer]
+        [trailer0' svg-trailer]
+        [follower1 svg-follower]
+        [trailer1 svg-trailer]
+        [follower2 svg-follower]
+        [trailer2 svg-trailer]
+        [follower2' svg-follower]
+        [trailer2' svg-trailer]
+        [follower3 svg-follower]
+        [trailer3 svg-trailer]
+        [follower4 svg-follower]
+        [trailer4 svg-trailer]
+        [follower5 svg-follower]
+        [trailer5 svg-trailer]
+        ]
+       (svg-coord-system 300 150)]
+      [:value (get-val :selected-result)]]
+
+     ;; segments
+     [[:h3 "Movement system: Path trailer"]
+
+      "Create and initialize follower:"
+      [VCV path (geom/line-segment [0 0] [100 100])]
+      [VCV follower (sys-movement/mk-path-follower2 "entity-id" "follower-key"
+                                                    {:path-or-paths path
+                                                     :length-on-path 50
+                                                     :driving? true})]
+      [VCV trailer (sys-movement/mk-path-trailer
+                    "entity-id" "trailer-key"
+                    {:path path
+                     :length-on-path 0})]
+
+
+      [VCV entity (ecs/mk-entity "entity-id" :<dummy-type>)]
+      [VCV world (-> (ecs/mk-world)
+                     (ecs/insert-object entity)
+                     (ecs/insert-object follower)
+                     (ecs/insert-object trailer))]
+
+      [VCV follower0 (ecs/handle-event world
+                                       (ecs/mk-event follower
+                                                     ::ecs/init
+                                                     :<dummy-time>)
+                                       follower)]
+      [VCV world0 (ecs/insert-object world follower0)]
+      [VCV trailer0 (ecs/handle-event world0
+                                      (ecs/mk-event trailer
+                                                    ::ecs/init
+                                                    :<dummy-time>)
+                                      trailer)]
+      "Connect:"
+      [VCV trailer0' (ecs/handle-event
+                      world0
+                      (assoc
+                       (ecs/mk-event trailer0
+                                     ::sys-movement/connect
+                                     :<dummy-time>)
+                       :leader-entity-key "entity-id"
+                       :leader-path-kvs (ecs/ck-kvs "follower-key" :path)
+                       :leader-length-on-path-kvs (ecs/ck-kvs "follower-key" :length-on-path)
+                       :distance -20)
+                      trailer0)]
+      ;;; (1)
+
+      [VCV [follower1] (advance-frames follower0 100)]
+      [VCV world1 (ecs/insert-object world follower1)]
+      ;; trailer won't need real delta time
+      [VCV trailer1 (ecs/handle-event
+                       world1
+                       (assoc (ecs/mk-event trailer0' ::ci/delta-t :<dummy-time>)
+                              :delta-t :<dummy-delta-t>)
+                       trailer0')]
+
+      ;;; (2)
+      [VCV [follower2 e-path-end] (advance-frames follower1 130)]
+      [VCV world2 (ecs/insert-object world follower2)]
+      [VCV trailer2 (ecs/handle-event
+                     world2
+                     (assoc (ecs/mk-event trailer1 ::ci/delta-t :<dummy-time>)
+                            :delta-t :<dummy-delta-t>)
+                     trailer1)]
+
+      "and about now we're past the first path, so we add another"
+      [VCV follower2'
+       (ecs/handle-event
+                         world2
+                         (assoc (ecs/mk-event follower2 ::sys-movement/add-path
+                                              (::eq/time e-path-end))
+                                :path (geom/line-segment [100 100] [200 0]))
+                         follower2)]
+      [VCV world2' (ecs/insert-object world2 follower2')]
+      [VCV trailer2' (ecs/handle-event
+                     world2'
+                     (assoc (ecs/mk-event trailer2 ::ci/delta-t :<dummy-time>)
+                            :delta-t :<dummy-delta-t>)
+                     trailer2)]
+
+      "So the follower is already on the new path, but the trailer still on the old one."
+      [:br]
+      "We advance a little bit, but not so much as to get beyond the old path with the trailer:"
+      [VCV [follower3] (advance-frames follower2' 25)]
+      [VCV world3 (ecs/insert-object world2' follower3)]
+      [VCV trailer3 (ecs/handle-event
+                      world3
+                      (assoc (ecs/mk-event trailer2' ::ci/delta-t :<dummy-time>)
+                             :delta-t :<dummy-delta-t>)
+                      trailer2')]
+      "Looks good, the trailer still on the old path. Now let's go beyond that:"
+      [VCV [follower4] (advance-frames follower3 40)]
+      [VCV world4 (ecs/insert-object world3 follower4)]
+      [VCV trailer4 (ecs/handle-event
+                     world4
+                     (assoc (ecs/mk-event trailer3 ::ci/delta-t :<dummy-time>)
+                            :delta-t :<dummy-delta-t>)
+                     trailer3)]
+      "And further:"
+      [VCV [follower5] (advance-frames follower4 200)]
+      [VCV world5 (ecs/insert-object world4 follower5)]
+      [VCV trailer5 (ecs/handle-event
+                     world5
+                     (assoc (ecs/mk-event trailer4 ::ci/delta-t :<dummy-time>)
+                            :delta-t :<dummy-delta-t>)
+                     trailer4)]
+
+      ])))
 
 (def cards
   [["Start card" #'start-card]
    ["Geometry: paths" #'card--geometry--paths]
-   ;; ["Movement system: Path follower component, basic usage" #'card--movement--path-follower--basic]
-   ;; ["Movement system: Path follower component, extra points" #'card--movement--path-follower--extra-points]
-   ;; ["Movement system: Path trailer component" #'card--movement--path-trailer]
-   ["Movement system: Path follower component 2, basic usage" #'card--movement--path-follower2--basic]
-   ])
+   ["Movement system: Path follower component 2, basic usage"
+    #'card--movement--path-follower2--basic]
+   ["Movement system: Path trailer component" #'card--movement--path-trailer]])
 
 (def card-map
   (->> cards

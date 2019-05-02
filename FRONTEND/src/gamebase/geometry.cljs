@@ -59,7 +59,7 @@
 ;;; understood as a vector. So |{:slope [1 1]}| means 45 degrees,
 ;;; while |{:slope [-1 -1]}| represents 225 degrees (45 + 180), or -135 degrees,
 ;;; which is the same. In conversions, we will produce radiW każdym raziean or degree values
-;;; between -180 degrees (inclusive) and 180 degrees (exclusive).
+;;; between -180 dehttps://vimeo.com/331582378/a8a7c8278f grees (inclusive) and 180 degrees (exclusive).
 
 ;;; In contexts where an angle is expected but a number is given,
 ;;; we will assume that *the number represents the angle in radians*.
