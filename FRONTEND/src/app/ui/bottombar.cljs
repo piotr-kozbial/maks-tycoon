@@ -97,19 +97,21 @@
       [:td [:span {:style {:white-space "pre"}} "   "]]
       (when loc
         [:td
+         "driving?: " (pr-str (get-in loc (ecs/ck-kvs :move :driving?)))
+         [:br]
          "length-on-path: " (pr-str (get-in loc (ecs/ck-kvs :move :length-on-path)))
          [:br]
-         "path-length: " (pr-str (geom/path-length (get-in loc (ecs/ck-kvs :move :path-chain))))
+         "path: " (pr-str (get-in loc (ecs/ck-kvs :move :path)))
          ;; [:br]
          ;; "path: " (pr-str (get-in loc (ecs/ck-kvs :move :path)))
          ;; [:br]
          ;; "past-end?: " (pr-str (get-in loc (ecs/ck-kvs :move :past-end?)))
          ;; [:br]
          ;; "past-end-notified?: " (pr-str (get-in loc (ecs/ck-kvs :move :past-end-notified?)))
-         [:br]
-         "extra-xy: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-xy)))
-         [:br]
-         "extra-lengths-on-paths: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-lengths-on-paths)))
+         ;; [:br]
+         ;; "extra-xy: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-xy)))
+         ;; [:br]
+         ;; "extra-lengths-on-paths: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-lengths-on-paths)))
          ;; [:br]
          ;; "extra-paths: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-paths)))
          ])]]))

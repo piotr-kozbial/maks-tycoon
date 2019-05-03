@@ -17,16 +17,24 @@
      entity
 
      :gamebase.ecs/components
-     {:move (sys-move/mk-path-follower2
+     {
+      ;; :move (sys-move/mk-path-follower2
+      ;;        entity
+      ;;        :move
+      ;;        {:path-or-paths (assoc (tiles/track-path [:w :e] tile-x tile-y)
+      ;;                               ::tile-xy [tile-x tile-y]
+      ;;                               ::track [:w :e])
+      ;;         :path-start-length 16
+      ;;         :extra-points {:rear -15, :front 15}
+      ;;         :driving? false})
+
+      :move (sys-move/mk-railway-engine
              entity
              :move
-             {:path-or-paths (assoc (tiles/track-path [:w :e] tile-x tile-y)
-                                    ::tile-xy [tile-x tile-y]
-                                    ::track [:w :e])
-              :path-start-length 16
-              :extra-points {:rear -15, :front 15}
-              :driving? false})
-
+             {:tile-x tile-x
+              :tile-y tile-y
+              :track [:w :e]
+              :driving? true})
       :img (sys-drawing/mk-static-image-component
             entity :img
             {:point-kvs (ecs/ck-kvs :move :position)
@@ -34,30 +42,30 @@
              :center [16 8]
              :resource-name-kvs [:image]})
 
-      :debug-rear (sys-drawing/mk-dot-component
-                   entity :debug-rear
-                   {:point-kvs (ecs/ck-kvs :move :extra-xy :rear)
-                    :color [200 0 0]})
+      ;; :debug-rear (sys-drawing/mk-dot-component
+      ;;              entity :debug-rear
+      ;;              {:point-kvs (ecs/ck-kvs :move :extra-xy :rear)
+      ;;               :color [200 0 0]})
 
-      :debug-front (sys-drawing/mk-dot-component
-                    entity :debug-front
-                    {:point-kvs (ecs/ck-kvs :move :extra-xy :front)
-                     :color [255 255 255]})
+      ;; :debug-front (sys-drawing/mk-dot-component
+      ;;               entity :debug-front
+      ;;               {:point-kvs (ecs/ck-kvs :move :extra-xy :front)
+      ;;                :color [255 255 255]})
 
-      :debug-tile (sys-drawing/mk-tile-component
-                   entity :debug-tile
-                   {:xy-kvs (ecs/ck-kvs :move :path ::tile-xy)
-                    :color [56 204 226]})
+      ;; :debug-tile (sys-drawing/mk-tile-component
+      ;;              entity :debug-tile
+      ;;              {:xy-kvs (ecs/ck-kvs :move :path ::tile-xy)
+      ;;               :color [56 204 226]})
 
-      :debug-tile-front (sys-drawing/mk-tile-component
-                   entity :debug-tile-front
-                   {:xy-kvs (ecs/ck-kvs :move :extra-paths :front ::tile-xy)
-                    :color [56 204 226]})
+      ;; :debug-tile-front (sys-drawing/mk-tile-component
+      ;;              entity :debug-tile-front
+      ;;              {:xy-kvs (ecs/ck-kvs :move :extra-paths :front ::tile-xy)
+      ;;               :color [56 204 226]})
 
-      :debug-tile-rear (sys-drawing/mk-tile-component
-                    entity :debug-tile-rear
-                    {:xy-kvs (ecs/ck-kvs :move :extra-paths :rear ::tile-xy)
-                     :color [56 204 226]})
+      ;; :debug-tile-rear (sys-drawing/mk-tile-component
+      ;;               entity :debug-tile-rear
+      ;;               {:xy-kvs (ecs/ck-kvs :move :extra-paths :rear ::tile-xy)
+      ;;                :color [56 204 226]})
       }
 
      :tile-x tile-x
@@ -71,134 +79,26 @@
 
      :image "loco1.png")))
 
-(defmethod ecs/handle-event
-  [:to-entity ::locomotive ::ecs/init]
+(defmethod ecs/handle-event [:to-entity ::locomotive ::ecs/init]
   [world event this]
-  (ecs/mk-event (-> this ::ecs/components :move)
-                ::ecs/init
-                (::eq/time event)))
-
-(defn- -get-layer [world layer-key]
-  (->> (:layers world)
-       (filter #(= (first %) layer-key))
-       (first)
-       (second)))
-
-(defn -put-to-history [history tile-x tile-y track]
-  (let [history' (if (>= (count history) 2)
-                   (apply vector (rest history))
-                   history)]
-    (into history' [[tile-x tile-y track]])))
-
-(defn -history-to-map [history]
-  (->> history
-       (mapcat (fn [[tx ty track]] [[tx ty] track]))
-       (apply hash-map)))
-
-(defmethod ecs/handle-event [:to-entity ::locomotive ::sys-move/at-path-end]
-  [world event this]
-  (let [move-component (-> this ::ecs/components :move)
-        path (last (:paths (:path-chain move-component)))
-        [tile-x tile-y] (::tile-xy path)
-        track (::track path)
-        [new-tile-x new-tile-y] (tiles/track-destination-tile track tile-x tile-y)
-
-        layer (-get-layer world :foreground)
-        tile-context (:tile-context world)
-        new-tile (layers/get-tile-from-layer layer new-tile-x new-tile-y)
-        info (layers/get-tile-info-from-layer tile-context layer new-tile-x new-tile-y)
-        extra (st/get-tile-extra new-tile-x new-tile-y)
-
-        [_ tile-end] (:track this)
-
-        new-tile-start ({:w :e
-                         :e :w
-                         :n :s
-                         :s :n} tile-end)
-
-        possible-new-tracks (tiles/active-tracks-from
-                             new-tile-start
-                             new-tile-x new-tile-y
-                             info
-                             extra)
-
-        ;; choose the first possible tracks
-        new-track (first possible-new-tracks)]
-
-    (if new-track
-      (let [new-path (assoc (tiles/track-path new-track new-tile-x new-tile-y)
-                            ::tile-xy [new-tile-x new-tile-y]
-                            ::track new-track)]
-
-        [(assoc this
-                :tile-x new-tile-x
-                :tile-y new-tile-y
-                :track new-track
-                :tile-track-history (-put-to-history (:tile-track-history this)
-                                                     new-tile-x new-tile-y new-track))
-         (assoc
-          (ecs/mk-event (-> this ::ecs/components :move)
-                        ::sys-move/add-path
-                        (::eq/time event))
-          :path new-path)
-         (ecs/mk-event (-> this ::ecs/components :move) ::ci/drive (::eq/time event))
-         ])
-      (do
-        (.log js/console "NO NEW TRACK!!!")
-        [(ecs/mk-event this
-                       ::ci/stop
-                       (::eq/time event))]))))
+  (ecs/retarget event (-> this ::ecs/components :move)))
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ci/stop]
-  [world event {:keys [rear-coupling] :as this}]
-  (.log js/console "LOC GOT STOP, sending to " rear-coupling)
-  [(ecs/mk-event (-> this ::ecs/components :move)
-                  ::ci/stop
-                  (::eq/time event))
-   (when rear-coupling
-     (ecs/mk-event (ecs/to-entity rear-coupling)
-                   ::ci/stop
-                   (::eq/time event)))])
+  [world event this]
+  (ecs/retarget event (-> this ::ecs/components :move)))
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ci/drive]
   [world event {:keys [rear-coupling] :as this}]
-  [(ecs/mk-event (-> this ::ecs/components :move)
-                 ::ci/drive
-                 (::eq/time event))
-   (when rear-coupling
-     (ecs/mk-event (ecs/to-entity rear-coupling)
-                   ::ci/drive
-                   (::eq/time event)))])
-
-(defmethod ecs/handle-event [:to-entity ::locomotive ::couple-rear]
-  [world {:keys [the-other-id] :as event} this]
-  (let [the-other (ecs/get-entity-by-key world the-other-id)]
-    [(assoc this :rear-coupling the-other-id)
-     (assoc the-other :front-coupling (::ecs/entity-id this))]))
-
-(defmethod ecs/handle-event [:to-entity ::locomotive :update]
-  [world event this]
-
-  [(assoc this
-          :image
-          ;; "loco1-crashed.png"
-
-          (if (:rear-coupling this)
-                    "loco1-coupled.png"
-                    "loco1.png")
-
-           )])
-
+  (ecs/retarget event (-> this ::ecs/components :move)))
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ci/delta-t]
   [world event this]
+  this
+  ;; [(assoc this
+  ;;         :image
+  ;;         (if (:rear-coupling this)
+  ;;           "loco1-coupled.png"
+  ;;           "loco1.png")
 
-  [(assoc this
-          :image
-          ;; "loco1-crashed.png"
-
-          (if (:rear-coupling this)
-            "loco1-coupled.png"
-            "loco1.png")
-
-          )])
+  ;;         )]
+  )

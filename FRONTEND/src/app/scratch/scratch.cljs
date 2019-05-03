@@ -82,6 +82,22 @@
 
      ]))
 
+(defn svg-engine
+  [{:as component :keys [position angle path]}
+   & [highlight?]]
+  (when-let [[x y] position]
+    [(svg-path path highlight?)
+     [:circle {:cx x :cy y :r 3 :stroke "blue" :fill "blue"}]
+     (when highlight?
+       [:circle {:cx x :cy y :r 6 :stroke "#bf28c1" :fill "none"}])
+     (let [angle-in-degrees (geom/get-degrees (geom/in-radians angle))]
+       [:g
+        {:transform (str/join "\n" [(str "translate(" x " " y ")")
+                                    (str "rotate(" angle-in-degrees " 0 0)")])}
+        [:line {:x1 0 :y1 0 :x2 10 :y2 0  :stroke "blue"}]
+        [:line {:x1 10 :y1 0 :x2 7 :y2 2  :stroke "blue"}]
+        [:line {:x1 10 :y1 0 :x2 7 :y2 -2  :stroke "blue"}]])]))
+
 ;;;;;;;;; CARDS ;;:;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def my-print-f
@@ -535,6 +551,82 @@
 
       ])))
 
+
+(defn advance-one-frame' [component]
+  (ecs/handle-event
+   :<dummy-world>
+   (assoc (ecs/mk-event component ::ci/delta-t :<dummy-time>) :delta-t 20)
+   component))
+
+(defn advance-frames' [component frame-count]
+  (->> (iterate advance-one-frame' component)
+       (drop frame-count)
+       (first)))
+
+
+(defn my-engine-next-path [world this path]
+  (when (= path (geom/line-segment [0 0] [100 100]))
+    (geom/line-segment [100 100] [200 50])))
+
+(defn card--movement--engine--basic [get-val set-val]
+  (binding [gamebase.geometry/*with-xprint* true
+            gamebase.ecs/*with-xprint* true]
+    (su/card
+     get-val
+     set-val
+     my-print-f
+
+     ;; visualizations
+     [[:svg
+       {:width 600, :height 200
+        :internal-coords [-10 -10 320 120]
+        :y-flip? true}
+       [
+        [component0 svg-engine]
+        [component1 svg-engine]
+        [component2 svg-engine]
+        [component3 svg-engine]
+        [component4 svg-engine]
+        [component5 svg-engine]
+        [component6 svg-engine]
+        [component7 svg-engine]
+        ]
+       (svg-coord-system 300 100)]
+      [:value (get-val :selected-result)]]
+
+
+
+     ;; segments
+     [[:h3 "Movement system: Engine component, basic usage"]
+
+      [:p "Here we will manually operate a component, without a world or entity, "
+       "and also without an event queue (we will manually pass events if necessary)."]
+      "Create:"
+      [VCV path (geom/line-segment [0 0] [100 100])]
+      [VCV component (sys-movement/mk-test-engine
+                      #'my-engine-next-path
+                      "entity-id" "comp-key"
+                      {:path path :driving? true})]
+      "Initialize:"
+      [VCV component0 (ecs/handle-event :<dummy-world>
+                                        (ecs/mk-event component ::ecs/init :<dummy-time>)
+                                        component)]
+
+      "After some time:"
+      [VCV component1 (advance-frames' component0 50)]
+      [VCV component2 (advance-frames' component1 50)]
+      [VCV component3 (advance-frames' component2 100)]
+      [VCV component4 (advance-frames' component3 100)]
+      "Now we go past our path:"
+      [VCV component5 (advance-frames' component4 80)]
+      "After some time:"
+      [VCV component6 (advance-frames' component5 200)]
+      "And past next path:"
+      [VCV component7 (advance-frames' component6 70)]
+
+      ])))
+
+
 (defn card--movement--path-trailer [get-val set-val]
   (binding [gamebase.geometry/*with-xprint* true
             gamebase.ecs/*with-xprint* true]
@@ -682,6 +774,8 @@
    ["Geometry: paths" #'card--geometry--paths]
    ["Movement system: Path follower component 2, basic usage"
     #'card--movement--path-follower2--basic]
+   ["Movement system: Engine component, basic usage"
+    #'card--movement--engine--basic]
    ["Movement system: Path trailer component" #'card--movement--path-trailer]])
 
 (def card-map
