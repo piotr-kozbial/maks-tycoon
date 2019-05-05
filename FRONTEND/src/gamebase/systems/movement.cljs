@@ -230,15 +230,16 @@
                 (< length 0)
                 ,   (if-let [prev-path (roller-previous-path world this path)]
                       (recur prev-path (+ length (g/path-length prev-path)))
-                      :za-malo-do-tylu!)
+                      [path 0])
                 (> length (g/path-length path))
                 ,   (if-let [next-path (roller-next-path world this path)]
                       (recur next-path (- length (g/path-length path)))
-                      :za-malo-do-przodu!)
+                      [path (g/path-length path)])
                 :else [path length]))]
-        (assoc this
-               :position (g/path-point-at-length path length)
-               :path path)))
+        [(assoc this
+                 :position (g/path-point-at-length path length)
+                 :path path)
+         nil]))
 
     (defmethod ecs/handle-event [:to-component ::roller ::ecs/init]
       [world event this]

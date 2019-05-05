@@ -319,32 +319,28 @@
                       {:distance -20})]
 
       [VCV p0 (reset! my-roller-ref [path1 50])]
-      [VCV component0 (ecs/handle-event :<dummy-world>
-                                        (ecs/mk-event component
-                                                      ::ecs/init :<dummy-time>)
-                                        component)]
+      [VCV [component0 e0] (ecs/handle-event :<dummy-world>
+                                           (ecs/mk-event component
+                                                         ::ecs/init :<dummy-time>)
+                                           component)]
 
       [VCV p1 (reset! my-roller-ref [path1 110])]
-      [VCV component1 (ecs/handle-event :<dummy-world>
-                                        (ecs/mk-event component0
-                                                      ::ecs/init :<dummy-time>)
-                                        component0)]
+      [VCV [component1 e1] (ecs/handle-event :<dummy-world>
+                                           (ecs/mk-event component0
+                                                         ::ecs/init :<dummy-time>)
+                                           component0)]
 
       [VCV p2 (reset! my-roller-ref [path2 10])]
-      [VCV component2 (ecs/handle-event :<dummy-world>
-                                        (ecs/mk-event component1
-                                                      ::ecs/init :<dummy-time>)
-                                        component1)]
+      [VCV [component2 e2] (ecs/handle-event :<dummy-world>
+                                           (ecs/mk-event component1
+                                                         ::ecs/init :<dummy-time>)
+                                           component1)]
 
       [VCV p3 (reset! my-roller-ref [path2 100])]
-      [VCV component3 (ecs/handle-event :<dummy-world>
-                                        (ecs/mk-event component2
-                                                      ::ecs/init :<dummy-time>)
-                                        component2)]
-
-
-
-      ])))
+      [VCV [component3 e3] (ecs/handle-event :<dummy-world>
+                                           (ecs/mk-event component2
+                                                         ::ecs/init :<dummy-time>)
+                                           component2)]])))
 
 (defn card--movement--roller--basic-ahead [get-val set-val]
   (binding [gamebase.geometry/*with-xprint* true
@@ -384,32 +380,108 @@
                       {:distance 20})]
 
       [VCV p0 (reset! my-roller-ref [path1 20])]
-      [VCV component0 (ecs/handle-event :<dummy-world>
-                                        (ecs/mk-event component
-                                                      ::ecs/init :<dummy-time>)
-                                        component)]
+      [VCV [component0 e0] (ecs/handle-event :<dummy-world>
+                                           (ecs/mk-event component
+                                                         ::ecs/init :<dummy-time>)
+                                           component)]
 
       [VCV p1 (reset! my-roller-ref [path1 70])]
-      [VCV component1 (ecs/handle-event :<dummy-world>
-                                        (ecs/mk-event component0
-                                                      ::ecs/init :<dummy-time>)
-                                        component0)]
+      [VCV [component1 e1] (ecs/handle-event :<dummy-world>
+                                           (ecs/mk-event component0
+                                                         ::ecs/init :<dummy-time>)
+                                           component0)]
 
       [VCV p2 (reset! my-roller-ref [path1 130])]
-      [VCV component2 (ecs/handle-event :<dummy-world>
-                                        (ecs/mk-event component1
-                                                      ::ecs/init :<dummy-time>)
-                                        component1)]
+      [VCV [component2 e2] (ecs/handle-event :<dummy-world>
+                                           (ecs/mk-event component1
+                                                         ::ecs/init :<dummy-time>)
+                                           component1)]
 
       [VCV p3 (reset! my-roller-ref [path2 80])]
-      [VCV component3 (ecs/handle-event :<dummy-world>
-                                        (ecs/mk-event component2
-                                                      ::ecs/init :<dummy-time>)
-                                        component2)]
+      [VCV [component3 e3] (ecs/handle-event :<dummy-world>
+                                           (ecs/mk-event component2
+                                                         ::ecs/init :<dummy-time>)
+                                           component2)]
 
 
 
       ])))
+
+(defn card--movement--roller--path-end-behind [get-val set-val]
+  (binding [gamebase.geometry/*with-xprint* true
+            gamebase.ecs/*with-xprint* true]
+    (su/card
+     get-val
+     set-val
+     my-print-f
+
+     ;; visualizations
+     [[:svg
+       {:width 450, :height 200
+        :internal-coords [-10 -10 240 120]
+        :y-flip? true}
+       [
+        [p0 svg-path-length]
+        [component0 svg-roller]
+        ]
+       (svg-coord-system 300 100)]
+      [:value (get-val :selected-result)]]
+
+     ;; segments
+     [[:h3 "Movement system: Roller component, path end behind"]
+
+      "Roller behind reference (negative :distance):"
+      [VCV component (sys-movement/mk-test-roller
+                      #'my-roller-previous-path
+                      #'my-roller-next-path
+                      #'my-roller-get-reference
+                      "entity-id" "roller-key"
+                      {:distance -40})]
+
+      [VCV p0 (reset! my-roller-ref [path1 20])]
+      [VCV [component0 event0]
+       (ecs/handle-event :<dummy-world>
+                         (ecs/mk-event component
+                                       ::ecs/init :<dummy-time>)
+                         component)]])))
+
+(defn card--movement--roller--path-end-ahead [get-val set-val]
+  (binding [gamebase.geometry/*with-xprint* true
+            gamebase.ecs/*with-xprint* true]
+    (su/card
+     get-val
+     set-val
+     my-print-f
+
+     ;; visualizations
+     [[:svg
+       {:width 450, :height 200
+        :internal-coords [-10 -10 240 120]
+        :y-flip? true}
+       [
+        [p0 svg-path-length]
+        [component0 svg-roller]
+        ]
+       (svg-coord-system 300 100)]
+      [:value (get-val :selected-result)]]
+
+     ;; segments
+     [[:h3 "Movement system: Roller component, path end ahead"]
+
+      "Roller behind reference (:positive distance):"
+      [VCV component (sys-movement/mk-test-roller
+                      #'my-roller-previous-path
+                      #'my-roller-next-path
+                      #'my-roller-get-reference
+                      "entity-id" "roller-key"
+                      {:distance 40})]
+
+      [VCV p0 (reset! my-roller-ref [path2 100])]
+      [VCV [component0 event0]
+       (ecs/handle-event :<dummy-world>
+                         (ecs/mk-event component
+                                       ::ecs/init :<dummy-time>)
+                         component)]])))
 
 (def cards
   [["Start card" #'start-card]
@@ -420,6 +492,10 @@
     #'card--movement--roller--basic-behind]
    ["Movement system: Roller component, basic usage ahead"
     #'card--movement--roller--basic-ahead]
+   ["Movement system: Roller component, path end behind"
+    #'card--movement--roller--path-end-behind]
+   ["Movement system: Roller component, path end ahead"
+    #'card--movement--roller--path-end-ahead]
    ])
 
 (def card-map
