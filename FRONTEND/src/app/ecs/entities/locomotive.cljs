@@ -28,19 +28,24 @@
       ;;         :extra-points {:rear -15, :front 15}
       ;;         :driving? false})
 
-      :move (sys-move/mk-railway-engine
+      :engine (sys-move/mk-railway-engine
              entity
-             :move
+             :engine
              {:tile-x tile-x
               :tile-y tile-y
               :track [:w :e]
               :driving? true})
       :img (sys-drawing/mk-static-image-component
             entity :img
-            {:point-kvs (ecs/ck-kvs :move :position)
-             :angle-kvs (ecs/ck-kvs :move :angle)
+            {:point-kvs (ecs/ck-kvs :engine :position)
+             :angle-kvs (ecs/ck-kvs :engine :angle)
              :center [16 8]
              :resource-name-kvs [:image]})
+
+      :debug-engine (sys-drawing/mk-dot-component
+                     entity :debug-engine
+                     {:point-kvs (ecs/ck-kvs :engine :position)
+                      :color [255 255 255]})
 
       ;; :debug-rear (sys-drawing/mk-dot-component
       ;;              entity :debug-rear
@@ -81,15 +86,15 @@
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ecs/init]
   [world event this]
-  (ecs/retarget event (-> this ::ecs/components :move)))
+  (ecs/retarget event (-> this ::ecs/components :engine)))
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ci/stop]
   [world event this]
-  (ecs/retarget event (-> this ::ecs/components :move)))
+  (ecs/retarget event (-> this ::ecs/components :engine)))
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ci/drive]
   [world event {:keys [rear-coupling] :as this}]
-  (ecs/retarget event (-> this ::ecs/components :move)))
+  (ecs/retarget event (-> this ::ecs/components :engine)))
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ci/delta-t]
   [world event this]
