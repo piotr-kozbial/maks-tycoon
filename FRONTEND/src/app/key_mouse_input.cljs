@@ -15,7 +15,9 @@
 
    [app.scratch.scratch :as scratch]
    [app.ecs.common-events :as ci]
-   [gamebase.systems.movement :as sys-movement]))
+   [gamebase.systems.movement :as sys-movement]
+   [app.ecs.systems.railway :as sys-railway]
+   ))
 
 (defn takeover-mouse-click [owner-id handler]
   (swap! uis/ui-state assoc-in [:key-mouse :click-owner] owner-id)
@@ -77,14 +79,27 @@
                      loc (locomotive/mk-entity id 2 1)
                      car-id (keyword (str "car-" (get-fresh-entity-id)))
                      car (carriage/mk-entity car-id 1 1 loc)
+                     car2-id (keyword (str "car2-" (get-fresh-entity-id)))
+                     car2 (carriage/mk-entity car2-id 0 1 car)]
 
-                     ]
                  (wo/inject-entity loc)
                  (wo/send-to-entity loc ::ecs/init)
 
                  (wo/inject-entity car)
                  (wo/send-to-entity car ::ecs/init)
+                 (wo/send-to-entity car
+                                    ::ci/connect-to
+                                    :reference-entity-or-id loc
+                                    :reference-path-kvs (ecs/ck-kvs :engine :path)
+                                    :reference-length-on-path-kvs (ecs/ck-kvs :engine :length-on-path))
 
+                 (wo/inject-entity car2)
+                 (wo/send-to-entity car2 ::ecs/init)
+                 (wo/send-to-entity car2
+                                    ::ci/connect-to
+                                    :reference-entity-or-id car
+                                    :reference-path-kvs (ecs/ck-kvs :point :path)
+                                    :reference-length-on-path-kvs (ecs/ck-kvs :point :length-on-path))
                  )
 
            ;; "c" (let [id (keyword (str "car-" (get-fresh-entity-id)))
@@ -119,8 +134,13 @@
            " " (when (turnouts/is-turnout? tile-x tile-y)
 
                  (.log js/console (str "SWICH TURNOUT!!! " tile-x ", " tile-y))
-                 (turnouts/cycle-turnout-state tile-x tile-y)
-
+                 ;; (turnouts/cycle-turnout-state tile-x tile-y)
+                 (println "systems? " (pr-str (into [] (keys (::ecs/systems (wo/get-world))))))
+                 (wo/send-to-system ::sys-railway/railway
+                                    ::sys-railway/switch-turnout
+                                    :tile-x tile-x
+                                    :tile-y tile-y
+                                    )
                  )
 
            "=" (do

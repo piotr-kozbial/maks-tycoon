@@ -1,5 +1,5 @@
 (ns app.tiles.turnouts
-  (:require [app.tiles.general :refer [initialize-tile-extra -active-tracks-from]]
+  (:require [app.tiles.general :refer [initialize-tile-extra -active-tracks-from -active-tracks-to]]
             [app.state :as st]
             [gamebase.layers :as layers]
             [gamebase.resources :as resources]
@@ -152,6 +152,84 @@
          :right [[:w :e]])
     []))
 
+
+(defmethod -active-tracks-to :track-wt
+  [_ end-direction _ _ _ {:keys [state] :as tile-extra}]
+  (case end-direction
+    :w (case state
+         :right [[:s :w]]
+         :straight-right [[:s :w]]
+         :left [[:n :w]]
+         :straight-left [[:n :w]])
+    :s (case state
+         :straight-right [[:n :s]]
+         :straight-left [[:n :s]]
+         :left [[:n :s]]
+         :right [[:w :s]])
+    :n (case state
+         :straight-right [[:s :n]]
+         :straight-left [[:s :n]]
+         :left [[:w :n]]
+         :right [[:s :n]])
+    []))
+(defmethod -active-tracks-to :track-et
+  [_ end-direction _ _ _ {:keys [state] :as tile-extra}]
+  (case end-direction
+    :e (case state
+         :right [[:n :e]]
+         :straight-right [[:n :e]]
+         :left [[:s :e]]
+         :straight-left [[:s :e]])
+    :s (case state
+         :straight-right [[:n :s]]
+         :straight-left [[:n :s]]
+         :left [[:e :s]]
+         :right [[:n :s]])
+    :n (case state
+         :straight-right [[:s :n]]
+         :straight-left [[:s :n]]
+         :left [[:s :n]]
+         :right [[:e :n]])
+    []))
+(defmethod -active-tracks-to :track-nt
+  [_ end-direction _ _ _ {:keys [state] :as tile-extra}]
+  (case end-direction
+    :e (case state
+         :right [[:w :e]]
+         :straight-right [[:w :e]]
+         :left [[:n :e]]
+         :straight-left [[:w :e]])
+    :n (case state
+         :straight-right [[:w :n]]
+         :straight-left [[:e :n]]
+         :left [[:e :n]]
+         :right [[:w :n]])
+    :w (case state
+         :straight-right [[:e :w]]
+         :straight-left [[:e :w]]
+         :left [[:e :w]]
+         :right [[:n :w]])
+    []))
+(defmethod -active-tracks-to :track-st
+  [_ end-direction _ _ _ {:keys [state] :as tile-extra}]
+  (case end-direction
+    :e (case state
+         :right [[:s :e]]
+         :straight-right [[:w :e]]
+         :left [[:w :e]]
+         :straight-left [[:w :e]])
+    :s (case state
+         :straight-right [[:e :s]]
+         :straight-left [[:w :s]]
+         :left [[:w :s]]
+         :right [[:e :s]])
+    :w (case state
+         :straight-right [[:e :w]]
+         :straight-left [[:e :w]]
+         :left [[:s :w]]
+         :right [[:e :w]])
+    []))
+
 (defn- -get-layer [world layer-key]
   (->> (:layers world)
        (filter #(= (first %) layer-key))
@@ -176,6 +254,18 @@
                       :straight-left :right
                       :right :left
                       :left :straight-right)]
+       (assoc extra :state new-state)))))
+
+(defn cycle-turnout-state2 [world tile-x tile-y]
+  (st/update-tile-extra2
+   world
+   tile-x tile-y
+   (fn [{:keys [state] :as extra}]
+     (let [new-state (case state
+                       :straight-right :straight-left
+                       :straight-left :right
+                       :right :left
+                       :left :straight-right)]
        (assoc extra :state new-state)))))
 
 

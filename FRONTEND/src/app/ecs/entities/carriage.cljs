@@ -20,15 +20,17 @@
      {:point (sys-move/mk-railway-roller
               entity
               :point
-              {:distance -20
+              {:distance -32
                ;; track
                :tile-x tile-x
                :tile-y tile-y
                :track [:w :e]
                ;; reference
-               :reference-entity-or-id (ecs/id puller)
-               :reference-path-kvs (ecs/ck-kvs :engine :path)
-               :reference-length-on-path-kvs (ecs/ck-kvs :engine :length-on-path)})
+               ;; :reference-entity-or-id (ecs/id puller)
+               ;; :reference-path-kvs (ecs/ck-kvs :engine :path)
+               ;; :reference-length-on-path-kvs (ecs/ck-kvs :engine :length-on-path)
+
+})
 
 
 
@@ -174,3 +176,10 @@
 ;;                    [true true] "carriage1-both-coupled.png")
 
 ;;           )])
+
+(defmethod ecs/handle-event [:to-entity ::carriage ::ci/connect-to]
+  [world
+   event
+   this]
+  (println "CARRIAGE connect-to")
+  (ecs/retarget event (get-in this (ecs/ck-kvs :point))))

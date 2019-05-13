@@ -13,7 +13,7 @@
             [gamebase.resources :as resources]
 
             [gamebase.systems.drawing :as sys-drawing]
-            [gamebase.systems.movement :as sys-move]
+            ;; [gamebase.systems.movement :as sys-move]
 
             [app.ecs.entities.locomotive :as locomotive]
             [app.ecs.entities.carriage :as carriage]

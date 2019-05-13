@@ -4,6 +4,7 @@
    [gamebase.resources :as resources]
    [gamebase.systems.drawing :as sys-drawing]
    [gamebase.systems.movement :as sys-move]
+   [app.ecs.systems.railway :as sys-railway]
    [app.tiles.general :as tiles]
    [app.tiles.turnouts :as turnouts]
    [gamebase.ecs :as ecs]
@@ -59,7 +60,8 @@
         world0 (assoc
                 (-> (ecs/mk-world)
                     (ecs/insert-object (sys-drawing/mk-system))
-                    (ecs/insert-object (sys-move/mk-system)))
+                    (ecs/insert-object (sys-move/mk-system))
+                    (ecs/insert-object (sys-railway/mk-system)))
                 :layers ls
                 :tile-context ctx
                 :tile-extra {})
@@ -99,6 +101,9 @@
 (defn destroy-world []
   (swap! app-state assoc :world nil))
 
+(defn get-world []
+  (:world @app-state))
+
 ;; other
 
 (defn get-all-locomotives [world]
@@ -131,6 +136,15 @@
                    (ecs/get-entity-by-key world entity-or-key))
                  time (get-time)
                  event (apply assoc (ecs/mk-event (ecs/to entity) msg time) kvs)]
+             (ecs/put-all-events world [event])))))
+
+(defn send-to-system [system-key msg & kvs]
+  (swap! app-state update-in [:world]
+         (fn [world]
+           (let [system (-> world ::ecs/systems system-key)
+                 _ (println "SYSTEM " (pr-str system) " <system")
+                 time (get-time)
+                 event (apply assoc (ecs/mk-event (ecs/to system) msg time) kvs)]
              (ecs/put-all-events world [event])))))
 
 (defn inject-entity [e]

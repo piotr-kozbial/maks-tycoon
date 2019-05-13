@@ -275,7 +275,8 @@
           [(assoc this
                   :position (g/path-point-at-length path length)
                   :angle (g/angle-at-length path length)
-                  :path path)
+                  :path path
+                  :length-on-path length)
            (when error
              (ecs/mk-event (ecs/to-entity (::ecs/entity-id this)) error time))])))
 
@@ -348,7 +349,8 @@
                                   [tile-x tile-y track
                                    reference-entity-or-id
                                    reference-path-kvs
-                                   reference-length-on-path-kvs]}]]
+                                   reference-length-on-path-kvs
+                                   ]}]]
       (let [v (assoc
                (mk-roller entity-or-id key args)
                ::ecs/type ::railway-roller
@@ -377,4 +379,22 @@
       (when reference-entity-id
         (let [entity (ecs/get-entity-by-key world reference-entity-id)]
           [(get-in entity reference-path-kvs)
-           (get-in entity reference-length-on-path-kvs)])))))
+           (get-in entity reference-length-on-path-kvs)])))
+
+    (defmethod ecs/handle-event [:to-component ::railway-roller ::ci/connect-to]
+      [world
+       {:keys [reference-entity-or-id
+               reference-path-kvs
+               reference-length-on-path-kvs]}
+       this]
+      (println "ROLLER connect-to")
+      (assoc this
+             :reference-entity-id (ecs/id reference-entity-or-id)
+             :reference-path-kvs reference-path-kvs
+             :reference-length-on-path-kvs reference-length-on-path-kvs))))
+
+(do ;; Railway vehicle connections
+
+
+
+  )

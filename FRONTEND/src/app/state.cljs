@@ -48,6 +48,15 @@
             (f (m [tx ty])))))
   nil)
 
+(defn update-tile-extra2 [world tx ty f]
+  (update-in world [:tile-extra]
+         (fn [m]
+           (assoc
+            m
+            [tx ty]
+            (f (m [tx ty]))))))
+
+
 (defn- -get-layer [world layer-key]
   (->> (:layers world)
        (filter #(= (first %) layer-key))
