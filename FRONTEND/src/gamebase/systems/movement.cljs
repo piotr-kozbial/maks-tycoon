@@ -20,17 +20,86 @@
 (def to-system
   (ecs/to-system ::movement))
 
-(defmethod ecs/handle-event [:to-system ::movement :update]
-  [world event system]
-  (ecs/pass-event-through-all world event
-                              (ecs/all-components-of-system
-                               world system)))
-
 (defmethod ecs/handle-event [:to-system ::movement ::ci/delta-t]
   [world event system]
   (ecs/pass-event-through-all world event
                               (ecs/all-components-of-system
                                world system)))
+
+(do ;; Common
+
+
+  (defn- -get-layer [world layer-key]
+    (->> (:layers world)
+         (filter #(= (first %) layer-key))
+         (first)
+         (second)))
+
+  (defn- -railway-next-path [world path]
+    (let [[tile-x tile-y] (::tile-xy path)
+          track (::track path)
+          [new-tile-x new-tile-y] (tiles/track-destination-tile track tile-x tile-y)
+          layer (-get-layer world :foreground)
+          tile-context (:tile-context world)
+          new-tile (layers/get-tile-from-layer layer new-tile-x new-tile-y)
+          info (layers/get-tile-info-from-layer tile-context layer new-tile-x new-tile-y)
+          extra (st/get-tile-extra new-tile-x new-tile-y)
+
+          [_ tile-end] track
+
+          new-tile-start ({:w :e
+                           :e :w
+                           :n :s
+                           :s :n} tile-end)
+
+          possible-new-tracks (tiles/active-tracks-from
+                               new-tile-start
+                               new-tile-x new-tile-y
+                               info
+                               extra)
+
+          ;; choose the first possible tracks
+          new-track (first possible-new-tracks)]
+
+      (when new-track
+        (assoc (tiles/track-path new-track new-tile-x new-tile-y)
+               ::tile-xy [new-tile-x new-tile-y]
+               ::track new-track))))
+
+ (defn- -railway-previous-path [world path]
+    (let [[tile-x tile-y] (::tile-xy path)
+          track (::track path)
+          [new-tile-x new-tile-y] (tiles/track-source-tile track tile-x tile-y)
+          layer (-get-layer world :foreground)
+          tile-context (:tile-context world)
+          new-tile (layers/get-tile-from-layer layer new-tile-x new-tile-y)
+          info (layers/get-tile-info-from-layer tile-context layer new-tile-x new-tile-y)
+          extra (st/get-tile-extra new-tile-x new-tile-y)
+
+          [_ tile-end] track
+
+          new-tile-start ({:w :e
+                           :e :w
+                           :n :s
+                           :s :n} tile-end)
+
+          possible-new-tracks (tiles/active-tracks-from
+                               new-tile-start
+                               new-tile-x new-tile-y
+                               info
+                               extra)
+
+          ;; choose the first possible tracks
+          new-track (first possible-new-tracks)]
+
+      (when new-track
+        (assoc (tiles/track-path new-track new-tile-x new-tile-y)
+               ::tile-xy [new-tile-x new-tile-y]
+               ::track new-track))))
+
+
+
+  )
 
 (do ;; Component: test-diagonal
 
@@ -151,43 +220,9 @@
                                       :speed speed})
          ::ecs/type ::railway-engine)))
 
-    (defn- -get-layer [world layer-key]
-      (->> (:layers world)
-           (filter #(= (first %) layer-key))
-           (first)
-           (second)))
-
     (defmethod engine-next-path ::railway-engine
-      [world this path]
-      (let [[tile-x tile-y] (::tile-xy path)
-            track (::track path)
-            [new-tile-x new-tile-y] (tiles/track-destination-tile track tile-x tile-y)
-            layer (-get-layer world :foreground)
-            tile-context (:tile-context world)
-            new-tile (layers/get-tile-from-layer layer new-tile-x new-tile-y)
-            info (layers/get-tile-info-from-layer tile-context layer new-tile-x new-tile-y)
-            extra (st/get-tile-extra new-tile-x new-tile-y)
-
-            [_ tile-end] track
-
-            new-tile-start ({:w :e
-                             :e :w
-                             :n :s
-                             :s :n} tile-end)
-
-            possible-new-tracks (tiles/active-tracks-from
-                                 new-tile-start
-                                 new-tile-x new-tile-y
-                                 info
-                                 extra)
-
-            ;; choose the first possible tracks
-            new-track (first possible-new-tracks)]
-
-        (when new-track
-          (assoc (tiles/track-path new-track new-tile-x new-tile-y)
-                 ::tile-xy [new-tile-x new-tile-y]
-                 ::track new-track))))))
+      [world _ path]
+      (-railway-next-path world path))))
 
 (do ;; Rollers
 
@@ -223,25 +258,30 @@
           v)))
 
     (defn roller-full-update [world this time]
-      (let [[ref-path ref-length] (roller-get-reference world this)
-            [path length]
-            (loop [path ref-path, length (+ (:distance this) ref-length)]
-              (cond
-                (< length 0)
-                ,   (if-let [prev-path (roller-previous-path world this path)]
-                      (recur prev-path (+ length (g/path-length prev-path)))
-                      [path 0])
-                (> length (g/path-length path))
-                ,   (if-let [next-path (roller-next-path world this path)]
-                      (recur next-path (- length (g/path-length path)))
-                      [path (g/path-length path)])
-                :else [path length]))]
-        [(assoc this
-                 :position (g/path-point-at-length path length)
-                 :path path)
-         nil]))
+      (when-let [[ref-path ref-length] (roller-get-reference world this)]
+        (let [[path length error]
+              (loop [path ref-path, length (+ (:distance this) ref-length)]
+                (cond
+                  (< length 0)
+                  ,   (if-let [prev-path (roller-previous-path world this path)]
+                        (recur prev-path (+ length (g/path-length prev-path)))
+                        [path 0 ::path-end])
+                  (> length (g/path-length path))
+                  ,   (if-let [next-path (roller-next-path world this path)]
+                        (recur next-path (- length (g/path-length path)))
+                        [path (g/path-length path) ::path-end])
+                  :else [path length]))]
+          [(assoc this
+                  :position (g/path-point-at-length path length)
+                  :path path)
+           (when error
+             (ecs/mk-event (ecs/to-entity (::ecs/entity-id this)) error time))])))
 
     (defmethod ecs/handle-event [:to-component ::roller ::ecs/init]
+      [world event this]
+      (roller-full-update world this (::eq/time event)))
+
+    (defmethod ecs/handle-event [:to-component ::roller ::ci/delta-t]
       [world event this]
       (roller-full-update world this (::eq/time event)))
 
@@ -301,21 +341,44 @@
     (derive ::railway-roller ::roller)
 
     ;; constructor will take tile-x, tile-y, track and construct path from that
+    (defn mk-railway-roller [entity-or-id key
+                             & [{:as args
+                                  :keys
+                                  [tile-x tile-y track
+                                   reference-entity-or-id
+                                   reference-path-kvs
+                                   reference-length-on-path-kvs]}]]
+      (let [v (assoc
+               (mk-roller entity-or-id key args)
+               ::ecs/type ::railway-roller
+               :reference-entity-id (ecs/id reference-entity-or-id)
+               :reference-path-kvs reference-path-kvs
+               :reference-length-on-path-kvs reference-length-on-path-kvs)]
+        (if :gamebase.ecs/*with-xprint*
+          (vary-meta v
+                     update-in [:app.xprint.core/key-order]
+                     concat [[:app.xprint.core/comment
+                              "configuration"]
+
+])
+          v)))
 
     (defmethod roller-next-path ::railway-roller
-      [world this path]
-      ;; TODO: implement indentically as for engine (share the code!)
-      nil)
+      [world _ path]
+      (-railway-next-path world path))
 
     (defmethod roller-previous-path ::railway-roller
       [world this path]
-      ;; TODO: implement indentically as for engine (share the code!)
-      nil)
+      (-railway-previous-path world path))
 
     (defmethod roller-get-reference ::railway-roller
-      [world this]
+      [world {:as this :keys [reference-entity-id
+                              reference-path-kvs
+                              reference-length-on-path-kvs]}]
       ;; TODO: in this case, it will use an entity id and kvs to the path and length on path
-      nil)
-
-
-    ))
+      (when reference-entity-id
+        (let [entity (ecs/get-entity-by-key world reference-entity-id)]
+          ;; (print "ID>" (pr-str reference-entity-id) "<ID")
+          ;; (print "EEE>" (pr-str entity) "<EEE")
+          [(get-in entity reference-path-kvs)
+           (get-in entity reference-length-on-path-kvs)])))))

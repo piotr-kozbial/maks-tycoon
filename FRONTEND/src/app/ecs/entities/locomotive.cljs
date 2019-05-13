@@ -34,7 +34,35 @@
              {:tile-x tile-x
               :tile-y tile-y
               :track [:w :e]
+              :length-on-track 16
               :driving? true})
+
+      :front (sys-move/mk-railway-roller
+              entity
+              :front
+              {:distance 15
+               ;; track
+               :tile-x tile-x
+               :tile-y tile-y
+               :track [:w :e]
+               ;; reference
+               :reference-entity-or-id id
+               :reference-path-kvs (ecs/ck-kvs :engine :path)
+               :reference-length-on-path-kvs (ecs/ck-kvs :engine :length-on-path)})
+
+      :rear (sys-move/mk-railway-roller
+             entity
+             :rear
+             {:distance -15
+              ;; track
+              :tile-x tile-x
+              :tile-y tile-y
+              :track [:w :e]
+              ;; reference
+              :reference-entity-or-id id
+              :reference-path-kvs (ecs/ck-kvs :engine :path)
+              :reference-length-on-path-kvs (ecs/ck-kvs :engine :length-on-path)})
+
       :img (sys-drawing/mk-static-image-component
             entity :img
             {:point-kvs (ecs/ck-kvs :engine :position)
@@ -47,30 +75,16 @@
                      {:point-kvs (ecs/ck-kvs :engine :position)
                       :color [255 255 255]})
 
-      ;; :debug-rear (sys-drawing/mk-dot-component
-      ;;              entity :debug-rear
-      ;;              {:point-kvs (ecs/ck-kvs :move :extra-xy :rear)
-      ;;               :color [200 0 0]})
+      :debug-rear (sys-drawing/mk-dot-component
+                     entity :debug-rear
+                     {:point-kvs (ecs/ck-kvs :rear :position)
+                      :color [255 0 0]})
 
-      ;; :debug-front (sys-drawing/mk-dot-component
-      ;;               entity :debug-front
-      ;;               {:point-kvs (ecs/ck-kvs :move :extra-xy :front)
-      ;;                :color [255 255 255]})
+      :debug-front (sys-drawing/mk-dot-component
+                   entity :debug-front
+                   {:point-kvs (ecs/ck-kvs :front :position)
+                    :color [83 238 252]})
 
-      ;; :debug-tile (sys-drawing/mk-tile-component
-      ;;              entity :debug-tile
-      ;;              {:xy-kvs (ecs/ck-kvs :move :path ::tile-xy)
-      ;;               :color [56 204 226]})
-
-      ;; :debug-tile-front (sys-drawing/mk-tile-component
-      ;;              entity :debug-tile-front
-      ;;              {:xy-kvs (ecs/ck-kvs :move :extra-paths :front ::tile-xy)
-      ;;               :color [56 204 226]})
-
-      ;; :debug-tile-rear (sys-drawing/mk-tile-component
-      ;;               entity :debug-tile-rear
-      ;;               {:xy-kvs (ecs/ck-kvs :move :extra-paths :rear ::tile-xy)
-      ;;                :color [56 204 226]})
       }
 
      :tile-x tile-x

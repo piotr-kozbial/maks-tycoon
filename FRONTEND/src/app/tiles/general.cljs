@@ -100,6 +100,12 @@
     :w [(dec tile-x) tile-y]
     :e [(inc tile-x) tile-y]))
 
+(defn track-source-tile [track tile-x tile-y]
+  (case (first track)
+    :n [tile-x (inc tile-y)]
+    :s [tile-x (dec tile-y)]
+    :w [(dec tile-x) tile-y]
+    :e [(inc tile-x) tile-y]))
 
 ;;;;; TILE EXTRA
 
