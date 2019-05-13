@@ -17,18 +17,7 @@
      entity
 
      :gamebase.ecs/components
-     {
-      ;; :move (sys-move/mk-path-follower2
-      ;;        entity
-      ;;        :move
-      ;;        {:path-or-paths (assoc (tiles/track-path [:w :e] tile-x tile-y)
-      ;;                               ::tile-xy [tile-x tile-y]
-      ;;                               ::track [:w :e])
-      ;;         :path-start-length 16
-      ;;         :extra-points {:rear -15, :front 15}
-      ;;         :driving? false})
-
-      :engine (sys-move/mk-railway-engine
+     {:engine (sys-move/mk-railway-engine
              entity
              :engine
              {:tile-x tile-x
@@ -86,15 +75,6 @@
                     :color [83 238 252]})
 
       }
-
-     :tile-x tile-x
-     :tile-y tile-y
-     :track [:w :e]
-
-     :tile-track-history [[tile-x tile-y [:w :e]]]
-
-     :front-coupling nil
-     :rear-coupling nil
 
      :image "loco1.png")))
 

@@ -119,7 +119,7 @@
 
 ;;;;; RAILWAY TRACKS EXTRA
 
-(declare -active-tracks-from)
+(declare -active-tracks-from -active-tracks-to)
 
 (defn active-tracks-from [start-direction tile-x tyle-y tile-info tile-extra]
   (some
@@ -131,6 +131,18 @@
     tile-id)
   :default nil)
 
-;; default implementation that will work for all single tracks
 (defmethod -active-tracks-from nil [tile-id start-direction tile-x tyle-y tile-info tile-extra]
   nil)
+
+(defmulti -active-tracks-to
+  (fn [tile-id end-direction tile-x tyle-y tile-info tile-extra]
+    tile-id)
+  :default nil)
+
+(defmethod -active-tracks-to nil [tile-id start-direction tile-x tyle-y tile-info tile-extra]
+  nil)
+
+(defn active-tracks-to [end-direction tile-x tyle-y tile-info tile-extra]
+  (some
+   #(-active-tracks-to % end-direction tile-x tyle-y tile-info tile-extra)
+   (:ids tile-info)))

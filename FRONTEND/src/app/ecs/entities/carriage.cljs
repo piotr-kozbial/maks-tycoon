@@ -11,74 +11,50 @@
    [app.state :as st]
    [app.ecs.common-events :as ci]))
 
-(defn mk-entity [id tile-x tile-y length-on-path]
-  ;; (let [entity (ecs/mk-entity id ::carriage)]
-  ;;   (assoc
-  ;;    entity
+(defn mk-entity [id tile-x tile-y puller]
+  (let [entity (ecs/mk-entity id ::carriage)]
+    (assoc
+     entity
 
-  ;;    :gamebase.ecs/components
-  ;;    {
-  ;;     :img (sys-drawing/mk-static-image-component
-  ;;            entity
-  ;;            :img
-  ;;            {:point-kvs (ecs/ck-kvs :move :position)
-  ;;             :angle-kvs (ecs/ck-kvs :move :angle)
-  ;;             :center [16 8]
-  ;;             :resource-name-kvs [:image]})
+     :gamebase.ecs/components
+     {:point (sys-move/mk-railway-roller
+              entity
+              :point
+              {:distance -20
+               ;; track
+               :tile-x tile-x
+               :tile-y tile-y
+               :track [:w :e]
+               ;; reference
+               :reference-entity-or-id (ecs/id puller)
+               :reference-path-kvs (ecs/ck-kvs :engine :path)
+               :reference-length-on-path-kvs (ecs/ck-kvs :engine :length-on-path)})
 
-  ;;     :move (sys-move/mk-path-trailer
-  ;;            entity
-  ;;            :move
-  ;;            {:path (tiles/track-path [:w :e] tile-x tile-y)
-  ;;             :length-on-path length-on-path})
 
-  ;;     :rear (sys-move/mk-path-trailer
-  ;;            entity
-  ;;            :rear
-  ;;            {:leader-entity-key id
-  ;;             :leader-path-kvs (ecs/ck-kvs :move :path)
-  ;;             :leader-length-on-path-kvs (ecs/ck-kvs :move :length-on-path)
-  ;;             :distance -16})
 
-  ;;     :debug-move (sys-drawing/mk-dot-component
-  ;;                  entity :debug-move
-  ;;                  {:point-kvs (ecs/ck-kvs :move :position)
-  ;;                   :color [23 224 234]})
+      :img (sys-drawing/mk-static-image-component
+            entity :img
+            {:point-kvs (ecs/ck-kvs :point :position)
+             :angle-kvs (ecs/ck-kvs :point :angle)
+             :center [16 8]
+             :resource-name-kvs [:image]})
 
-  ;;     :debug-rear (sys-drawing/mk-dot-component
-  ;;                  entity :debug-rear
-  ;;                  {:point-kvs (ecs/ck-kvs :rear :position)
-  ;;                   :color [213 23 234]})
-  ;;     }
+      }
 
-  ;;    ;; :tile-x tile-x
-  ;;    ;; :tile-y tile-y
-  ;;    ;; :track [:w :e]
+     :image "carriage1.png")))
 
-  ;;    ;; :tile-track-history [[tile-x tile-y [:w :e]]]
-
-  ;;    ;; :front-coupling nil
-  ;;    ;; :rear-coupling nil
-
-  ;;    :image "carriage1.png"
-  ;;    )
-
-  ;;   )
-
-  )
 
 (defmethod ecs/handle-event [:to-entity ::carriage ::ecs/init]
   [world event this]
-  (println "CARRIAGE INIT")
   nil)
 
 (defmethod ecs/handle-event [:to-entity ::carriage ::ci/delta-t]
   [world event this]
   nil)
 
-(defmethod ecs/handle-event [:to-entity ::carriage ::ci/connect]
-  [world event this]
-  (ecs/retarget event (-> this ::ecs/components :move)))
+;; (defmethod ecs/handle-event [:to-entity ::carriage ::ci/connect]
+;;   [world event this]
+;;   (ecs/retarget event (-> this ::ecs/components :move)))
 
 ;; (defn- -get-layer [world layer-key]
 ;;   (->> (:layers world)

@@ -66,7 +66,7 @@
                ::tile-xy [new-tile-x new-tile-y]
                ::track new-track))))
 
- (defn- -railway-previous-path [world path]
+  (defn- -railway-previous-path [world path]
     (let [[tile-x tile-y] (::tile-xy path)
           track (::track path)
           [new-tile-x new-tile-y] (tiles/track-source-tile track tile-x tile-y)
@@ -76,15 +76,15 @@
           info (layers/get-tile-info-from-layer tile-context layer new-tile-x new-tile-y)
           extra (st/get-tile-extra new-tile-x new-tile-y)
 
-          [_ tile-end] track
+          [tile-start _] track
 
-          new-tile-start ({:w :e
-                           :e :w
-                           :n :s
-                           :s :n} tile-end)
+          new-tile-end ({:w :e
+                         :e :w
+                         :n :s
+                         :s :n} tile-start)
 
-          possible-new-tracks (tiles/active-tracks-from
-                               new-tile-start
+          possible-new-tracks (tiles/active-tracks-to
+                               new-tile-end
                                new-tile-x new-tile-y
                                info
                                extra)
@@ -260,7 +260,8 @@
     (defn roller-full-update [world this time]
       (when-let [[ref-path ref-length] (roller-get-reference world this)]
         (let [[path length error]
-              (loop [path ref-path, length (+ (:distance this) ref-length)]
+              (loop [path ref-path
+                     length (+ (:distance this) ref-length)]
                 (cond
                   (< length 0)
                   ,   (if-let [prev-path (roller-previous-path world this path)]
@@ -273,6 +274,7 @@
                   :else [path length]))]
           [(assoc this
                   :position (g/path-point-at-length path length)
+                  :angle (g/angle-at-length path length)
                   :path path)
            (when error
              (ecs/mk-event (ecs/to-entity (::ecs/entity-id this)) error time))])))
@@ -340,7 +342,6 @@
 
     (derive ::railway-roller ::roller)
 
-    ;; constructor will take tile-x, tile-y, track and construct path from that
     (defn mk-railway-roller [entity-or-id key
                              & [{:as args
                                   :keys
@@ -358,9 +359,7 @@
           (vary-meta v
                      update-in [:app.xprint.core/key-order]
                      concat [[:app.xprint.core/comment
-                              "configuration"]
-
-])
+                              "configuration"]])
           v)))
 
     (defmethod roller-next-path ::railway-roller
@@ -375,10 +374,7 @@
       [world {:as this :keys [reference-entity-id
                               reference-path-kvs
                               reference-length-on-path-kvs]}]
-      ;; TODO: in this case, it will use an entity id and kvs to the path and length on path
       (when reference-entity-id
         (let [entity (ecs/get-entity-by-key world reference-entity-id)]
-          ;; (print "ID>" (pr-str reference-entity-id) "<ID")
-          ;; (print "EEE>" (pr-str entity) "<EEE")
           [(get-in entity reference-path-kvs)
            (get-in entity reference-length-on-path-kvs)])))))

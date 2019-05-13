@@ -74,9 +74,18 @@
              tile-y (quot world-y 32)]
          (case key
            "a" (let [id (keyword (str "loc-" (get-fresh-entity-id)))
-                     loc (locomotive/mk-entity id 0 1)]
+                     loc (locomotive/mk-entity id 2 1)
+                     car-id (keyword (str "car-" (get-fresh-entity-id)))
+                     car (carriage/mk-entity car-id 1 1 loc)
+
+                     ]
                  (wo/inject-entity loc)
-                 (wo/send-to-entity loc ::ecs/init))
+                 (wo/send-to-entity loc ::ecs/init)
+
+                 (wo/inject-entity car)
+                 (wo/send-to-entity car ::ecs/init)
+
+                 )
 
            ;; "c" (let [id (keyword (str "car-" (get-fresh-entity-id)))
            ;;           car (carriage/mk-entity id tile-x tile-y)]
