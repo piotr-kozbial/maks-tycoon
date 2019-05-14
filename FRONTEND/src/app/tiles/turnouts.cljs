@@ -162,14 +162,14 @@
          :left [[:n :w]]
          :straight-left [[:n :w]])
     :s (case state
-         :straight-right [[:n :s]]
+         :straight-right [[:n :s] [:w :s]]
          :straight-left [[:n :s]]
          :left [[:n :s]]
-         :right [[:w :s]])
+         :right [[:w :s] [:n :s]])
     :n (case state
          :straight-right [[:s :n]]
-         :straight-left [[:s :n]]
-         :left [[:w :n]]
+         :straight-left [[:s :n] [:w :n]]
+         :left [[:w :n] [:s :n]]
          :right [[:s :n]])
     []))
 (defmethod -active-tracks-to :track-et
@@ -182,8 +182,8 @@
          :straight-left [[:s :e]])
     :s (case state
          :straight-right [[:n :s]]
-         :straight-left [[:n :s]]
-         :left [[:e :s]]
+         :straight-left [[:n :s] [:e :s]]
+         :left [[:e :s] [:n :s]]
          :right [[:n :s]])
     :n (case state
          :straight-right [[:s :n]]
@@ -197,25 +197,25 @@
     :e (case state
          :right [[:w :e]]
          :straight-right [[:w :e]]
-         :left [[:n :e]]
-         :straight-left [[:w :e]])
+         :left [[:n :e] [:w :e]]
+         :straight-left [[:w :e] [:n :e]])
     :n (case state
          :straight-right [[:w :n]]
          :straight-left [[:e :n]]
          :left [[:e :n]]
          :right [[:w :n]])
     :w (case state
-         :straight-right [[:e :w]]
+         :straight-right [[:e :w] [:n :w]]
          :straight-left [[:e :w]]
          :left [[:e :w]]
-         :right [[:n :w]])
+         :right [[:n :w] [:e :w]])
     []))
 (defmethod -active-tracks-to :track-st
   [_ end-direction _ _ _ {:keys [state] :as tile-extra}]
   (case end-direction
     :e (case state
-         :right [[:s :e]]
-         :straight-right [[:w :e]]
+         :right [[:s :e] [:w :e]]
+         :straight-right [[:w :e] [:s :e]]
          :left [[:w :e]]
          :straight-left [[:w :e]])
     :s (case state
@@ -225,8 +225,8 @@
          :right [[:e :s]])
     :w (case state
          :straight-right [[:e :w]]
-         :straight-left [[:e :w]]
-         :left [[:s :w]]
+         :straight-left [[:e :w] [:s :w]]
+         :left [[:s :w] [:e :w]]
          :right [[:e :w]])
     []))
 

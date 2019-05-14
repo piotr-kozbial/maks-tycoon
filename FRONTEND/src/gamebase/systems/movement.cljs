@@ -66,7 +66,9 @@
                ::tile-xy [new-tile-x new-tile-y]
                ::track new-track))))
 
-  (defn- -railway-previous-path [world path]
+  (defn- -railway-previous-path [world path & [{:keys [hint-tile-x
+                                                       hint-tile-y
+                                                       hint-track]}]]
     (let [[tile-x tile-y] (::tile-xy path)
           track (::track path)
           [new-tile-x new-tile-y] (tiles/track-source-tile track tile-x tile-y)
@@ -89,17 +91,30 @@
                                info
                                extra)
 
-          ;; choose the first possible tracks
-          new-track (first possible-new-tracks)]
+          new-track
+          (if (do ; at the hint tile
+                (and (= new-tile-x hint-tile-x) (= new-tile-y hint-tile-y)))
+            (if (some #(= % hint-track) possible-new-tracks)
+              hint-track
+              (first possible-new-tracks))
+            ; else (not at the hint tile)
+            (if-let [; look for a track that starts at the edge of the hint one
+                     t (->> possible-new-tracks
+                            (map #(vector % (tiles/track-source-tile
+                                             % new-tile-x new-tile-y)))
+                            (filter #(= (second %) [hint-tile-x hint-tile-y]))
+                            (first) ; in fact, there should be at most one
+                            (first) ; take out the track (works on nil too)
+                            )]
+              ;; found - return it
+              t
+              ;; not fount - return whatever
+              (first possible-new-tracks)))]
 
       (when new-track
         (assoc (tiles/track-path new-track new-tile-x new-tile-y)
                ::tile-xy [new-tile-x new-tile-y]
-               ::track new-track))))
-
-
-
-  )
+               ::track new-track)))))
 
 (do ;; Component: test-diagonal
 
@@ -370,7 +385,12 @@
 
     (defmethod roller-previous-path ::railway-roller
       [world this path]
-      (-railway-previous-path world path))
+      (let [[tile-x tile-y] (::tile-xy (:path this))
+            track (::track (:path this))]
+        (-railway-previous-path world path
+                                {:hint-tile-x tile-x
+                                 :hint-tile-y tile-y
+                                 :hint-track track})))
 
     (defmethod roller-get-reference ::railway-roller
       [world {:as this :keys [reference-entity-id
