@@ -92,12 +92,10 @@
 
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ci/delta-t]
   [world event this]
-  this
-  ;; [(assoc this
-  ;;         :image
-  ;;         (if (:rear-coupling this)
-  ;;           "loco1-coupled.png"
-  ;;           "loco1.png")
+  nil)
 
-  ;;         )]
-  )
+(defmethod ecs/handle-event [:to-entity ::locomotive ::sys-move/path-end]
+  [world event this]
+  (println "LOC: someone says path end")
+  (ecs/mk-event this ::ci/stop (::eq/time event)))
+

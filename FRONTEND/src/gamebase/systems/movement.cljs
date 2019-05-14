@@ -274,7 +274,8 @@
 
     (defn roller-full-update [world this time]
       (when-let [[ref-path ref-length] (roller-get-reference world this)]
-        (let [[path length error]
+        (let [{:keys [at-path-end]} this
+              [path length error]
               (loop [path ref-path
                      length (+ (:distance this) ref-length)]
                 (cond
@@ -291,8 +292,9 @@
                   :position (g/path-point-at-length path length)
                   :angle (g/angle-at-length path length)
                   :path path
-                  :length-on-path length)
-           (when error
+                  :length-on-path length
+                  :at-path-end (= error ::path-end))
+           (when (and (= error ::path-end) (not at-path-end))
              (ecs/mk-event (ecs/to-entity (::ecs/entity-id this)) error time))])))
 
     (defmethod ecs/handle-event [:to-component ::roller ::ecs/init]
