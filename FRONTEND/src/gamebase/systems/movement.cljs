@@ -138,8 +138,10 @@
   (do ;; Abstract component: engine
 
     (defmulti engine-next-path (fn [world this path] (::ecs/type this)))
+    (defmulti engine-previous-path (fn [world this path] (::ecs/type this)))
 
-    (defn mk-engine [entity-or-id key {:keys [path length-on-path driving? speed]}]
+    (defn mk-engine [entity-or-id key
+                     {:keys [path length-on-path driving? speed]}]
       (assert path)
       (let [v (assoc
                (ecs/mk-component ::movement entity-or-id key ::engine)
@@ -165,20 +167,31 @@
                               time
                               world]
       (loop [path path, length-on-path length-on-path]
-        (if (<= length-on-path (g/path-length path))
-          (assoc this
-                 :path path
-                 :length-on-path length-on-path
-                 :position (g/path-point-at-length path length-on-path)
-                 :angle (g/angle-at-length path length-on-path))
-          (if-let [next-path (engine-next-path world this path)]
-            (recur next-path (- length-on-path (g/path-length path)))
-            (assoc this
-                   :driving? false
-                   :path path
-                   :length-on-path (g/path-length path)
-                   :position (g/path-point-at-length path (g/path-length path))
-                   :angle (g/angle-at-length path (g/path-length path)))))))
+        (cond
+          (< length-on-path 0)
+          , (if-let [previous-path (engine-previous-path world this path)]
+              (recur previous-path (+ length-on-path (g/path-length previous-path)))
+              (assoc this
+                     :driving? false
+                     :path path
+                     :length-on-path (g/path-length path)
+                     :position (g/path-point-at-length path (g/path-length path))
+                     :angle (g/angle-at-length path (g/path-length path))))
+          (> length-on-path (g/path-length path))
+          , (if-let [next-path (engine-next-path world this path)]
+                (recur next-path (- length-on-path (g/path-length path)))
+                (assoc this
+                       :driving? false
+                       :path path
+                       :length-on-path (g/path-length path)
+                       :position (g/path-point-at-length path (g/path-length path))
+                       :angle (g/angle-at-length path (g/path-length path))))
+          :else
+          , (assoc this
+                     :path path
+                     :length-on-path length-on-path
+                     :position (g/path-point-at-length path length-on-path)
+                     :angle (g/angle-at-length path length-on-path)))))
 
     (defmethod ecs/handle-event [:to-component ::engine ::ecs/init]
       [world event this]
@@ -209,15 +222,22 @@
 
     (derive ::test-engine ::engine)
 
-    (defn mk-test-engine [engine-next-path-f & args]
+    (defn mk-test-engine [engine-next-path-f
+                          engine-previous-path-f
+                          & args]
       (assoc
        (apply mk-engine args)
        ::ecs/type ::test-engine
-       ::engine-next-path-f engine-next-path-f))
+       ::engine-next-path-f engine-next-path-f
+       ::engine-previous-path-f engine-previous-path-f))
 
     (defmethod engine-next-path ::test-engine
       [world this path]
-      ((::engine-next-path-f this) world this path)))
+      ((::engine-next-path-f this) world this path))
+
+    (defmethod engine-previous-path ::test-engine
+      [world this path]
+      ((::engine-previous-path-f this) world this path)))
 
   (do ;; Component: railway engine
 
@@ -237,7 +257,13 @@
 
     (defmethod engine-next-path ::railway-engine
       [world _ path]
-      (-railway-next-path world path))))
+      (-railway-next-path world path))
+
+    (defmethod engine-previous-path ::railway-engine
+      [world _ path]
+      (-railway-previous-path world path))
+
+    ))
 
 (do ;; Rollers
 
