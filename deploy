@@ -1,0 +1,4 @@
+#!/bin/sh
+
+scp release.tgz kefasoft: && scp remote-scripts/* kefasoft: && ssh kefasoft ./maks-tycoon-deploy.sh
+

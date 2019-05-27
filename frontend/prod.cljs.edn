@@ -1,5 +1,5 @@
-^{:watch-dirs ["test" "src"]
+^{:watch-dirs ["src"]
   :css-dirs ["resources/public/css"]
   :auto-testing true}
 {:main app.core
- :asset-path "creatx/cljs-out/prod"}
+ :asset-path "maks-tycoon/cljs-out/prod"}

@@ -26,17 +26,14 @@
 (def config
   {:host "127.0.0.1"
    :http-port 10555
-   :root-page #(gamebase.root-page/mk-root-page
-                ;;:custom-html my-html
-                :main "app.core.main")
+   :root-page #(slurp "public/index.html")
    ;; TODO - jak to ustawic?
    :dev? true
-   :files-root "./resources/public"
+   :files-root "public"
    })
 
 (defn home-routes [_]
-  (gamebase.local-redis-saveload-server/build-handler config)
-  )
+  (gamebase.local-redis-saveload-server/build-handler config "maks-tycoon"))
 
 
 

@@ -1,17 +1,13 @@
 (ns user
   (:require [app.application]
             [com.stuartsierra.component :as component]
-            [figwheel-sidecar.config :as fw-config]
-            [figwheel-sidecar.system :as fw-sys]
             [reloaded.repl :refer [system init]]
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.file :refer [wrap-file]]
             [system.components.middleware :refer [new-middleware]]
-            [figwheel-sidecar.repl-api :as figwheel]
             [app.config :refer [config]]
 
 
-            [gamebase.ecsu] ;; without this it doesn't get compiled and loaded for cljs either
             [gamebase.helpers]
             ))
 
@@ -20,14 +16,11 @@
     (assoc (app.application/app-system config)
            :middleware (new-middleware
                         {:middleware (into [[wrap-file "dev-target/public"]]
-                                           (:middleware config))})
-           :figwheel-system (fw-sys/figwheel-system (fw-config/fetch-config))
-           :css-watcher (fw-sys/css-watcher {:watch-paths ["resources/public/css"]}))))
+                                           (:middleware config))}))))
 
 (reloaded.repl/set-init! #(dev-system))
 
-(defn cljs-repl []
-  (fw-sys/cljs-repl (:figwheel-system system)))
+
 
 ;; Set up aliases so they don't accidentally
 ;; get scrubbed from the namespace declaration
@@ -42,6 +35,4 @@
   (println "(run) is deprecated, use (go)")
   (go))
 
-(defn browser-repl []
-  (println "(browser-repl) is deprecated, use (cljs-repl)")
-  (cljs-repl))
+

@@ -1,3 +1,5 @@
+release.tgz
+release/
 *.class
 *.jar
 /.lein-*
@@ -20,3 +22,5 @@ frontend/target/**
 backend/target/**
 /FRONTEND/.nrepl-port
 /frontend/.nrepl-port
+frontend/resources/public/maks-tycoon/prod/**
+frontend/resources/public/maks-tycoon/cljs-out/**

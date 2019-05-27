@@ -1,0 +1,21 @@
+#!/bin/bash
+
+(
+	cd frontend
+	rm -fr target && lein fig:myprod && rm -rf resources/public/cljs-out && mkdir -p resources/public/maks-tycoon/ && cp -r target/public/cljs-out resources/public/maks-tycoon/ && cp resources/public/p5.min.js resources/public/maks-tycoon/
+) && (
+	cd backend
+	lein clean
+	lein uberjar
+) && (
+	rm -rf ./release
+	rm -f release.tgz
+	mkdir ./release
+) && (
+	cp backend/target/app.jar ./release/maks-tycoon.jar
+	cp -r frontend/resources/public ./release/
+	rm release/public/creatx
+	cp frontend/resources/public/index.html.PROD ./release/public/index.html
+	tar -czvf release.tgz release
+)
+
