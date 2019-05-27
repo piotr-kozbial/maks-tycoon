@@ -91,6 +91,10 @@
   [world event {:keys [rear-coupling] :as this}]
   (ecs/retarget event (-> this ::ecs/components :engine)))
 
+(defmethod ecs/handle-event [:to-entity ::locomotive ::ci/reverse-drive]
+  [world event {:keys [rear-coupling] :as this}]
+  (ecs/retarget event (-> this ::ecs/components :engine)))
+
 (defmethod ecs/handle-event [:to-entity ::locomotive ::ci/delta-t]
   [world event this]
   nil)

@@ -210,9 +210,16 @@
 
     (defmethod ecs/handle-event [:to-component ::engine ::ci/drive]
       [world event {:as this :keys [driving?]}]
-      (if driving?
-        this
-        (assoc this :driving? true))))
+      (assoc this
+             :driving? true
+             :speed 0.02))
+
+    (defmethod ecs/handle-event [:to-component ::engine ::ci/reverse-drive]
+      [world event {:as this :keys [driving?]}]
+      (assoc this
+             :driving? true
+             :speed -0.01)))
+
 
   (do ;; Component: test engine
 

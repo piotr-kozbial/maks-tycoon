@@ -22,7 +22,7 @@
         {:keys [open? selected-id]} (-> (rum/react ui-state)
                                         :sidebar :loc-selector)
         loc (ecs/get-entity-by-key world selected-id)
-        driving? (:driving? (:move (::ecs/components loc)))
+        {:keys [driving? speed]} (:engine (::ecs/components loc))
         locs (wo/get-all-locomotives world)]
 
     [:table
@@ -61,23 +61,38 @@
               [:span "State: "]
               [:div
                {:style {:display "inline-block"}}
-               [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-id ::ci/drive))
+
+               [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-id ::ci/reverse-drive))
+                    :style (if (and driving? (< speed 0))
+                             {:color "white"
+                              :background-color "red"
+                              :border "solid 1px red"}
+                             {:color "black"
+                              :border "solid 1px black"})}
+                "REVERSE"]
+
+               [:span " "]
+
+               [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-id ::ci/stop))
                     :style (if driving?
+                             {:color "black"
+                              :border "solid 1px black"}
+                             {:color "white"
+                              :background-color "black"
+                              :border "solid 1px black"})}
+                "STOP"]
+
+               [:span " "]
+
+               [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-id ::ci/drive))
+                    :style (if (and driving? (> speed 0))
                              {:color "white"
                               :background-color "green"
                               :border "solid 1px green"}
                              {:color "black"
                               :border "solid 1px black"})}
                 "DRIVE"]
-               [:span " "]
-               [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-id ::ci/stop))
-                    :style (if driving?
-                             {:color "black"
-                              :border "solid 1px black"}
-                             {:color "white"
-                              :background-color "red"
-                              :border "solid 1px red"})}
-                "STOP"]]]
+               ]]
 
              [;; operations
               :div {:style {:margin-bottom "5px"}}

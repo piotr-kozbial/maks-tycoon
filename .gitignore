@@ -16,4 +16,7 @@ pom.xml.asc
 /dev-target
 FRONTEND/target/**
 BACKEND/target/**
+frontend/target/**
+backend/target/**
 /FRONTEND/.nrepl-port
+/frontend/.nrepl-port
