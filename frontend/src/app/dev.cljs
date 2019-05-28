@@ -1,3 +1,2 @@
-(ns app.dev
-  (:require [app.system]))
+(ns app.dev)
 
