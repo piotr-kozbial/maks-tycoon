@@ -63,91 +63,98 @@
 
     ))
 
+
+(def enabled (atom true))
+
+(defn disable [] (reset! enabled false))
+(defn enable [] (reset! enabled true))
+
 (defn setup-key-handler []
 
 
   (events/add-handler
    :canvas-key-typed
    (fn [{:keys [key x y]}]
-     (when-let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters)]
-       (let [world-x (conv-x x)
-             world-y (conv-y y)
-             tile-x (quot world-x 32)
-             tile-y (quot world-y 32)]
-         (case key
-           "a" (let [id (keyword (str "loc-" (get-fresh-entity-id)))
-                     loc (locomotive/mk-entity id 2 1)
-                     car-id (keyword (str "car-" (get-fresh-entity-id)))
-                     car (carriage/mk-entity car-id 1 1 loc)
-                     car2-id (keyword (str "car2-" (get-fresh-entity-id)))
-                     car2 (carriage/mk-entity car2-id 0 1 car)]
+     (when @enabled
+         (when-let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters)]
+           (let [world-x (conv-x x)
+                 world-y (conv-y y)
+                 tile-x (quot world-x 32)
+                 tile-y (quot world-y 32)]
+             (case key
+               "a" (let [id (keyword (str "loc-" (get-fresh-entity-id)))
+                         loc (locomotive/mk-entity id 2 1)
+                         car-id (keyword (str "car-" (get-fresh-entity-id)))
+                         car (carriage/mk-entity car-id 1 1 loc)
+                         car2-id (keyword (str "car2-" (get-fresh-entity-id)))
+                         car2 (carriage/mk-entity car2-id 0 1 car)]
 
-                 (wo/inject-entity loc)
-                 (wo/send-to-entity loc ::ecs/init)
+                     (wo/inject-entity loc)
+                     (wo/send-to-entity loc ::ecs/init)
 
-                 (wo/inject-entity car)
-                 (wo/send-to-entity car ::ecs/init)
-                 (wo/send-to-entity car
-                                    ::ci/connect-to
-                                    :reference-entity-or-id loc
-                                    :reference-path-kvs (ecs/ck-kvs :engine :path)
-                                    :reference-length-on-path-kvs (ecs/ck-kvs :engine :length-on-path))
+                     (wo/inject-entity car)
+                     (wo/send-to-entity car ::ecs/init)
+                     (wo/send-to-entity car
+                                        ::ci/connect-to
+                                        :reference-entity-or-id loc
+                                        :reference-path-kvs (ecs/ck-kvs :engine :path)
+                                        :reference-length-on-path-kvs (ecs/ck-kvs :engine :length-on-path))
 
-                 (wo/inject-entity car2)
-                 (wo/send-to-entity car2 ::ecs/init)
-                 (wo/send-to-entity car2
-                                    ::ci/connect-to
-                                    :reference-entity-or-id car
-                                    :reference-path-kvs (ecs/ck-kvs :point :path)
-                                    :reference-length-on-path-kvs (ecs/ck-kvs :point :length-on-path))
-                 )
+                     (wo/inject-entity car2)
+                     (wo/send-to-entity car2 ::ecs/init)
+                     (wo/send-to-entity car2
+                                        ::ci/connect-to
+                                        :reference-entity-or-id car
+                                        :reference-path-kvs (ecs/ck-kvs :point :path)
+                                        :reference-length-on-path-kvs (ecs/ck-kvs :point :length-on-path))
+                     )
 
-           ;; "c" (let [id (keyword (str "car-" (get-fresh-entity-id)))
-           ;;           car (carriage/mk-entity id tile-x tile-y)]
-           ;;       (wo/inject-entity car)
-           ;;       (wo/send-to-entity car ::ecs/init))
+               ;; "c" (let [id (keyword (str "car-" (get-fresh-entity-id)))
+               ;;           car (carriage/mk-entity id tile-x tile-y)]
+               ;;       (wo/inject-entity car)
+               ;;       (wo/send-to-entity car ::ecs/init))
 
-           ;; "q" (let [id (keyword (str "car-" (get-fresh-entity-id)))
-           ;;           car (carriage/mk-entity id tile-x tile-y)]
-           ;;       (wo/inject-entity car)
-           ;;       (wo/send-to-entity car ::ecs/init))
+               ;; "q" (let [id (keyword (str "car-" (get-fresh-entity-id)))
+               ;;           car (carriage/mk-entity id tile-x tile-y)]
+               ;;       (wo/inject-entity car)
+               ;;       (wo/send-to-entity car ::ecs/init))
 
-           "w" (run-train)
+               "w" (run-train)
 
-           ;; "w" (let [tile-x 4
-           ;;           tile-y 1
-           ;;           loc-id (keyword (str "loc-" (get-fresh-entity-id)))
-           ;;           loc (locomotive/mk-entity loc-id tile-x tile-y)
-           ;;           car-id (keyword (str "car-" (get-fresh-entity-id)))
-           ;;           car (carriage/mk-entity car-id (dec tile-x) tile-y)
-           ;;           car2-id (keyword (str "car-" (get-fresh-entity-id)))
-           ;;           car2 (carriage/mk-entity car2-id (- tile-x 2) tile-y)
-           ;;           car3-id (keyword (str "car-" (get-fresh-entity-id)))
-           ;;           car3 (carriage/mk-entity car3-id (- tile-x 3) tile-y)]
-           ;;       (doseq [e [loc car car2 car3]]
-           ;;         (wo/inject-entity e)
-           ;;         (wo/send-to-entity e ::ecs/init))
-           ;;       (wo/send-to-entity loc  ::locomotive/couple-rear :the-other-id car-id)
-           ;;       (wo/send-to-entity car  ::carriage/couple-rear   :the-other-id car2-id)
-           ;;       (wo/send-to-entity car2 ::carriage/couple-rear   :the-other-id car3-id))
+               ;; "w" (let [tile-x 4
+               ;;           tile-y 1
+               ;;           loc-id (keyword (str "loc-" (get-fresh-entity-id)))
+               ;;           loc (locomotive/mk-entity loc-id tile-x tile-y)
+               ;;           car-id (keyword (str "car-" (get-fresh-entity-id)))
+               ;;           car (carriage/mk-entity car-id (dec tile-x) tile-y)
+               ;;           car2-id (keyword (str "car-" (get-fresh-entity-id)))
+               ;;           car2 (carriage/mk-entity car2-id (- tile-x 2) tile-y)
+               ;;           car3-id (keyword (str "car-" (get-fresh-entity-id)))
+               ;;           car3 (carriage/mk-entity car3-id (- tile-x 3) tile-y)]
+               ;;       (doseq [e [loc car car2 car3]]
+               ;;         (wo/inject-entity e)
+               ;;         (wo/send-to-entity e ::ecs/init))
+               ;;       (wo/send-to-entity loc  ::locomotive/couple-rear :the-other-id car-id)
+               ;;       (wo/send-to-entity car  ::carriage/couple-rear   :the-other-id car2-id)
+               ;;       (wo/send-to-entity car2 ::carriage/couple-rear   :the-other-id car3-id))
 
-           " " (when (turnouts/is-turnout? tile-x tile-y)
+               " " (when (turnouts/is-turnout? tile-x tile-y)
 
-                 (.log js/console (str "SWICH TURNOUT!!! " tile-x ", " tile-y))
-                 ;; (turnouts/cycle-turnout-state tile-x tile-y)
-                 (println "systems? " (pr-str (into [] (keys (::ecs/systems (wo/get-world))))))
-                 (wo/send-to-system ::sys-railway/railway
-                                    ::sys-railway/switch-turnout
-                                    :tile-x tile-x
-                                    :tile-y tile-y
-                                    )
-                 )
+                     (.log js/console (str "SWICH TURNOUT!!! " tile-x ", " tile-y))
+                     ;; (turnouts/cycle-turnout-state tile-x tile-y)
+                     (println "systems? " (pr-str (into [] (keys (::ecs/systems (wo/get-world))))))
+                     (wo/send-to-system ::sys-railway/railway
+                                        ::sys-railway/switch-turnout
+                                        :tile-x tile-x
+                                        :tile-y tile-y
+                                        )
+                     )
 
-           "=" (do
-                 (events/suspend-event-handling)
-                 (scratch/toggle))
+               "=" (do
+                     (events/suspend-event-handling)
+                     (scratch/toggle))
 
-           ))))))
+               )))))))
 
 (defn setup-mouse-handler []
   (events/add-handler

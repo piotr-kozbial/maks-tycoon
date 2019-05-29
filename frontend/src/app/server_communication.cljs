@@ -13,10 +13,10 @@
 (defn generic-error-handler [x]
   (.log js/console (str "ERROR in ajax to server: " x)))
 
-(defn post [path body handler & [error-handler]]
+(defn post [body handler & [error-handler]]
 
   (ajax/POST
-   path
+   "/request"
    {:body (pr-str body) ;;(j/pr-json body)
     ;; (ajax/text-request-format)
     ;;:response-format :json
@@ -30,8 +30,7 @@
 
 
 (defn save-game [id name handler & [error-handler]]
-  (post "/"
-        {:request :save-game
+  (post {:request :save-game
          :id id
          :name name
          :state @st/app-state}
@@ -39,28 +38,21 @@
         error-handler))
 
 (defn save-game-as [name handler & [error-handler]]
-  (post "/"
-        {:request :save-game
+  (post {:request :save-game
          :name name
          :state @st/app-state}
         handler
         error-handler))
 
 (defn list-games [handler & [error-handler]]
-  (post "/"
-        {:request :list-games}
+  (post {:request :list-games}
         (fn [ret] (handler (read-string ret)))
         error-handler))
 
 (defn load-game [id handler & [error-handler]]
-
-  (post "/"
-        {:request :load-game
+  (post {:request :load-game
          :id id}
-        (fn [ret] (handler (read-string ret)        ; (read-string ret)
-                          ))
-        error-handler)
-
-  )
+        (fn [ret] (handler (read-string ret)))
+        error-handler))
 
 

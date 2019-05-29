@@ -7,7 +7,7 @@
    [app.world-interop :as wo]
    [app.server-communication :as sc]
    [app.ui.ui-state :as uis]
-
+   [app.key-mouse-input :as kmi]
    [goog.string :as gstring]
    [goog.string.format]))
 
@@ -90,7 +90,7 @@
 
     [:div
      ;; SAVE
-     (box (button "public/save-icon.png"
+     (box (button "save-icon.png"
                   (if (and (uis/get-game-id @uis/ui-state) (= state :base)) button-style disabled-button-style)
                   " SAVE GAME"
                   #(when (and (uis/get-game-id @uis/ui-state) (= state :base)) (save-game)))
@@ -114,13 +114,18 @@
           )
 
      ;; SAVE AS
-     (box (button "public/save-as-icon.png"
+     (box (button "save-as-icon.png"
                   (if (#{:base :save-as} state) button-style disabled-button-style)
                   " SAVE GAME AS..."
                   #(when (= state :base) (save-game-as-open)))
           (when (= state :save-as)
             [:div
-             [:form [:input {:type "text" :name "save-game-as-name" :ref "save-game-as-name"}]]
+             [:form [:input {:type "text" :name "save-game-as-name" :ref "save-game-as-name"
+                             :on-focus (fn [_] (.log js/console "FOCUS")
+                                         (kmi/disable))
+                             :on-blur (fn [_] (.log js/console "FOCUS LOST")
+                                        (kmi/enable))
+                             :on-change (fn [_] (.log js/console "CH"))}]]
              (box
               (spacer)
               (button nil button-style "Save"
@@ -130,7 +135,7 @@
               (cancel-button))]))
 
      ;; LOAD
-     (box (button "public/load-icon.png"
+     (box (button "load-icon.png"
                   (if (#{:base :load} state) button-style disabled-button-style)
                   " LOAD GAME..."
                   #(when (= state :base) (load-game-open)))
@@ -151,7 +156,7 @@
 
              (box (cancel-button))]))
      ;; NEW
-     (box (button "public/asterisk.png" button-style " NEW GAME"
+     (box (button "asterisk.png" button-style " NEW GAME"
                   #(new-game)))
 
      ]))

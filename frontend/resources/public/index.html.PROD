@@ -18,7 +18,7 @@
         <script>
          function setup() { app.core.main();}
          function draw() { gamebase.events.callback("draw"); }
-         function keyTyped()  { gamebase.events.callback("canvas-key-typed");  return false; }
+         function keyTyped()  { gamebase.events.callback("canvas-key-typed");  return true; }
 
          function mousePressed()  { return gamebase.events.callback("canvas-mouse-pressed"); }
          function mouseMoved()    { return gamebase.events.callback("canvas-mouse-moved"); }

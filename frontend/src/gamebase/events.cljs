@@ -31,7 +31,9 @@
       (when (precondition-for-event event-key)
         (doseq [h handlers]
           (h (data-for-event event-key))))
-      false)
+      ;false
+      true
+      )
     true))
 
 ;;-------------------------------------------------------------------
