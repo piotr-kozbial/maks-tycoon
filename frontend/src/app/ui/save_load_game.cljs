@@ -121,11 +121,7 @@
           (when (= state :save-as)
             [:div
              [:form [:input {:type "text" :name "save-game-as-name" :ref "save-game-as-name"
-                             :on-focus (fn [_] (.log js/console "FOCUS")
-                                         (kmi/disable))
-                             :on-blur (fn [_] (.log js/console "FOCUS LOST")
-                                        (kmi/enable))
-                             :on-change (fn [_] (.log js/console "CH"))}]]
+                             :on-focus (fn [_] (kmi/disable)) :on-blur (fn [_] (kmi/enable))}]]
              (box
               (spacer)
               (button nil button-style "Save"

@@ -131,9 +131,6 @@
 
 (def my-mixin
   { :did-mount (fn [state]
-
-                 (.log js/console "DID MOUNT!")
-
                  (when-not @already-loaded?
                    (initialize-layout)
 
@@ -145,10 +142,7 @@
                      :get-canvas-size our-layout/get-canvas-size
                      :get-world-size #'wo/get-world-size
                      }))
-                 state
-                 )}
-
-  )
+                 state)})
 
 (rum/defc game-component < rum/reactive []
   (rum/react ui-refresh-tick)
@@ -165,7 +159,6 @@
    (scratch/scratch-component)])
 
 (defn render []
-  (.log js/console "RENDER")
   (rum/mount (main-component)
              (. js/document (getElementById "app"))))
 
@@ -201,10 +194,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-
 (defn main [& _]
-  (.log js/console "MAIN")
-
   (js/setInterval (fn [] ;; set up periodic frame rate measurement update
                     (let [rate (js/frameRate)
                           rate-s (/ (int (* rate 10)) 10)]
@@ -216,9 +206,7 @@
 
   (resources/set-on-all-loaded
    #(do
-      (.log js/console "on all loaded")
       (when (every? resources/get-resource resource-fnames)
-        (.log js/console "mozna odpalac")
         (wo/set-world (wo/mk-world))
         (wo/init-tile-extra)
         (wo/run))))

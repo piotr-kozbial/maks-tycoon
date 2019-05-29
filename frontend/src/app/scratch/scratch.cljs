@@ -540,7 +540,7 @@
   (try
     body
     (catch js/Error e
-      [:dev
+      [:div
        {:style error-style}
        [:p {:style {:color "white"}} "*ERROR*"]
        [:pre (str (.-stack e))]])))
