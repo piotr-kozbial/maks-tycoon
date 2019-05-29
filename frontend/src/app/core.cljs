@@ -91,20 +91,22 @@
 
 (defn advance-simulation-and-draw [{:keys [min-x max-x min-y max-y] :as context}]
 
-
   (let [{:keys [world timer]} @app-state]
     (when world
   ;;; Handle pending events...
-      (let [world' (if (wo/running?)
-                     (let [time (wo/get-time)]
-                       (-> world
-                           (ecs/advance-until-time time)
-                           ;; (ecs/do-handle-event (ecs/mk-event (ecs/to-world) :update time))
-                           (ecs/do-handle-event (assoc (ecs/mk-event (ecs/to-world) ::ci/delta-t time)
-                                                       :delta-t 20))
+      (let [world' (try (if (wo/running?)
+                          (let [time (wo/get-time)]
+                            (-> world
+                                (ecs/advance-until-time time)
+                                ;; (ecs/do-handle-event (ecs/mk-event (ecs/to-world) :update time))
+                                (ecs/do-handle-event (assoc (ecs/mk-event (ecs/to-world) ::ci/delta-t time)
+                                                            :delta-t 20))
 
-                           ))
-                     world)]
+                                ))
+                          world)
+                        (catch :default e
+                          (println  "Error in advance-simulation-and-draw (during advance)")
+                          world))]
   ;;; validate...
         ;;(s/validate st/s-world world')
   ;;; and put new world in state.
@@ -119,7 +121,7 @@
                   :coordinate-system-marker)
           (debug-draw-coord-system)))))
 
-  )
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; UI root
@@ -154,7 +156,7 @@
 
 (rum/defc main-component < my-mixin rum/reactive []
   (rum/react scratch/state)
-  [:dev
+  [:div
    (game-component)
    (scratch/scratch-component)])
 

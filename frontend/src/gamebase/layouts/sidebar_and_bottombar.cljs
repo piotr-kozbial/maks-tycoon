@@ -108,7 +108,6 @@
   (set! (.-width (.-style element)) (str width "px")))
 
 (defn update-canvas-size []
-  (println "update-canvas-size")
   (let [{:keys [base-atom kvs bottom-bar-height side-bar-width after-canvas-resize]} @state
         width (.-innerWidth js/window)
         height (.-innerHeight js/window)

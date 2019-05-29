@@ -96,19 +96,23 @@ nil
      [:br]
 
      [:div (str "FRAME RATE: " frame-rate)]
+     [:span]
      [:div
       "scale: " (canvas-control/get-scale) " "
       [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 0.5))} "50%"] " "
       [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 1.0))} "100%"] " "
       [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 2.0))} "200%"]]
 
-     [:br] [:br] [:br]
-
-     [:br] [:br] [:br]
+     [:br] [:span]
+     [:br] [:span]
+     [:br] [:span]
+     [:br] [:span]
+     [:br] [:span]
+     [:br] [:span]
 
      (for [tab-key (effective-tab-order ui-state)]
        (let [{:keys [component title]} (get-tab ui-state tab-key)]
-         [:div
+         [:div {:key tab-key}
           [:hr {:style {:border "1px solid #BB4400"}}]
           (if (tab-open? ui-state tab-key)
             [:div

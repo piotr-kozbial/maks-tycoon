@@ -13,26 +13,27 @@
      [:span {:style {:vertical-align "top"}} label " "]
      [:table {:class "gamebase_dropdown"
               :style {:display "inline-block"}}
-      [:tr
-       {
-        :on-click (fn [_] (if open?
+      [:tbody
+       [:tr
+        {
+         :on-click (fn [_] (if open?
                             ((or (:close callbacks) #()))
                             ((or (:open callbacks) #()))))
-        }
-       (if selected-name
-         [:td {:class "gamebase_dropdown_selected"} selected-name]
-         [:td {:class "gamebase_dropdown_placeholder"} "(select)"])]
+         }
+        (if selected-name
+          [:td {:class "gamebase_dropdown_selected"} selected-name]
+          [:td {:class "gamebase_dropdown_placeholder"} "(select)"])]
 
-      (when open?
-        (map
-         (fn [[id text]]
-           [:tr [:td
-                 {:class "gamebase_dropdown_item"
-                  :on-click (fn [_] (do
-                                     ((or (:on-select callbacks) (fn [_])) id)
-                                     ((or (:close callbacks) #()))))}
-                 text]])
-         items))]
+       (when open?
+         (map
+          (fn [[id text]]
+            [:tr [:td
+                  {:class "gamebase_dropdown_item"
+                   :on-click (fn [_] (do
+                                      ((or (:on-select callbacks) (fn [_])) id)
+                                      ((or (:close callbacks) #()))))}
+                  text]])
+          items))]]
 
      [:span {:style {:vertical-align "top"}} " ↓ "]
      ]))
