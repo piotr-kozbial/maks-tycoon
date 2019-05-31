@@ -442,11 +442,17 @@
                reference-path-kvs
                reference-length-on-path-kvs]}
        this]
-      (println "ROLLER connect-to")
       (assoc this
              :reference-entity-id (ecs/id reference-entity-or-id)
              :reference-path-kvs reference-path-kvs
-             :reference-length-on-path-kvs reference-length-on-path-kvs))))
+             :reference-length-on-path-kvs reference-length-on-path-kvs))
+
+    (defmethod ecs/handle-event [:to-component ::railway-roller ::ci/disconnect-front]
+      [world event this]
+      (assoc this
+             :reference-entity-id nil
+             :reference-path-kvs nil
+             :reference-length-on-path-kvs nil))))
 
 (do ;; Railway vehicle connections
 

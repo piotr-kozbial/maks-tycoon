@@ -104,3 +104,12 @@
   (println "LOC: someone says path end")
   (ecs/mk-event this ::ci/stop (::eq/time event)))
 
+(defmethod ecs/handle-event [:to-entity ::locomotive ::ci/connect-pulled]
+  [world {:keys [pulled-entity-or-id]} this]
+  (assoc this
+         :pulled (ecs/id pulled-entity-or-id)
+         :touching-behind (ecs/id pulled-entity-or-id)))
+
+(defmethod ecs/handle-event [:to-entity ::locomotive ::ci/disconnect-pulled]
+  [world {:keys [pulled-entity-or-id]} this]
+  (assoc this :pulled nil))

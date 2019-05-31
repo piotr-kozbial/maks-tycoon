@@ -16,6 +16,36 @@
    [gamebase.geometry :as geom]))
 
 
+(defn entity-picture [entity]
+  [:svg {:width 64 :height 32 :view-box "0 0 32 16"}
+   [:image {:href (:image entity)
+            :transform "rotate(-180,16,8)"}]])
+
+(defn connect [puller pulled]
+  (.log js/console
+        (str "CONNECT "
+             (ecs/id puller)
+             (ecs/id pulled)))
+  (wo/send-to-entity puller ::ci/connect-pulled :pulled-entity-or-id pulled)
+  (wo/send-to-entity pulled ::ci/connect-to
+                     :reference-entity-or-id puller
+                     :reference-path-kvs (ecs/ck-kvs :point :path)
+                     :reference-length-on-path-kvs (ecs/ck-kvs :point :length-on-path)
+
+
+                     )
+  )
+
+(defn disconnect [puller pulled]
+  (.log js/console
+        (str "DISCONNECT "
+             (ecs/id puller)
+             (ecs/id pulled)))
+
+  (wo/send-to-entity puller ::ci/disconnect-pulled)
+  (wo/send-to-entity pulled ::ci/disconnect-front)
+  )
+
 (rum/defc bottombar-component < rum/reactive []
   (rum/react ui-state)
   (let [{:keys [frame-rate world]} @app-state
@@ -28,7 +58,8 @@
     [:table
      [:tbody
       [:tr
-       [:td
+       [:td {:style {:white-space "nowrap"
+                     :vertical-align :text-top}}
 
         (mk-dropdown {:label "Train:"
                       :open? open?
@@ -111,23 +142,32 @@
              ]))
         ]
        [:td [:span {:style {:white-space "pre"}} "   "]]
-       (when loc
-         [:td
-          "driving?: " (pr-str (get-in loc (ecs/ck-kvs :move :driving?)))
-          [:br]
-          "length-on-path: " (pr-str (get-in loc (ecs/ck-kvs :move :length-on-path)))
-          [:br]
-          "path: " (pr-str (get-in loc (ecs/ck-kvs :move :path)))
-          ;; [:br]
-          ;; "path: " (pr-str (get-in loc (ecs/ck-kvs :move :path)))
-          ;; [:br]
-          ;; "past-end?: " (pr-str (get-in loc (ecs/ck-kvs :move :past-end?)))
-          ;; [:br]
-          ;; "past-end-notified?: " (pr-str (get-in loc (ecs/ck-kvs :move :past-end-notified?)))
-          ;; [:br]
-          ;; "extra-xy: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-xy)))
-          ;; [:br]
-          ;; "extra-lengths-on-paths: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-lengths-on-paths)))
-          ;; [:br]
-          ;; "extra-paths: " (pr-str (get-in loc (ecs/ck-kvs :move :extra-paths)))
-          ])]]]))
+       [:td {:style {:overflow "auto" :vertical-align "middle"}}
+        (entity-picture loc)
+        (->>
+         (iterate
+          (fn [[entity _]]
+            (let [pulled-id (:pulled entity)
+                  touching-behind-id (:touching-behind entity)]
+              (cond
+                pulled-id
+                ,   (let [pulled (ecs/get-entity-by-key world pulled-id)]
+                      [pulled
+                       [:span
+                        [:button {:style {:height 32}
+                                  :on-click (fn [_] (disconnect entity pulled))}
+                         "="]
+                        (entity-picture pulled)]])
+                touching-behind-id
+                ,   (let [touching-behind (ecs/get-entity-by-key world touching-behind-id)]
+                      [touching-behind
+                       [:span
+                        [:button {:style {:height 32}
+                                  :on-click (fn [_] (connect entity touching-behind))}
+                         "x"]
+                        (entity-picture touching-behind)]])
+                :else
+                ,   nil)))
+          [loc nil])
+         (take-while identity) ;; stop when entity == nil
+         (map second))]]]]))

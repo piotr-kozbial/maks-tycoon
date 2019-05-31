@@ -119,9 +119,7 @@
         (when (-> @debug/settings
                   :canvas-control
                   :coordinate-system-marker)
-          (debug-draw-coord-system)))))
-
-)
+          (debug-draw-coord-system))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; UI root
