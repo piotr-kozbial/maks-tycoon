@@ -15,7 +15,7 @@
 
    [app.scratch.scratch :as scratch]
    [app.ecs.common-events :as ci]
-   [gamebase.systems.movement :as sys-movement]
+   [gamebase.systems.movement.movement :as sys-movement]
    [app.ecs.systems.railway :as sys-railway]
    ))
 

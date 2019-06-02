@@ -3,7 +3,7 @@
    [gamebase.canvas-control :as canvas-control]
    [gamebase.resources :as resources]
    [gamebase.systems.drawing :as sys-drawing]
-   [gamebase.systems.movement :as sys-move]
+   [gamebase.systems.movement.movement :as sys-move]
    [app.ecs.systems.railway :as sys-railway]
    [app.tiles.general :as tiles]
    [app.tiles.turnouts :as turnouts]

@@ -3,6 +3,7 @@
    [gamebase.ecs :as ecs]
    [gamebase.systems.drawing :as sys-drawing]
    [gamebase.systems.movement.movement :as sys-move]
+   [gamebase.systems.movement.components.railway-roller :refer [mk-railway-roller]]
    [gamebase.event-queue :as eq]
    [gamebase.geometry :as g]
 
@@ -21,7 +22,7 @@
      entity
 
      :gamebase.ecs/components
-     {:point (sys-move/mk-railway-roller
+     {:point (mk-railway-roller
               entity
               :point
               {:distance -32

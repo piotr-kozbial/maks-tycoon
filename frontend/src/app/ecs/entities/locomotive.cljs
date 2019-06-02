@@ -3,6 +3,8 @@
    [gamebase.ecs :as ecs]
    [gamebase.systems.drawing :as sys-drawing]
    [gamebase.systems.movement.movement :as sys-move]
+   [gamebase.systems.movement.components.railway-roller :refer [mk-railway-roller]]
+   [gamebase.systems.movement.components.railway-engine :refer [mk-railway-engine]]
    [gamebase.event-queue :as eq]
    [gamebase.geometry :as g]
    [app.tiles.general :as tiles]
@@ -19,7 +21,7 @@
      entity
 
      :gamebase.ecs/components
-     {:engine (sys-move/mk-railway-engine
+     {:engine (mk-railway-engine
                entity
                :engine
                {:tile-x tile-x
@@ -29,7 +31,7 @@
                 :driving? true
                 :speed -0.01})
 
-      :front (sys-move/mk-railway-roller
+      :front (mk-railway-roller
               entity
               :front
               {:distance 15
@@ -42,7 +44,7 @@
                :reference-path-kvs (ecs/ck-kvs :engine :path)
                :reference-length-on-path-kvs (ecs/ck-kvs :engine :length-on-path)})
 
-      :rear (sys-move/mk-railway-roller
+      :rear (mk-railway-roller
              entity
              :rear
              {:distance -15

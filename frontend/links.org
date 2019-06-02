@@ -1,6 +1,6 @@
 [[file:src/app/core.cljs][core.cljs]]
 
-[[file:src/gamebase/systems/movement.cljs::(gamebase.systems.movement][movement.cljs]]
+[[file:src/gamebase/systems/movement.cljs::(gamebase.systems.movement.movement][movement.cljs]]
 [[file:src/app/ecs/entities/locomotive.cljs::(app.ecs.entities.locomotive][locomotive.cljs]]
 
 [[file:src/app/scratch/scratch.cljs::(app.scratch.scratch][scratch.cljs]]

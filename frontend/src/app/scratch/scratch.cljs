@@ -1,6 +1,8 @@
 (ns app.scratch.scratch
   (:require [rum.core :as rum]
-            [gamebase.systems.movement :as sys-movement]
+            [gamebase.systems.movement.movement :as sys-movement]
+            [gamebase.systems.movement.components.test-engine :refer [mk-test-engine]]
+            [gamebase.systems.movement.components.test-roller :refer [mk-test-roller]]
             [gamebase.ecs :as ecs]
             [gamebase.geometry :as geom]
             [cljs.pprint :refer [pprint]]
@@ -248,7 +250,7 @@
          "and also without an event queue (we will manually pass events if necessary)."]
         "Create:"
         [VCV path (geom/line-segment [0 0] [100 100])]
-        [VCV component (sys-movement/mk-test-engine
+        [VCV component (mk-test-engine
                         #'my-engine-next-path
                         "entity-id" "comp-key"
                         {:path path :driving? true})]
@@ -311,7 +313,7 @@
      [[:h3 "Movement system: Roller component, basic usage behind"]
 
       "Roller behind reference (negative :distance):"
-      [VCV component (sys-movement/mk-test-roller
+      [VCV component (mk-test-roller
                       #'my-roller-previous-path
                       #'my-roller-next-path
                       #'my-roller-get-reference
@@ -372,7 +374,7 @@
      [[:h3 "Movement system: Roller component, basic usage ahead"]
 
       "Roller ahead reference (positive :distance):"
-      [VCV component (sys-movement/mk-test-roller
+      [VCV component (mk-test-roller
                       #'my-roller-previous-path
                       #'my-roller-next-path
                       #'my-roller-get-reference
@@ -431,7 +433,7 @@
      [[:h3 "Movement system: Roller component, path end behind"]
 
       "Roller behind reference (negative :distance):"
-      [VCV component (sys-movement/mk-test-roller
+      [VCV component (mk-test-roller
                       #'my-roller-previous-path
                       #'my-roller-next-path
                       #'my-roller-get-reference
@@ -469,7 +471,7 @@
      [[:h3 "Movement system: Roller component, path end ahead"]
 
       "Roller behind reference (:positive distance):"
-      [VCV component (sys-movement/mk-test-roller
+      [VCV component (mk-test-roller
                       #'my-roller-previous-path
                       #'my-roller-next-path
                       #'my-roller-get-reference

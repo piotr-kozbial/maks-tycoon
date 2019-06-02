@@ -1,7 +1,7 @@
 (ns app.workspace
   (:require [gamebase.resources :as resources]
             [gamebase.systems.drawing :as sys-drawing]
-            [gamebase.systems.movement :as sys-move]
+            [gamebase.systems.movement.movement :as sys-move]
             [app.ecs.entities.locomotive :as locomotive]
             [gamebase.events :as events]
             [gamebase.event-queue :as eq]
