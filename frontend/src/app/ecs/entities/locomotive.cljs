@@ -2,14 +2,16 @@
   (:require
    [gamebase.ecs :as ecs]
    [gamebase.systems.drawing :as sys-drawing]
-   [gamebase.systems.movement :as sys-move]
+   [gamebase.systems.movement.movement :as sys-move]
    [gamebase.event-queue :as eq]
    [gamebase.geometry :as g]
    [app.tiles.general :as tiles]
    [gamebase.layers :as layers]
    [app.world-interop :as wo]
    [app.state :as st]
-   [app.ecs.common-events :as ci]))
+   [app.ecs.common-events :as ci])
+  (:require-macros
+   [gamebase.helpers :refer [event-handlers]]))
 
 (defn mk-entity [id tile-x tile-y]
   (let [entity (ecs/mk-entity id ::locomotive)]
@@ -18,14 +20,14 @@
 
      :gamebase.ecs/components
      {:engine (sys-move/mk-railway-engine
-             entity
-             :engine
-             {:tile-x tile-x
-              :tile-y tile-y
-              :track [:w :e]
-              :length-on-track 16
-              :driving? true
-              :speed -0.01})
+               entity
+               :engine
+               {:tile-x tile-x
+                :tile-y tile-y
+                :track [:w :e]
+                :length-on-track 16
+                :driving? true
+                :speed -0.01})
 
       :front (sys-move/mk-railway-roller
               entity
@@ -79,37 +81,43 @@
 
      :image "loco1.png")))
 
-(defmethod ecs/handle-event [:to-entity ::locomotive ::ecs/init]
+(event-handlers
+ [:to-entity ::locomotive]
+
+ (::ecs/init
   [world event this]
   (ecs/retarget event (-> this ::ecs/components :engine)))
 
-(defmethod ecs/handle-event [:to-entity ::locomotive ::ci/stop]
-  [world event this]
-  (ecs/retarget event (-> this ::ecs/components :engine)))
-
-(defmethod ecs/handle-event [:to-entity ::locomotive ::ci/drive]
-  [world event {:keys [rear-coupling] :as this}]
-  (ecs/retarget event (-> this ::ecs/components :engine)))
-
-(defmethod ecs/handle-event [:to-entity ::locomotive ::ci/reverse-drive]
-  [world event {:keys [rear-coupling] :as this}]
-  (ecs/retarget event (-> this ::ecs/components :engine)))
-
-(defmethod ecs/handle-event [:to-entity ::locomotive ::ci/delta-t]
+ (::ci/delta-t
   [world event this]
   nil)
 
-(defmethod ecs/handle-event [:to-entity ::locomotive ::sys-move/path-end]
+
+ (::ci/stop
+  [world event this]
+  (ecs/retarget event (-> this ::ecs/components :engine)))
+
+ (::ci/drive
+  [world event {:keys [rear-coupling] :as this}]
+  (ecs/retarget event (-> this ::ecs/components :engine)))
+
+ (::ci/reverse-drive
+  [world event {:keys [rear-coupling] :as this}]
+  (ecs/retarget event (-> this ::ecs/components :engine)))
+
+
+
+ (::sys-move/path-end
   [world event this]
   (println "LOC: someone says path end")
   (ecs/mk-event this ::ci/stop (::eq/time event)))
 
-(defmethod ecs/handle-event [:to-entity ::locomotive ::ci/connect-pulled]
+ (::ci/connect-pulled
   [world {:keys [pulled-entity-or-id]} this]
   (assoc this
          :pulled (ecs/id pulled-entity-or-id)
          :touching-behind (ecs/id pulled-entity-or-id)))
 
-(defmethod ecs/handle-event [:to-entity ::locomotive ::ci/disconnect-pulled]
+ (::ci/disconnect-pulled
   [world {:keys [pulled-entity-or-id]} this]
-  (assoc this :pulled nil))
+  (assoc this :pulled nil)))

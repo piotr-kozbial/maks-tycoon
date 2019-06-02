@@ -2,7 +2,7 @@
   (:require
    [gamebase.ecs :as ecs]
    [gamebase.systems.drawing :as sys-drawing]
-   [gamebase.systems.movement :as sys-move]
+   [gamebase.systems.movement.movement :as sys-move]
    [gamebase.event-queue :as eq]
    [gamebase.geometry :as g]
 

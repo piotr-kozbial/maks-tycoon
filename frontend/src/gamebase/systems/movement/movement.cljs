@@ -1,4 +1,4 @@
-(ns gamebase.systems.movement
+(ns gamebase.systems.movement.movement
   (:require
    [gamebase.ecs :as ecs]
    [gamebase.event-queue :as eq]
@@ -219,7 +219,6 @@
       (assoc this
              :driving? true
              :speed -0.01)))
-
 
   (do ;; Component: test engine
 
@@ -454,8 +453,3 @@
              :reference-path-kvs nil
              :reference-length-on-path-kvs nil))))
 
-(do ;; Railway vehicle connections
-
-
-
-  )
