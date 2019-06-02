@@ -44,9 +44,9 @@
           (assoc this
                  :driving? false
                  :path path
-                 :length-on-path (g/path-length path)
-                 :position (g/path-point-at-length path (g/path-length path))
-                 :angle (g/angle-at-length path (g/path-length path))))
+                 :length-on-path 0
+                 :position (g/path-point-at-length path 0)
+                 :angle (g/angle-at-length path 0)))
       (> length-on-path (g/path-length path))
       , (if-let [next-path (engine-next-path world this path)]
           (recur next-path (- length-on-path (g/path-length path)))

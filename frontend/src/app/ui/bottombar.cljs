@@ -6,7 +6,7 @@
    [app.ecs.entities.locomotive :as locomotive]
    [gamebase.projection :as proj]
    [app.ecs.common-events :as ci]
-   [gamebase.ui.dropdown :refer [mk-dropdown]]
+   [gamebase.ui.dropdown :refer [mk-dropdown mk-space]]
    [gamebase.canvas-control :as canvas-control]
    [gamebase.virtual-timer :as vt]
    [app.world-interop :as wo]
@@ -46,142 +46,191 @@
   (wo/send-to-entity pulled ::ci/disconnect-front)
   )
 
-(defn event-queue-view [state]
-  [:div
-   "TUTAJ DAC EVENT QUEUE sub"
-   [:br]
-   "Nawet eventy mogly by miec z soba stack trace"
-   [:br]
-   "Nawet mozna by chciec zobaczyc wstawianie i wyjmowanie z kolejki"
-   [:br]
-   (pr-str (::ecs/event-queue (:world state)))
-   ]
+
+(defn type-selector [my-state]
+  (let [{:keys [open? selected-type]} my-state]
+    (mk-dropdown {:label ""
+                  :open? open?
+                  :items [[:train "Train/Loc"]
+                          [:car "Car"]]
+                  :selected-id selected-type
+                  :callbacks {:open #'uis/type-selector-open
+                              :close #'uis/type-selector-close
+                              :on-select #'uis/type-selector-select}
+
+                  })))
+
+(defn loc-selector [world my-state]
+  (let [locs (wo/get-all-locomotives world)
+        {:keys [open? selected-id]} my-state]
+    (mk-dropdown {:label "" ;"Train:"
+                  :open? open?
+                  :items (->> locs
+                              (map #(::ecs/entity-id %))
+                              (sort)
+                              (map #(vector % (name %))))
+                  :selected-id selected-id
+                  :callbacks {:open #'uis/loc-selector-open
+                              :close #'uis/loc-selector-close
+                              :on-select #'uis/loc-selector-select}})
+
+    )
+
   )
 
+(defn car-selector [world my-state]
+  (let [cars (wo/get-all-cars world)
+        {:keys [open? selected-id]} my-state]
+    (mk-dropdown {:label "" ;"Train:"
+                  :open? open?
+                  :items (->> cars
+                              (map #(::ecs/entity-id %))
+                              (sort)
+                              (map #(vector % (name %))))
+                  :selected-id selected-id
+                  :callbacks {:open #'uis/car-selector-open
+                              :close #'uis/car-selector-close
+                              :on-select #'uis/car-selector-select}})
+
+    )
+)
+
+
+(defn loc-control [world my-state]
+  (let [locs (wo/get-all-locomotives world)
+        selected-loc-id (:selected-id my-state)]
+    (when-let [selected-loc (first
+                             (filter #(= (::ecs/entity-id %) selected-loc-id)
+                                     locs))]
+      (let [tile-x (:tile-x selected-loc)
+            tile-y (:tile-y selected-loc)
+            {:keys [driving? speed]} (:engine (::ecs/components selected-loc))]
+        [:div
+         [;; location
+          :div {:style {:margin-bottom "5px"}}
+          "Location (loc): [" tile-x ", " tile-y "] "
+          [:a {:href "#"
+               :style {:color "#e8cba2" :background-color "#47681b"}
+               :on-click (fn [_] (canvas-control/center-on
+                                 (proj/world-point
+                                  [(* 32 tile-x) (* 32 tile-y)])))}
+           "→ SHOW"]]
+
+         [;; drive/stop
+          :div {:style {:margin-bottom "5px"}}
+          [:span "State: "]
+          [:div
+           {:style {:display "inline-block"}}
+
+           [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-loc-id ::ci/reverse-drive))
+                :style (if (and driving? (< speed 0))
+                         {:color "white"
+                          :background-color "red"
+                          :border "solid 1px red"}
+                         {:color "black"
+                          :border "solid 1px black"})}
+            "REVERSE"]
+
+           [:span " "]
+
+           [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-loc-id ::ci/stop))
+                :style (if driving?
+                         {:color "black"
+                          :border "solid 1px black"}
+                         {:color "white"
+                          :background-color "black"
+                          :border "solid 1px black"})}
+            "STOP"]
+
+           [:span " "]
+
+           [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-loc-id ::ci/drive))
+                :style (if (and driving? (> speed 0))
+                         {:color "white"
+                          :background-color "green"
+                          :border "solid 1px green"}
+                         {:color "black"
+                          :border "solid 1px black"})}
+            "DRIVE"]
+           ]]
+
+         [;; operations
+          :div {:style {:margin-bottom "5px"}}
+          [:span "Operations: "]
+
+          [:a {:href "#" :on-click (fn [_]
+
+
+                                     (wo/kill-train world (::ecs/entity-id selected-loc))
+                                     )
+               :style
+               {:color "#e8cba2" :background-color "#fc1616"}}
+           "DESTROY"]]
+
+         ])))
+  )
+
+(defn car-control [world my-state]
+  "car-control mockup")
+
+(defn loc-view [world my-state]
+  (let [selected-loc-id (:selected-id my-state)
+        loc (ecs/get-entity-by-key world selected-loc-id)]
+    [:span
+     (entity-picture loc)
+     (->>
+      (iterate
+       (fn [[entity _]]
+         (let [pulled-id (:pulled entity)
+               touching-behind-id (:touching-behind entity)]
+           (cond
+             pulled-id
+             ,   (let [pulled (ecs/get-entity-by-key world pulled-id)]
+                   [pulled
+                    [:span
+                     [:button {:style {:height 32}
+                               :on-click (fn [_] (disconnect entity pulled))}
+                      "="]
+                     (entity-picture pulled)]])
+             touching-behind-id
+             ,   (let [touching-behind (ecs/get-entity-by-key world touching-behind-id)]
+                   [touching-behind
+                    [:span
+                     [:button {:style {:height 32}
+                               :on-click (fn [_] (connect entity touching-behind))}
+                      "x"]
+                     (entity-picture touching-behind)]])
+             :else
+             ,   nil)))
+       [loc nil])
+      (take-while identity) ;; stop when entity == nil
+      (map second))])
+
+  )
+
+(defn car-view [world my-state]
+  "car-view mockup")
 
 (rum/defc bottombar-component < rum/reactive []
-  (rum/react ui-state)
-  (let [{:as state :keys [frame-rate world]} @app-state
-        {:keys [open? selected-id]} (-> (rum/react ui-state)
-                                        :sidebar :loc-selector)
-        loc (ecs/get-entity-by-key world selected-id)
-        {:keys [driving? speed]} (:engine (::ecs/components loc))
-        locs (wo/get-all-locomotives world)]
-
-    [:table
+  (let [ui-st
+        ,   (rum/react ui-state)
+        {:as state :keys [frame-rate world]}
+        ,   @app-state
+        [selector-state selector control view]
+        ,   (case (:selected-type (-> ui-st :sidebar :type-selector))
+              :train [(-> ui-st :sidebar :loc-selector) loc-selector loc-control loc-view]
+              :car [(-> ui-st :sidebar :car-selector) car-selector car-control car-view]
+              [nil (fn [& _]) (fn [& _]) (fn [& _])])]
+    [:e
      [:tbody
       [:tr
-       [:td {:style {:white-space "nowrap"
-                     :vertical-align :text-top}}
-
-        (mk-dropdown {:label "Train:"
-                      :open? open?
-                      :items (->> locs
-                                  (map #(::ecs/entity-id %))
-                                  (sort)
-                                  (map #(vector % (str "halo" (name %)))))
-                      :selected-id selected-id
-                      :callbacks {:open #'uis/loc-selector-open
-                                  :close #'uis/loc-selector-close
-                                  :on-select #'uis/loc-selector-select}})
-
-        (when-let [selected-loc (first
-                                 (filter #(= (::ecs/entity-id %) selected-id)
-                                         locs))]
-          (let [tile-x (:tile-x selected-loc)
-                tile-y (:tile-y selected-loc)]
-            [:div
-             [;; location
-              :div {:style {:margin-bottom "5px"}}
-              "Location (loc): [" tile-x ", " tile-y "] "
-              [:a {:href "#"
-                   :style {:color "#e8cba2" :background-color "#47681b"}
-                   :on-click (fn [_] (canvas-control/center-on
-                                     (proj/world-point
-                                      [(* 32 tile-x) (* 32 tile-y)])))}
-               "→ SHOW"]]
-
-             [;; drive/stop
-              :div {:style {:margin-bottom "5px"}}
-              [:span "State: "]
-              [:div
-               {:style {:display "inline-block"}}
-
-               [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-id ::ci/reverse-drive))
-                    :style (if (and driving? (< speed 0))
-                             {:color "white"
-                              :background-color "red"
-                              :border "solid 1px red"}
-                             {:color "black"
-                              :border "solid 1px black"})}
-                "REVERSE"]
-
-               [:span " "]
-
-               [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-id ::ci/stop))
-                    :style (if driving?
-                             {:color "black"
-                              :border "solid 1px black"}
-                             {:color "white"
-                              :background-color "black"
-                              :border "solid 1px black"})}
-                "STOP"]
-
-               [:span " "]
-
-               [:a {:href "#" :on-click (fn [_] (wo/send-to-entity selected-id ::ci/drive))
-                    :style (if (and driving? (> speed 0))
-                             {:color "white"
-                              :background-color "green"
-                              :border "solid 1px green"}
-                             {:color "black"
-                              :border "solid 1px black"})}
-                "DRIVE"]
-               ]]
-
-             [;; operations
-              :div {:style {:margin-bottom "5px"}}
-              [:span "Operations: "]
-
-              [:a {:href "#" :on-click (fn [_]
-
-
-                                         (wo/kill-train world (::ecs/entity-id selected-loc))
-                                         )
-                   :style
-                   {:color "#e8cba2" :background-color "#fc1616"}}
-               "DESTROY"]]
-
-             ]))
-        ]
+       [:td
+        (type-selector (-> ui-st :sidebar :type-selector))
+        (mk-space)
+        (selector world selector-state)]]
+      [:tr
+       [:td {:style {:white-space "nowrap" :vertical-align :text-top}}
+        (control world selector-state)]
        [:td [:span {:style {:white-space "pre"}} "   "]]
        [:td {:style {:overflow "auto" :vertical-align "middle"}}
-        (entity-picture loc)
-        (->>
-         (iterate
-          (fn [[entity _]]
-            (let [pulled-id (:pulled entity)
-                  touching-behind-id (:touching-behind entity)]
-              (cond
-                pulled-id
-                ,   (let [pulled (ecs/get-entity-by-key world pulled-id)]
-                      [pulled
-                       [:span
-                        [:button {:style {:height 32}
-                                  :on-click (fn [_] (disconnect entity pulled))}
-                         "="]
-                        (entity-picture pulled)]])
-                touching-behind-id
-                ,   (let [touching-behind (ecs/get-entity-by-key world touching-behind-id)]
-                      [touching-behind
-                       [:span
-                        [:button {:style {:height 32}
-                                  :on-click (fn [_] (connect entity touching-behind))}
-                         "x"]
-                        (entity-picture touching-behind)]])
-                :else
-                ,   nil)))
-          [loc nil])
-         (take-while identity) ;; stop when entity == nil
-         (map second))]]
-      [:tr (event-queue-view state)]]]))
+        (view world selector-state)]]]]))

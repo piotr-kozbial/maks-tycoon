@@ -50,10 +50,15 @@
      (::entity-id entity)
      entity)})
 
-(defn to-component [component]
-  {::kind :to-component
-   ::entity-id (::entity-id component)
-   ::component-id (::component-key component)})
+(defn to-component
+  ([component]
+   {::kind :to-component
+    ::entity-id (::entity-id component)
+    ::component-id (::component-key component)})
+  ([entity-id component-id]
+   {::kind :to-component
+    ::entity-id entity-id
+    ::component-id component-id}))
 
 (defn to [object-or-target-id]
   (if (map? object-or-target-id)

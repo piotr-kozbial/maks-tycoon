@@ -77,5 +77,11 @@
 
  (::ci/disconnect-pulled
   [world {:keys [pulled-entity-or-id]} this]
-  (assoc this :pulled nil)))
+  (assoc this :pulled nil))
 
+
+ (::sys-move/path-end
+  [world event this]
+  (println "CAR: someone says path end")
+  ;;(ecs/mk-event this ::ci/stop (::eq/time event))
+  ))

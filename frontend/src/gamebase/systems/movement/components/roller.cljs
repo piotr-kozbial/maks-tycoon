@@ -47,19 +47,19 @@
               (< length 0)
               ,   (if-let [prev-path (roller-previous-path world this path)]
                     (recur prev-path (+ length (g/path-length prev-path)))
-                    [path 0 ::path-end])
+                    [path 0 ::sys/path-end])
               (> length (g/path-length path))
               ,   (if-let [next-path (roller-next-path world this path)]
                     (recur next-path (- length (g/path-length path)))
-                    [path (g/path-length path) ::path-end])
+                    [path (g/path-length path) ::sys/path-end])
               :else [path length]))]
       [(assoc this
               :position (g/path-point-at-length path length)
               :angle (g/angle-at-length path length)
               :path path
               :length-on-path length
-              :at-path-end (= error ::path-end))
-       (when (and (= error ::path-end) (not at-path-end))
+              :at-path-end (= error ::sys/path-end))
+       (when (and (= error ::sys/path-end) (not at-path-end))
          (ecs/mk-event (ecs/to-entity (::ecs/entity-id this)) error time))])))
 
 (defmethod ecs/handle-event [:to-component ::roller ::ecs/init]

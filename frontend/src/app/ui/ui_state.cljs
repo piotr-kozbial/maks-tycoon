@@ -21,15 +21,27 @@
     {}}))
 
 
+(defn type-selector-open []
+  (swap! ui-state assoc-in [:sidebar :type-selector :open?] true))
+(defn type-selector-close []
+  (swap! ui-state assoc-in [:sidebar :type-selector :open?] false))
+(defn type-selector-select [type]
+  (swap! ui-state assoc-in [:sidebar :type-selector :selected-type] type))
 
 (defn loc-selector-open []
   (swap! ui-state assoc-in [:sidebar :loc-selector :open?] true))
-
 (defn loc-selector-close []
   (swap! ui-state assoc-in [:sidebar :loc-selector :open?] false))
-
 (defn loc-selector-select [loc-id]
   (swap! ui-state assoc-in [:sidebar :loc-selector :selected-id] loc-id))
+
+
+(defn car-selector-open []
+  (swap! ui-state assoc-in [:sidebar :car-selector :open?] true))
+(defn car-selector-close []
+  (swap! ui-state assoc-in [:sidebar :car-selector :open?] false))
+(defn car-selector-select [car-id]
+  (swap! ui-state assoc-in [:sidebar :car-selector :selected-id] car-id))
 
 ;; other
 

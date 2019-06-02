@@ -107,13 +107,14 @@
 ;; other
 
 (defn get-all-locomotives [world]
-
   (filter
    #(= (::ecs/type %) :app.ecs.entities.locomotive/locomotive)
-   (vals (::ecs/entities world)))
-  ;; (::ecs/entities world)
+   (vals (::ecs/entities world))))
 
-  )
+(defn get-all-cars [world]
+  (filter
+   #(= (::ecs/type %) :app.ecs.entities.carriage/carriage)
+   (vals (::ecs/entities world))))
 
 (comment
 

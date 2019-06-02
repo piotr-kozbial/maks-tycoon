@@ -9,7 +9,9 @@
                            (filter #(= (first %) selected-id))
                            (first)
                            (second))]
-    [:div {:style {:height "1.7em"}}
+    [:div {:style {:height "1.7em"
+                   :vertical-align "top"
+                   :display "inline-block"}}
      [:span {:style {:vertical-align "top"}} label " "]
      [:table {:class "gamebase_dropdown"
               :style {:display "inline-block"}}
@@ -37,3 +39,6 @@
 
      [:span {:style {:vertical-align "top"}} " ↓ "]
      ]))
+
+(defn mk-space []
+  [:span {:style {:white-space "pre"}} " "])
