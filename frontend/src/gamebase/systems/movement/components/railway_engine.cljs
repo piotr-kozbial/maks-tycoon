@@ -10,13 +10,13 @@
 
 
 
-(derive ::railway-engine ::engine)
+(derive ::railway-engine ::eng/engine)
 
 (defn mk-railway-engine [entity-or-id key {:keys [tile-x tile-y track length-on-track
                                                   driving? speed]}]
   (let [path (assoc (tiles/track-path track tile-x tile-y)
-                    ::tile-xy [tile-x tile-y]
-                    ::track track)]
+                    ::sys/tile-xy [tile-x tile-y]
+                    ::sys/track track)]
     (assoc
      (eng/mk-engine entity-or-id key {:path path
                                   :length-on-path length-on-track

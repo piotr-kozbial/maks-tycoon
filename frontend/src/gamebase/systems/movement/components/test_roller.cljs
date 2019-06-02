@@ -12,7 +12,7 @@
 
 
 
-(derive ::test-roller ::roller)
+(derive ::test-roller ::rol/roller)
 
 (defn mk-test-roller [previous-path-f next-path-f get-reference-f & args]
   (let [v (assoc

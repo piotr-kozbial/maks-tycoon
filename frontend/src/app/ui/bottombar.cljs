@@ -46,9 +46,22 @@
   (wo/send-to-entity pulled ::ci/disconnect-front)
   )
 
+(defn event-queue-view [state]
+  [:div
+   "TUTAJ DAC EVENT QUEUE sub"
+   [:br]
+   "Nawet eventy mogly by miec z soba stack trace"
+   [:br]
+   "Nawet mozna by chciec zobaczyc wstawianie i wyjmowanie z kolejki"
+   [:br]
+   (pr-str (::ecs/event-queue (:world state)))
+   ]
+  )
+
+
 (rum/defc bottombar-component < rum/reactive []
   (rum/react ui-state)
-  (let [{:keys [frame-rate world]} @app-state
+  (let [{:as state :keys [frame-rate world]} @app-state
         {:keys [open? selected-id]} (-> (rum/react ui-state)
                                         :sidebar :loc-selector)
         loc (ecs/get-entity-by-key world selected-id)
@@ -170,4 +183,5 @@
                 ,   nil)))
           [loc nil])
          (take-while identity) ;; stop when entity == nil
-         (map second))]]]]))
+         (map second))]]
+      [:tr (event-queue-view state)]]]))

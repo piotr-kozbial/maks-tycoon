@@ -3,7 +3,8 @@
    [gamebase.ecs :as ecs]
    [gamebase.event-queue :as eq]
    [app.ecs.common-events :as ci]
-   [gamebase.geometry :as g]))
+   [gamebase.geometry :as g]
+   [gamebase.systems.movement.movement :as sys]))
 
 
 
@@ -22,7 +23,7 @@
 (defn mk-roller [entity-or-id key {:keys [distance]}]
 
   (let [v (assoc
-           (ecs/mk-component ::movement entity-or-id key ::roller)
+           (ecs/mk-component ::sys/movement entity-or-id key ::roller)
            :distance (or distance 0))]
     (if :gamebase.ecs/*with-xprint*
       (vary-meta v

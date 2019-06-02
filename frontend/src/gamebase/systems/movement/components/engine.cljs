@@ -3,7 +3,8 @@
    [gamebase.ecs :as ecs]
    [gamebase.event-queue :as eq]
    [app.ecs.common-events :as ci]
-   [gamebase.geometry :as g]))
+   [gamebase.geometry :as g]
+   [gamebase.systems.movement.movement :as sys]))
 
 
 (defmulti engine-next-path (fn [world this path] (::ecs/type this)))
@@ -13,7 +14,7 @@
                  {:keys [path length-on-path driving? speed]}]
   (assert path)
   (let [v (assoc
-           (ecs/mk-component ::movement entity-or-id key ::engine)
+           (ecs/mk-component ::sys/movement entity-or-id key ::engine)
            :path path
            :length-on-path (or length-on-path 0)
            :driving? driving?

@@ -64,21 +64,6 @@
              :center [16 8]
              :resource-name-kvs [:image]})
 
-      ;; :debug-engine (sys-drawing/mk-dot-component
-      ;;                entity :debug-engine
-      ;;                {:point-kvs (ecs/ck-kvs :engine :position)
-      ;;                 :color [255 255 255]})
-
-      ;; :debug-rear (sys-drawing/mk-dot-component
-      ;;                entity :debug-rear
-      ;;                {:point-kvs (ecs/ck-kvs :rear :position)
-      ;;                 :color [255 0 0]})
-
-      ;; :debug-front (sys-drawing/mk-dot-component
-      ;;              entity :debug-front
-      ;;              {:point-kvs (ecs/ck-kvs :front :position)
-      ;;               :color [83 238 252]})
-
       }
 
      :image "loco1.png")))

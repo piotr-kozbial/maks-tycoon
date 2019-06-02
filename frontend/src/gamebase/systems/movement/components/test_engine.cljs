@@ -6,7 +6,7 @@
    [gamebase.geometry :as g]
    [gamebase.systems.movement.components.engine :as eng]))
 
-(derive ::test-engine ::engine)
+(derive ::test-engine ::eng/engine)
 
 (defn mk-test-engine [engine-next-path-f
                       engine-previous-path-f

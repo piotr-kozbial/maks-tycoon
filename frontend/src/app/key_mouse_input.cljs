@@ -116,34 +116,7 @@
                                         ::ci/connect-pulled
                                         :pulled-entity-or-id car2))
 
-               ;; "c" (let [id (keyword (str "car-" (get-fresh-entity-id)))
-               ;;           car (carriage/mk-entity id tile-x tile-y)]
-               ;;       (wo/inject-entity car)
-               ;;       (wo/send-to-entity car ::ecs/init))
-
-               ;; "q" (let [id (keyword (str "car-" (get-fresh-entity-id)))
-               ;;           car (carriage/mk-entity id tile-x tile-y)]
-               ;;       (wo/inject-entity car)
-               ;;       (wo/send-to-entity car ::ecs/init))
-
                "w" (run-train)
-
-               ;; "w" (let [tile-x 4
-               ;;           tile-y 1
-               ;;           loc-id (keyword (str "loc-" (get-fresh-entity-id)))
-               ;;           loc (locomotive/mk-entity loc-id tile-x tile-y)
-               ;;           car-id (keyword (str "car-" (get-fresh-entity-id)))
-               ;;           car (carriage/mk-entity car-id (dec tile-x) tile-y)
-               ;;           car2-id (keyword (str "car-" (get-fresh-entity-id)))
-               ;;           car2 (carriage/mk-entity car2-id (- tile-x 2) tile-y)
-               ;;           car3-id (keyword (str "car-" (get-fresh-entity-id)))
-               ;;           car3 (carriage/mk-entity car3-id (- tile-x 3) tile-y)]
-               ;;       (doseq [e [loc car car2 car3]]
-               ;;         (wo/inject-entity e)
-               ;;         (wo/send-to-entity e ::ecs/init))
-               ;;       (wo/send-to-entity loc  ::locomotive/couple-rear :the-other-id car-id)
-               ;;       (wo/send-to-entity car  ::carriage/couple-rear   :the-other-id car2-id)
-               ;;       (wo/send-to-entity car2 ::carriage/couple-rear   :the-other-id car3-id))
 
                " " (when (turnouts/is-turnout? tile-x tile-y)
 
