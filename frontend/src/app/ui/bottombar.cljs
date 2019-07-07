@@ -29,11 +29,9 @@
   (wo/send-to-entity puller ::ci/connect-pulled :pulled-entity-or-id pulled)
   (wo/send-to-entity pulled ::ci/connect-to
                      :reference-entity-or-id puller
-                     :reference-path-kvs (ecs/ck-kvs :point :path)
-                     :reference-length-on-path-kvs (ecs/ck-kvs :point :length-on-path)
-
-
-                     )
+                     ;; TODO tu nizej dla wagonu :point, nie :engine
+                     :reference-path-kvs (ecs/ck-kvs :engine :path)
+                     :reference-length-on-path-kvs (ecs/ck-kvs :engine :length-on-path))
   )
 
 (defn disconnect [puller pulled]
@@ -176,40 +174,62 @@
 (defn loc-view [world my-state]
   (let [selected-loc-id (:selected-id my-state)
         loc (ecs/get-entity-by-key world selected-loc-id)]
-    [:span
-     (entity-picture loc)
-     (->>
-      (iterate
-       (fn [[entity _]]
-         (let [pulled-id (:pulled entity)
-               touching-behind-id (:touching-behind entity)]
-           (cond
-             pulled-id
-             ,   (let [pulled (ecs/get-entity-by-key world pulled-id)]
-                   [pulled
-                    [:span
-                     [:button {:style {:height 32}
-                               :on-click (fn [_] (disconnect entity pulled))}
-                      "="]
-                     (entity-picture pulled)]])
-             touching-behind-id
-             ,   (let [touching-behind (ecs/get-entity-by-key world touching-behind-id)]
-                   [touching-behind
-                    [:span
-                     [:button {:style {:height 32}
-                               :on-click (fn [_] (connect entity touching-behind))}
-                      "x"]
-                     (entity-picture touching-behind)]])
-             :else
-             ,   nil)))
-       [loc nil])
-      (take-while identity) ;; stop when entity == nil
-      (map second))])
+    [:div
+     [:span
+      (entity-picture loc)
+      (->>
+       (iterate
+        (fn [[entity _]]
+          (let [pulled-id (:pulled entity)
+                touching-behind-id (:touching-behind entity)]
+            (cond
+              pulled-id
+              ,   (let [pulled (ecs/get-entity-by-key world pulled-id)]
+                    [pulled
+                     [:span
+                      [:button {:style {:height 32}
+                                :on-click (fn [_] (disconnect entity pulled))}
+                       "="]
+                      (entity-picture pulled)]])
+              touching-behind-id
+              ,   (let [touching-behind
+                        (ecs/get-entity-by-key world touching-behind-id)]
+                    [touching-behind
+                     [:span
+                      [:button {:style {:height 32}
+                                :on-click (fn [_] (connect entity touching-behind))}
+                       "x"]
+                      (entity-picture touching-behind)]])
+              :else
+              ,   nil)))
+        [loc nil])
+       (take-while identity) ;; stop when entity == nil
+       (map second))]
+
+     [:br]
+     [:pre
+      (with-out-str (pprint loc))]
+     ])
 
   )
 
 (defn car-view [world my-state]
-  "car-view mockup")
+  (let [cars (wo/get-all-cars world)
+        selected-car-id (:selected-id my-state)]
+    [:div
+     "car-view mockup"
+
+     (when-let [selected-car (first
+                              (filter #(= (::ecs/entity-id %) selected-car-id)
+                                      cars))]
+       (let [tile-x (:tile-x selected-car)
+             tile-y (:tile-y selected-car)]
+         [:div
+          [:pre
+           (with-out-str (pprint selected-car))]
+          ]))
+     
+]))
 
 (rum/defc bottombar-component < rum/reactive []
   (let [ui-st

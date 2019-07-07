@@ -86,8 +86,9 @@
                          loc (locomotive/mk-entity id 2 1)
                          car-id (keyword (str "car-" (get-fresh-entity-id)))
                          car (carriage/mk-entity car-id 1 1 loc)
-                         car2-id (keyword (str "car2-" (get-fresh-entity-id)))
-                         car2 (carriage/mk-entity car2-id 0 1 car)]
+                         ;; car2-id (keyword (str "car2-" (get-fresh-entity-id)))
+                         ;; car2 (carriage/mk-entity car2-id 0 1 car)
+                         ]
 
                      (wo/inject-entity loc)
                      (wo/send-to-entity loc ::ecs/init)
@@ -104,17 +105,18 @@
                                         :pulled-entity-or-id car)
 
 
-                     (wo/inject-entity car2)
-                     (wo/send-to-entity car2 ::ecs/init)
-                     (wo/send-to-entity car2
-                                        ::ci/connect-to
-                                        :reference-entity-or-id car
-                                        :reference-path-kvs (ecs/ck-kvs :point :path)
-                                        :reference-length-on-path-kvs (ecs/ck-kvs :point :length-on-path)
-                                        )
-                     (wo/send-to-entity car
-                                        ::ci/connect-pulled
-                                        :pulled-entity-or-id car2))
+                     ;; (wo/inject-entity car2)
+                     ;; (wo/send-to-entity car2 ::ecs/init)
+                     ;; (wo/send-to-entity car2
+                     ;;                    ::ci/connect-to
+                     ;;                    :reference-entity-or-id car
+                     ;;                    :reference-path-kvs (ecs/ck-kvs :point :path)
+                     ;;                    :reference-length-on-path-kvs (ecs/ck-kvs :point :length-on-path)
+                     ;;                    )
+                     ;; (wo/send-to-entity car
+                     ;;                    ::ci/connect-pulled
+                     ;;                    :pulled-entity-or-id car2)
+                     )
 
                "w" (run-train)
 

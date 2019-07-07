@@ -40,8 +40,8 @@
 
 (defmethod rol/roller-previous-path ::railway-roller
   [world this path]
-  (let [[tile-x tile-y] (::sys/tile-xy (:path this))
-        track (::sys/track (:path this))]
+  (let [[tile-x tile-y] (:gamebase.systems.movement.movement/tile-xy (:path this))
+        track (:gamebase.systems.movement.movement/track (:path this))]
     (sys/-railway-previous-path world path
                             {:hint-tile-x tile-x
                              :hint-tile-y tile-y

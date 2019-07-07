@@ -104,7 +104,9 @@
                                 ))
                           world)
                         (catch :default e
-                          (println  "Error in advance-simulation-and-draw (during advance)")
+                          (println  (str "E Error in advance-simulation-and-draw (during advance)" "\n"
+                                         e))
+
                           world))]
   ;;; validate...
         ;;(s/validate st/s-world world')

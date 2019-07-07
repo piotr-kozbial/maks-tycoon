@@ -38,8 +38,9 @@
       v)))
 
 (defn roller-full-update [world this time]
-  (when-let [[ref-path ref-length] (roller-get-reference world this)]
-    (let [{:keys [at-path-end]} this
+  (when-let [r (roller-get-reference world this)]
+    (let [[ref-path ref-length] r
+          {:keys [at-path-end]} this
           [path length error]
           (loop [path ref-path
                  length (+ (:distance this) ref-length)]
