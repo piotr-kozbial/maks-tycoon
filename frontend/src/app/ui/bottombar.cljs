@@ -13,7 +13,8 @@
    [app.ui.ui-state :refer [ui-state] :as uis]
    [cljs.pprint :refer [pprint]]
 
-   [gamebase.geometry :as geom]))
+   [gamebase.geometry :as geom]
+   [app.ecs.operations :as ops]))
 
 
 (defn entity-picture [entity]
@@ -21,17 +22,24 @@
    [:image {:href (:image entity)
             :transform "rotate(-180,16,8)"}]])
 
-(defn connect [puller pulled]
+(defn connect [world puller pulled]
   (.log js/console
         (str "CONNECT "
              (ecs/id puller)
              (ecs/id pulled)))
-  (wo/send-to-entity puller ::ci/connect-pulled :pulled-entity-or-id pulled)
-  (wo/send-to-entity pulled ::ci/connect-to
-                     :reference-entity-or-id puller
-                     ;; TODO tu nizej dla wagonu :point, nie :engine
-                     :reference-path-kvs (ecs/ck-kvs :engine :path)
-                     :reference-length-on-path-kvs (ecs/ck-kvs :engine :length-on-path))
+
+  (let [[path-kvs length-on-path-kvs]
+        (ops/get-central-point-kvs (ecs/get-entity world puller))]
+    (wo/send-to-entity puller ::ci/connect-pulled :pulled-entity-or-id pulled)
+    (wo/send-to-entity pulled ::ci/connect-to
+                       :reference-entity-or-id puller
+                       ;; TODO tu nizej dla wagonu :point, nie :engine
+                       :reference-path-kvs path-kvs
+
+                       ;;(ecs/ck-kvs :engine :path)
+                       :reference-length-on-path-kvs length-on-path-kvs
+                       ;;(ecs/ck-kvs :engine :length-on-path)
+                       ))
   )
 
 (defn disconnect [puller pulled]
@@ -197,7 +205,7 @@
                     [touching-behind
                      [:span
                       [:button {:style {:height 32}
-                                :on-click (fn [_] (connect entity touching-behind))}
+                                :on-click (fn [_] (connect world entity touching-behind))}
                        "x"]
                       (entity-picture touching-behind)]])
               :else

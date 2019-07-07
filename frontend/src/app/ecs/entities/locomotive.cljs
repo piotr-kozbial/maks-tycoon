@@ -11,7 +11,8 @@
    [gamebase.layers :as layers]
    [app.world-interop :as wo]
    [app.state :as st]
-   [app.ecs.common-events :as ci])
+   [app.ecs.common-events :as ci]
+   [app.ecs.operations :as ops])
   (:require-macros
    [gamebase.helpers :refer [event-handlers]]))
 
@@ -67,6 +68,13 @@
       }
 
      :image "loco1.png")))
+
+
+(defmethod ops/get-central-point-kvs ::locomotive
+  [_]
+  [(ecs/ck-kvs :engine :path)
+   (ecs/ck-kvs :engine :length-on-path)])
+
 
 (event-handlers
  [:to-entity ::locomotive]
