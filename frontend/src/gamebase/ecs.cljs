@@ -363,8 +363,8 @@ nil
 (defn get-entity-by-key [world entity-key]
   (get-in world [::entities entity-key]))
 
-(defn get-entity [world entity-or-id]
+(defn get-entity-by [world entity-or-id]
   (if (map? entity-or-id)
     entity-or-id ;; TODO - should check more?
-    (get-entity-by-key entity-or-id)))
+    (get-entity-by-key world entity-or-id)))
 

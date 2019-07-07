@@ -50,6 +50,11 @@
 
      :image "carriage1.png")))
 
+(defmethod ops/get-central-point-kvs ::carriage
+  [_]
+  [(ecs/ck-kvs :point :path)
+   (ecs/ck-kvs :point :length-on-path)])
+
 (event-handlers
  [:to-entity ::carriage]
 

@@ -29,7 +29,7 @@
              (ecs/id pulled)))
 
   (let [[path-kvs length-on-path-kvs]
-        (ops/get-central-point-kvs (ecs/get-entity world puller))]
+        (ops/get-central-point-kvs (ecs/get-entity-by world puller))]
     (wo/send-to-entity puller ::ci/connect-pulled :pulled-entity-or-id pulled)
     (wo/send-to-entity pulled ::ci/connect-to
                        :reference-entity-or-id puller
