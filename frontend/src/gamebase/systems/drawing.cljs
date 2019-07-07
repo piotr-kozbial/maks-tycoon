@@ -159,8 +159,8 @@
           [center-x center-y] center
           angle (get-in entity angle-kvs)
           resource-name (get-in entity resource-name-kvs)]
-      (.log js/console (str "static image draw(" (::ecs/entity-id entity) "): /" (pr-str resource-name-kvs) "/ " (pr-str resource-name)))
-      (.log js/console (pr-str entity))
+      ;; (.log js/console (str "static image draw(" (::ecs/entity-id entity) "): /" (pr-str resource-name-kvs) "/ " (pr-str resource-name)))
+      ;; (.log js/console (pr-str entity))
       (when-let [img (resources/get-resource resource-name)]
         (js/push)
         (js/translate point-x point-y)
