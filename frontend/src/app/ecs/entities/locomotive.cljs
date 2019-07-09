@@ -84,9 +84,10 @@
   (ecs/retarget event (-> this ::ecs/components :engine)))
 
  (::ci/delta-t
-  [world event this]
-  nil)
-
+  [world event {:as this :keys [pulled touching-behind]}]
+  (let [engine (-> this :gamebase.ecs/components :engine)]
+    (when (and (not pulled) touching-behind)
+      (assoc this :touching-behind nil))))
 
  (::ci/stop
   [world event this]

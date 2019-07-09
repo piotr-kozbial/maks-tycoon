@@ -22,35 +22,9 @@
    [:image {:href (:image entity)
             :transform "rotate(-180,16,8)"}]])
 
-(defn connect [world puller pulled]
-  (.log js/console
-        (str "CONNECT "
-             (ecs/id puller)
-             (ecs/id pulled)))
 
-  (let [[path-kvs length-on-path-kvs]
-        (ops/get-central-point-kvs (ecs/get-entity-by world puller))]
-    (wo/send-to-entity puller ::ci/connect-pulled :pulled-entity-or-id pulled)
-    (wo/send-to-entity pulled ::ci/connect-to
-                       :reference-entity-or-id puller
-                       ;; TODO tu nizej dla wagonu :point, nie :engine
-                       :reference-path-kvs path-kvs
 
-                       ;;(ecs/ck-kvs :engine :path)
-                       :reference-length-on-path-kvs length-on-path-kvs
-                       ;;(ecs/ck-kvs :engine :length-on-path)
-                       ))
-  )
 
-(defn disconnect [puller pulled]
-  (.log js/console
-        (str "DISCONNECT "
-             (ecs/id puller)
-             (ecs/id pulled)))
-
-  (wo/send-to-entity puller ::ci/disconnect-pulled)
-  (wo/send-to-entity pulled ::ci/disconnect-front)
-  )
 
 
 (defn type-selector [my-state]
@@ -196,7 +170,7 @@
                     [pulled
                      [:span
                       [:button {:style {:height 32}
-                                :on-click (fn [_] (disconnect entity pulled))}
+                                :on-click (fn [_] (wo/disconnect entity pulled))}
                        "="]
                       (entity-picture pulled)]])
               touching-behind-id
@@ -205,7 +179,7 @@
                     [touching-behind
                      [:span
                       [:button {:style {:height 32}
-                                :on-click (fn [_] (connect world entity touching-behind))}
+                                :on-click (fn [_] (wo/connect world entity touching-behind))}
                        "x"]
                       (entity-picture touching-behind)]])
               :else

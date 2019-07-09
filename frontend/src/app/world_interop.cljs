@@ -3,6 +3,8 @@
    [gamebase.canvas-control :as canvas-control]
    [gamebase.resources :as resources]
    [gamebase.systems.drawing :as sys-drawing]
+   [app.ecs.common-events :as ci]
+   [app.ecs.operations :as ops]
    [gamebase.systems.movement.movement :as sys-move]
    [app.ecs.systems.railway :as sys-railway]
    [app.tiles.general :as tiles]
@@ -206,3 +208,20 @@
            (layers/set-tile-in-layer l tile-x tile-y tile)
            l)])
       layers))))
+
+
+
+;; railway operations
+
+(defn connect [world puller pulled]
+  (let [[path-kvs length-on-path-kvs]
+        (ops/get-central-point-kvs (ecs/get-entity-by world puller))]
+    (send-to-entity puller ::ci/connect-pulled :pulled-entity-or-id pulled)
+    (send-to-entity pulled ::ci/connect-to
+                       :reference-entity-or-id puller
+                       :reference-path-kvs path-kvs
+                       :reference-length-on-path-kvs length-on-path-kvs)))
+
+(defn disconnect [puller pulled]
+  (send-to-entity puller ::ci/disconnect-pulled)
+  (send-to-entity pulled ::ci/disconnect-front))
