@@ -6,7 +6,7 @@
             [gamebase.events :as events]
             [gamebase.event-queue :as eq]
             [gamebase.ecs :as ecs]
-            [gamebase.virtual-timer :as vt]
+            [gamebase-ecs.virtual-timer :as vt]
             [gamebase.canvas-control :as canvas-control]
             [gamebase.layouts.sidebar-and-bottombar :as our-layout]
             [gamebase.geometry :as g]

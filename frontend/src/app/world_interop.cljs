@@ -3,6 +3,7 @@
    [gamebase.canvas-control :as canvas-control]
    [gamebase.resources :as resources]
    [gamebase.systems.drawing :as sys-drawing]
+   [app.ecs.systems.collisions :as sys-collisions]
    [app.ecs.common-events :as ci]
    [app.ecs.operations :as ops]
    [gamebase.systems.movement.movement :as sys-move]
@@ -10,8 +11,7 @@
    [app.tiles.general :as tiles]
    [app.tiles.turnouts :as turnouts]
    [gamebase.ecs :as ecs]
-   [gamebase.virtual-timer :as vt]
-   [gamebase.event-queue :as eq]
+   [gamebase-ecs.virtual-timer :as vt]
    [gamebase.layers :as layers]
    [app.server-communication :as sc]
    [app.tiles.general :refer [initialize-tile-extra]]
@@ -63,7 +63,8 @@
                 (-> (ecs/mk-world)
                     (ecs/insert-object (sys-drawing/mk-system))
                     (ecs/insert-object (sys-move/mk-system))
-                    (ecs/insert-object (sys-railway/mk-system)))
+                    (ecs/insert-object (sys-railway/mk-system))
+                    (ecs/insert-object (sys-collisions/mk-system)))
                 :layers ls
                 :tile-context ctx
                 :tile-extra {})

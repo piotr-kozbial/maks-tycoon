@@ -17,10 +17,7 @@
             [app.ecs.entities.locomotive :as locomotive]
             [app.ecs.entities.carriage :as carriage]
 
-            [gamebase.events :as events]
-            [gamebase.event-queue :as eq]
             [gamebase.ecs :as ecs]
-            [gamebase.virtual-timer :as vt]
             [gamebase.canvas-control :as canvas-control]
             [gamebase.layouts.sidebar-and-bottombar
              :as our-layout]

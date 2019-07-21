@@ -7,7 +7,7 @@
    [app.ecs.common-events :as ci]
    [gamebase.canvas-control :as canvas-control]
    [gamebase.projection :as proj]
-   [gamebase.virtual-timer :as vt]
+   [gamebase-ecs.virtual-timer :as vt]
    [app.world-interop :as wo]
 
    [gamebase.ui.dropdown :refer [mk-dropdown]]

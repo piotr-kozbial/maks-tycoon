@@ -10,8 +10,8 @@
 
                  [cider/piggieback "0.3.9"]
                  [rum "0.11.2"]
-                 ;;[org.clojure/data.xml "0.2.0-alpha5"]
-                 [org.clojure/data.xml "0-UE-DEVELOPMENT"]
+                 [org.clojure/data.xml "0.2.0-alpha6"]
+                 ;; [org.clojure/data.xml "0-UE-DEVELOPMENT"]
 
                  [prismatic/schema "1.1.9"]
                  [instar "1.0.10" :exclusions [org.clojure/clojure]]
@@ -19,6 +19,7 @@
                  [cljs-ajax "0.7.4"]
 
                  [gamebase "0.1.1-SNAPSHOT"]
+                 [gamebase-ecs "0.1.0-SNAPSHOT"]
 
                  ]
 

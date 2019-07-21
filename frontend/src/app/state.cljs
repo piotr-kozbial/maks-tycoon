@@ -2,7 +2,7 @@
   (:require
    [gamebase.layers :as layers]
    [app.tiles.general :as tiles]
-   [gamebase.virtual-timer :as vt]
+   [gamebase-ecs.virtual-timer :as vt]
    [gamebase.event-queue :as eq]
 
    [devcards.core]

@@ -8,7 +8,7 @@
    [app.ecs.common-events :as ci]
    [gamebase.ui.dropdown :refer [mk-dropdown mk-space]]
    [gamebase.canvas-control :as canvas-control]
-   [gamebase.virtual-timer :as vt]
+   [gamebase-ecs.virtual-timer :as vt]
    [app.world-interop :as wo]
    [app.ui.ui-state :refer [ui-state] :as uis]
    [cljs.pprint :refer [pprint]]
