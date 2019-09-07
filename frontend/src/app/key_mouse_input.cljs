@@ -93,29 +93,29 @@
                      (wo/inject-entity loc)
                      (wo/send-to-entity loc ::ecs/init)
 
-                     (wo/inject-entity car)
-                     (wo/send-to-entity car ::ecs/init)
-                     (wo/send-to-entity car
-                                        ::ci/connect-to
-                                        :reference-entity-or-id loc
-                                        :reference-path-kvs (ecs/ck-kvs :engine :path)
-                                        :reference-length-on-path-kvs (ecs/ck-kvs :engine :length-on-path))
-                     (wo/send-to-entity loc
-                                        ::ci/connect-pulled
-                                        :pulled-entity-or-id car)
+                     ;; (wo/inject-entity car)
+                     ;; (wo/send-to-entity car ::ecs/init)
+                     ;; (wo/send-to-entity car
+                     ;;                    ::ci/connect-to
+                     ;;                    :reference-entity-or-id loc
+                     ;;                    :reference-path-kvs (ecs/ck-kvs :engine :path)
+                     ;;                    :reference-length-on-path-kvs (ecs/ck-kvs :engine :length-on-path))
+                     ;; (wo/send-to-entity loc
+                     ;;                    ::ci/connect-pulled
+                     ;;                    :pulled-entity-or-id car)
 
 
-                     (wo/inject-entity car2)
-                     (wo/send-to-entity car2 ::ecs/init)
-                     (wo/send-to-entity car2
-                                        ::ci/connect-to
-                                        :reference-entity-or-id car
-                                        :reference-path-kvs (ecs/ck-kvs :point :path)
-                                        :reference-length-on-path-kvs (ecs/ck-kvs :point :length-on-path)
-                                        )
-                     (wo/send-to-entity car
-                                        ::ci/connect-pulled
-                                        :pulled-entity-or-id car2)
+                     ;; (wo/inject-entity car2)
+                     ;; (wo/send-to-entity car2 ::ecs/init)
+                     ;; (wo/send-to-entity car2
+                     ;;                    ::ci/connect-to
+                     ;;                    :reference-entity-or-id car
+                     ;;                    :reference-path-kvs (ecs/ck-kvs :point :path)
+                     ;;                    :reference-length-on-path-kvs (ecs/ck-kvs :point :length-on-path)
+                     ;;                    )
+                     ;; (wo/send-to-entity car
+                     ;;                    ::ci/connect-pulled
+                     ;;                    :pulled-entity-or-id car2)
                      )
 
                "w" (run-train)

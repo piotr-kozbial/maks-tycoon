@@ -66,8 +66,12 @@
              :center [16 8]
              :resource-name-kvs [:image]})
 
-      :collider (mk-collider entity :collider)
-      }
+      :collider (mk-collider entity
+                             :collider
+                             {:tile-xy-kvss [(ecs/ck-kvs :engine :path ::sys-move/tile-xy)
+                                             (ecs/ck-kvs :front :path ::sys-move/tile-xy)
+                                             (ecs/ck-kvs :rear :path ::sys-move/tile-xy)
+                                             ]})}
 
      :image "loco1.png")))
 

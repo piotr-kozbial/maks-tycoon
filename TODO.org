@@ -1,0 +1,13 @@
+
+* dependent components/entities
+
+To wtedy kiedy jeden wagon zalezy od drugiego, tamten od nastepnego, itd. az do lokomotywy.
+Byl z tego powodu bug, kiedy ten dalszy probowal sie update'owac, kiedy poprzedni
+jeszcze mial nulle jako path i length. Ale w ogole przy zlej kolejnosci sa opoznienia,
+tzn. teraz zalatany jest ten bug, ale czasem pociag nowo utworzony miga najpierw w 0,0
+a dopiero potem trafia na wlasciwe miejsce - to wlasnie ten problem.
+
+Czyli musi byc tak, ze jeden komponent wskaze drugi jako zaleznosc i wtedy
+mechanizm przechodzenia przez wszystkich z delta-t powinien najpierw przerobic
+zaleznosc, a dopiero potem komponent zalezny. Moze byc na stosie chwilowo, ale zeby bylo.
+

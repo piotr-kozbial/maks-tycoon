@@ -1,7 +1,8 @@
 (ns app.ecs.systems.collisions
   (:require
    [gamebase.ecs :as ecs]
-   [app.ecs.common-events :as ci]))
+   [app.ecs.common-events :as ci]
+   [clojure.set :as set]))
 
 ;; TODO
 
@@ -23,13 +24,29 @@
 
 (defmethod ecs/handle-event [:to-system ::collisions ::ci/delta-t]
   [world event system]
-  (let [components (ecs/all-components-of-system world ::collisions)]
-    (print (str (count components) " colliders found"))
-    )
+  (let [tile-components-map
+        (->> (ecs/all-components-of-system world ::collisions)
+             (map (fn [{:keys [tile-xy-kvss] :as component}]
+                    (when-let [entity (ecs/get-entity-by-key world (::ecs/entity-id component))]
+                      (->> (for [kvs tile-xy-kvss] (get-in entity kvs))
+                           (mapcat #(vector % #{[(::ecs/entity-id component)
+                                                  (::ecs/component-key component)]}))
+                           (apply hash-map)))))
+             (apply merge-with set/union))]
+    (doseq [[tile-xy component-ids] tile-components-map]
+      (when (> (count component-ids) 1)
+        (print "COLLISION on " (pr-str tile-xy) ": " (pr-str component-ids))
+
+        )
+
+      )
+)
+
   nil)
 
-(defn mk-collider [entity-or-id key]
+(defn mk-collider [entity-or-id key
+                   {:keys [tile-xy-kvss]}]
   (assoc
    (ecs/mk-component ::collisions entity-or-id key ::collider)
-   :a :b
+   :tile-xy-kvss tile-xy-kvss
    ))
