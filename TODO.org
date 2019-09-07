@@ -11,3 +11,14 @@ Czyli musi byc tak, ze jeden komponent wskaze drugi jako zaleznosc i wtedy
 mechanizm przechodzenia przez wszystkich z delta-t powinien najpierw przerobic
 zaleznosc, a dopiero potem komponent zalezny. Moze byc na stosie chwilowo, ale zeby bylo.
 
+* wlasciwe taktowanie symulacji
+
+Teraz w core.cljs, w (advance-simulation-and-draw) jest :delta-t 20.
+A ma byc -- nie wcale nie odpowiednie delta-t do uplywu czasu,
+tylko -- kilkakrotne zapodanie :delta-t 10 powiedzmy, czy ile tam chcemy,
+ale kilkakrotne, az do czasu obecnego. Czyli uniezalezniamy taktowanie symulacji
+od taktowania rysowania. W ten sposob bedzie powtarzalnosc, nawet jesli rysowanie
+bedzie troche skakac. Moze sie tez zdarzyc, ze sie nie bedziemy wyrabiac - trzeba zrobic
+jakis limit - jezeli mamy za duzo razy do przeliczenia po 10, to sygnalizowac na czerwono,
+ze sie nie wyrabiamy.
+
