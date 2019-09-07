@@ -23,4 +23,13 @@
 
 (defmethod ecs/handle-event [:to-system ::collisions ::ci/delta-t]
   [world event system]
+  (let [components (ecs/all-components-of-system world ::collisions)]
+    (print (str (count components) " colliders found"))
+    )
   nil)
+
+(defn mk-collider [entity-or-id key]
+  (assoc
+   (ecs/mk-component ::collisions entity-or-id key ::collider)
+   :a :b
+   ))

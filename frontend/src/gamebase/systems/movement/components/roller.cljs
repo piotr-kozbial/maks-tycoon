@@ -39,29 +39,30 @@
 
 (defn roller-full-update [world this time]
   (when-let [r (roller-get-reference world this)]
-    (let [[ref-path ref-length] r
-          {:keys [at-path-end]} this
-          [path length error]
-          (loop [path ref-path
-                 length (+ (:distance this) ref-length)]
-            (cond
-              (< length 0)
-              ,   (if-let [prev-path (roller-previous-path world this path)]
-                    (recur prev-path (+ length (g/path-length prev-path)))
-                    [path 0 ::sys/path-end])
-              (> length (g/path-length path))
-              ,   (if-let [next-path (roller-next-path world this path)]
-                    (recur next-path (- length (g/path-length path)))
-                    [path (g/path-length path) ::sys/path-end])
-              :else [path length]))]
-      [(assoc this
-              :position (g/path-point-at-length path length)
-              :angle (g/angle-at-length path length)
-              :path path
-              :length-on-path length
-              :at-path-end (= error ::sys/path-end))
-       (when (and (= error ::sys/path-end) (not at-path-end))
-         (ecs/mk-event (ecs/to-entity (::ecs/entity-id this)) error time))])))
+    (let [[ref-path ref-length] r]
+      (when (and ref-path ref-length)
+        (let [{:keys [at-path-end]} this
+              [path length error]
+              (loop [path ref-path
+                     length (+ (:distance this) ref-length)]
+                (cond
+                  (< length 0)
+                  ,   (if-let [prev-path (roller-previous-path world this path)]
+                        (recur prev-path (+ length (g/path-length prev-path)))
+                        [path 0 ::sys/path-end])
+                  (> length (g/path-length path))
+                  ,   (if-let [next-path (roller-next-path world this path)]
+                        (recur next-path (- length (g/path-length path)))
+                        [path (g/path-length path) ::sys/path-end])
+                  :else [path length]))]
+          [(assoc this
+                  :position (g/path-point-at-length path length)
+                  :angle (g/angle-at-length path length)
+                  :path path
+                  :length-on-path length
+                  :at-path-end (= error ::sys/path-end))
+           (when (and (= error ::sys/path-end) (not at-path-end))
+             (ecs/mk-event (ecs/to-entity (::ecs/entity-id this)) error time))])))))
 
 (defmethod ecs/handle-event [:to-component ::roller ::ecs/init]
   [world event this]

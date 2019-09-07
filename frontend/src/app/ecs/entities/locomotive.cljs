@@ -3,6 +3,7 @@
    [gamebase.ecs :as ecs]
    [gamebase.systems.drawing :as sys-drawing]
    [gamebase.systems.movement.movement :as sys-move]
+   [app.ecs.systems.collisions :refer [mk-collider]]
    [gamebase.systems.movement.components.railway-roller :refer [mk-railway-roller]]
    [gamebase.systems.movement.components.railway-engine :refer [mk-railway-engine]]
    [gamebase.event-queue :as eq]
@@ -65,6 +66,7 @@
              :center [16 8]
              :resource-name-kvs [:image]})
 
+      :collider (mk-collider entity :collider)
       }
 
      :image "loco1.png")))

@@ -193,6 +193,7 @@
 
 
 (defn main [& _]
+  ;; (js/frameRate 1)
   (js/setInterval (fn [] ;; set up periodic frame rate measurement update
                     (let [rate (js/frameRate)
                           rate-s (/ (int (* rate 10)) 10)]
