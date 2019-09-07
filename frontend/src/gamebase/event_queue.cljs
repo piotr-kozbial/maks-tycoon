@@ -28,7 +28,7 @@
 
 (defn take-event [q]
   (let [all (:set_ q)
-        all-sorted (sort-by #(vector (::time %) (:sq %)) all)
+        all-sorted (sort-by #(vector (::time %) (:priority %) (:sq %)) all)
         soonest-event (first all-sorted)
         rest-of-events (rest all-sorted)]
     ;; (when-not (= (first soonest-event) :update)
@@ -49,7 +49,7 @@
   (let [all (:set_ q)]
     [(->> all
           (filter #(<= (::time %) time))
-          (sort-by #(vector (::time %) (:sq %)))
+          (sort-by #(vector (::time %) (:priority %) (:sq %)))
           (map (fn [event]
                  ;; (when-not (= (first event) :update)
                  ;;   (println (str "[QUEUE] => " (pr-str event))))

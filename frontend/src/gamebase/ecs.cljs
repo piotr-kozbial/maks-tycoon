@@ -268,6 +268,7 @@
       (/ 1 0))
     {::target-id target-id
      ::msg msg
+     :priority 0
      :gamebase.event-queue/time time}))
 
 ;;;;; Putting events into queue

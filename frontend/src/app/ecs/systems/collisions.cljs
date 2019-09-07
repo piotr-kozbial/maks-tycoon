@@ -80,7 +80,7 @@
    :tile-xy-kvss tile-xy-kvss
    ))
 
-(defmethod ecs/handle-event [:to-component ::collider ::ci/delta-t]
+(defmethod ecs/handle-event [:to-component ::collider ::update]
   [world event this]
   (let [system (get-in world [::ecs/systems (::ecs/system-id this)])
         entity-id (::ecs/entity-id this)

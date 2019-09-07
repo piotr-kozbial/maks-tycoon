@@ -91,11 +91,15 @@
 
  (::ci/delta-t
   [world event {:as this :keys [pulled touching-behind]}]
-  [(ecs/retarget event (-> this ::ecs/components :collider))
-   (ecs/retarget event (-> this ::ecs/components :engine))
-   (ecs/retarget event (-> this ::ecs/components :front))
-   (ecs/retarget event (-> this ::ecs/components :rear))
-   (ecs/mk-event this ::post-delta-t (::eq/time event))])
+  [(assoc (ecs/mk-event (-> this ::ecs/components :collider)
+                        :app.ecs.systems.collisions/update
+                        (::eq/time event))
+          :priority -1)
+   (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :engine))
+   (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :front))
+   (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :rear))
+   (assoc (ecs/mk-event this ::post-delta-t (::eq/time event))
+          :priority -1)])
 
  (::post-delta-t
   [world event {:as this :keys [pulled touching-behind]}]
@@ -112,16 +116,21 @@
     (if (every? (fn [tile-xy] (empty? (disj (or (tile-entities-map tile-xy) #{}) my-id))) tile-xys)
       [(dissoc engine :backup)
        (dissoc front :backup)
-       (dissoc rear :backup)]
+       (dissoc rear :backup)
+       (assoc (ecs/mk-event (-> this ::ecs/components :collider)
+                            :app.ecs.systems.collisions/update
+                            (::eq/time event))
+              :priority -1)]
       (do
         [(:backup engine)
          (:backup front)
          (:backup rear)
-         (ecs/mk-event this ::ci/stop (::eq/time event))]))))
+         (assoc (ecs/mk-event this ::ci/stop (::eq/time event))
+                :priority -1)]))))
 
  (::ci/stop
   [world event this]
-  (ecs/retarget event (-> this ::ecs/components :engine)))
+  (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :engine)))
 
  (::ci/drive
   [world event {:keys [rear-coupling] :as this}]
