@@ -69,10 +69,11 @@
 
 (defmethod ecs/handle-event [:to-component ::engine ::ci/delta-t]
   [world {:as event :keys [delta-t]} {:as this :keys [length-on-path driving? speed]}]
-  (-> (if driving?
-        (assoc this :length-on-path (+ length-on-path (* delta-t speed)))
-        this)
-      (engine-full-update (::eq/time event) world)))
+  (let [engine'(-> (if driving?
+                     (assoc this :length-on-path (+ length-on-path (* delta-t speed)))
+                     this)
+                   (engine-full-update (::eq/time event) world))]
+    (assoc engine' :backup this)))
 
 (defmethod ecs/handle-event [:to-component ::engine ::ci/stop]
   [world event this]

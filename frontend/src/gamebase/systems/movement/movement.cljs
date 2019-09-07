@@ -22,9 +22,11 @@
 
 (defmethod ecs/handle-event [:to-system ::movement ::ci/delta-t]
   [world event system]
-  (ecs/pass-event-through-all world event
-                              (ecs/all-components-of-system
-                               world system)))
+  ;; (ecs/pass-event-through-all world event
+  ;;                             (ecs/all-components-of-system
+  ;;                              world system))
+  nil
+  )
 
 
 (defn- -get-layer [world layer-key]

@@ -107,6 +107,10 @@
 (defn get-world []
   (:world @app-state))
 
+(defn get-system [system-key]
+  (get-in @app-state [:world ::ecs/systems system-key])
+  )
+
 ;; other
 
 (defn get-all-locomotives [world]

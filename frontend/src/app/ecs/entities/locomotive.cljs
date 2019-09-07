@@ -91,9 +91,33 @@
 
  (::ci/delta-t
   [world event {:as this :keys [pulled touching-behind]}]
-  (let [engine (-> this :gamebase.ecs/components :engine)]
-    (when (and (not pulled) touching-behind)
-      (assoc this :touching-behind nil))))
+  [(ecs/retarget event (-> this ::ecs/components :collider))
+   (ecs/retarget event (-> this ::ecs/components :engine))
+   (ecs/retarget event (-> this ::ecs/components :front))
+   (ecs/retarget event (-> this ::ecs/components :rear))
+   (ecs/mk-event this ::post-delta-t (::eq/time event))])
+
+ (::post-delta-t
+  [world event {:as this :keys [pulled touching-behind]}]
+  (let [my-id (::ecs/entity-id this)
+        engine (-> this :gamebase.ecs/components :engine)
+        front  (-> this :gamebase.ecs/components :front)
+        rear (-> this :gamebase.ecs/components :rear)
+        tile-xys (apply hash-set (for [component [engine front rear]]
+                                   (get-in component [:path ::sys-move/tile-xy])))
+        tile-entities-map (:tile-entities-map (wo/get-system :app.ecs.systems.collisions/collisions))]
+    ;; (when (and (not pulled) touching-behind)
+    ;;   (assoc this :touching-behind nil))
+    ;; (print (pr-str tile-xys))
+    (if (every? (fn [tile-xy] (empty? (disj (or (tile-entities-map tile-xy) #{}) my-id))) tile-xys)
+      [(dissoc engine :backup)
+       (dissoc front :backup)
+       (dissoc rear :backup)]
+      (do
+        [(:backup engine)
+         (:backup front)
+         (:backup rear)
+         (ecs/mk-event this ::ci/stop (::eq/time event))]))))
 
  (::ci/stop
   [world event this]
