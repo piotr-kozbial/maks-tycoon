@@ -1,7 +1,7 @@
 (ns gamebase.systems.movement.movement
   (:require
    [gamebase-ecs.core :as ecs]
-   [gamebase.event-queue :as eq]
+   [gamebase-ecs.event-queue :as eq]
    [gamebase.geometry :as g]
    [app.ecs.common-events :as ci]
    [app.tiles.general :as tiles]

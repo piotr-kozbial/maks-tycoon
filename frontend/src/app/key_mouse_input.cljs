@@ -4,7 +4,7 @@
    [app.ecs.entities.carriage :as carriage]
    [gamebase-ecs.core :as ecs]
    [gamebase.events :as events]
-   [gamebase.event-queue :as eq]
+   [gamebase-ecs.event-queue :as eq]
    [gamebase.canvas-control :as canvas-control]
    [app.state :refer [app-state ui-refresh-tick
                       get-fresh-entity-id update-tile-extra]]

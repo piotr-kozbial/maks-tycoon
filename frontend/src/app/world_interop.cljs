@@ -72,6 +72,7 @@
         (ecs/put-all-events world0 [(assoc
                                      (ecs/mk-event sys-drawing/to-system
                                                    ::sys-drawing/set-all-tmx 0)
+                                     :gamebase-ecs.core/time 0
                                      :tmx-fname "level1.tmx")])]
    world1))
 

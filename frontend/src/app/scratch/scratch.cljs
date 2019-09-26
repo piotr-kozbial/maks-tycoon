@@ -6,7 +6,7 @@
             [gamebase-ecs.core :as ecs]
             [gamebase.geometry :as geom]
             [cljs.pprint :refer [pprint]]
-            [gamebase.event-queue :as eq]
+            [gamebase-ecs.event-queue :as eq]
             [app.ecs.common-events :as ci]
             [app.scratch.util :as su]
             [app.xprint.core :refer [xprint]

@@ -3,7 +3,7 @@
    [gamebase.layers :as layers]
    [app.tiles.general :as tiles]
    [gamebase-ecs.virtual-timer :as vt]
-   [gamebase.event-queue :as eq]
+   [gamebase-ecs.event-queue :as eq]
 
    [devcards.core]
    [sablono.core :as sab])

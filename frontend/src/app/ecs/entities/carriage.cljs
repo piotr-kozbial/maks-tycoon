@@ -4,7 +4,7 @@
    [gamebase.systems.drawing :as sys-drawing]
    [gamebase.systems.movement.movement :as sys-move]
    [gamebase.systems.movement.components.railway-roller :refer [mk-railway-roller]]
-   [gamebase.event-queue :as eq]
+   [gamebase-ecs.event-queue :as eq]
    [gamebase.geometry :as g]
    [app.ecs.operations :as ops]
    [app.tiles.general :as tiles]

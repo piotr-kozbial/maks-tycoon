@@ -1,7 +1,7 @@
 (ns gamebase.systems.movement.components.test-engine
   (:require
    [gamebase-ecs.core :as ecs]
-   [gamebase.event-queue :as eq]
+   [gamebase-ecs.event-queue :as eq]
    [app.ecs.common-events :as ci]
    [gamebase.geometry :as g]
    [gamebase.systems.movement.components.engine :as eng]))

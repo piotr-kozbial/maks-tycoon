@@ -1,7 +1,7 @@
 (ns gamebase.systems.movement.components.test-roller
   (:require
    [gamebase-ecs.core :as ecs]
-   [gamebase.event-queue :as eq]
+   [gamebase-ecs.event-queue :as eq]
    [app.ecs.common-events :as ci]
    [gamebase.geometry :as g]
    [gamebase.systems.movement.components.roller :as rol]

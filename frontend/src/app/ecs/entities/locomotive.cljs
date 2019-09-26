@@ -6,7 +6,7 @@
    [app.ecs.systems.collisions :refer [mk-collider]]
    [gamebase.systems.movement.components.railway-roller :refer [mk-railway-roller]]
    [gamebase.systems.movement.components.railway-engine :refer [mk-railway-engine]]
-   [gamebase.event-queue :as eq]
+   [gamebase-ecs.event-queue :as eq]
    [gamebase.geometry :as g]
    [app.tiles.general :as tiles]
    [gamebase.layers :as layers]

@@ -3,7 +3,7 @@
    [gamebase-ecs.core :as ecs]
    [app.ecs.common-events :as ci]
    [clojure.set :as set]
-   [gamebase.event-queue :as eq]))
+   [gamebase-ecs.event-queue :as eq]))
 
 ;; TODO
 
