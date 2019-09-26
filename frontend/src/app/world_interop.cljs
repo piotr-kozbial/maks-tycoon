@@ -10,7 +10,7 @@
    [app.ecs.systems.railway :as sys-railway]
    [app.tiles.general :as tiles]
    [app.tiles.turnouts :as turnouts]
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [gamebase-ecs.virtual-timer :as vt]
    [gamebase.layers :as layers]
    [app.server-communication :as sc]

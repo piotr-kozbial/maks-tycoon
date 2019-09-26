@@ -3,7 +3,7 @@
             [gamebase.systems.movement.movement :as sys-movement]
             [gamebase.systems.movement.components.test-engine :refer [mk-test-engine]]
             [gamebase.systems.movement.components.test-roller :refer [mk-test-roller]]
-            [gamebase.ecs :as ecs]
+            [gamebase-ecs.core :as ecs]
             [gamebase.geometry :as geom]
             [cljs.pprint :refer [pprint]]
             [gamebase.event-queue :as eq]
@@ -217,7 +217,7 @@
 
   (defn card--movement--engine--basic [get-val set-val]
     (binding [gamebase.geometry/*with-xprint* true
-              gamebase.ecs/*with-xprint* true]
+              gamebase-ecs.core/*with-xprint* true]
       (su/card
        get-val
        set-val
@@ -285,7 +285,7 @@
 
 (defn card--movement--roller--basic-behind [get-val set-val]
   (binding [gamebase.geometry/*with-xprint* true
-            gamebase.ecs/*with-xprint* true]
+            gamebase-ecs.core/*with-xprint* true]
     (su/card
      get-val
      set-val
@@ -346,7 +346,7 @@
 
 (defn card--movement--roller--basic-ahead [get-val set-val]
   (binding [gamebase.geometry/*with-xprint* true
-            gamebase.ecs/*with-xprint* true]
+            gamebase-ecs.core/*with-xprint* true]
     (su/card
      get-val
      set-val
@@ -411,7 +411,7 @@
 
 (defn card--movement--roller--path-end-behind [get-val set-val]
   (binding [gamebase.geometry/*with-xprint* true
-            gamebase.ecs/*with-xprint* true]
+            gamebase-ecs.core/*with-xprint* true]
     (su/card
      get-val
      set-val
@@ -449,7 +449,7 @@
 
 (defn card--movement--roller--path-end-ahead [get-val set-val]
   (binding [gamebase.geometry/*with-xprint* true
-            gamebase.ecs/*with-xprint* true]
+            gamebase-ecs.core/*with-xprint* true]
     (su/card
      get-val
      set-val

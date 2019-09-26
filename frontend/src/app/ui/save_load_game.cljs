@@ -2,7 +2,7 @@
   (:require
    [rum.core :as rum]
    [app.state :refer [app-state ui-refresh-tick]]
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [app.ecs.common-events :as ci]
    [app.world-interop :as wo]
    [app.server-communication :as sc]

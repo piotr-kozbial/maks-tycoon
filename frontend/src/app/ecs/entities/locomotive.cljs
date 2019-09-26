@@ -1,6 +1,6 @@
 (ns app.ecs.entities.locomotive
   (:require
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [gamebase.systems.drawing :as sys-drawing]
    [gamebase.systems.movement.movement :as sys-move]
    [app.ecs.systems.collisions :refer [mk-collider]]
@@ -22,7 +22,7 @@
     (assoc
      entity
 
-     :gamebase.ecs/components
+     :gamebase-ecs.core/components
      {:engine (mk-railway-engine
                entity
                :engine
@@ -104,9 +104,9 @@
  (::post-delta-t
   [world event {:as this :keys [pulled touching-behind]}]
   (let [my-id (::ecs/entity-id this)
-        engine (-> this :gamebase.ecs/components :engine)
-        front  (-> this :gamebase.ecs/components :front)
-        rear (-> this :gamebase.ecs/components :rear)
+        engine (-> this :gamebase-ecs.core/components :engine)
+        front  (-> this :gamebase-ecs.core/components :front)
+        rear (-> this :gamebase-ecs.core/components :rear)
         tile-xys (apply hash-set (for [component [engine front rear]]
                                    (get-in component [:path ::sys-move/tile-xy])))
         tile-entities-map (:tile-entities-map (wo/get-system :app.ecs.systems.collisions/collisions))]

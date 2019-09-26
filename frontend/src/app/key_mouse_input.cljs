@@ -2,7 +2,7 @@
   (:require
    [app.ecs.entities.locomotive :as locomotive]
    [app.ecs.entities.carriage :as carriage]
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [gamebase.events :as events]
    [gamebase.event-queue :as eq]
    [gamebase.canvas-control :as canvas-control]

@@ -1,7 +1,7 @@
 (ns gamebase.canvas-control
   (:require
    [gamebase.events :as events]
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [gamebase.projection :as proj]))
 
 

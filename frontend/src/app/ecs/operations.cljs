@@ -1,5 +1,5 @@
 (ns app.ecs.operations
-  (:require [gamebase.ecs :as ecs]))
+  (:require [gamebase-ecs.core :as ecs]))
 
 
 ;; For entities.

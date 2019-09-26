@@ -1,6 +1,6 @@
 (ns app.ecs.systems.railway
   (:require 
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [app.ecs.common-events :as ci]
    [app.tiles.turnouts :as turnouts]))
 

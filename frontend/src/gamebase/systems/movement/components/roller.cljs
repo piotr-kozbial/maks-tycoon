@@ -1,6 +1,6 @@
 (ns gamebase.systems.movement.components.roller
   (:require
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [gamebase.event-queue :as eq]
    [app.ecs.common-events :as ci]
    [gamebase.geometry :as g]
@@ -25,7 +25,7 @@
   (let [v (assoc
            (ecs/mk-component ::sys/movement entity-or-id key ::roller)
            :distance (or distance 0))]
-    (if :gamebase.ecs/*with-xprint*
+    (if :gamebase-ecs.core/*with-xprint*
       (vary-meta v
                  update-in [:app.xprint.core/key-order]
                  concat [[:app.xprint.core/comment

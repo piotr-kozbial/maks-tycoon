@@ -1,6 +1,6 @@
 (ns app.ecs.entities.carriage
   (:require
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [gamebase.systems.drawing :as sys-drawing]
    [gamebase.systems.movement.movement :as sys-move]
    [gamebase.systems.movement.components.railway-roller :refer [mk-railway-roller]]
@@ -21,7 +21,7 @@
     (assoc
      entity
 
-     :gamebase.ecs/components
+     :gamebase-ecs.core/components
      {:point (mk-railway-roller
               entity
               :point

@@ -17,7 +17,7 @@
             [app.ecs.entities.locomotive :as locomotive]
             [app.ecs.entities.carriage :as carriage]
 
-            [gamebase.ecs :as ecs]
+            [gamebase-ecs.core :as ecs]
             [gamebase.canvas-control :as canvas-control]
             [gamebase.layouts.sidebar-and-bottombar
              :as our-layout]

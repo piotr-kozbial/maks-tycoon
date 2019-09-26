@@ -1,6 +1,6 @@
 (ns app.ecs.world
   (:require
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [app.ecs.common-events :as ci]))
 
 (defmethod ecs/handle-event [:to-world :update]

@@ -1,6 +1,6 @@
 (ns gamebase.systems.drawing
   (:require
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [gamebase.resources :as resources]
    [gamebase.geometry :as g]
    [gamebase.layers :as layers]

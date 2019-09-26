@@ -1,6 +1,6 @@
 (ns gamebase.systems.movement.components.railway-roller
   (:require
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [gamebase.event-queue :as eq]
    [app.ecs.common-events :as ci]
    [gamebase.geometry :as g]
@@ -27,7 +27,7 @@
            :reference-entity-id (ecs/id reference-entity-or-id)
            :reference-path-kvs reference-path-kvs
            :reference-length-on-path-kvs reference-length-on-path-kvs)]
-    (if :gamebase.ecs/*with-xprint*
+    (if :gamebase-ecs.core/*with-xprint*
       (vary-meta v
                  update-in [:app.xprint.core/key-order]
                  concat [[:app.xprint.core/comment

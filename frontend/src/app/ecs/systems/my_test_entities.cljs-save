@@ -1,6 +1,6 @@
 (ns ecs.systems.my-test-entities
   (:require
-   [gamebase.ecs :as ecs]))
+   [gamebase-ecs.core :as ecs]))
 
 (defn mk-system []
   (ecs/mk-system ::test))

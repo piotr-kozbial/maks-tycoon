@@ -1,6 +1,6 @@
 (ns gamebase.systems.movement.components.railway-engine
   (:require
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [gamebase.event-queue :as eq]
    [app.ecs.common-events :as ci]
    [gamebase.geometry :as g]

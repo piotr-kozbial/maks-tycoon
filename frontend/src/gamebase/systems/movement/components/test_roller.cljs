@@ -1,6 +1,6 @@
 (ns gamebase.systems.movement.components.test-roller
   (:require
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [gamebase.event-queue :as eq]
    [app.ecs.common-events :as ci]
    [gamebase.geometry :as g]
@@ -21,7 +21,7 @@
            ::previous-path-f previous-path-f
            ::next-path-f next-path-f
            ::get-reference-f get-reference-f)]
-    (if :gamebase.ecs/*with-xprint*
+    (if :gamebase-ecs.core/*with-xprint*
       (vary-meta v
                  update-in [:app.xprint.core/key-order]
                  concat [[:app.xprint.core/comment

@@ -2,7 +2,7 @@
   (:require
    [rum.core :as rum]
    [app.state :refer [app-state ui-refresh-tick]]
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [app.ecs.entities.locomotive :as locomotive]
    [app.ecs.common-events :as ci]
    [gamebase.canvas-control :as canvas-control]

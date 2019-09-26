@@ -1,6 +1,6 @@
 (ns gamebase.systems.movement.components.engine
   (:require
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [gamebase.event-queue :as eq]
    [app.ecs.common-events :as ci]
    [gamebase.geometry :as g]
@@ -19,7 +19,7 @@
            :length-on-path (or length-on-path 0)
            :driving? driving?
            :speed (or speed 0.02))]
-    (if :gamebase.ecs/*with-xprint*
+    (if :gamebase-ecs.core/*with-xprint*
       (vary-meta v
                  update-in [:app.xprint.core/key-order]
                  concat [[:app.xprint.core/comment "raw state"]

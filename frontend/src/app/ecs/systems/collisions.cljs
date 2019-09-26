@@ -1,6 +1,6 @@
 (ns app.ecs.systems.collisions
   (:require
-   [gamebase.ecs :as ecs]
+   [gamebase-ecs.core :as ecs]
    [app.ecs.common-events :as ci]
    [clojure.set :as set]
    [gamebase.event-queue :as eq]))

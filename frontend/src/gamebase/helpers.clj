@@ -17,7 +17,7 @@
 
        (map (fn [handler]
               (assert (list? handler))
-              (apply list 'defmethod 'gamebase.ecs/handle-event
+              (apply list 'defmethod 'gamebase-ecs.core/handle-event
                 (into target [(first handler)])
                 (rest handler))))
        (apply list 'do)))
