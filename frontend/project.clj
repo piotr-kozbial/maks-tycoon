@@ -20,6 +20,7 @@
 
                  [gamebase "0.1.1-SNAPSHOT"]
                  [gamebase-ecs "0.1.0-SNAPSHOT"]
+                 [pkozbial.xprint "0.1.0-SNAPSHOT"]
 
                  ]
 

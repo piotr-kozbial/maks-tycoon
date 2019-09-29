@@ -7,16 +7,16 @@
    :font-size "120%" :font-weight "bold"
    :cursor "pointer"})
 
-(defn code-result [get-val set-val result-edn result-val & [error?]]
+(defn code-result [get-val set-val repaint-fn result-edn result-val & [error?]]
   (if (vector? result-edn)
     (concat
      [[:span {:style code-result-style} "["]]
      (->> result-edn
-          (map (partial code-result get-val set-val))
+          (map (partial code-result get-val set-val repaint-fn))
           (interpose " "))
      [[:span {:style code-result-style} "]"]])
     (if (and (vector? result-val) (= (first result-val) :app.scratch.util/error))
-      (code-result get-val set-val result-edn (second result-val) true)
+      (code-result get-val set-val repaint-fn result-edn (second result-val) true)
       [:span
        {:style {:font-family "monospace"
                 :color (if error?
@@ -28,7 +28,9 @@
                           "1px solid yellow")
                 :font-size "120%" :font-weight "bold"
                 :cursor "pointer"}
-        :on-click (fn [_] (set-val :selected-result result-edn))}
+        :on-click (fn [_] (set-val :selected-result result-edn)
+                    ;; (repaint-fn)
+                    )}
 
        (str result-edn)])))
 
@@ -102,6 +104,18 @@
   [[:div
     [:h3 "CANVAS VISUALIZATION"]
     [:canvas {:height 100 :width 200}]]
-   #()]
+   #(.log js/console "repaint called on :canvas visual")])
+
+
+(defn repaint-fn [visuals]
+
+  (.log js/console "nowe repaint-fn")
+
+  ;; (doseq [f (->> visuals
+  ;;                (map #(apply visualization arg %))
+  ;;                (map second))]
+  ;;   (when f (f)))
+
   )
+
 

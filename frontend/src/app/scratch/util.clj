@@ -1,30 +1,37 @@
 (ns app.scratch.util)
 
-;; (defmulti visualization (fn [ctx type & args] type))
+;; NOTE !!!
+;;
+;; Strasznie mylace to jest.
+;; Tutaj mamy (visualization), oraz w cljs mamy (visualization).
+;; Te tutaj sa wrapperami na tamte.
+;; Tutaj jest tez nietrywialny :default, wiec nie ma osobnych wrapperow na wszystkie z cljs.
 
-;; (defmethod visualization :default
-;;   [ctx type & args]
-;;   [(apply list 'app.scratch.util/visualization ctx type args)
-;;    #()])
+(defmulti visualization (fn [ctx type & args] type))
 
-;; (defmethod visualization :svg
-;;   [{:keys [context-symbol get-val] :as ctx} _ props ids-and-fns & background]
-;;   [(let [ids-and-values
-;;           (->> ids-and-fns
-;;                (map (fn [[id f]] [(list 'quote id) id f
-;;                                  (list '=
-;;                                        (list 'quote id)
-;;                                        (list get-val :selected-result))]))
-;;                (apply vector))]
-;;       (apply list 'app.scratch.util/visualization ctx :svg props
-;;         ids-and-values
-;;         background))
-;;    #()])
+(defmethod visualization :default
+  [ctx type & args]
+  [(apply list 'app.scratch.util/visualization ctx type args)
+   nil])
 
-;; (defmethod visualization :value
-;;   [{:keys [context-symbol] :as ctx} _ id]
-;;   [(list 'app.scratch.util/visualization ctx :value id (list context-symbol id))
-;;    #()])
+(defmethod visualization :svg
+  [{:keys [context-symbol get-val] :as ctx} _ props ids-and-fns & background]
+  [(let [ids-and-values
+          (->> ids-and-fns
+               (map (fn [[id f]] [(list 'quote id) id f
+                                 (list '=
+                                       (list 'quote id)
+                                       (list get-val :selected-result))]))
+               (apply vector))]
+      (apply list 'app.scratch.util/visualization ctx :svg props
+        ids-and-values
+        background))
+   nil])
+
+(defmethod visualization :value
+  [{:keys [context-symbol] :as ctx} _ id]
+  [(list 'app.scratch.util/visualization ctx :value id (list context-symbol id))
+   nil])
 
 
 (defmacro card [get-val set-val print-f visuals segments]
@@ -49,6 +56,18 @@
                     [(list 'quote id) id])))
                (apply hash-map))])
         bindings-map (apply hash-map bindings)
+
+        ;; repaint-fns
+        ;; (->> visuals
+        ;;      (map #(apply visualization {:context-symbol context-symbol
+        ;;                                  :get-val get-val
+        ;;                                  :set-val set-val
+        ;;                                  :print-f print-f} %))
+        ;;      (map second)
+        ;;      (remove))
+
+        repaint-fn nil ;;(list 'fn [] repaint-fns)
+
         body
         (->> segments
              (map
@@ -57,7 +76,7 @@
                   (let [[_ id expr] segment]
                     [:p {:style {:font-family "monospace"
                                  :background-color "black" :color "#62e23f"}}
-                     (list 'app.scratch.util/code-result get-val set-val (list 'quote id)
+                     (list 'app.scratch.util/code-result get-val set-val repaint-fn (list 'quote id)
                            (list bindings-map-symbol id))
                      [:span {:style {:white-space "pre"}} "   "]
                      [:span {:style {:font-family "monospace"
@@ -75,12 +94,12 @@
                         :background-color "#BBB"
                         :overflow "auto"}} ]
               (->> visuals
-                   (map first)
                    (map #(vector
-                          (apply visualization {:context-symbol context-symbol
-                                                :get-val get-val
-                                                :set-val set-val
-                                                :print-f print-f} %)
+                          (first
+                           (apply visualization {:context-symbol context-symbol
+                                                 :get-val get-val
+                                                 :set-val set-val
+                                                 :print-f print-f} %))
                           [:hr]))))]
 
     (list 'let (into [] bindings)

@@ -15,7 +15,8 @@
              ]
             [clojure.string :as str]
             [gamebase.geometry :as g])
-  (:require-macros [app.scratch.util :refer [card VIS]]))
+  (:require-macros [app.scratch.util :refer [card; VIS
+                                             ]]))
 
 ;;;;;;;;; HELPERS :;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -592,7 +593,7 @@
          (fn [k] (get-in @state [:card-states current-card k]))
          (fn [k v]
            (swap! state assoc-in [:card-states current-card k] v)
-           (when (= k :selected-result)
-             (.log js/console "SHOULD REPAINT some visuals")
-             )))]))))
+           ;; (when (= k :selected-result)
+           ;;   (.log js/console "SHOULD REPAINT some visuals "))
+           ))]))))
 
