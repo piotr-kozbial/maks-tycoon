@@ -53,7 +53,11 @@
             :min-y (int (rev-y hc)) ;; because of negative y scale, hc is min and 0 is max
             :max-y (int (rev-y 0))
             :mouse-x (int (rev-x js/mouseX))
-            :mouse-y (int (rev-y js/mouseY))})
+            :mouse-y (int (rev-y js/mouseY))
+            ;; TODO - to bedzie inaczej potem; canvas bedzie gdzies przekazany w conf
+            :canvas-context (.getContext
+                             (.item (.getElementsByTagName js/document "canvas") 0)
+                             "2d")})
           ;; overlay draw
           (when-let [overlay-draw (:overlay-draw @conf)]
             (js/resetMatrix)

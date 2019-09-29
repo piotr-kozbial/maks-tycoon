@@ -10,6 +10,13 @@
 
    [app.ecs.common-events :as ci]))
 
+
+
+
+
+
+
+
 ;; utils
 
 (defn -put-image [img x y w h dst-x dst-y]
@@ -123,9 +130,17 @@
 
     (dorun
      (ecs/pass-event-through-all
-      world (ecs/mk-event to-system ::draw 0)
+      world (assoc (ecs/mk-event to-system ::draw 0)
+                   :canvas-context (:canvas-context context))
       (ecs/all-components-of-system world
-                                    (::drawing (::ecs/systems world))))))
+                                    (::drawing (::ecs/systems world)))))
+
+    ;; (let [{:keys [canvas-context]} context]
+    ;;   (set! (.-fillStyle canvas-context) "magenta")
+    ;;   (.fillRect canvas-context 10 10 150 100))
+
+
+    )
 
 
   (defmethod ecs/handle-event [:to-system ::drawing :update] [world event system]
@@ -148,29 +163,43 @@
 
   (defmethod ecs/handle-event [:to-component ::static-image :update]
     [world event component]
-    ;; (print (str "drawing/static-image: update, " (pr-str component)))
-
     component)
 
   (defmethod ecs/handle-event [:to-component ::static-image ::draw]
-    [world event {:keys [point-kvs angle-kvs center resource-name-kvs] :as component}]
+    [world
+     {:keys [canvas-context]}
+     {:keys [point-kvs angle-kvs center resource-name-kvs] :as component}]
+
     (let [entity (ecs/get-entity world component)
           [point-x point-y] (get-in entity point-kvs)
           [center-x center-y] center
           angle (get-in entity angle-kvs)
           resource-name (get-in entity resource-name-kvs)]
-      ;; (.log js/console (str "static image draw(" (::ecs/entity-id entity) "): /" (pr-str resource-name-kvs) "/ " (pr-str resource-name)))
-      ;; (.log js/console (pr-str entity))
       (when-let [img (resources/get-resource resource-name)]
-        (js/push)
-        (js/translate point-x point-y)
-        (js/rotate angle)
+        (.save canvas-context) ;; (js/push)
+
+
+        (.translate canvas-context point-x point-y) ;; (js/translate point-x point-y)
+        (.rotate canvas-context angle) ;; (js/rotate angle)
+
         ;; flip vertical, since images are placed by js/images
         ;; in screen orientation (y increasing downwards),
         ;; while we are using standard coordinate system
-        (js/scale 1 -1)
-        (js/image img (- center-x) (- center-y))
-        (js/pop)))
+        (.scale canvas-context 1 -1) ;; (js/scale 1 -1)
+
+
+        ;; TEST PURE HTML5 CANVAS
+        (.drawImage canvas-context (.-canvas img) (- center-x) (- center-y)) ;;; (js/image
+                                                                             ;;;  img (- center-x)
+                                                                             ;;;  (- center-y))
+
+        (.restore canvas-context) ;; (js/pop)
+        )
+
+
+
+      )
+
     component))
 
 (do ;; COMPONENT: dot
@@ -212,7 +241,9 @@
     component)
 
   (defmethod ecs/handle-event [:to-component ::tile ::draw]
-    [world event {:keys [xy-kvs] :as component}]
+    [world
+     {:keys [canvas-context]}
+     {:keys [xy-kvs] :as component}]
     (let [entity (ecs/get-entity world component)
           [x y] (get-in entity xy-kvs)
           [r g b] (:color component)]
@@ -223,6 +254,7 @@
         (js/strokeWeight 2)
         (js/rect (* 32 x) (* 32 y) 32 32)
         (js/pop)))
+
     component))
 
 (do ;; COMPONENT: path

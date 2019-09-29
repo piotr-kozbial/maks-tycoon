@@ -90,20 +90,22 @@
   (ecs/retarget event (-> this ::ecs/components :engine)))
 
  (::ci/delta-t
-  [world event {:as this :keys [pulled touching-behind]}]
-  [(assoc (ecs/mk-event (-> this ::ecs/components :collider)
+  [_ event {:as this :keys [pulled touching-behind]}]
+  [;; update collider
+   (assoc (ecs/mk-event (-> this ::ecs/components :collider)
                         :app.ecs.systems.collisions/update
                         (::eq/time event))
           :priority -1)
+   ;; pass delta-t to other components
    (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :engine))
    (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :front))
    (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :rear))
-   (assoc (ecs/mk-event this ::post-delta-t (::eq/time event))
-          :priority -1)])
+   ;; invoke the rest of the handler code
+   (assoc (ecs/mk-event this ::post-delta-t (::eq/time event)) :priority -1)])
 
  (::post-delta-t
-  [world event {:as this :keys [pulled touching-behind]}]
-  (let [my-id (::ecs/entity-id this)
+  [_ event {:as this :keys [pulled touching-behind]}]
+  (let [my-id (ecs/id this)
         engine (-> this :gamebase-ecs.core/components :engine)
         front  (-> this :gamebase-ecs.core/components :front)
         rear (-> this :gamebase-ecs.core/components :rear)
@@ -129,15 +131,15 @@
                 :priority -1)]))))
 
  (::ci/stop
-  [world event this]
+  [_ event this]
   (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :engine)))
 
  (::ci/drive
-  [world event {:keys [rear-coupling] :as this}]
+  [_ event {:keys [rear-coupling] :as this}]
   (ecs/retarget event (-> this ::ecs/components :engine)))
 
  (::ci/reverse-drive
-  [world event {:keys [rear-coupling] :as this}]
+  [_ event {:keys [rear-coupling] :as this}]
   (ecs/retarget event (-> this ::ecs/components :engine)))
 
 

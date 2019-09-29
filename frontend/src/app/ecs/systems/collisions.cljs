@@ -18,6 +18,16 @@
 ;; Nie bedziemy przeciez badac prostokatow dokladnie geometrycznie - dla pojazdow kolejowych bedziemy
 ;; raczej badac po dlugosci sciezki!
 
+nil
+
+
+;; System ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+nil
+
+;; `:tile-entities-map` - A map from [tile-x tile-y] to seq of entity-id
+;;                        meaning: each of the entities has a collider touching
+;;                        the tile at the moment.
+;;                        Nb. this map is updated by *components* in their `::update`.
 
 (defn mk-system []
   (.log js/console "Collisions - system created.")
@@ -27,7 +37,6 @@
    :tile-entities-map {}
    ;; :component-components-map {}
    ))
-
 
 
 
@@ -73,12 +82,27 @@
   ;;                              world system))
   )
 
+
+
+;; Collider component ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+nil
+
+;; This is a component that takes part in collision detection.
+;;
+;; `tile-xy-kvss` - seq of kvs from the entity to a [tile-x tile-y]
+;;                  meaning that the collider will touch those tiles
+;;                  relative to the entity
+
 (defn mk-collider [entity-or-id key
                    {:keys [tile-xy-kvss]}]
   (assoc
    (ecs/mk-component ::collisions entity-or-id key ::collider)
-   :tile-xy-kvss tile-xy-kvss
-   ))
+   :tile-xy-kvss tile-xy-kvss))
+
+;; At the `::update` event the collider component updates
+;; the `:tile-entities-map` of the system with fresh information
+;; related to tiles touched by the component (and attributed
+;; to its entity).
 
 (defmethod ecs/handle-event [:to-component ::collider ::update]
   [world event this]

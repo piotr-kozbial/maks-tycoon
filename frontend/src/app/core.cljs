@@ -85,7 +85,7 @@
   (js/stroke 255 255 255)
   (js/line 0 0 0 0))
 
-(defn advance-simulation-and-draw [{:keys [min-x max-x min-y max-y] :as context}]
+(defn advance-simulation-and-draw [{:keys [min-x max-x min-y max-y canvas-context] :as context}]
 
   (let [{:keys [world timer]} @app-state]
     (when world
@@ -117,7 +117,8 @@
         (when (-> @debug/settings
                   :canvas-control
                   :coordinate-system-marker)
-          (debug-draw-coord-system))))))
+          (debug-draw-coord-system))
+))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; UI root
@@ -193,7 +194,7 @@
 
 
 (defn main [& _]
-  ;; (js/frameRate 10)
+  (js/frameRate 1)
   (js/setInterval (fn [] ;; set up periodic frame rate measurement update
                     (let [rate (js/frameRate)
                           rate-s (/ (int (* rate 10)) 10)]

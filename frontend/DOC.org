@@ -1,0 +1,34 @@
+* How collisions are detected and handled
+
+** System: app.ecs.systems.collisions/mk-system
+
+   The system app.ecs.systems.collisions/mk-system holds some maps with global
+   information about touched tiles and collisions.
+
+   It does *not* pass ::ci/delta-t to its components.
+
+   TODO: what does it do in delta-t? (przetwarza jakos calosc tego co przyszlo
+   z komponentow i wytwarza z tego wtorne zestawienia)
+
+** Components: app.ecs.systems.collisions/mk-collider
+
+   Objects that take part in the collision procedures are collider components of
+   the system (app.ecs.systems.collisions/mk-collider). By extension, entities
+   containing those components are noted in the maps of the system.
+
+** Information details
+
+   TODO: The maps in system. In fact, put just a reference to the documentation
+   of mk-system here.
+
+** Processing
+
+   TODO: That the components update the maps and when etc.
+
+** Consequences in entities
+
+   Entities are free to use the information in the collision system as they see
+   fit, there is no default handling of any kind.
+
+   Cf. ::ci/delta-t and ::post-delta-t event handling in
+   app.ecs.entities.locomotive.

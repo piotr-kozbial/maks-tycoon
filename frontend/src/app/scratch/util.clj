@@ -1,27 +1,30 @@
 (ns app.scratch.util)
 
-(defmulti visualization (fn [ctx type & args] type))
+;; (defmulti visualization (fn [ctx type & args] type))
 
-(defmethod visualization :default
-  [ctx type & args]
-  (apply list 'app.scratch.util/visualization ctx type args))
+;; (defmethod visualization :default
+;;   [ctx type & args]
+;;   [(apply list 'app.scratch.util/visualization ctx type args)
+;;    #()])
 
-(defmethod visualization :svg
-  [{:keys [context-symbol get-val] :as ctx} _ props ids-and-fns & background]
-  (let [ids-and-values
-        (->> ids-and-fns
-             (map (fn [[id f]] [(list 'quote id) id f
-                               (list '=
-                                     (list 'quote id)
-                                     (list get-val :selected-result))]))
-             (apply vector))]
-    (apply list 'app.scratch.util/visualization ctx :svg props
-      ids-and-values
-      background)))
+;; (defmethod visualization :svg
+;;   [{:keys [context-symbol get-val] :as ctx} _ props ids-and-fns & background]
+;;   [(let [ids-and-values
+;;           (->> ids-and-fns
+;;                (map (fn [[id f]] [(list 'quote id) id f
+;;                                  (list '=
+;;                                        (list 'quote id)
+;;                                        (list get-val :selected-result))]))
+;;                (apply vector))]
+;;       (apply list 'app.scratch.util/visualization ctx :svg props
+;;         ids-and-values
+;;         background))
+;;    #()])
 
-(defmethod visualization :value
-  [{:keys [context-symbol] :as ctx} _ id]
-  (list 'app.scratch.util/visualization ctx :value id (list context-symbol id)))
+;; (defmethod visualization :value
+;;   [{:keys [context-symbol] :as ctx} _ id]
+;;   [(list 'app.scratch.util/visualization ctx :value id (list context-symbol id))
+;;    #()])
 
 
 (defmacro card [get-val set-val print-f visuals segments]
@@ -72,6 +75,7 @@
                         :background-color "#BBB"
                         :overflow "auto"}} ]
               (->> visuals
+                   (map first)
                    (map #(vector
                           (apply visualization {:context-symbol context-symbol
                                                 :get-val get-val
@@ -88,8 +92,8 @@
                    [:td body]
                    [:td vbody]]]]))))
 
-(defmacro VIS [id visual-fn]
-  `(~visual-fn ~id
+;; (defmacro VIS [id visual-fn]
+;;   `(~visual-fn ~id
 
 
-        true))
+;;         true))

@@ -214,6 +214,8 @@
   (defn my-engine-next-path [world this path]
     (when (= path (geom/line-segment [0 0] [100 100]))
       (geom/line-segment [100 100] [200 50])))
+  (defn my-engine-prev-path [world this path]
+    (assert false "NOT IMPLEMENTED"))
 
   (defn card--movement--engine--basic [get-val set-val]
     (binding [gamebase.geometry/*with-xprint* true
@@ -246,12 +248,16 @@
        ;; segments
        [[:h3 "Movement system: Engine component, basic usage"]
 
+        ;; [:h3 {:style {:color "magenta"}} "(same for roller, but those still work, maybe they won't after a clean build)."]
+
+
         [:p "Here we will manually operate a component, without a world or entity, "
          "and also without an event queue (we will manually pass events if necessary)."]
         "Create:"
         [VCV path (geom/line-segment [0 0] [100 100])]
         [VCV component (mk-test-engine
                         #'my-engine-next-path
+                        #'my-engine-prev-path
                         "entity-id" "comp-key"
                         {:path path :driving? true})]
         "Initialize:"
@@ -263,6 +269,10 @@
         [VCV component1 (advance-frames' component0 50)]
         [VCV component2 (advance-frames' component1 50)]
         [VCV component3 (advance-frames' component2 100)]
+
+        [:h3 {:style {:color "red"}} "SOMETHING STARTS TO GO WRONG - these are slower and slower "
+         "WHEN YOU CLICK ON THEM, and the last ones cause a stack overflow... Is advance-frames recursive??"]
+
         [VCV component4 (advance-frames' component3 100)]
         "Now we go past our path:"
         [VCV component5 (advance-frames' component4 80)]
@@ -485,6 +495,24 @@
                                        ::ecs/init :<dummy-time>)
                          component)]])))
 
+(defn card--loco-test [get-val set-val]
+  (su/card
+   get-val
+   set-val
+   my-print-f
+   ;; visualization
+   [
+    [:canvas]
+    [:value (get-val :selected-result)]
+    ]
+   ;; segments
+   [[:h3 "TODO"]
+    [VCV x 10] 
+    ]
+   )
+
+  )
+
 (def cards
   [["Start card" #'start-card]
    ["Geometry: paths" #'card--geometry--paths]
@@ -498,7 +526,8 @@
     #'card--movement--roller--path-end-behind]
    ["Movement system: Roller component, path end ahead"
     #'card--movement--roller--path-end-ahead]
-   ])
+   ["Locomotive testing"
+    #'card--loco-test]])
 
 (def card-map
   (->> cards
@@ -516,7 +545,8 @@
   (swap! state update-in [:on] not))
 
 (defn tick []
-  (swap! state update-in [:tick] inc))
+  (swap! state update-in [:tick] inc)
+  (.log js/console "tick"))
 
 (def normal-style
   {:position "absolute"
@@ -560,5 +590,9 @@
             [:option {:value name} name])]]
         ((card-map current-card)
          (fn [k] (get-in @state [:card-states current-card k]))
-         (fn [k v] (swap! state assoc-in [:card-states current-card k] v)))]))))
+         (fn [k v]
+           (swap! state assoc-in [:card-states current-card k] v)
+           (when (= k :selected-result)
+             (.log js/console "SHOULD REPAINT some visuals")
+             )))]))))
 
