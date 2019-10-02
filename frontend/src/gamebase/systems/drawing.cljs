@@ -19,15 +19,15 @@
 
 ;; utils
 
-(defn -put-image [img x y w h dst-x dst-y]
-  (js/push)
-  (js/scale 1 -1)
-  (js/image img
-            ;; destination
-            dst-x (- (* -1 dst-y) h) w h
-            ;; source
-            x y w h)
-  (js/pop))
+(defn -put-image [canvas-context img x y w h dst-x dst-y]
+  (.save canvas-context)
+  (.scale canvas-context 1 -1)
+  (.drawImage canvas-context (.-canvas img)
+              ;; source
+              x y w h
+              ;; destination
+              dst-x (- (* -1 dst-y) h) w h)
+  (.restore canvas-context))
 
 ;; TILE EXTRA
 
@@ -69,7 +69,10 @@
     ;;  :tileset-map {:kafelki s/Any}}
     )
 
-  (defn- -draw-layer [world layer {:keys [min-x max-x min-y max-y] :as context} draw-extra?]
+  (defn- -draw-layer [world
+                      layer
+                      {:keys [min-x max-x min-y max-y canvas-context] :as context}
+                      draw-extra?]
 
     ;; (s/validate s-draw-context context)
     ;; (s/validate s-tile-context (:tile-context world))
@@ -90,7 +93,8 @@
                ,  (layers/get-rendering-information-for-tile ctx tl)]
            (when tl
 
-             (-put-image (resources/get-resource img)
+             (-put-image canvas-context
+                         (resources/get-resource img)
                          x y w h (* tile-width tx) (* tile-height ty))
 
              (when draw-extra?
@@ -188,7 +192,6 @@
         (.scale canvas-context 1 -1) ;; (js/scale 1 -1)
 
 
-        ;; TEST PURE HTML5 CANVAS
         (.drawImage canvas-context (.-canvas img) (- center-x) (- center-y)) ;;; (js/image
                                                                              ;;;  img (- center-x)
                                                                              ;;;  (- center-y))
@@ -217,17 +220,17 @@
 
   (defmethod ecs/handle-event [:to-component ::dot ::draw]
     [world event {:keys [point-kvs] :as component}]
-    (let [entity (ecs/get-entity world component)
-          [point-x point-y] (get-in entity point-kvs)
-          [r g b] (:color component)]
-      (js/push)
-      (js/fill (js/color r g b))
-      (js/stroke r g b)
-      (js/point point-x point-y)
-      (js/pop))
+    ;; (let [entity (ecs/get-entity world component)
+    ;;       [point-x point-y] (get-in entity point-kvs)
+    ;;       [r g b] (:color component)]
+    ;;   (js/push)
+    ;;   (js/fill (js/color r g b))
+    ;;   (js/stroke r g b)
+    ;;   (js/point point-x point-y)
+    ;;   (js/pop))
     component))
 
-(do ;; COMPONENT: dot
+(do ;; COMPONENT: tile
 
   (defn mk-tile-component
     [entity-or-id key {:keys [xy-kvs color]}]
@@ -244,16 +247,16 @@
     [world
      {:keys [canvas-context]}
      {:keys [xy-kvs] :as component}]
-    (let [entity (ecs/get-entity world component)
-          [x y] (get-in entity xy-kvs)
-          [r g b] (:color component)]
-      (when x
-        (js/push)
-        (js/noFill)
-        (js/stroke r g b)
-        (js/strokeWeight 2)
-        (js/rect (* 32 x) (* 32 y) 32 32)
-        (js/pop)))
+    ;; (let [entity (ecs/get-entity world component)
+    ;;       [x y] (get-in entity xy-kvs)
+    ;;       [r g b] (:color component)]
+    ;;   (when x
+    ;;     (js/push)
+    ;;     (js/noFill)
+    ;;     (js/stroke r g b)
+    ;;     (js/strokeWeight 2)
+    ;;     (js/rect (* 32 x) (* 32 y) 32 32)
+    ;;     (js/pop)))
 
     component))
 
@@ -274,16 +277,17 @@
 
   (defmethod ecs/handle-event [:to-component ::path ::draw]
     [world event {:keys [path-kvs] :as component}]
-    (let [entity (ecs/get-entity world component)]
-      (when-let [path (get-in entity path-kvs)]
-        (let [len (g/path-length path)
-              n (int (/ len 5))
-              d (/ len n)]
-          (js/push)
-          (js/stroke (js/color (:color component)))
-          (doseq [i (range (inc n))]
-            (apply js/point (g/path-point-at-length path (* i d))))
-          (js/pop)))) nil))
+    ;; (let [entity (ecs/get-entity world component)]
+    ;;   (when-let [path (get-in entity path-kvs)]
+    ;;     (let [len (g/path-length path)
+    ;;           n (int (/ len 5))
+    ;;           d (/ len n)]
+    ;;       (js/push)
+    ;;       (js/stroke (js/color (:color component)))
+    ;;       (doseq [i (range (inc n))]
+    ;;         (apply js/point (g/path-point-at-length path (* i d))))
+    ;;       (js/pop))))
+    nil))
 
 (do ;; COMPONENT: path-history
 
@@ -302,16 +306,17 @@
 
   (defmethod ecs/handle-event [:to-component ::path-history ::draw]
     [world event {:keys [path-history-kvs] :as component}]
-    (let [entity (ecs/get-entity world component)]
-      (when-let [path-history (get-in entity path-history-kvs)]
-        (doseq [path path-history]
-          (let [len (g/path-length path)
-                n (int (/ len 5))
-                d (/ len n)]
-            (js/push)
-            (js/stroke (js/color (:color component)))
-            (doseq [i (range (inc n))]
-              (apply js/point (g/path-point-at-length path (* i d))))
-            (js/pop)))
+    ;; (let [entity (ecs/get-entity world component)]
+    ;;   (when-let [path-history (get-in entity path-history-kvs)]
+    ;;     (doseq [path path-history]
+    ;;       (let [len (g/path-length path)
+    ;;             n (int (/ len 5))
+    ;;             d (/ len n)]
+    ;;         (js/push)
+    ;;         (js/stroke (js/color (:color component)))
+    ;;         (doseq [i (range (inc n))]
+    ;;           (apply js/point (g/path-point-at-length path (* i d))))
+    ;;         (js/pop)))
 
-        )) nil))
+    ;;     ))
+    nil))

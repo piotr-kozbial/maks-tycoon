@@ -28,9 +28,10 @@
                         :left [384 9]
                         :straight-left [393 9]
                         [402 0])]
-    (-put-image (resources/get-resource "tiles.png")
-                src-x src-y 8 8
-                (+ x 23) (+ y 12)))
+    ;; (-put-image (resources/get-resource "tiles.png")
+    ;;             src-x src-y 8 8
+    ;;             (+ x 23) (+ y 12))
+    )
   true)
 (defmethod draw-tile-extra :track-et [tile-id tx ty tile-info]
   (let [{:keys [state]} (st/get-tile-extra tx ty)
@@ -42,9 +43,11 @@
                         :left [404 9]
                         :straight-left [413 9]
                         [402 0])]
-    (-put-image (resources/get-resource "tiles.png")
-                src-x src-y 8 8
-                (+ x 1) (+ y 12)))
+    ;; (-put-image (resources/get-resource "tiles.png")
+    ;;             src-x src-y 8 8
+    ;;             (+ x 1) (+ y 12))
+
+    )
   true)
 (defmethod draw-tile-extra :track-nt [tile-id tx ty tile-info]
   (let [{:keys [state]} (st/get-tile-extra tx ty)
@@ -56,9 +59,10 @@
                         :left [404 29]
                         :straight-left [413 29]
                         [402 20])]
-    (-put-image (resources/get-resource "tiles.png")
-                src-x src-y 8 8
-                (+ x 12) (+ y 1)))
+    ;; (-put-image (resources/get-resource "tiles.png")
+    ;;             src-x src-y 8 8
+    ;;             (+ x 12) (+ y 1))
+    )
   true)
 (defmethod draw-tile-extra :track-st [tile-id tx ty tile-info]
   (let [{:keys [state]} (st/get-tile-extra tx ty)
@@ -70,9 +74,10 @@
                         :left [384 29]
                         :straight-left [393 29]
                         [402 20])]
-    (-put-image (resources/get-resource "tiles.png")
-                src-x src-y 8 8
-                (+ x 12) (+ y 23)))
+    ;; (-put-image (resources/get-resource "tiles.png")
+    ;;             src-x src-y 8 8
+    ;;             (+ x 12) (+ y 23))
+    )
   true)
 
 (defmethod -active-tracks-from :track-wt

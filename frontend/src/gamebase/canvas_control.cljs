@@ -1,8 +1,4 @@
-(ns gamebase.canvas-control
-  (:require
-   [gamebase.events :as events]
-   [gamebase-ecs.core :as ecs]
-   [gamebase.projection :as proj]))
+(ns gamebase.canvas-control (:require [gamebase.events :as events] [gamebase-ecs.core :as ecs] [gamebase.projection :as proj]))
 
 
 (defonce conf (atom nil))
@@ -21,31 +17,36 @@
        #(int (/ (- % t-y) (- scale-factor)))])))
 
 (defn- draw []
-  ;; canvas clear and setup
-  (js/clear)
-  (js/noSmooth)
   ;; outermost scaling and translation
   (when @conf
 
     ;; (s/validate s-conf @conf)
 
-    (let [{:keys [state-atom state-kvs get-canvas-size]} @conf]
+    (let [{:keys [state-atom state-kvs get-canvas-size canvas-context]} @conf]
       (let [{:keys [scale-factor translation-x translation-y]}
             ,    (get-in @state-atom state-kvs)
             ;; IMPORTANT!!! We must make translations integers, otherwise
             ;; there will be unwanted artifacts (lines between tiles).
             t-x (int translation-x)
-            t-y (int translation-y)]
-        (js/translate t-x t-y)
-        (js/scale scale-factor)
+            t-y (int translation-y)
+            [wc hc] (get-canvas-size)]
+        (set! (.-imageSmoothingEnabled canvas-context) false)
+
+        (do ;; clear background
+          (set! (.-fillStyle canvas-context) "grey")
+          (.fillRect canvas-context 0 0 wc hc))
+
+        (.save canvas-context)
+
+        (.translate canvas-context t-x t-y)
+        (.scale canvas-context scale-factor scale-factor)
         ;; flip vertical - this allowws the client draw function
         ;; to use the standard coordinate system (y points upwards)
-        (js/scale 1 -1)
+        (.scale canvas-context 1 -1)
 
         ;; We keep use the integer translations here as well
         (let [rev-x #(/ (- % t-x) scale-factor)
-              rev-y #(/ (- % t-y) (- scale-factor))
-              [wc hc] (get-canvas-size)]
+              rev-y #(/ (- % t-y) (- scale-factor))]
           ;; client draw
           ((:draw @conf)
            {:min-x (int (rev-x 0))
@@ -54,13 +55,10 @@
             :max-y (int (rev-y 0))
             :mouse-x (int (rev-x js/mouseX))
             :mouse-y (int (rev-y js/mouseY))
-            ;; TODO - to bedzie inaczej potem; canvas bedzie gdzies przekazany w conf
-            :canvas-context (.getContext
-                             (.item (.getElementsByTagName js/document "canvas") 0)
-                             "2d")})
+            :canvas-context canvas-context})
+          (.restore canvas-context)
           ;; overlay draw
           (when-let [overlay-draw (:overlay-draw @conf)]
-            (js/resetMatrix)
             (overlay-draw wc hc)))))))
 
 (declare setup-drag-event)
@@ -180,9 +178,6 @@
   so that some of the world is visible at least"
   []
 
-  ;; (.log js/console "-----------------------------------")
-  ;; (.log js/console "readjust now")
-
   (let [{:keys [state-atom state-kvs get-world-size]} @conf
         {:keys [translation-x translation-y] :as state} (get-in @state-atom state-kvs)
         {:keys [wc hc] :as proj-conf} (make-proj-conf)
@@ -193,32 +188,19 @@
         wM (proj/world-point [ww (- wh)])
 
         [xZ yZ] (proj/view-coords proj-conf wZ)
-        [xM yM] (proj/view-coords proj-conf wM)
-
-        ]
-    ;; (.log js/console (str "WORLD SIZE" (pr-str (get-world-size))))
-    ;; (.log js/console (pr-str state))
-    ;; (.log js/console (pr-str proj-conf))
-    ;; (.log js/console (str "wZ = " (pr-str wZ)))
-    ;; (.log js/console (str "wM = " (pr-str wM)))
-    ;; (.log js/console (str "[xZ yZ] = " (pr-str [xZ yZ])))
-    ;; (.log js/console (str "[xM yM] = " (pr-str [xM yM])))
-
+        [xM yM] (proj/view-coords proj-conf wM)]
 
     (when (> xZ (- wc MARGIN))
-      ;; (.log js/console "X przekracza na prawo!")
       (swap! state-atom update-in state-kvs
              (fn [state]
                (assoc state :translation-x (- (:translation-x state) (- xZ wc) MARGIN)))))
 
     (when (< xM MARGIN)
-      ;; (.log js/console "X przekracza na lewo!")
       (swap! state-atom update-in state-kvs
              (fn [state]
                (assoc state :translation-x (+ (:translation-x state) (- MARGIN xM))))))
 
     (when (> yM (- hc MARGIN))
-      ;; (.log js/console "Y przekracza w dol!")
       (swap! state-atom update-in state-kvs
              (fn [state]
                (assoc state :translation-y (- (:translation-y state) (+ yM MARGIN (- hc))))))
@@ -226,7 +208,6 @@
       )
 
     (when (< yZ MARGIN)
-      ;; (.log js/console "Y przekracza w gore!")
       (swap! state-atom update-in state-kvs
              (fn [state]
                (assoc state :translation-y (+ (:translation-y state) (- MARGIN yZ))))))))

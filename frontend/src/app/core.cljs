@@ -59,31 +59,33 @@
 ;; Simulation animation and drawing
 
 (defn -draw-tile-box-under-mouse [{:keys [mouse-x mouse-y]}]
-  (js/noFill)
-  (js/strokeWeight 1)
-  (js/stroke 20 20 20)
-  (js/rect (* 32 (quot mouse-x 32)) (* 32 (quot mouse-y 32)) 31 31)
-  (js/stroke 210 210 210)
-  (js/rect (inc (* 32 (quot mouse-x 32))) (dec (* 32 (quot mouse-y 32))) 31 31))
+  ;; (js/noFill)
+  ;; (js/strokeWeight 1)
+  ;; (js/stroke 20 20 20)
+  ;; (js/rect (* 32 (quot mouse-x 32)) (* 32 (quot mouse-y 32)) 31 31)
+  ;; (js/stroke 210 210 210)
+  ;; (js/rect (inc (* 32 (quot mouse-x 32))) (dec (* 32 (quot mouse-y 32))) 31 31)
+  )
 
 (defn debug-draw-coord-system []
 
-  ;; x axis
-  (js/stroke 255 0 0)
-  (js/strokeWeight 4)
-  (js/line -32 0  32 0)
-  (js/line 32 0 28 5)
-  (js/line 32 0 28 -5)
+  ;; ;; x axis
+  ;; (js/stroke 255 0 0)
+  ;; (js/strokeWeight 4)
+  ;; (js/line -32 0  32 0)
+  ;; (js/line 32 0 28 5)
+  ;; (js/line 32 0 28 -5)
 
-  ;; y axis
-  (js/stroke 0 0 255)
-  (js/strokeWeight 4)
-  (js/line 0 -32 0 32)
-  (js/line 0 32 -5 28)
-  (js/line 0 32 5 28)
+  ;; ;; y axis
+  ;; (js/stroke 0 0 255)
+  ;; (js/strokeWeight 4)
+  ;; (js/line 0 -32 0 32)
+  ;; (js/line 0 32 -5 28)
+  ;; (js/line 0 32 5 28)
 
-  (js/stroke 255 255 255)
-  (js/line 0 0 0 0))
+  ;; (js/stroke 255 255 255)
+  ;; (js/line 0 0 0 0)
+  )
 
 (defn advance-simulation-and-draw [{:keys [min-x max-x min-y max-y canvas-context] :as context}]
 
@@ -140,6 +142,10 @@
                      :overlay-draw nil
                      :get-canvas-size our-layout/get-canvas-size
                      :get-world-size #'wo/get-world-size
+                     :canvas-context (.getContext
+                                      (.item (.getElementsByTagName js/document "canvas") 0)
+                                      "2d")
+
                      }))
                  state)})
 
@@ -194,12 +200,12 @@
 
 
 (defn main [& _]
-  (js/frameRate 1)
-  (js/setInterval (fn [] ;; set up periodic frame rate measurement update
-                    (let [rate (js/frameRate)
-                          rate-s (/ (int (* rate 10)) 10)]
-                      (swap! app-state assoc :frame-rate rate-s)))
-                  1000)
+  ;; (js/frameRate 1)
+  ;; (js/setInterval (fn [] ;; set up periodic frame rate measurement update
+  ;;                   (let [rate (js/frameRate)
+  ;;                         rate-s (/ (int (* rate 10)) 10)]
+  ;;                     (swap! app-state assoc :frame-rate rate-s)))
+  ;;                 1000)
 
   (doseq [fname resource-fnames]
     (resources/add-resource fname))

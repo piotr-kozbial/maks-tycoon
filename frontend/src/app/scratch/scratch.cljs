@@ -9,7 +9,7 @@
             [gamebase-ecs.event-queue :as eq]
             [app.ecs.common-events :as ci]
             [app.scratch.util :as su]
-            [app.xprint.core :refer [xprint]
+            [xprint.core :refer [xprint]
 
 
              ]
@@ -146,7 +146,7 @@
        (first)))
 
 (def my-print-f
-  (partial xprint nil nil))
+  (fn [value] (xprint value :format :default, :render :html)))
 
 ;;;;;;;;; CARDS ;;:;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
