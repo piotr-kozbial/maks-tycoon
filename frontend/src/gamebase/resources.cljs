@@ -48,8 +48,6 @@
 (defmulti start-loading (fn [fname callback] (file-type fname)))
 (defmethod start-loading :img [fname callback]
 
-  ;; TERAZ TO ZROBIC NORMALNIE!!!
-  ;; (POTEM JESZCZE W systems.drawing BEDZIE TRZEBA ZMIENIC, bo nie bedziemy mieli obiektu typu p5)
   (my-stupid-load-image (str PREFIX fname) callback)
   ;(js/loadImage (str PREFIX fname) callback)
   )
