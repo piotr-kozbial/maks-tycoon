@@ -16,7 +16,7 @@
       [#(int (/ (- % t-x) scale-factor))
        #(int (/ (- % t-y) (- scale-factor)))])))
 
-(defn- draw []
+(defn draw [client-draw-fn]
   ;; outermost scaling and translation
   (when @conf
 
@@ -48,7 +48,7 @@
         (let [rev-x #(/ (- % t-x) scale-factor)
               rev-y #(/ (- % t-y) (- scale-factor))]
           ;; client draw
-          ((:draw @conf)
+          (client-draw-fn
            {:min-x (int (rev-x 0))
             :max-x (int (rev-x wc))
             :min-y (int (rev-y hc)) ;; because of negative y scale, hc is min and 0 is max
@@ -71,7 +71,9 @@
           :translation-x 100.0
           :translation-y 300.0})
   (setup-drag-event)
-  (events/add-handler :draw #'draw))
+  ;; (events/add-handler :draw #'draw)
+
+  )
 
 (defn- make-proj-conf []
   (let [{:keys [state-atom state-kvs get-canvas-size]} @conf
@@ -169,9 +171,6 @@
 
 (def MARGIN 100)
 
-;; TODO
-;; this will need to use :get-world-size from conf
-;; this will be called in setup-drag-event, set-scale etc.
 (defn readjust
   "fix translation after external change
   (such as canvas resize by layout or game state reloaded)

@@ -46,7 +46,7 @@
 
             [app.modules.construction]
 
-
+            [gamebase.events :as events]
             [sablono.core :as sab]
 
 
@@ -87,7 +87,7 @@
   ;; (js/line 0 0 0 0)
   )
 
-(defn advance-simulation-and-draw [{:keys [min-x max-x min-y max-y canvas-context] :as context}]
+(defn advance-simulation []
 
   (let [{:keys [world timer]} @app-state]
     (when world
@@ -110,17 +110,23 @@
   ;;; validate...
         ;;(s/validate st/s-world world')
   ;;; and put new world in state.
-        (swap! app-state assoc :world world')
-  ;;; Draw the world.
-        (sys-drawing/draw-all world' context)
-  ;;; Draw other things.
-        (-draw-tile-box-under-mouse context)
-  ;;; Draw debug stuff.
-        (when (-> @debug/settings
-                  :canvas-control
-                  :coordinate-system-marker)
-          (debug-draw-coord-system))
-))))
+        (swap! app-state assoc :world world')))))
+
+(defn ddraw [{:keys [min-x max-x min-y max-y canvas-context] :as context}]
+  (let [world' (:world @app-state)]
+    ;;; Draw the world.
+    (sys-drawing/draw-all world' context)
+    ;;; Draw other things.
+    (-draw-tile-box-under-mouse context)
+    ;;; Draw debug stuff.
+    (when (-> @debug/settings
+              :canvas-control
+              :coordinate-system-marker)
+      (debug-draw-coord-system))))
+
+(defn top-level-draw []
+  (advance-simulation)
+  (canvas-control/draw ddraw))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; UI root
@@ -131,23 +137,25 @@
 (defonce already-loaded? (atom false))
 
 (def my-mixin
-  { :did-mount (fn [state]
-                 (when-not @already-loaded?
-                   (initialize-layout)
+  {:did-mount (fn [state]
+                (when-not @already-loaded?
+                  (initialize-layout)
 
-                   (canvas-control/initialize
-                    {:state-atom app-state
-                     :state-kvs [:canvas-control]
-                     :draw #'advance-simulation-and-draw
-                     :overlay-draw nil
-                     :get-canvas-size our-layout/get-canvas-size
-                     :get-world-size #'wo/get-world-size
-                     :canvas-context (.getContext
-                                      (.item (.getElementsByTagName js/document "canvas") 0)
-                                      "2d")
+                  (canvas-control/initialize
+                   {:state-atom app-state
+                    :state-kvs [:canvas-control]
+                    :overlay-draw nil
+                    :get-canvas-size our-layout/get-canvas-size
+                    :get-world-size #'wo/get-world-size
+                    :canvas-context (.getContext
+                                     (.item (.getElementsByTagName js/document "canvas") 0)
+                                     "2d")})
 
-                     }))
-                 state)})
+                  ;; (events/add-handler :draw #'top-level-draw)
+                  (.setInterval js/window (fn [] (top-level-draw)) 25)
+                  )
+
+                state)})
 
 (rum/defc game-component < rum/reactive []
   (rum/react ui-refresh-tick)
