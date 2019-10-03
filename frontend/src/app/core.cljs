@@ -151,8 +151,10 @@
                                      (.item (.getElementsByTagName js/document "canvas") 0)
                                      "2d")})
 
-                  ;; (events/add-handler :draw #'top-level-draw)
+
+                  ;; TODO: uncomment
                   (.setInterval js/window (fn [] (top-level-draw)) 25)
+
                   )
 
                 state)})
@@ -207,13 +209,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(defn main [& _]
+(defn -main [& _]
   ;; (js/frameRate 1)
   ;; (js/setInterval (fn [] ;; set up periodic frame rate measurement update
   ;;                   (let [rate (js/frameRate)
   ;;                         rate-s (/ (int (* rate 10)) 10)]
   ;;                     (swap! app-state assoc :frame-rate rate-s)))
   ;;                 1000)
+
+  (.log js/console "-MAIN !!!")
 
   (doseq [fname resource-fnames]
     (resources/add-resource fname))

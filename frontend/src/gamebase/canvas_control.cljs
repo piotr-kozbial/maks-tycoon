@@ -1,4 +1,7 @@
-(ns gamebase.canvas-control (:require [gamebase.events :as events] [gamebase-ecs.core :as ecs] [gamebase.projection :as proj]))
+(ns gamebase.canvas-control
+  (:require [gamebase.events :as events]
+            [gamebase-ecs.core :as ecs]
+            [gamebase.projection :as proj]))
 
 
 (defonce conf (atom nil))
@@ -53,8 +56,8 @@
             :max-x (int (rev-x wc))
             :min-y (int (rev-y hc)) ;; because of negative y scale, hc is min and 0 is max
             :max-y (int (rev-y 0))
-            :mouse-x (int (rev-x js/mouseX))
-            :mouse-y (int (rev-y js/mouseY))
+            :mouse-x 0 ;; (int (rev-x js/mouseX)) TODO
+            :mouse-y 0 ;; (int (rev-y js/mouseY)) TODO
             :canvas-context canvas-context})
           (.restore canvas-context)
           ;; overlay draw

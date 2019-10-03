@@ -4,7 +4,7 @@
    [gamebase.tmx :as tmx]
    [clojure.string :as str]
    [clojure.data.xml :as xml]
-
+   [ajax.core :refer [GET]]
    ;; [goog.dom :as gdom]
    )
   )
@@ -32,21 +32,40 @@
     (.endsWith fname ".tmx") :tmx
     :else nil))
 
+
+(defn my-stupid-load-image [src callback]
+  (let [img (.createElement js/document "IMG")]
+    (set! (.-onload img)
+          (fn [] (callback img)))
+    (set! (.-src img) src)))
+
+(defn my-stupid-load-text [src callback] 
+
+  (GET src
+       {:handler
+        (fn [res] (callback res))}))
+
 (defmulti start-loading (fn [fname callback] (file-type fname)))
 (defmethod start-loading :img [fname callback]
-  (js/loadImage (str PREFIX fname) callback))
+
+  ;; TERAZ TO ZROBIC NORMALNIE!!!
+  ;; (POTEM JESZCZE W systems.drawing BEDZIE TRZEBA ZMIENIC, bo nie bedziemy mieli obiektu typu p5)
+  (my-stupid-load-image (str PREFIX fname) callback)
+  ;(js/loadImage (str PREFIX fname) callback)
+  )
 (defmethod start-loading :tmx [fname callback]
-  (js/loadStrings (str PREFIX fname) callback))
+  ;; (js/loadStrings (str PREFIX fname) callback)
+  (my-stupid-load-text (str PREFIX fname) callback)
+  )
 
 (defmulti parse-and-store (fn [fname & args] (file-type fname)))
 (defmethod parse-and-store :img [fname img]
   (swap! resources assoc fname img)
   (when (and all-resources-loaded? @on-all-loaded)
     (@on-all-loaded)))
-(defmethod parse-and-store :tmx [fname lines]
-  (let [text (str/join "\n" lines)]
-    (swap! resources assoc fname (tmx/parse-tmx
-                                  (xml/parse-str text))))
+(defmethod parse-and-store :tmx [fname text]
+  (swap! resources assoc fname (tmx/parse-tmx
+                                (xml/parse-str text)))
   (when (all-resources-loaded?)
     (@on-all-loaded)))
 

@@ -20,9 +20,10 @@
 ;; utils
 
 (defn -put-image [canvas-context img x y w h dst-x dst-y]
+
   (.save canvas-context)
   (.scale canvas-context 1 -1)
-  (.drawImage canvas-context (.-canvas img)
+  (.drawImage canvas-context img ;;(.-canvas img)
               ;; source
               x y w h
               ;; destination
@@ -76,6 +77,7 @@
 
     ;; (s/validate s-draw-context context)
     ;; (s/validate s-tile-context (:tile-context world))
+
 
     (let [{:keys [tile-width tile-height
                   world-width-in-tiles
@@ -192,7 +194,7 @@
         (.scale canvas-context 1 -1) ;; (js/scale 1 -1)
 
 
-        (.drawImage canvas-context (.-canvas img) (- center-x) (- center-y)) ;;; (js/image
+        (.drawImage canvas-context img (- center-x) (- center-y)) ;;; (js/image
                                                                              ;;;  img (- center-x)
                                                                              ;;;  (- center-y))
 

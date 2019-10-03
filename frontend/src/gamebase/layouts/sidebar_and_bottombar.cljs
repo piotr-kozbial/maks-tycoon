@@ -1,6 +1,7 @@
 (ns gamebase.layouts.sidebar-and-bottombar
   (:require
-   [gamebase.events :as events]))
+   [gamebase.events :as events]
+   [app.utils.jscript :as j]))
 
 
 
@@ -53,8 +54,16 @@
                        :kvs kvs))
   (-setup-events)
   (swap! base-atom update-in kvs (constantly {}))
-  (let [cnv (js/createCanvas 600 400)]
-    (.parent cnv "gamebase/canvas-holder")
+  (let [
+        ;; cnv (js/createCanvas 600 400)
+        cnv (.createElement js/document "CANVAS")
+
+
+        ]
+    (set! (.-width cnv) 600)
+    (set! (.-height cnv) 400)
+    (.appendChild (.getElementById js/document "gamebase/canvas-holder") cnv)
+    ;; (.parent cnv "gamebase/canvas-holder")
     (update-canvas-size)
     (show-canvas)
     (update-canvas-size)))
@@ -132,7 +141,8 @@
     (position-element (get-bottom-bar-border-element)
                       bottom-bar-border-left (+ height (- bottom-bar-height))
                       bottom-bar-border-width 5)
-    (js/resizeCanvas canvas-width canvas-height)
+    ;; TODO
+    ;; (js/resizeCanvas canvas-width canvas-height)
     (swap! state assoc
 
            :screen-width width
