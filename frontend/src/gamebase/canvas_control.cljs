@@ -215,18 +215,88 @@
                (assoc state :translation-y (+ (:translation-y state) (- MARGIN yZ))))))))
 
 (defn- setup-drag-event []
-  (events/add-handler
-   :canvas-mouse-dragged
-   (fn [{:keys [button x y prev-x prev-y]}]
-     (when (= button js/RIGHT)
-       (let [{:keys [state-atom state-kvs]} @conf
-             dx (- x prev-x)
-             dy (- y prev-y)]
-         (swap! state-atom update-in state-kvs
-                (fn [{:keys [translation-x translation-y] :as s}]
-                  (assoc s
-                         :translation-x (+ translation-x dx)
-                         :translation-y (+ translation-y dy))))
-         (readjust))))))
+  (let [{:keys [canvas state-atom state-kvs]} @conf
+        drag-state (atom nil)
+
+        handle-mouse-down
+        (fn [e]
+          (.log js/console "Drag START")
+          (.log js/console e)
+          (when-not @drag-state
+            (reset! drag-state [(.-clientX e) (.-clientY e)])
+            (.setPointerCapture canvas (.-pointerId e))))
+
+        handle-mouse-move
+        (fn [e]
+          (when-let [[prev-x prev-y] @drag-state]
+            (let [x (.-clientX e)
+                  y (.-clientY e)
+                  dx (- x prev-x)
+                  dy (- y prev-y)]
+              (reset! drag-state [x y])
+              (.log js/console (str "drag " dx " " dy))
+              (swap! state-atom update-in state-kvs
+                     (fn [{:keys [translation-x translation-y] :as s}]
+                       (assoc s
+                              :translation-x (+ translation-x dx)
+                              :translation-y (+ translation-y dy))))
+              (readjust)
+
+              ))
+
+          )
+
+        handle-mouse-up
+        (fn [e]
+          (when @drag-state
+            (reset! drag-state nil)
+            (.log js/console "Drag STOP"))
+
+          )
+
+        ]
+    ;; (events/listen {:event-type :pointer-move
+    ;;                 :target js/document
+    ;;                 :capture? true}
+    ;;                (fn [;;{:keys [button x y prev-x prev-y]}
+    ;;                     e
+    ;;                     ]
+    ;;                  (.log js/console e)
+    ;;                  ;; (when (= button js/RIGHT)
+    ;;                  ;;   (let [{:keys [state-atom state-kvs]} @conf
+    ;;                  ;;         dx (- x prev-x)
+    ;;                  ;;         dy (- y prev-y)]
+    ;;                  ;;     (swap! state-atom update-in state-kvs
+    ;;                  ;;            (fn [{:keys [translation-x translation-y] :as s}]
+    ;;                  ;;              (assoc s
+    ;;                  ;;                     :translation-x (+ translation-x dx)
+    ;;                  ;;                     :translation-y (+ translation-y dy))))
+    ;;                  ;;     (readjust)))
+
+    ;;                  ))
+
+    (.addEventListener canvas "pointerdown" handle-mouse-down)
+    (.addEventListener canvas "pointermove" handle-mouse-move)
+    (doseq [event ["pointerup" "pointerout" "pointerleave"]]
+      (.addEventListener canvas event handle-mouse-up))
 
 
+    ;; ;; goog.events.EventType.DRAG
+    ;; (events/add-handler
+    ;;  :canvas-mouse-dragged
+    ;;  (fn [{:keys [button x y prev-x prev-y]}]
+    ;;    (when (= button js/RIGHT)
+    ;;      (let [{:keys [state-atom state-kvs]} @conf
+    ;;            dx (- x prev-x)
+    ;;            dy (- y prev-y)]
+    ;;        (swap! state-atom update-in state-kvs
+    ;;               (fn [{:keys [translation-x translation-y] :as s}]
+    ;;                 (assoc s
+    ;;                        :translation-x (+ translation-x dx)
+    ;;                        :translation-y (+ translation-y dy))))
+    ;;        (readjust)))))
+
+    )
+
+
+  )

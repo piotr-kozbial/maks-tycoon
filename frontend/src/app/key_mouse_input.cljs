@@ -3,7 +3,7 @@
    [app.ecs.entities.locomotive :as locomotive]
    [app.ecs.entities.carriage :as carriage]
    [gamebase-ecs.core :as ecs]
-   [gamebase.events :as events]
+   ;; [gamebase.events :as events]
    [gamebase-ecs.event-queue :as eq]
    [gamebase.canvas-control :as canvas-control]
    [app.state :refer [app-state ui-refresh-tick
@@ -138,16 +138,18 @@
                        )
 
                  "=" (do
-                       (events/suspend-event-handling)
+                       ;; (events/suspend-event-handling)
                        (scratch/toggle))
                  nil
 
                  ))))))))
 
 (defn setup-mouse-handler []
-  (events/add-handler
-   :canvas-mouse-clicked
-   (fn [{:keys [button x y]}]
-     (if-let [handler (get-in @uis/ui-state [:key-mouse :click-handler])]
-       (handler button x y)
-       (.log js/console "Mouse clicked - no owner.")))))
+  ;; (events/add-handler
+  ;;  :canvas-mouse-clicked
+  ;;  (fn [{:keys [button x y]}]
+  ;;    (if-let [handler (get-in @uis/ui-state [:key-mouse :click-handler])]
+  ;;      (handler button x y)
+  ;;      (.log js/console "Mouse clicked - no owner."))))
+
+  )

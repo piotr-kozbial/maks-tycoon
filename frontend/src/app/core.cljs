@@ -147,6 +147,7 @@
                     :overlay-draw nil
                     :get-canvas-size our-layout/get-canvas-size
                     :get-world-size #'wo/get-world-size
+                    :canvas (.item (.getElementsByTagName js/document "canvas") 0)
                     :canvas-context (.getContext
                                      (.item (.getElementsByTagName js/document "canvas") 0)
                                      "2d")})
