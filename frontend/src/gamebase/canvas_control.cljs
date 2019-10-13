@@ -161,7 +161,7 @@
         ;;; _ (println proj-conf)
         ;; view coords of view center
         [xc yc] (proj/view-coords proj-conf0 (proj/Vc proj-conf0))
-        _ (println [xc yc])
+        ;; _ (println [xc yc])
         ;; translation we have to do to match the above
         tr-x (- xc xw)
         tr-y (- yc yw)]
@@ -220,8 +220,8 @@
 
         handle-mouse-down
         (fn [e]
-          (.log js/console "Drag START")
-          (.log js/console e)
+          ;; (.log js/console "Drag START")
+          ;; (.log js/console e)
           (when-not @drag-state
             (reset! drag-state [(.-clientX e) (.-clientY e)])
             (.setPointerCapture canvas (.-pointerId e))))
@@ -234,7 +234,7 @@
                   dx (- x prev-x)
                   dy (- y prev-y)]
               (reset! drag-state [x y])
-              (.log js/console (str "drag " dx " " dy))
+              ;; (.log js/console (str "drag " dx " " dy))
               (swap! state-atom update-in state-kvs
                      (fn [{:keys [translation-x translation-y] :as s}]
                        (assoc s
@@ -250,7 +250,8 @@
         (fn [e]
           (when @drag-state
             (reset! drag-state nil)
-            (.log js/console "Drag STOP"))
+            ;;(.log js/console "Drag STOP")
+            )
 
           )
 
