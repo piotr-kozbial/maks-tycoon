@@ -6,7 +6,7 @@
    [app.ecs.entities.locomotive :as locomotive]
    [gamebase.projection :as proj]
    [app.ecs.common-events :as ci]
-   [gamebase.ui.dropdown :refer [mk-dropdown mk-space]]
+   [app.ui.dropdown :refer [mk-dropdown mk-space]]
    [gamebase.canvas-control :as canvas-control]
    [gamebase-ecs.virtual-timer :as vt]
    [app.world-interop :as wo]

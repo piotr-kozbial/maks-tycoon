@@ -1,4 +1,4 @@
-(ns gamebase.ui.dropdown)
+(ns app.ui.dropdown)
 
 (defn mk-dropdown [{:keys [label
                            open?

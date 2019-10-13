@@ -10,7 +10,7 @@
    [gamebase-ecs.virtual-timer :as vt]
    [app.world-interop :as wo]
 
-   [gamebase.ui.dropdown :refer [mk-dropdown]]
+   [app.ui.dropdown :refer [mk-dropdown]]
 
    [app.ui.save-load-game :refer [save-load-game-component]]
 

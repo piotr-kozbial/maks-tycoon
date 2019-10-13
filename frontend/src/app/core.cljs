@@ -56,7 +56,7 @@
 
   )
 
-;; Simulation animation and drawing
+;; Drawing extras ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn -draw-tile-box-under-mouse [{:keys [mouse-x mouse-y]}]
   ;; (js/noFill)
@@ -86,6 +86,8 @@
   ;; (js/stroke 255 255 255)
   ;; (js/line 0 0 0 0)
   )
+
+;; Game loop functions;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn advance-simulation []
 
@@ -124,133 +126,126 @@
               :coordinate-system-marker)
       (debug-draw-coord-system))))
 
-(defn top-level-draw []
+(defn game-step []
   (advance-simulation)
   (canvas-control/draw ddraw))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; UI root
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Initializers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(declare initialize-layout)
-
-(defonce already-loaded? (atom false))
-
-(def my-mixin
-  {:did-mount (fn [state]
-                (when-not @already-loaded?
-                  (initialize-layout)
-
-                  (canvas-control/initialize
-                   {:state-atom app-state
-                    :state-kvs [:canvas-control]
-                    :overlay-draw nil
-                    :get-canvas-size our-layout/get-canvas-size
-                    :get-world-size #'wo/get-world-size
-                    :canvas (.item (.getElementsByTagName js/document "canvas") 0)
-                    :canvas-context (.getContext
-                                     (.item (.getElementsByTagName js/document "canvas") 0)
-                                     "2d")})
-
-
-                  ;; TODO: uncomment
-                  (.setInterval js/window (fn [] (top-level-draw)) 25)
-
-                  )
-
-                state)})
-
-(rum/defc game-component < rum/reactive []
-  (rum/react ui-refresh-tick)
-  (our-layout/mk-html
-   ;; sidebar
-   (sidebar-component)
-   ;; bottom bar
-   (bottombar-component)))
-
-(rum/defc main-component < my-mixin rum/reactive []
-  (rum/react scratch/state)
-  [:div
-   (game-component)
-   (scratch/scratch-component)])
-
-(defn render []
-  (rum/mount (main-component)
-             (. js/document (getElementById "app"))))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Resources to be loaded
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(def resource-fnames
-  (concat
-   ["background.png"
-    "tiles.png"
-    "loco1.png"
-    "loco1-coupled.png"
-    "loco1-crashed.png"
-    "loco1-debug.png"
-    "carriage1.png"
-    "carriage1-front-coupled.png"
-    "carriage1-rear-coupled.png"
-    "carriage1-both-coupled.png"
-    "carriage1-crashed.png"
-    "carriage2.png"
-    "level1.tmx"]
-   ;; (for [n (range 9)] (str "track-palette/" n ".png"))
-   ;; (for [n (range 8)] (str "track-palette/2" (inc n) ".png"))
-   ;; (for [n (range 8)] (str "track-palette/4" (inc n) ".png"))
-   ;; (for [n [62 63 64]] (str "track-palette/" n ".png"))
-   ;; (for [n [82 83 84]] (str "track-palette/" n ".png"))
-
-   ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Main function
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(defn -main [& _]
-  ;; (js/frameRate 1)
-  ;; (js/setInterval (fn [] ;; set up periodic frame rate measurement update
-  ;;                   (let [rate (js/frameRate)
-  ;;                         rate-s (/ (int (* rate 10)) 10)]
-  ;;                     (swap! app-state assoc :frame-rate rate-s)))
-  ;;                 1000)
-
-  (.log js/console "-MAIN !!!")
-
-  (doseq [fname resource-fnames]
-    (resources/add-resource fname))
-
-  (resources/set-on-all-loaded
-   #(do
-      (when (every? resources/get-resource resource-fnames)
-        (wo/set-world (wo/mk-world))
-        (wo/init-tile-extra)
-        (wo/run))))
-
-
-
+(defn setup-km-handlers [& [end-callback]]
   (km/setup-key-handler)
   (km/setup-mouse-handler)
+  (when end-callback (end-callback)))
 
+(defn initialize-modules [& [end-callback]]
   (app.modules.construction/initialize)
+  (when end-callback (end-callback)))
 
-  (render)
-  )
+(do ;; load-resources
 
-(defn initialize-layout []
+  (def resource-fnames
+    (concat
+     ["background.png"
+      "tiles.png"
+      "loco1.png"
+      "loco1-coupled.png"
+      "loco1-crashed.png"
+      "loco1-debug.png"
+      "carriage1.png"
+      "carriage1-front-coupled.png"
+      "carriage1-rear-coupled.png"
+      "carriage1-both-coupled.png"
+      "carriage1-crashed.png"
+      "carriage2.png"
+      "level1.tmx"]
+     ;; (for [n (range 9)] (str "track-palette/" n ".png"))
+     ;; (for [n (range 8)] (str "track-palette/2" (inc n) ".png"))
+     ;; (for [n (range 8)] (str "track-palette/4" (inc n) ".png"))
+     ;; (for [n [62 63 64]] (str "track-palette/" n ".png"))
+     ;; (for [n [82 83 84]] (str "track-palette/" n ".png"))
+
+     ))
+
+  (defn load-resources [end-callback]
+    (doseq [fname resource-fnames]
+      (resources/add-resource fname))
+
+    (resources/set-on-all-loaded
+     #(do
+        (when (every? resources/get-resource resource-fnames)
+          (end-callback))))))
+
+(defn start-game [& [end-callback]]
+  (wo/set-world (wo/mk-world))
+  (wo/init-tile-extra)
+  (wo/run)
+  (when end-callback (end-callback)))
+
+(do ;; mount-ui
+
+  (def ui-callback-when-mounted (atom nil))
+
+  (def my-mixin
+    {:did-mount (fn [_] (@ ui-callback-when-mounted))})
+
+  (rum/defc game-component < rum/reactive []
+    (rum/react ui-refresh-tick)
+    (our-layout/mk-html
+     (sidebar-component)
+     (bottombar-component)))
+
+  (rum/defc main-component < my-mixin rum/reactive []
+    (rum/react scratch/state)
+    [:div
+     (game-component)
+     (scratch/scratch-component)])
+
+  (defn mount-ui [end-callback]
+    (reset! ui-callback-when-mounted end-callback)
+    (rum/mount (main-component) (. js/document (getElementById "app")))))
+
+(defn initialize-layout [& [end-callback]]
   (our-layout/initialize
    app-state [:layout]
    {:bottom-bar-height 150
     :side-bar-width 200
     :after-canvas-resize
     #(;;.log js/console "ACR callback"
-      )}))
+      )})
+  (when end-callback (end-callback)))
 
+(defn initialize-canvas-control [& [end-callback]]
+  (canvas-control/initialize
+   {:state-atom app-state
+    :state-kvs [:canvas-control]
+    :overlay-draw nil
+    :get-canvas-size our-layout/get-canvas-size
+    :get-world-size #'wo/get-world-size
+    :canvas (.item (.getElementsByTagName js/document "canvas") 0)
+    :canvas-context (.getContext
+                     (.item (.getElementsByTagName js/document "canvas") 0)
+                     "2d")})
+  (when end-callback (end-callback)))
 
-(-main)
+(defn start-game-loop [& [end-callback]]
+  (.setInterval js/window (fn [] (game-step)) 25)
+  (when end-callback (end-callback)))
 
+;; Main ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn run-sequential [& fns]
+  (case (count fns)
+    0 (do)
+    1 ((first fns))
+    ((first fns) #(apply run-sequential (rest fns)))))
+
+(run-sequential
+ setup-km-handlers
+ initialize-modules
+ load-resources
+ start-game
+ mount-ui
+ initialize-layout
+ initialize-canvas-control
+ start-game-loop)
 
