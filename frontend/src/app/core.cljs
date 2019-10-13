@@ -87,6 +87,7 @@
   ;; (js/line 0 0 0 0)
   )
 
+
 ;; Game loop functions;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn advance-simulation []
@@ -114,7 +115,7 @@
   ;;; and put new world in state.
         (swap! app-state assoc :world world')))))
 
-(defn ddraw [{:keys [min-x max-x min-y max-y canvas-context] :as context}]
+(defn draw-game [{:keys [min-x max-x min-y max-y canvas-context] :as context}]
   (let [world' (:world @app-state)]
     ;;; Draw the world.
     (sys-drawing/draw-all world' context)
@@ -128,7 +129,10 @@
 
 (defn game-step []
   (advance-simulation)
-  (canvas-control/draw ddraw))
+  (let [context (canvas-control/drawing-prolog)]
+    (draw-game context)
+    (canvas-control/drawing-epilog context)))
+
 
 ;; Initializers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -218,7 +222,6 @@
   (canvas-control/initialize
    {:state-atom app-state
     :state-kvs [:canvas-control]
-    :overlay-draw nil
     :get-canvas-size our-layout/get-canvas-size
     :get-world-size #'wo/get-world-size
     :canvas (.item (.getElementsByTagName js/document "canvas") 0)
@@ -230,6 +233,7 @@
 (defn start-game-loop [& [end-callback]]
   (.setInterval js/window (fn [] (game-step)) 25)
   (when end-callback (end-callback)))
+
 
 ;; Main ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -248,4 +252,3 @@
  initialize-layout
  initialize-canvas-control
  start-game-loop)
-

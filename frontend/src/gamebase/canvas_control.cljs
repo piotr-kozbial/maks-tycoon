@@ -19,13 +19,8 @@
       [#(int (/ (- % t-x) scale-factor))
        #(int (/ (- % t-y) (- scale-factor)))])))
 
-(defn draw [client-draw-fn]
-  ;; outermost scaling and translation
-  (when @conf
-
-    ;; (s/validate s-conf @conf)
-
-    (let [{:keys [state-atom state-kvs get-canvas-size canvas-context]} @conf]
+(defn drawing-prolog []
+   (let [{:keys [state-atom state-kvs get-canvas-size canvas-context]} @conf]
       (let [{:keys [scale-factor translation-x translation-y]}
             ,    (get-in @state-atom state-kvs)
             ;; IMPORTANT!!! We must make translations integers, otherwise
@@ -50,19 +45,18 @@
         ;; We keep use the integer translations here as well
         (let [rev-x #(/ (- % t-x) scale-factor)
               rev-y #(/ (- % t-y) (- scale-factor))]
-          ;; client draw
-          (client-draw-fn
-           {:min-x (int (rev-x 0))
-            :max-x (int (rev-x wc))
-            :min-y (int (rev-y hc)) ;; because of negative y scale, hc is min and 0 is max
-            :max-y (int (rev-y 0))
-            :mouse-x 0 ;; (int (rev-x js/mouseX)) TODO
-            :mouse-y 0 ;; (int (rev-y js/mouseY)) TODO
-            :canvas-context canvas-context})
-          (.restore canvas-context)
-          ;; overlay draw
-          (when-let [overlay-draw (:overlay-draw @conf)]
-            (overlay-draw wc hc)))))))
+
+          {:min-x (int (rev-x 0))
+           :max-x (int (rev-x wc))
+           :min-y (int (rev-y hc)) ;; because of negative y scale, hc is min and 0 is max
+           :max-y (int (rev-y 0))
+           :mouse-x 0 ;; (int (rev-x js/mouseX)) TODO
+           :mouse-y 0 ;; (int (rev-y js/mouseY)) TODO
+           :canvas-context canvas-context}))))
+
+(defn drawing-epilog [{:keys [canvas-context]}]
+  (.restore canvas-context))
+
 
 (declare setup-drag-event)
 
