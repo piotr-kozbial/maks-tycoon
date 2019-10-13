@@ -2,8 +2,8 @@
   (:require
    [gamebase-ecs.core :as ecs]
    [gamebase.systems.drawing :as sys-drawing]
-   [gamebase.systems.movement.movement :as sys-move]
-   [gamebase.systems.movement.components.railway-roller :refer [mk-railway-roller]]
+   [app.ecs.systems.movement.movement :as sys-move]
+   [app.ecs.systems.movement.components.railway-roller :refer [mk-railway-roller]]
    [gamebase-ecs.event-queue :as eq]
    [gamebase.geometry :as g]
    [app.ecs.operations :as ops]

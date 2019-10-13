@@ -1,10 +1,10 @@
-(ns gamebase.systems.movement.components.roller
+(ns app.ecs.systems.movement.components.roller
   (:require
    [gamebase-ecs.core :as ecs]
    [gamebase-ecs.event-queue :as eq]
    [app.ecs.common-events :as ci]
    [gamebase.geometry :as g]
-   [gamebase.systems.movement.movement :as sys]))
+   [app.ecs.systems.movement.movement :as sys]))
 
 
 

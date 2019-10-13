@@ -6,7 +6,7 @@
    [app.ecs.systems.collisions :as sys-collisions]
    [app.ecs.common-events :as ci]
    [app.ecs.operations :as ops]
-   [gamebase.systems.movement.movement :as sys-move]
+   [app.ecs.systems.movement.movement :as sys-move]
    [app.ecs.systems.railway :as sys-railway]
    [app.tiles.general :as tiles]
    [app.tiles.turnouts :as turnouts]

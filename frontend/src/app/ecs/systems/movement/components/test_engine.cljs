@@ -1,10 +1,10 @@
-(ns gamebase.systems.movement.components.test-engine
+(ns app.ecs.systems.movement.components.test-engine
   (:require
    [gamebase-ecs.core :as ecs]
    [gamebase-ecs.event-queue :as eq]
    [app.ecs.common-events :as ci]
    [gamebase.geometry :as g]
-   [gamebase.systems.movement.components.engine :as eng]))
+   [app.ecs.systems.movement.components.engine :as eng]))
 
 (derive ::test-engine ::eng/engine)
 

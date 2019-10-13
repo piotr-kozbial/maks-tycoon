@@ -1,4 +1,4 @@
-(ns gamebase.systems.movement.movement
+(ns app.ecs.systems.movement.movement
   (:require
    [gamebase-ecs.core :as ecs]
    [gamebase-ecs.event-queue :as eq]

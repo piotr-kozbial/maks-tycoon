@@ -2,10 +2,10 @@
   (:require
    [gamebase-ecs.core :as ecs]
    [gamebase.systems.drawing :as sys-drawing]
-   [gamebase.systems.movement.movement :as sys-move]
+   [app.ecs.systems.movement.movement :as sys-move]
    [app.ecs.systems.collisions :refer [mk-collider]]
-   [gamebase.systems.movement.components.railway-roller :refer [mk-railway-roller]]
-   [gamebase.systems.movement.components.railway-engine :refer [mk-railway-engine]]
+   [app.ecs.systems.movement.components.railway-roller :refer [mk-railway-roller]]
+   [app.ecs.systems.movement.components.railway-engine :refer [mk-railway-engine]]
    [gamebase-ecs.event-queue :as eq]
    [gamebase.geometry :as g]
    [app.tiles.general :as tiles]

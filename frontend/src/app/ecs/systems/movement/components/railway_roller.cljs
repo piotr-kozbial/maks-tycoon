@@ -1,13 +1,11 @@
-(ns gamebase.systems.movement.components.railway-roller
+(ns app.ecs.systems.movement.components.railway-roller
   (:require
    [gamebase-ecs.core :as ecs]
    [gamebase-ecs.event-queue :as eq]
    [app.ecs.common-events :as ci]
    [gamebase.geometry :as g]
-   [gamebase.systems.movement.components.roller :as rol]
-
-
-   [gamebase.systems.movement.movement :as sys]) 
+   [app.ecs.systems.movement.components.roller :as rol]
+   [app.ecs.systems.movement.movement :as sys]) 
   )
 
 
@@ -40,8 +38,8 @@
 
 (defmethod rol/roller-previous-path ::railway-roller
   [world this path]
-  (let [[tile-x tile-y] (:gamebase.systems.movement.movement/tile-xy (:path this))
-        track (:gamebase.systems.movement.movement/track (:path this))]
+  (let [[tile-x tile-y] (:app.ecs.systems.movement.movement/tile-xy (:path this))
+        track (:app.ecs.systems.movement.movement/track (:path this))]
     (sys/-railway-previous-path world path
                             {:hint-tile-x tile-x
                              :hint-tile-y tile-y

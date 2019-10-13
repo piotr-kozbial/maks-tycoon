@@ -1,8 +1,8 @@
 (ns app.scratch.scratch
   (:require [rum.core :as rum]
-            [gamebase.systems.movement.movement :as sys-movement]
-            [gamebase.systems.movement.components.test-engine :refer [mk-test-engine]]
-            [gamebase.systems.movement.components.test-roller :refer [mk-test-roller]]
+            [app.ecs.systems.movement.movement :as sys-movement]
+            [app.ecs.systems.movement.components.test-engine :refer [mk-test-engine]]
+            [app.ecs.systems.movement.components.test-roller :refer [mk-test-roller]]
             [gamebase-ecs.core :as ecs]
             [gamebase.geometry :as geom]
             [cljs.pprint :refer [pprint]]

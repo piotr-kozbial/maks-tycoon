@@ -1,12 +1,12 @@
-(ns gamebase.systems.movement.components.railway-engine
+(ns app.ecs.systems.movement.components.railway-engine
   (:require
    [gamebase-ecs.core :as ecs]
    [gamebase-ecs.event-queue :as eq]
    [app.ecs.common-events :as ci]
    [gamebase.geometry :as g]
    [app.tiles.general :as tiles]
-   [gamebase.systems.movement.movement :as sys]
-   [gamebase.systems.movement.components.engine :as eng]))
+   [app.ecs.systems.movement.movement :as sys]
+   [app.ecs.systems.movement.components.engine :as eng]))
 
 
 
