@@ -1,3 +1,5 @@
+Devel run: (cider-jack-in-clj&cljs '(:cljs-repl-type 'figwheel-main))
+
 * How collisions are detected and handled
 
 ** System: app.ecs.systems.collisions/mk-system
