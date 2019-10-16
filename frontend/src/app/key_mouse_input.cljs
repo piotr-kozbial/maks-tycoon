@@ -17,7 +17,8 @@
    [app.ecs.common-events :as ci]
    [app.ecs.systems.movement.movement :as sys-movement]
    [app.ecs.systems.railway :as sys-railway]
-   ))
+
+   [app.state :as st]))
 
 (defn takeover-mouse-click [owner-id handler]
   (swap! uis/ui-state assoc-in [:key-mouse :click-owner] owner-id)
@@ -81,7 +82,8 @@
              y 0 ;; TODO
              ]
          (when @enabled
-           (when-let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters)]
+           (when-let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters
+                                       @st/canvas-control-object)]
              (let [world-x (conv-x x)
                    world-y (conv-y y)
                    tile-x (quot world-x 32)

@@ -3,13 +3,9 @@
             [gamebase-ecs.core :as ecs]
             [gamebase.projection :as proj]))
 
-
-(defonce conf (atom nil))
-
-(defn get-canvas-to-world-converters []
-  (when-let [{:keys [state-atom state-kvs get-canvas-size]} @conf]
-    (.log js/console (pr-str 
-                      (get-in @state-atom state-kvs)))
+;; public API
+(defn get-canvas-to-world-converters [canvas-control-object]
+  (when-let [{:keys [state-atom state-kvs]} canvas-control-object]
     (let [{:keys [scale-factor translation-x translation-y]}
           ,    (get-in @state-atom state-kvs)
           ;; IMPORTANT!!! We must make translations integers, otherwise
@@ -19,15 +15,21 @@
       [#(int (/ (- % t-x) scale-factor))
        #(int (/ (- % t-y) (- scale-factor)))])))
 
-(defn drawing-prolog []
-   (let [{:keys [state-atom state-kvs get-canvas-size canvas-context]} @conf]
+;; public API
+(defn drawing-prolog [canvas-control-object]
+   (let [{:keys [state-atom state-kvs canvas ;;canvas-context
+                 ]} canvas-control-object
+
+         canvas-context (.getContext canvas "2d")
+         ]
       (let [{:keys [scale-factor translation-x translation-y]}
             ,    (get-in @state-atom state-kvs)
             ;; IMPORTANT!!! We must make translations integers, otherwise
             ;; there will be unwanted artifacts (lines between tiles).
             t-x (int translation-x)
             t-y (int translation-y)
-            [wc hc] (get-canvas-size)]
+            wc (.-width canvas)
+            hc (.-height canvas)]
         (set! (.-imageSmoothingEnabled canvas-context) false)
 
         (do ;; clear background
@@ -54,30 +56,30 @@
            :mouse-y 0 ;; (int (rev-y js/mouseY)) TODO
            :canvas-context canvas-context}))))
 
-(defn drawing-epilog [{:keys [canvas-context]}]
-  (.restore canvas-context))
-
+;; public API
+(defn drawing-epilog [{:keys [canvas]}]
+  (.restore (.getContext canvas "2d")))
 
 (declare setup-drag-event)
 
 ;; public API
-(defn initialize [{:keys [state-atom state-kvs] :as config}]
-  (reset! conf config)
+(defn create [{:keys [state-atom state-kvs] :as config}]
+  ;; (reset! conf config)
   (swap! state-atom assoc-in state-kvs
          {:scale-factor 2
           :translation-x 100.0
           :translation-y 300.0})
-  (setup-drag-event)
-  ;; (events/add-handler :draw #'draw)
+  (setup-drag-event config)
+  ;; we return the config as the canvas-control object
+  config)
 
-  )
-
-(defn- make-proj-conf []
-  (let [{:keys [state-atom state-kvs get-canvas-size]} @conf
+(defn- make-proj-conf [canvas-control-object]
+  (let [{:keys [state-atom state-kvs canvas]} canvas-control-object
         {:keys [scale-factor
                 translation-x
                 translation-y]} (get-in @state-atom state-kvs)
-        [wc hc] (get-canvas-size)]
+        wc (.-width canvas)
+        hc (.-height canvas)]
 
     (swap! state-atom update-in state-kvs
            (fn [state]
@@ -92,16 +94,18 @@
      wc
      hc)))
 
-(defn -get-state []
-  (when-let [{:keys [state-atom state-kvs]} @conf]
+(defn -get-state [canvas-control-object]
+  (when-let [{:keys [state-atom state-kvs]} canvas-control-object]
     (get-in @state-atom state-kvs)))
 
-(defn get-scale []
-  (when-let [{:keys [scale-factor]} (-get-state)]
+;; public API
+(defn get-scale [canvas-control-object]
+  (when-let [{:keys [scale-factor]} (-get-state canvas-control-object)]
     scale-factor))
 
-(defn get-canvas-size []
-  (when-let [{:keys [canvas-width canvas-height]} (-get-state)]
+;; public API
+(defn get-canvas-size [canvas-control-object]
+  (when-let [{:keys [canvas-width canvas-height]} (-get-state canvas-control-object)]
     [canvas-width canvas-height]))
 
 (declare readjust)
@@ -111,10 +115,10 @@
   "set scale in such a way that the center point of the viewport
   keeps the same world point"
 
-  [scale-factor]
+  [canvas-control-object scale-factor]
 
-  (let [{:keys [state-atom state-kvs]} @conf
-        proj-conf (make-proj-conf)
+  (let [{:keys [state-atom state-kvs]} canvas-control-object
+        proj-conf (make-proj-conf canvas-control-object)
         proj-conf' (assoc proj-conf
                           :k scale-factor
                           :tx 0
@@ -136,26 +140,23 @@
   (readjust)
   nil)
 
+;; public API
 (defn center-on
   "set translation in such a way that the center point
    of the viewport matches given world point"
 
-  [[_ world-x world-y :as world-p]]
+  [canvas-control-object [_ world-x world-y :as world-p]]
 
   (let [world-p' (proj/world-point [world-x (- world-y)])
-        {:keys [state-atom state-kvs]} @conf
-        proj-conf (make-proj-conf)
+        {:keys [state-atom state-kvs]} canvas-control-object
+        proj-conf (make-proj-conf canvas-control-object)
         proj-conf0 (assoc proj-conf
                           :tx 0
                           :ty 0)
-        ;;;_ (println (str "got" (pr-str world-p')))
         ;; view coords of the given world point
         [xw yw] (proj/view-coords proj-conf0 world-p')
-        ;;; _ (println [xw yw])
-        ;;; _ (println proj-conf)
         ;; view coords of view center
         [xc yc] (proj/view-coords proj-conf0 (proj/Vc proj-conf0))
-        ;; _ (println [xc yc])
         ;; translation we have to do to match the above
         tr-x (- xc xw)
         tr-y (- yc yw)]
@@ -163,24 +164,23 @@
            (fn [s] (assoc s
                          :translation-x tr-x
                          :translation-y tr-y))))
-  nil
-)
+  nil)
 
 (def MARGIN 100)
 
-(defn readjust
+(defn- readjust
   "fix translation after external change
   (such as canvas resize by layout or game state reloaded)
   so that some of the world is visible at least"
-  []
+  [canvas-control-object]
 
-  (let [{:keys [state-atom state-kvs get-world-size]} @conf
+  (let [{:keys [state-atom state-kvs world-width world-height]} canvas-control-object
         {:keys [translation-x translation-y] :as state} (get-in @state-atom state-kvs)
-        {:keys [wc hc] :as proj-conf} (make-proj-conf)
+        {:keys [wc hc] :as proj-conf} (make-proj-conf canvas-control-object)
 
         wZ (proj/world-point [0 0])
-
-        [ww wh] (get-world-size)
+        ww world-width
+        wh world-height
         wM (proj/world-point [ww (- wh)])
 
         [xZ yZ] (proj/view-coords proj-conf wZ)
@@ -208,14 +208,13 @@
              (fn [state]
                (assoc state :translation-y (+ (:translation-y state) (- MARGIN yZ))))))))
 
-(defn- setup-drag-event []
-  (let [{:keys [canvas state-atom state-kvs]} @conf
+(defn- setup-drag-event [canvas-control-object]
+  (let [{:keys [canvas state-atom state-kvs]} canvas-control-object
+
         drag-state (atom nil)
 
         handle-mouse-down
         (fn [e]
-          ;; (.log js/console "Drag START")
-          ;; (.log js/console e)
           (when-not @drag-state
             (reset! drag-state [(.-clientX e) (.-clientY e)])
             (.setPointerCapture canvas (.-pointerId e))))
@@ -228,70 +227,19 @@
                   dx (- x prev-x)
                   dy (- y prev-y)]
               (reset! drag-state [x y])
-              ;; (.log js/console (str "drag " dx " " dy))
               (swap! state-atom update-in state-kvs
                      (fn [{:keys [translation-x translation-y] :as s}]
                        (assoc s
                               :translation-x (+ translation-x dx)
                               :translation-y (+ translation-y dy))))
-              (readjust)
-
-              ))
-
-          )
+              (readjust canvas-control-object))))
 
         handle-mouse-up
         (fn [e]
           (when @drag-state
-            (reset! drag-state nil)
-            ;;(.log js/console "Drag STOP")
-            )
-
-          )
-
-        ]
-    ;; (events/listen {:event-type :pointer-move
-    ;;                 :target js/document
-    ;;                 :capture? true}
-    ;;                (fn [;;{:keys [button x y prev-x prev-y]}
-    ;;                     e
-    ;;                     ]
-    ;;                  (.log js/console e)
-    ;;                  ;; (when (= button js/RIGHT)
-    ;;                  ;;   (let [{:keys [state-atom state-kvs]} @conf
-    ;;                  ;;         dx (- x prev-x)
-    ;;                  ;;         dy (- y prev-y)]
-    ;;                  ;;     (swap! state-atom update-in state-kvs
-    ;;                  ;;            (fn [{:keys [translation-x translation-y] :as s}]
-    ;;                  ;;              (assoc s
-    ;;                  ;;                     :translation-x (+ translation-x dx)
-    ;;                  ;;                     :translation-y (+ translation-y dy))))
-    ;;                  ;;     (readjust)))
-
-    ;;                  ))
+            (reset! drag-state nil)))]
 
     (.addEventListener canvas "pointerdown" handle-mouse-down)
     (.addEventListener canvas "pointermove" handle-mouse-move)
     (doseq [event ["pointerup" "pointerout" "pointerleave"]]
-      (.addEventListener canvas event handle-mouse-up))
-
-
-    ;; ;; goog.events.EventType.DRAG
-    ;; (events/add-handler
-    ;;  :canvas-mouse-dragged
-    ;;  (fn [{:keys [button x y prev-x prev-y]}]
-    ;;    (when (= button js/RIGHT)
-    ;;      (let [{:keys [state-atom state-kvs]} @conf
-    ;;            dx (- x prev-x)
-    ;;            dy (- y prev-y)]
-    ;;        (swap! state-atom update-in state-kvs
-    ;;               (fn [{:keys [translation-x translation-y] :as s}]
-    ;;                 (assoc s
-    ;;                        :translation-x (+ translation-x dx)
-    ;;                        :translation-y (+ translation-y dy))))
-    ;;        (readjust)))))
-
-    )
-
-
-  )
+      (.addEventListener canvas event handle-mouse-up))))

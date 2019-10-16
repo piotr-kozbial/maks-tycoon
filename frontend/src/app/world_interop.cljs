@@ -15,7 +15,8 @@
    [gamebase.layers :as layers]
    [app.server-communication :as sc]
    [app.tiles.general :refer [initialize-tile-extra]]
-   [app.state :refer [app-state ui-refresh-tick get-fresh-entity-id update-tile-extra]]))
+   [app.state :refer [app-state ui-refresh-tick get-fresh-entity-id update-tile-extra
+                      canvas-control-object]]))
 
 
 ;; time-related operations
@@ -188,7 +189,7 @@
   [2000 1000])
 
 (defn get-tile-xy [canvas-x canvas-y]
-  (let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters)
+  (let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters @canvas-control-object)
         tile-x (quot (conv-x canvas-x) 32)
         tile-y (quot (conv-y canvas-y) 32)
         [world-width world-height] (get-world-size)]

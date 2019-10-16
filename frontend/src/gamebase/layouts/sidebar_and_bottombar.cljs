@@ -3,19 +3,14 @@
    [gamebase.events :as events]
    [app.utils.jscript :as j]))
 
-
-
-;; TODO
-;;
-;; uporzadkowac i uruchomic:
-;;   1. full page
-;;   2. splash
-
+;; public API
 (defn mk-html [sidebar-content bottombar-content & [splash-image]]
   [:div {}
    [:div {:id "gamebase/canvas-holder"
           :style {:position "absolute"
-                  :backgroundColor "#888888"}}]
+                  :backgroundColor "#888888"}}
+    [:canvas {:id "gamebase/canvas"
+              :width 600 :height 500}]]
    [:div
     {:id "gamebase/bottom-bar"
      :style {:position "absolute"
@@ -48,6 +43,11 @@
 
 ;; API
 
+;; public API
+(defn get-canvas []
+  (.getElementById js/document "gamebase/canvas"))
+
+;; public API
 (defn initialize [base-atom kvs opts]
   (reset! state (assoc opts
                        :base-atom base-atom
@@ -56,8 +56,8 @@
   (swap! base-atom update-in kvs (constantly {}))
   (let [
         ;; cnv (js/createCanvas 600 400)
-        cnv (.createElement js/document "CANVAS")
-
+        ;; cnv (.createElement js/document "CANVAS")
+        cnv (get-canvas)
 
         ]
     (set! (.-width cnv) 600)
@@ -67,6 +67,7 @@
     (update-canvas-size)
     (show-canvas)
     (update-canvas-size)))
+
 
 (defn get-canvas-holder-element []
   (.getElementById js/document "gamebase/canvas-holder"))
@@ -117,7 +118,7 @@
   (set! (.-width (.-style element)) (str width "px")))
 
 (defn update-canvas-size []
-  (let [{:keys [base-atom kvs bottom-bar-height side-bar-width after-canvas-resize canvas]} @state
+  (let [{:keys [base-atom kvs bottom-bar-height side-bar-width canvas]} @state
         width (.-innerWidth js/window)
         height (.-innerHeight js/window)
         canvas-width (- width side-bar-width)
@@ -157,16 +158,7 @@
            :canvas-width canvas-width
            :canvas-height canvas-height
            )
-    (swap! base-atom update-in kvs
-           (fn [s] (assoc s
-                         :canvas-x side-bar-width
-                         :canvas-y 1
-                         :canvas-width canvas-width
-                         :canvas-height canvas-height
-
-                         )))
-
-    (after-canvas-resize)))
+    (swap! base-atom update-in kvs (fn [s] (assoc s :canvas-x side-bar-width :canvas-y 1 :canvas-width canvas-width :canvas-height canvas-height)))))
 
 (defn -setup-events []
 

@@ -7,7 +7,7 @@
 
             [app.scratch.scratch :as scratch]
 
-            [app.state :refer [app-state ui-refresh-tick
+            [app.state :as st :refer [app-state ui-refresh-tick
                                get-fresh-entity-id update-tile-extra]]
             [app.ui.ui-state :refer [ui-state]]
             [gamebase.resources :as resources]
@@ -129,9 +129,8 @@
 
 (defn game-step []
   (advance-simulation)
-  (let [context (canvas-control/drawing-prolog)]
-    (draw-game context)
-    (canvas-control/drawing-epilog context)))
+  (draw-game (canvas-control/drawing-prolog @st/canvas-control-object))
+  (canvas-control/drawing-epilog @st/canvas-control-object))
 
 
 ;; Initializers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -212,20 +211,19 @@
   (our-layout/initialize
    app-state [:layout]
    {:bottom-bar-height 150
-    :side-bar-width 200
-    :after-canvas-resize #()})
+    :side-bar-width 200})
   (when end-callback (end-callback)))
 
+
+
 (defn initialize-canvas-control [& [end-callback]]
-  (canvas-control/initialize
-   {:state-atom app-state
-    :state-kvs [:canvas-control]
-    :get-canvas-size our-layout/get-canvas-size
-    :get-world-size #'wo/get-world-size
-    :canvas (.item (.getElementsByTagName js/document "canvas") 0)
-    :canvas-context (.getContext
-                     (.item (.getElementsByTagName js/document "canvas") 0)
-                     "2d")})
+  (let [[world-width world-height] (wo/get-world-size)
+        canvas (our-layout/get-canvas)]
+    (reset! st/canvas-control-object
+            (canvas-control/create
+             {:state-atom app-state, :state-kvs [:canvas-control]
+              :world-width world-width, :world-height world-height
+              :canvas canvas})))
   (when end-callback (end-callback)))
 
 (defn start-game-loop [& [end-callback]]

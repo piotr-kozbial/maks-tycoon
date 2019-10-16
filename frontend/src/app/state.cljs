@@ -33,6 +33,10 @@
 (defn get-fresh-entity-id []
   (swap! -entity-id-counter inc))
 
+;; 
+
+(def canvas-control-object (atom nil))
+
 
 ;; Tile extra
 

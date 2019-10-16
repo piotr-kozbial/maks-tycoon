@@ -13,7 +13,7 @@
    [app.ui.dropdown :refer [mk-dropdown]]
 
    [app.ui.save-load-game :refer [save-load-game-component]]
-
+   [app.state :as st]
    [app.ui.ui-state :as uis]))
 
 
@@ -98,10 +98,16 @@ nil
      [:div (str "FRAME RATE: " frame-rate)]
      [:span]
      [:div
-      "scale: " (canvas-control/get-scale) " "
-      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 0.5))} "50%"] " "
-      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 1.0))} "100%"] " "
-      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale 2.0))} "200%"]]
+      "scale: " (canvas-control/get-scale @st/canvas-control-object) " "
+      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale
+                                       @st/canvas-control-object
+                                       0.5))} "50%"] " "
+      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale
+                                       @st/canvas-control-object
+                                       1.0))} "100%"] " "
+      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale
+                                       @st/canvas-control-object
+                                       2.0))} "200%"]]
 
      [:br] [:span]
      [:br] [:span]
