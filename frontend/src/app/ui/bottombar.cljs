@@ -14,7 +14,8 @@
    [cljs.pprint :refer [pprint]]
 
    [gamebase.geometry :as geom]
-   [app.ecs.operations :as ops]))
+   [app.ecs.operations :as ops]
+   [app.state :as st]))
 
 
 (defn entity-picture [entity]
@@ -92,6 +93,7 @@
           [:a {:href "#"
                :style {:color "#e8cba2" :background-color "#47681b"}
                :on-click (fn [_] (canvas-control/center-on
+                                 @st/canvas-control-object
                                  (proj/world-point
                                   [(* 32 tile-x) (* 32 tile-y)])))}
            "→ SHOW"]]

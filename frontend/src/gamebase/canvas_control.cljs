@@ -3,7 +3,10 @@
             [gamebase-ecs.core :as ecs]
             [gamebase.projection :as proj]))
 
-;; public API
+(declare make-proj-conf -get-state setup-drag-event readjust)
+
+;; Public API ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn get-canvas-to-world-converters [canvas-control-object]
   (when-let [{:keys [state-atom state-kvs]} canvas-control-object]
     (let [{:keys [scale-factor translation-x translation-y]}
@@ -15,7 +18,6 @@
       [#(int (/ (- % t-x) scale-factor))
        #(int (/ (- % t-y) (- scale-factor)))])))
 
-;; public API
 (defn drawing-prolog [canvas-control-object]
    (let [{:keys [state-atom state-kvs canvas ;;canvas-context
                  ]} canvas-control-object
@@ -56,13 +58,9 @@
            :mouse-y 0 ;; (int (rev-y js/mouseY)) TODO
            :canvas-context canvas-context}))))
 
-;; public API
 (defn drawing-epilog [{:keys [canvas]}]
   (.restore (.getContext canvas "2d")))
 
-(declare setup-drag-event)
-
-;; public API
 (defn create [{:keys [state-atom state-kvs] :as config}]
   ;; (reset! conf config)
   (swap! state-atom assoc-in state-kvs
@@ -73,44 +71,14 @@
   ;; we return the config as the canvas-control object
   config)
 
-(defn- make-proj-conf [canvas-control-object]
-  (let [{:keys [state-atom state-kvs canvas]} canvas-control-object
-        {:keys [scale-factor
-                translation-x
-                translation-y]} (get-in @state-atom state-kvs)
-        wc (.-width canvas)
-        hc (.-height canvas)]
-
-    (swap! state-atom update-in state-kvs
-           (fn [state]
-             (assoc state
-                    :canvas-width wc
-                    :canvas-height hc)))
-
-    (proj/projection-config
-     scale-factor
-     translation-x
-     translation-y
-     wc
-     hc)))
-
-(defn -get-state [canvas-control-object]
-  (when-let [{:keys [state-atom state-kvs]} canvas-control-object]
-    (get-in @state-atom state-kvs)))
-
-;; public API
 (defn get-scale [canvas-control-object]
   (when-let [{:keys [scale-factor]} (-get-state canvas-control-object)]
     scale-factor))
 
-;; public API
 (defn get-canvas-size [canvas-control-object]
   (when-let [{:keys [canvas-width canvas-height]} (-get-state canvas-control-object)]
     [canvas-width canvas-height]))
 
-(declare readjust)
-
-;; public API
 (defn set-scale
   "set scale in such a way that the center point of the viewport
   keeps the same world point"
@@ -140,7 +108,6 @@
   (readjust)
   nil)
 
-;; public API
 (defn center-on
   "set translation in such a way that the center point
    of the viewport matches given world point"
@@ -166,7 +133,34 @@
                          :translation-y tr-y))))
   nil)
 
+;; private ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (def MARGIN 100)
+
+(defn- make-proj-conf [canvas-control-object]
+  (let [{:keys [state-atom state-kvs canvas]} canvas-control-object
+        {:keys [scale-factor
+                translation-x
+                translation-y]} (get-in @state-atom state-kvs)
+        wc (.-width canvas)
+        hc (.-height canvas)]
+
+    (swap! state-atom update-in state-kvs
+           (fn [state]
+             (assoc state
+                    :canvas-width wc
+                    :canvas-height hc)))
+
+    (proj/projection-config
+     scale-factor
+     translation-x
+     translation-y
+     wc
+     hc)))
+
+(defn- -get-state [canvas-control-object]
+  (when-let [{:keys [state-atom state-kvs]} canvas-control-object]
+    (get-in @state-atom state-kvs)))
 
 (defn- readjust
   "fix translation after external change
