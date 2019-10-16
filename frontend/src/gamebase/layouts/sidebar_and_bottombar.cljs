@@ -117,7 +117,7 @@
   (set! (.-width (.-style element)) (str width "px")))
 
 (defn update-canvas-size []
-  (let [{:keys [base-atom kvs bottom-bar-height side-bar-width after-canvas-resize]} @state
+  (let [{:keys [base-atom kvs bottom-bar-height side-bar-width after-canvas-resize canvas]} @state
         width (.-innerWidth js/window)
         height (.-innerHeight js/window)
         canvas-width (- width side-bar-width)
@@ -141,8 +141,13 @@
     (position-element (get-bottom-bar-border-element)
                       bottom-bar-border-left (+ height (- bottom-bar-height))
                       bottom-bar-border-width 5)
-    ;; TODO
-    ;; (js/resizeCanvas canvas-width canvas-height)
+
+    (let [canvas (.item (.getElementsByTagName js/document "canvas") 0)]
+      (set! (.-height (.-style canvas)) (str canvas-height "px"))
+      (set! (.-width (.-style canvas)) (str canvas-width "px"))
+      (set! (.-height canvas) canvas-height)
+      (set! (.-width canvas) canvas-width))
+
     (swap! state assoc
 
            :screen-width width
@@ -160,6 +165,7 @@
                          :canvas-height canvas-height
 
                          )))
+
     (after-canvas-resize)))
 
 (defn -setup-events []
@@ -168,26 +174,31 @@
                      "resize"
                      (fn [_] (update-canvas-size)))
 
-  (events/add-handler
-   :mouse-dragged
-   (fn [{:keys [prev-x prev-y x y] :as event}]
+  ;; TODO - do it in the same manner as canvas_control does,
+  ;; using pointer capture (and regular js events of course)
+  (comment
+    (events/add-handler
+     :mouse-dragged
+     (fn [{:keys [prev-x prev-y x y] :as event}]
 
-     (let [{:keys [base-atom kvs
-                   bottom-bar-height
-                   bottom-bar-border-left
-                   bottom-bar-border-width
-                   canvas-height]} @state]
+       (let [{:keys [base-atom kvs
+                     bottom-bar-height
+                     bottom-bar-border-left
+                     bottom-bar-border-width
+                     canvas-height]} @state]
 
-       ;; these coordinates are canvas-related! (unfortunately)
+         ;; these coordinates are canvas-related! (unfortunately)
 
-       (when (and (< 0 prev-x bottom-bar-border-width)
-                  (< canvas-height prev-y (+ 5 canvas-height)))
-         (swap! state update-in [:bottom-bar-height] #(+ % (- prev-y y)))
-         (update-canvas-size))
+         (when (and (< 0 prev-x bottom-bar-border-width)
+                    (< canvas-height prev-y (+ 5 canvas-height)))
+           (swap! state update-in [:bottom-bar-height] #(+ % (- prev-y y)))
+           (update-canvas-size))
 
-       (when (and (< -35 prev-x 30)
-                  (< 0 prev-y canvas-height))
+         (when (and (< -35 prev-x 30)
+                    (< 0 prev-y canvas-height))
 
-         (swap! state update-in [:side-bar-width] #(+ % (- x prev-x)))
-         (update-canvas-size))))))
+           (swap! state update-in [:side-bar-width] #(+ % (- x prev-x)))
+           (update-canvas-size))))))
+
+  )
 
