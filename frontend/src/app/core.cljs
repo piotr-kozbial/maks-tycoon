@@ -252,3 +252,6 @@
  initialize-layout
  initialize-canvas-control
  start-game-loop)
+
+;; TODO - zrobic *stateless* takie moduly jak canvas-control,
+;; czyli nie inicjalizowac ich globalnie, tylko tworzyc obiekt

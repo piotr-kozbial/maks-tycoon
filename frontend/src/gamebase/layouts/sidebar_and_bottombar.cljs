@@ -163,8 +163,11 @@
     (after-canvas-resize)))
 
 (defn -setup-events []
-  (events/add-handler :window-resized
-                      (fn [_] (update-canvas-size)))
+
+  (.addEventListener js/window
+                     "resize"
+                     (fn [_] (update-canvas-size)))
+
   (events/add-handler
    :mouse-dragged
    (fn [{:keys [prev-x prev-y x y] :as event}]
