@@ -214,15 +214,13 @@
     :side-bar-width 200})
   (when end-callback (end-callback)))
 
-
-
 (defn initialize-canvas-control [& [end-callback]]
   (let [[world-width world-height] (wo/get-world-size)
         canvas (our-layout/get-canvas)]
     (reset! st/canvas-control-object
             (canvas-control/create
-             {:state-atom app-state, :state-kvs [:canvas-control]
-              :world-width world-width, :world-height world-height
+             {:content-width world-width
+              :content-height world-height
               :canvas canvas})))
   (when end-callback (end-callback)))
 
@@ -249,5 +247,3 @@
  initialize-canvas-control
  start-game-loop)
 
-;; TODO - zrobic *stateless* takie moduly jak canvas-control,
-;; czyli nie inicjalizowac ich globalnie, tylko tworzyc obiekt

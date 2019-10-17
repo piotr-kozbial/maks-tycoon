@@ -5,9 +5,73 @@
 
 (declare make-proj-conf -get-state setup-drag-event readjust)
 
+;; TODO. Moze prosciej koncepcyjnie byloby, gdyby canvas-control
+;; sam *tworzyl* swoj canvas.
+;; Wtedy nazwalibysmy to nie canvas-control, a cos w rodzaju enhanced-canvas.
+;; Tylko trudniejszy bylby kontakt z layoutem, ale wlasciwie i tak layouty
+;; trzeba troche przemyslec na nowo (z tym ich dziwacznym mk-html i w ogole).
+;; NOTE. Chyba nie tak trudno zrobic to elegancko - mozna utworzyc canvas
+;; "w powietrzu" (createElement), tylko nie wiem, czy wtedy getElementById go znajdzie,
+;; zanim bedzie wpiety do DOM.  Ale to tez mozna przeimplementowac nasze (get-canvas),
+;; zreszta bardzo sensownie. Trzymajmy sobie po prostu ten canvas w naszym atomie.
+;; TODO. zmienic nazwy :world-width, :world-height na :content-width, :content-height,
+;; i tak samo jeszcze get-canvas-to-world-converters odpowiednio.
+;; A WLASCIWIE to co do get-canvas-to-world-converters to raczej trzeba zobaczyc,
+;; do czego to jest uzywane i moze pomyslec to lepiej. A przynajmniej zrobic
+;; po prostu funkcje (canvas-to-content), ktora po prostu przelicza,
+;; a nie zwracac konwertery. Chyba ze wydajnosciowo to slabe by bylo.
+
+nil
+;;;;
+;;
+;; When created, using (create), like this:
+;;
+;;   (canvas-control/create
+;;    {:world-width ...,
+;;     :world-height ...,
+;;     :canvas ...})
+;;
+;; it returns an object that you will have to pass in subsequent calls.
+;; NOTE. That object will contain an atom, so it will not be "serializable".
+;;
+;; The module will also:
+;;   - update the atom (obviously),
+;;   - operate on the 2d context of the given canvas,
+;;   - handle pointer events on the canvas (to implement panning by dragging).
+;;
+;;;;
+
+nil
 ;; Public API ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn get-canvas-to-world-converters [canvas-control-object]
+(defn create [config]
+  ;; (reset! conf config)
+  (let [state-atom (atom {})
+        state-kvs [:state]
+        config' (assoc config
+                       :state-atom state-atom
+                       :state-kvs state-kvs)]
+    (swap! state-atom assoc-in state-kvs
+           {:scale-factor 2
+            :translation-x 100.0
+            :translation-y 300.0})
+    (setup-drag-event config')
+    ;; we return the augmented config as the canvas-control object
+    config'))
+
+;; (defn get-canvas-to-world-converters [canvas-control-object]
+;;   (when-let [{:keys [state-atom state-kvs]} canvas-control-object]
+;;     (let [{:keys [scale-factor translation-x translation-y]}
+;;           ,    (get-in @state-atom state-kvs)
+;;           ;; IMPORTANT!!! We must make translations integers, otherwise
+;;           ;; there will be unwanted artifacts (lines between tiles).
+;;           t-x (int translation-x)
+;;           t-y (int translation-y)]
+;;       [#(int (/ (- % t-x) scale-factor))
+;;        #(int (/ (- % t-y) (- scale-factor)))])))
+
+
+(defn canvas-to-content [canvas-control-object canvas-x canvas-y]
   (when-let [{:keys [state-atom state-kvs]} canvas-control-object]
     (let [{:keys [scale-factor translation-x translation-y]}
           ,    (get-in @state-atom state-kvs)
@@ -15,8 +79,8 @@
           ;; there will be unwanted artifacts (lines between tiles).
           t-x (int translation-x)
           t-y (int translation-y)]
-      [#(int (/ (- % t-x) scale-factor))
-       #(int (/ (- % t-y) (- scale-factor)))])))
+      [(int (/ (- canvas-x t-x) scale-factor))
+       (int (/ (- canvas-y t-y) (- scale-factor)))])))
 
 (defn drawing-prolog [canvas-control-object]
    (let [{:keys [state-atom state-kvs canvas ;;canvas-context
@@ -60,16 +124,6 @@
 
 (defn drawing-epilog [{:keys [canvas]}]
   (.restore (.getContext canvas "2d")))
-
-(defn create [{:keys [state-atom state-kvs] :as config}]
-  ;; (reset! conf config)
-  (swap! state-atom assoc-in state-kvs
-         {:scale-factor 2
-          :translation-x 100.0
-          :translation-y 300.0})
-  (setup-drag-event config)
-  ;; we return the config as the canvas-control object
-  config)
 
 (defn get-scale [canvas-control-object]
   (when-let [{:keys [scale-factor]} (-get-state canvas-control-object)]
@@ -168,13 +222,13 @@
   so that some of the world is visible at least"
   [canvas-control-object]
 
-  (let [{:keys [state-atom state-kvs world-width world-height]} canvas-control-object
+  (let [{:keys [state-atom state-kvs content-width content-height]} canvas-control-object
         {:keys [translation-x translation-y] :as state} (get-in @state-atom state-kvs)
         {:keys [wc hc] :as proj-conf} (make-proj-conf canvas-control-object)
 
         wZ (proj/world-point [0 0])
-        ww world-width
-        wh world-height
+        ww content-width
+        wh content-height
         wM (proj/world-point [ww (- wh)])
 
         [xZ yZ] (proj/view-coords proj-conf wZ)

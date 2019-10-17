@@ -189,9 +189,10 @@
   [2000 1000])
 
 (defn get-tile-xy [canvas-x canvas-y]
-  (let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters @canvas-control-object)
-        tile-x (quot (conv-x canvas-x) 32)
-        tile-y (quot (conv-y canvas-y) 32)
+  (let [[cont-x cont-y] (canvas-control/canvas-to-content @canvas-control-object canvas-x canvas-y)
+        ;; (canvas-control/get-can----vas-to-world-converters @canvas-control-object)
+        tile-x (quot cont-x 32)
+        tile-y (quot cont-y 32)
         [world-width world-height] (get-world-size)]
     (when (and (>= tile-x 0) (< tile-x world-width)
                (>= tile-y 0) (< tile-y world-height))

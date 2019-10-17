@@ -82,10 +82,14 @@
              y 0 ;; TODO
              ]
          (when @enabled
-           (when-let [[conv-x conv-y] (canvas-control/get-canvas-to-world-converters
-                                       @st/canvas-control-object)]
-             (let [world-x (conv-x x)
-                   world-y (conv-y y)
+           (when-let [[cont-x cont-y] (canvas-control/canvas-to-content @st/canvas-control-object x y)
+
+                      ;; [conv-x conv-y] (canvas-control/get-can---vas-to-world-converters
+                      ;;                  @st/canvas-co----ntrol-object)
+
+                      ]
+             (let [world-x cont-x
+                   world-y cont-y
                    tile-x (quot world-x 32)
                    tile-y (quot world-y 32)]
                (case key
