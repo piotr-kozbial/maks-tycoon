@@ -5,7 +5,7 @@
    [gamebase-ecs.core :as ecs]
    ;; [gamebase.events :as events]
    [gamebase-ecs.event-queue :as eq]
-   [gamebase.enhanced-canvas :as enhanced-canvas]
+   [gamebase-enhanced-canvas.core :as enhanced-canvas]
    [app.state :refer [app-state ui-refresh-tick
                       get-fresh-entity-id update-tile-extra]]
    [app.world-interop :as wo]

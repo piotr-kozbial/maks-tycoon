@@ -7,7 +7,7 @@
             [gamebase-ecs.event-queue :as eq]
             [gamebase-ecs.core :as ecs]
             [gamebase-ecs.virtual-timer :as vt]
-            [gamebase.enhanced-canvas :as enhanced-canvas]
+            [gamebase-enhanced-canvas.core :as enhanced-canvas]
             [gamebase.layouts.sidebar-and-bottombar :as our-layout]
             [gamebase.geometry :as g]
             [app.tiles.general :as tiles]

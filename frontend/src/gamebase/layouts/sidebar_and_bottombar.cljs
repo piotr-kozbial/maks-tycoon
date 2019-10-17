@@ -2,7 +2,7 @@
   (:require
    [gamebase.events :as events]
    [app.utils.jscript :as j]
-   [gamebase.enhanced-canvas :as enhanced-canvas]))
+   [gamebase-enhanced-canvas.core :as enhanced-canvas]))
 
 ;; public API
 (defn mk-html [sidebar-content bottombar-content & [splash-image]]

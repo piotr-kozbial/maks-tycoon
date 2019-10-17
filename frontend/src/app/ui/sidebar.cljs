@@ -5,7 +5,7 @@
    [gamebase-ecs.core :as ecs]
    [app.ecs.entities.locomotive :as locomotive]
    [app.ecs.common-events :as ci]
-   [gamebase.enhanced-canvas :as enhanced-canvas]
+   [gamebase-enhanced-canvas.core :as enhanced-canvas]
    [gamebase.projection :as proj]
    [gamebase-ecs.virtual-timer :as vt]
    [app.world-interop :as wo]

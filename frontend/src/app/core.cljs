@@ -18,7 +18,7 @@
             [app.ecs.entities.carriage :as carriage]
 
             [gamebase-ecs.core :as ecs]
-            [gamebase.enhanced-canvas :as enhanced-canvas]
+            [gamebase-enhanced-canvas.core :as enhanced-canvas]
             [gamebase.layouts.sidebar-and-bottombar
              :as our-layout]
 

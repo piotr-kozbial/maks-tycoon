@@ -7,7 +7,7 @@
    [gamebase.projection :as proj]
    [app.ecs.common-events :as ci]
    [app.ui.dropdown :refer [mk-dropdown mk-space]]
-   [gamebase.enhanced-canvas :as enhanced-canvas]
+   [gamebase-enhanced-canvas.core :as enhanced-canvas]
    [gamebase-ecs.virtual-timer :as vt]
    [app.world-interop :as wo]
    [app.ui.ui-state :refer [ui-state] :as uis]
