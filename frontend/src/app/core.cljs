@@ -18,7 +18,7 @@
             [app.ecs.entities.carriage :as carriage]
 
             [gamebase-ecs.core :as ecs]
-            [gamebase.canvas-control :as canvas-control]
+            [gamebase.enhanced-canvas :as enhanced-canvas]
             [gamebase.layouts.sidebar-and-bottombar
              :as our-layout]
 
@@ -123,14 +123,14 @@
     (-draw-tile-box-under-mouse context)
     ;;; Draw debug stuff.
     (when (-> @debug/settings
-              :canvas-control
+              :enhanced-canvas
               :coordinate-system-marker)
       (debug-draw-coord-system))))
 
 (defn game-step []
   (advance-simulation)
-  (draw-game (canvas-control/drawing-prolog @st/canvas-control-object))
-  (canvas-control/drawing-epilog @st/canvas-control-object))
+  (draw-game (enhanced-canvas/drawing-prolog @st/enhanced-canvas-object))
+  (enhanced-canvas/drawing-epilog @st/enhanced-canvas-object))
 
 
 ;; Initializers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -214,14 +214,14 @@
     :side-bar-width 200})
   (when end-callback (end-callback)))
 
-(defn initialize-canvas-control [& [end-callback]]
+(defn initialize-enhanced-canvas [& [end-callback]]
   (let [[world-width world-height] (wo/get-world-size)
-        canvas (our-layout/get-canvas)]
-    (reset! st/canvas-control-object
-            (canvas-control/create
+        cco (enhanced-canvas/create
              {:content-width world-width
               :content-height world-height
-              :canvas canvas})))
+              :margin 100})]
+    (reset! st/enhanced-canvas-object cco)
+    (our-layout/insert-canvas cco))
   (when end-callback (end-callback)))
 
 (defn start-game-loop [& [end-callback]]
@@ -244,6 +244,6 @@
  start-game
  mount-ui
  initialize-layout
- initialize-canvas-control
+ initialize-enhanced-canvas
  start-game-loop)
 

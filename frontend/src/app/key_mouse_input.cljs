@@ -5,7 +5,7 @@
    [gamebase-ecs.core :as ecs]
    ;; [gamebase.events :as events]
    [gamebase-ecs.event-queue :as eq]
-   [gamebase.canvas-control :as canvas-control]
+   [gamebase.enhanced-canvas :as enhanced-canvas]
    [app.state :refer [app-state ui-refresh-tick
                       get-fresh-entity-id update-tile-extra]]
    [app.world-interop :as wo]
@@ -82,9 +82,9 @@
              y 0 ;; TODO
              ]
          (when @enabled
-           (when-let [[cont-x cont-y] (canvas-control/canvas-to-content @st/canvas-control-object x y)
+           (when-let [[cont-x cont-y] (enhanced-canvas/canvas-to-content @st/enhanced-canvas-object x y)
 
-                      ;; [conv-x conv-y] (canvas-control/get-can---vas-to-world-converters
+                      ;; [conv-x conv-y] (enhanced-canvas/get-can---vas-to-world-converters
                       ;;                  @st/canvas-co----ntrol-object)
 
                       ]

@@ -7,17 +7,17 @@
 (defonce settings
   (atom
    {
-    :canvas-control {:coordinate-system-marker true}
+    :enhanced-canvas {:coordinate-system-marker true}
 
     }))
 
 (comment
 
   ;; switch coord system on
-  (swap! gamebase.debug/settings assoc-in [:canvas-control :coordinate-system-marker] true)
+  (swap! gamebase.debug/settings assoc-in [:enhanced-canvas :coordinate-system-marker] true)
 
   ;; switch coord system off
-  (swap! gamebase.debug/settings assoc-in [:canvas-control :coordinate-system-marker] false)
+  (swap! gamebase.debug/settings assoc-in [:enhanced-canvas :coordinate-system-marker] false)
 
 
 

@@ -35,7 +35,7 @@
 
 ;; 
 
-(def canvas-control-object (atom nil))
+(def enhanced-canvas-object (atom nil))
 
 
 ;; Tile extra

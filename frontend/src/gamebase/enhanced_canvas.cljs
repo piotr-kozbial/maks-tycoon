@@ -1,4 +1,4 @@
-(ns gamebase.canvas-control
+(ns gamebase.enhanced-canvas
   (:require [gamebase.events :as events]
             [gamebase-ecs.core :as ecs]
             [gamebase.projection :as proj]))
@@ -14,12 +14,6 @@
 ;; "w powietrzu" (createElement), tylko nie wiem, czy wtedy getElementById go znajdzie,
 ;; zanim bedzie wpiety do DOM.  Ale to tez mozna przeimplementowac nasze (get-canvas),
 ;; zreszta bardzo sensownie. Trzymajmy sobie po prostu ten canvas w naszym atomie.
-;; TODO. zmienic nazwy :world-width, :world-height na :content-width, :content-height,
-;; i tak samo jeszcze get-canvas-to-world-converters odpowiednio.
-;; A WLASCIWIE to co do get-canvas-to-world-converters to raczej trzeba zobaczyc,
-;; do czego to jest uzywane i moze pomyslec to lepiej. A przynajmniej zrobic
-;; po prostu funkcje (canvas-to-content), ktora po prostu przelicza,
-;; a nie zwracac konwertery. Chyba ze wydajnosciowo to slabe by bylo.
 
 nil
 ;;;;
@@ -44,13 +38,21 @@ nil
 nil
 ;; Public API ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn enhanced-canvas-object? [obj]
+  (and
+   (map? obj)
+   (= (:tag obj) :gamebase-enhanced-canvas/enhanced-canvas-object)))
+
 (defn create [config]
   ;; (reset! conf config)
   (let [state-atom (atom {})
         state-kvs [:state]
+        canvas (.createElement js/document "CANVAS")
         config' (assoc config
+                       :tag :gamebase-enhanced-canvas/enhanced-canvas-object
                        :state-atom state-atom
-                       :state-kvs state-kvs)]
+                       :state-kvs state-kvs
+                       :canvas canvas)]
     (swap! state-atom assoc-in state-kvs
            {:scale-factor 2
             :translation-x 100.0
@@ -58,18 +60,6 @@ nil
     (setup-drag-event config')
     ;; we return the augmented config as the canvas-control object
     config'))
-
-;; (defn get-canvas-to-world-converters [canvas-control-object]
-;;   (when-let [{:keys [state-atom state-kvs]} canvas-control-object]
-;;     (let [{:keys [scale-factor translation-x translation-y]}
-;;           ,    (get-in @state-atom state-kvs)
-;;           ;; IMPORTANT!!! We must make translations integers, otherwise
-;;           ;; there will be unwanted artifacts (lines between tiles).
-;;           t-x (int translation-x)
-;;           t-y (int translation-y)]
-;;       [#(int (/ (- % t-x) scale-factor))
-;;        #(int (/ (- % t-y) (- scale-factor)))])))
-
 
 (defn canvas-to-content [canvas-control-object canvas-x canvas-y]
   (when-let [{:keys [state-atom state-kvs]} canvas-control-object]
@@ -128,6 +118,9 @@ nil
 (defn get-scale [canvas-control-object]
   (when-let [{:keys [scale-factor]} (-get-state canvas-control-object)]
     scale-factor))
+
+(defn get-canvas [canvas-control-object]
+  (:canvas canvas-control-object))
 
 (defn get-canvas-size [canvas-control-object]
   (when-let [{:keys [canvas-width canvas-height]} (-get-state canvas-control-object)]
@@ -189,8 +182,6 @@ nil
 
 ;; private ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def MARGIN 100)
-
 (defn- make-proj-conf [canvas-control-object]
   (let [{:keys [state-atom state-kvs canvas]} canvas-control-object
         {:keys [scale-factor
@@ -222,7 +213,7 @@ nil
   so that some of the world is visible at least"
   [canvas-control-object]
 
-  (let [{:keys [state-atom state-kvs content-width content-height]} canvas-control-object
+  (let [{:keys [state-atom state-kvs content-width content-height margin]} canvas-control-object
         {:keys [translation-x translation-y] :as state} (get-in @state-atom state-kvs)
         {:keys [wc hc] :as proj-conf} (make-proj-conf canvas-control-object)
 
@@ -234,27 +225,27 @@ nil
         [xZ yZ] (proj/view-coords proj-conf wZ)
         [xM yM] (proj/view-coords proj-conf wM)]
 
-    (when (> xZ (- wc MARGIN))
+    (when (> xZ (- wc margin))
       (swap! state-atom update-in state-kvs
              (fn [state]
-               (assoc state :translation-x (- (:translation-x state) (- xZ wc) MARGIN)))))
+               (assoc state :translation-x (- (:translation-x state) (- xZ wc) margin)))))
 
-    (when (< xM MARGIN)
+    (when (< xM margin)
       (swap! state-atom update-in state-kvs
              (fn [state]
-               (assoc state :translation-x (+ (:translation-x state) (- MARGIN xM))))))
+               (assoc state :translation-x (+ (:translation-x state) (- margin xM))))))
 
-    (when (> yM (- hc MARGIN))
+    (when (> yM (- hc margin))
       (swap! state-atom update-in state-kvs
              (fn [state]
-               (assoc state :translation-y (- (:translation-y state) (+ yM MARGIN (- hc))))))
+               (assoc state :translation-y (- (:translation-y state) (+ yM margin (- hc))))))
 
       )
 
-    (when (< yZ MARGIN)
+    (when (< yZ margin)
       (swap! state-atom update-in state-kvs
              (fn [state]
-               (assoc state :translation-y (+ (:translation-y state) (- MARGIN yZ))))))))
+               (assoc state :translation-y (+ (:translation-y state) (- margin yZ))))))))
 
 (defn- setup-drag-event [canvas-control-object]
   (let [{:keys [canvas state-atom state-kvs]} canvas-control-object

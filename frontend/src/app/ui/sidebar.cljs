@@ -5,7 +5,7 @@
    [gamebase-ecs.core :as ecs]
    [app.ecs.entities.locomotive :as locomotive]
    [app.ecs.common-events :as ci]
-   [gamebase.canvas-control :as canvas-control]
+   [gamebase.enhanced-canvas :as enhanced-canvas]
    [gamebase.projection :as proj]
    [gamebase-ecs.virtual-timer :as vt]
    [app.world-interop :as wo]
@@ -98,15 +98,15 @@ nil
      [:div (str "FRAME RATE: " frame-rate)]
      [:span]
      [:div
-      "scale: " (canvas-control/get-scale @st/canvas-control-object) " "
-      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale
-                                       @st/canvas-control-object
+      "scale: " (enhanced-canvas/get-scale @st/enhanced-canvas-object) " "
+      [:a {:href "#" :on-click (fn [_] (enhanced-canvas/set-scale
+                                       @st/enhanced-canvas-object
                                        0.5))} "50%"] " "
-      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale
-                                       @st/canvas-control-object
+      [:a {:href "#" :on-click (fn [_] (enhanced-canvas/set-scale
+                                       @st/enhanced-canvas-object
                                        1.0))} "100%"] " "
-      [:a {:href "#" :on-click (fn [_] (canvas-control/set-scale
-                                       @st/canvas-control-object
+      [:a {:href "#" :on-click (fn [_] (enhanced-canvas/set-scale
+                                       @st/enhanced-canvas-object
                                        2.0))} "200%"]]
 
      [:br] [:span]

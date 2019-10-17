@@ -1,16 +1,15 @@
 (ns gamebase.layouts.sidebar-and-bottombar
   (:require
    [gamebase.events :as events]
-   [app.utils.jscript :as j]))
+   [app.utils.jscript :as j]
+   [gamebase.enhanced-canvas :as enhanced-canvas]))
 
 ;; public API
 (defn mk-html [sidebar-content bottombar-content & [splash-image]]
   [:div {}
    [:div {:id "gamebase/canvas-holder"
           :style {:position "absolute"
-                  :backgroundColor "#888888"}}
-    [:canvas {:id "gamebase/canvas"
-              :width 600 :height 500}]]
+                  :backgroundColor "#888888"}}]
    [:div
     {:id "gamebase/bottom-bar"
      :style {:position "absolute"
@@ -45,7 +44,24 @@
 
 ;; public API
 (defn get-canvas []
-  (.getElementById js/document "gamebase/canvas"))
+  (:canvas @state)
+  )
+
+
+;; public API
+;; NOTE. Can take either a <canvas> element, or enhanced-canvas object.
+(defn insert-canvas [canvas0]
+  (let [canvas
+        (if (enhanced-canvas/enhanced-canvas-object? canvas0)
+          (enhanced-canvas/get-canvas canvas0)
+          canvas0)]
+    (set! (.-width canvas) 600)
+    (set! (.-height canvas) 400)
+    (.appendChild (.getElementById js/document "gamebase/canvas-holder") canvas)
+    (swap! state assoc :canvas canvas)
+    (update-canvas-size)
+    (show-canvas)
+    (update-canvas-size)))
 
 ;; public API
 (defn initialize [base-atom kvs opts]
@@ -54,19 +70,24 @@
                        :kvs kvs))
   (-setup-events)
   (swap! base-atom update-in kvs (constantly {}))
-  (let [
-        ;; cnv (js/createCanvas 600 400)
-        ;; cnv (.createElement js/document "CANVAS")
-        cnv (get-canvas)
 
-        ]
-    (set! (.-width cnv) 600)
-    (set! (.-height cnv) 400)
-    (.appendChild (.getElementById js/document "gamebase/canvas-holder") cnv)
-    ;; (.parent cnv "gamebase/canvas-holder")
-    (update-canvas-size)
-    (show-canvas)
-    (update-canvas-size)))
+  (update-canvas-size)
+  ;; (let [
+  ;;       ;; cnv (js/createCanvas 600 400)
+  ;;       ;; cnv (.createElement js/document "CANVAS")
+  ;;       cnv (get-canvas)
+
+  ;;       ]
+  ;;   (set! (.-width cnv) 600)
+  ;;   (set! (.-height cnv) 400)
+  ;;   (.appendChild (.getElementById js/document "gamebase/canvas-holder") cnv)
+  ;;   ;; (.parent cnv "gamebase/canvas-holder")
+  ;;   (update-canvas-size)
+  ;;   (show-canvas)
+  ;;   (update-canvas-size)
+  ;;   )
+
+  )
 
 
 (defn get-canvas-holder-element []
@@ -125,10 +146,7 @@
         canvas-height (- height bottom-bar-height)
 
         bottom-bar-border-left side-bar-width
-        bottom-bar-border-width (- width side-bar-width)
-
-
-        ]
+        bottom-bar-border-width (- width side-bar-width)]
 
     (position-element (get-canvas-holder-element)
                       side-bar-width 0 canvas-width canvas-height)
@@ -143,22 +161,26 @@
                       bottom-bar-border-left (+ height (- bottom-bar-height))
                       bottom-bar-border-width 5)
 
-    (let [canvas (.item (.getElementsByTagName js/document "canvas") 0)]
+    (when canvas
       (set! (.-height (.-style canvas)) (str canvas-height "px"))
       (set! (.-width (.-style canvas)) (str canvas-width "px"))
       (set! (.-height canvas) canvas-height)
       (set! (.-width canvas) canvas-width))
 
     (swap! state assoc
-
            :screen-width width
            :screen-height height
            :bottom-bar-border-left bottom-bar-border-left
            :bottom-bar-border-width bottom-bar-border-width
            :canvas-width canvas-width
-           :canvas-height canvas-height
-           )
-    (swap! base-atom update-in kvs (fn [s] (assoc s :canvas-x side-bar-width :canvas-y 1 :canvas-width canvas-width :canvas-height canvas-height)))))
+           :canvas-height canvas-height)
+
+    (swap! base-atom update-in kvs
+           (fn [s] (assoc s
+                         :canvas-x side-bar-width
+                         :canvas-y 1
+                         :canvas-width canvas-width
+                         :canvas-height canvas-height)))))
 
 (defn -setup-events []
 

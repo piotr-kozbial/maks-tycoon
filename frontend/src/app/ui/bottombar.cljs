@@ -7,7 +7,7 @@
    [gamebase.projection :as proj]
    [app.ecs.common-events :as ci]
    [app.ui.dropdown :refer [mk-dropdown mk-space]]
-   [gamebase.canvas-control :as canvas-control]
+   [gamebase.enhanced-canvas :as enhanced-canvas]
    [gamebase-ecs.virtual-timer :as vt]
    [app.world-interop :as wo]
    [app.ui.ui-state :refer [ui-state] :as uis]
@@ -92,8 +92,8 @@
           "Location (loc): [" tile-x ", " tile-y "] "
           [:a {:href "#"
                :style {:color "#e8cba2" :background-color "#47681b"}
-               :on-click (fn [_] (canvas-control/center-on
-                                 @st/canvas-control-object
+               :on-click (fn [_] (enhanced-canvas/center-on
+                                 @st/enhanced-canvas-object
                                  (proj/world-point
                                   [(* 32 tile-x) (* 32 tile-y)])))}
            "→ SHOW"]]
