@@ -7,7 +7,7 @@
             [gamebase-ecs.core :as ecs]
             [gamebase-ecs.virtual-timer :as vt]
             [gamebase-enhanced-canvas.core :as enhanced-canvas]
-            [gamebase.layouts.sidebar-and-bottombar :as our-layout]
+            [gamebase-layouts.sidebar-and-bottombar :as our-layout]
             [gamebase.geometry :as g]
             [app.tiles.general :as tiles]
             [app.core :as core]

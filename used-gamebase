@@ -1,7 +1,6 @@
 gamebase.geometry
 gamebase.helpers
 gamebase.layers
-gamebase.layouts
 gamebase.local-redis-saveload-server
 gamebase.projection
 gamebase.root-page
