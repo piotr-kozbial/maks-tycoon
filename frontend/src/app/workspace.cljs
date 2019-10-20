@@ -3,7 +3,6 @@
             [gamebase.systems.drawing :as sys-drawing]
             [app.ecs.systems.movement.movement :as sys-move]
             [app.ecs.entities.locomotive :as locomotive]
-            [gamebase.events :as events]
             [gamebase-ecs.event-queue :as eq]
             [gamebase-ecs.core :as ecs]
             [gamebase-ecs.virtual-timer :as vt]

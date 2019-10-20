@@ -44,7 +44,6 @@
 
             [app.modules.construction]
 
-            [gamebase.events :as events]
             [sablono.core :as sab]
 
 
