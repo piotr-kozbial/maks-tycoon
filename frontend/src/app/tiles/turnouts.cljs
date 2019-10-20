@@ -2,7 +2,7 @@
   (:require [app.tiles.general :refer [initialize-tile-extra -active-tracks-from -active-tracks-to]]
             [app.state :as st]
             [gamebase.layers :as layers]
-            [gamebase.resources :as resources]
+            [gamebase-resources.core :as resources]
             [gamebase.systems.drawing :refer [draw-tile-extra -put-image]]
             [clojure.set :as set]))
 

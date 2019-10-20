@@ -1,7 +1,7 @@
 (ns gamebase.systems.drawing
   (:require
    [gamebase-ecs.core :as ecs]
-   [gamebase.resources :as resources]
+   [gamebase-resources.core :as resources]
    [gamebase.geometry :as g]
    [gamebase.layers :as layers]
    [app.tiles.general :as tiles]

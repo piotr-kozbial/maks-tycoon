@@ -1,5 +1,5 @@
 (ns app.workspace
-  (:require [gamebase.resources :as resources]
+  (:require [gamebase-resources.core :as resources]
             [gamebase.systems.drawing :as sys-drawing]
             [app.ecs.systems.movement.movement :as sys-move]
             [app.ecs.entities.locomotive :as locomotive]

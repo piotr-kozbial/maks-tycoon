@@ -1,7 +1,7 @@
 (ns app.world-interop
   (:require
    [gamebase-enhanced-canvas.core :as enhanced-canvas]
-   [gamebase.resources :as resources]
+   [gamebase-resources.core :as resources]
    [gamebase.systems.drawing :as sys-drawing]
    [app.ecs.systems.collisions :as sys-collisions]
    [app.ecs.common-events :as ci]
