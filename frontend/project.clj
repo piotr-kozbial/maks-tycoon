@@ -22,6 +22,7 @@
                  [gamebase-ecs "0.1.0-SNAPSHOT"]
                  [gamebase-enhanced-canvas "0.1.0-SNAPSHOT"]
                  [gamebase-layouts "0.1.0-SNAPSHOT"]
+                 [gamebase-resources "0.1.0-SNAPSHOT"]
                  [pkozbial.xprint "0.1.0-SNAPSHOT"]
 
                  ]

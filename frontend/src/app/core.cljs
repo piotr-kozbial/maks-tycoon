@@ -10,7 +10,7 @@
             [app.state :as st :refer [app-state ui-refresh-tick
                                get-fresh-entity-id update-tile-extra]]
             [app.ui.ui-state :refer [ui-state]]
-            [gamebase.resources :as resources]
+            [gamebase-resources.core :as resources]
 
             [gamebase.systems.drawing :as sys-drawing]
 
