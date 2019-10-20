@@ -19,8 +19,7 @@
 
             [gamebase-ecs.core :as ecs]
             [gamebase-enhanced-canvas.core :as enhanced-canvas]
-            [gamebase.layouts.sidebar-and-bottombar
-             :as our-layout]
+            [gamebase-layouts.sidebar-and-bottombar :as our-layout]
 
             [cljs.pprint :refer [pprint]]
 
@@ -121,10 +120,12 @@
     ;;; Draw other things.
     (-draw-tile-box-under-mouse context)
     ;;; Draw debug stuff.
-    (when (-> @debug/settings
-              :enhanced-canvas
-              :coordinate-system-marker)
-      (debug-draw-coord-system))))
+    ;; (when (-> @debug/settings
+    ;;           :enhanced-canvas
+    ;;           :coordinate-system-marker)
+    ;;   (debug-draw-coord-system))
+
+    ))
 
 (defn game-step []
   (advance-simulation)
