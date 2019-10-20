@@ -4,7 +4,6 @@
    [app.state :refer [app-state ui-refresh-tick]]
    [gamebase-ecs.core :as ecs]
    [app.ecs.entities.locomotive :as locomotive]
-   [gamebase.projection :as proj]
    [app.ecs.common-events :as ci]
    [app.ui.dropdown :refer [mk-dropdown mk-space]]
    [gamebase-enhanced-canvas.core :as enhanced-canvas]
@@ -94,8 +93,7 @@
                :style {:color "#e8cba2" :background-color "#47681b"}
                :on-click (fn [_] (enhanced-canvas/center-on
                                  @st/enhanced-canvas-object
-                                 (proj/world-point
-                                  [(* 32 tile-x) (* 32 tile-y)])))}
+                                 (enhanced-canvas/canvas-to-content (* 32 tile-x) (* 32 tile-y))))}
            "→ SHOW"]]
 
          [;; drive/stop
