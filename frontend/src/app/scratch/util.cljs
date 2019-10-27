@@ -1,5 +1,6 @@
 (ns app.scratch.util
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [gamebase.systems.drawing :as sys-drawing]))
 
 (def code-result-style
   {:font-family "monospace"
@@ -29,7 +30,7 @@
                 :font-size "120%" :font-weight "bold"
                 :cursor "pointer"}
         :on-click (fn [_] (set-val :selected-result result-edn)
-                    ;; (repaint-fn)
+                    (when repaint-fn (repaint-fn))
                     )}
 
        (str result-edn)])))
@@ -106,6 +107,34 @@
     [:canvas {:height 100 :width 200}]]
    #(.log js/console "repaint called on :canvas visual")])
 
+
+(defn visualization-world-repaint [ctx id value]
+  (let [canvas (.getElementById js/document "visualization-canvas")
+        canvas-context (.getContext canvas "2d")
+        context {:min-x 0
+                 :max-x 200
+                 :min-y 0
+                 :max-y 100
+                 :canvas-context canvas-context}
+
+        ]
+    (.log js/console (str "world repaint " (pr-str id)))
+    (.log js/console canvas)
+    (set! (.-imageSmoothingEnabled canvas-context) false)
+    (.save canvas-context)
+    (.scale canvas-context 2.0 2.0)
+    (sys-drawing/draw-all value context)
+    (.restore canvas-context)
+
+    ))
+
+(defmethod visualization :world
+  [ctx _ id value]
+  [[:div
+    [:h3 "WORLD VISUALIZATION " (pr-str id)]
+    [:canvas {:id "visualization-canvas" :height 400 :width 400}]]
+   #(.log js/console "repaint called on :world visual")]
+  )
 
 (defn repaint-fn [visuals]
 

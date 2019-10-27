@@ -69,6 +69,8 @@
                 :layers ls
                 :tile-context ctx
                 :tile-extra {})
+
+       ;; TODO: ten event to juz chyba niepotrzebny
         world1
         (ecs/put-all-events world0 [(assoc
                                      (ecs/mk-event sys-drawing/to-system
@@ -76,6 +78,47 @@
                                      :gamebase-ecs.core/time 0
                                      :tmx-fname "level1.tmx")])]
    world1))
+
+(defn mk-world2 [width-in-tiles height-in-tiles]
+  (let [tmx-fname "level1.tmx"
+        tileset-rendering-map (layers/get-tileset-rendering-map-from-tmx
+                               (resources/get-resource tmx-fname))
+        world-width-in-tiles width-in-tiles
+        world-height-in-tiles height-in-tiles
+        ctx {:tile-width 32
+             :tile-height 32
+             :world-width-in-tiles world-width-in-tiles
+             :world-height-in-tiles world-height-in-tiles
+             :tileset-rendering-map tileset-rendering-map
+             :tileset-map {:kafelki tiles/tiles-by-number}}
+
+        world0 (assoc
+                (-> (ecs/mk-world)
+                    (ecs/insert-object (sys-drawing/mk-system))
+                    (ecs/insert-object (sys-move/mk-system))
+                    (ecs/insert-object (sys-railway/mk-system))
+                    (ecs/insert-object (sys-collisions/mk-system)))
+                :layers (list
+                         [:foreground (layers/clean-layer width-in-tiles
+                                                          height-in-tiles
+                                                          nil ;;[:kafelki 40]
+                                                          )]
+                         [:background (layers/clean-layer width-in-tiles
+                                                          height-in-tiles
+                                                          [:background 0])])
+
+                :tile-context ctx
+                :tile-extra {})
+        ;;world1
+        #_(ecs/put-all-events world0 [(assoc
+                                     (ecs/mk-event sys-drawing/to-system
+                                                   ::sys-drawing/set-all-tmx 0)
+                                     :gamebase-ecs.core/time 0
+                                     :tmx-fname "level1.tmx")])]
+    world0)
+
+  )
+
 
 (defn- -get-layer [world layer-key]
   (->> (:layers world)
@@ -202,6 +245,19 @@
   (let [world (:world @app-state)
         layer (-get-layer world :foreground)]
     (layers/get-tile-from-layer layer tile-x tile-y)))
+
+(defn set-tile-in [world tile-x tile-y tile]
+  (update-in
+   world
+   [:layers]
+   (fn [layers]
+     (map
+      (fn [[key l]]
+        [key
+         (if (= key :foreground)
+           (layers/set-tile-in-layer l tile-x tile-y tile)
+           l)])
+      layers))))
 
 (defn set-tile [tile-x tile-y tile]
   (swap!

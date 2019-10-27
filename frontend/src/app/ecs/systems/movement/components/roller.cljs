@@ -66,11 +66,11 @@
 
 (defmethod ecs/handle-event [:to-component ::roller ::ecs/init]
   [world event this]
-  (roller-full-update world this (::eq/time event)))
+  (roller-full-update world this (::ecs/time event)))
 
 (defmethod ecs/handle-event [:to-component ::roller ::ci/delta-t]
   [world event this]
-  (roller-full-update world this (::eq/time event)))
+  (roller-full-update world this (::ecs/time event)))
 
     ;; TODO: to bedzie wlasnie taki, co wie, ze ma toczyc sie po torach,
     ;; ale jak jest sam, to stoi, a mozna go podpiac do innego,

@@ -93,7 +93,9 @@
                :style {:color "#e8cba2" :background-color "#47681b"}
                :on-click (fn [_] (enhanced-canvas/center-on
                                  @st/enhanced-canvas-object
-                                 (enhanced-canvas/canvas-to-content (* 32 tile-x) (* 32 tile-y))))}
+                                 (enhanced-canvas/canvas-to-content
+                                  @st/enhanced-canvas-object
+                                  (* 32 tile-x) (* 32 tile-y))))}
            "→ SHOW"]]
 
          [;; drive/stop

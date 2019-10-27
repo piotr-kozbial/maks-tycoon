@@ -33,6 +33,13 @@
   [(list 'app.scratch.util/visualization ctx :value id (list context-symbol id))
    nil])
 
+(defmethod visualization :world
+  [{:keys [context-symbol] :as ctx} _ id]
+  [(list 'app.scratch.util/visualization ctx :world id (list context-symbol id))
+   (list 'fn []
+      '(.log js/console "W-R")
+      (list 'app.scratch.util/visualization-world-repaint ctx id (list context-symbol id)))])
+
 
 (defmacro card [get-val set-val print-f visuals segments]
   (let [context-symbol (gensym "context")
@@ -57,16 +64,17 @@
                (apply hash-map))])
         bindings-map (apply hash-map bindings)
 
-        ;; repaint-fns
-        ;; (->> visuals
-        ;;      (map #(apply visualization {:context-symbol context-symbol
-        ;;                                  :get-val get-val
-        ;;                                  :set-val set-val
-        ;;                                  :print-f print-f} %))
-        ;;      (map second)
-        ;;      (remove))
+        repaint-fns
+        (->> visuals
+             (map #(apply visualization {:context-symbol context-symbol
+                                         :get-val get-val
+                                         :set-val set-val
+                                         :print-f print-f} %))
+             (map second)
+             (remove nil?)
+             (apply list))
 
-        repaint-fn nil ;;(list 'fn [] repaint-fns)
+        repaint-fn (list 'fn [] (apply list 'do (map #(list %) repaint-fns)))
 
         body
         (->> segments

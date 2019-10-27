@@ -88,5 +88,5 @@
  (::sys-move/path-end
   [world event this]
   (println "CAR: someone says path end")
-  ;;(ecs/mk-event this ::ci/stop (::eq/time event))
+  ;;(ecs/mk-event this ::ci/stop (::ecs/time event))
   ))

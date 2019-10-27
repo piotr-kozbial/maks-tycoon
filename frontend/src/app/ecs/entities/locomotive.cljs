@@ -10,7 +10,6 @@
    [gamebase.geometry :as g]
    [app.tiles.general :as tiles]
    [gamebase.layers :as layers]
-   [app.world-interop :as wo]
    [app.state :as st]
    [app.ecs.common-events :as ci]
    [app.ecs.operations :as ops])
@@ -94,24 +93,26 @@
   [;; update collider
    (assoc (ecs/mk-event (-> this ::ecs/components :collider)
                         :app.ecs.systems.collisions/update
-                        (::eq/time event))
+                        (::ecs/time event))
           :priority -1)
    ;; pass delta-t to other components
    (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :engine))
    (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :front))
    (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :rear))
    ;; invoke the rest of the handler code
-   (assoc (ecs/mk-event this ::post-delta-t (::eq/time event)) :priority -1)])
+   (assoc (ecs/mk-event this ::post-delta-t (::ecs/time event)) :priority -1)])
 
  (::post-delta-t
-  [_ event {:as this :keys [pulled touching-behind]}]
+  [world event {:as this :keys [pulled touching-behind]}]
   (let [my-id (ecs/id this)
         engine (-> this :gamebase-ecs.core/components :engine)
         front  (-> this :gamebase-ecs.core/components :front)
         rear (-> this :gamebase-ecs.core/components :rear)
         tile-xys (apply hash-set (for [component [engine front rear]]
                                    (get-in component [:path ::sys-move/tile-xy])))
-        tile-entities-map (:tile-entities-map (wo/get-system :app.ecs.systems.collisions/collisions))]
+        tile-entities-map (:tile-entities-map
+                           (get-in world [::ecs/systems
+                                          :app.ecs.systems.collisions/collisions]))]
     ;; (when (and (not pulled) touching-behind)
     ;;   (assoc this :touching-behind nil))
     ;; (print (pr-str tile-xys))
@@ -121,13 +122,13 @@
        (dissoc rear :backup)
        (assoc (ecs/mk-event (-> this ::ecs/components :collider)
                             :app.ecs.systems.collisions/update
-                            (::eq/time event))
+                            (::ecs/time event))
               :priority -1)]
       (do
         [(:backup engine)
          (:backup front)
          (:backup rear)
-         (assoc (ecs/mk-event this ::ci/stop (::eq/time event))
+         (assoc (ecs/mk-event this ::ci/stop (::ecs/time event))
                 :priority -1)]))))
 
  (::ci/stop
@@ -147,7 +148,7 @@
  (::sys-move/path-end
   [world event this]
   (println "LOC: someone says path end")
-  (ecs/mk-event this ::ci/stop (::eq/time event)))
+  (ecs/mk-event this ::ci/stop (::ecs/time event)))
 
  (::ci/connect-pulled
   [world {:keys [pulled-entity-or-id]} this]
