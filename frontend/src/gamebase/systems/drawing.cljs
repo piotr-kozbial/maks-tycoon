@@ -207,6 +207,57 @@
 
     component))
 
+(do ;; COMPONENT: static image 2
+
+  (defn mk-static-image2-component
+    [entity-or-id key {:keys [point-query angle-query center resource-name-query]}]
+    (assoc
+     (ecs/mk-component ::drawing entity-or-id key ::static-image2)
+     :point-query point-query
+     :angle-query angle-query
+     :center center
+     :resource-name-query resource-name-query))
+
+  (defmethod ecs/handle-event [:to-component ::static-image2 :update]
+    [world event component]
+    component)
+
+  (defmethod ecs/handle-event [:to-component ::static-image2 ::draw]
+    [world
+     {:keys [canvas-context]}
+     {:keys [point-query angle-query center resource-name-query] :as component}]
+
+    (let [entity (ecs/get-entity world component)
+          [point-x point-y] (ecs/query entity point-query)
+          [center-x center-y] center
+          angle (ecs/query entity angle-query)
+          resource-name (ecs/query entity resource-name-query)]
+      (when-let [img (resources/get-resource resource-name)]
+        (.save canvas-context) ;; (js/push)
+
+
+        (.translate canvas-context point-x point-y) ;; (js/translate point-x point-y)
+        (.rotate canvas-context angle) ;; (js/rotate angle)
+
+        ;; flip vertical, since images are placed by js/images
+        ;; in screen orientation (y increasing downwards),
+        ;; while we are using standard coordinate system
+        (.scale canvas-context 1 -1) ;; (js/scale 1 -1)
+
+
+        (.drawImage canvas-context img (- center-x) (- center-y)) ;;; (js/image
+                                                                             ;;;  img (- center-x)
+                                                                             ;;;  (- center-y))
+
+        (.restore canvas-context) ;; (js/pop)
+        )
+
+
+
+      )
+
+    component))
+
 (do ;; COMPONENT: dot
 
   (defn mk-dot-component
@@ -221,15 +272,24 @@
     component)
 
   (defmethod ecs/handle-event [:to-component ::dot ::draw]
-    [world event {:keys [point-kvs] :as component}]
-    ;; (let [entity (ecs/get-entity world component)
-    ;;       [point-x point-y] (get-in entity point-kvs)
-    ;;       [r g b] (:color component)]
-    ;;   (js/push)
-    ;;   (js/fill (js/color r g b))
-    ;;   (js/stroke r g b)
-    ;;   (js/point point-x point-y)
-    ;;   (js/pop))
+    [world {:keys [canvas-context]} {:keys [point-kvs] :as component}]
+    (let [entity (ecs/get-entity world component)
+          [point-x point-y] (get-in entity point-kvs)
+          color (:color component)]
+
+
+
+      ;; (js/fill (js/color r g b))
+      ;; (js/stroke r g b)
+      ;; (js/point point-x point-y)
+      (.save canvas-context)
+      (set! (.-fillStyle canvas-context) color)
+      (.beginPath canvas-context)
+      (.arc canvas-context point-x point-y 3 0 6.3)
+      (.fill canvas-context)
+      (.restore canvas-context)
+
+      )
     component))
 
 (do ;; COMPONENT: tile

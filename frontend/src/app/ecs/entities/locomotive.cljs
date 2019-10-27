@@ -91,15 +91,16 @@
  (::ci/delta-t
   [_ event {:as this :keys [pulled touching-behind]}]
   [;; update collider
-   (assoc (ecs/mk-event (-> this ::ecs/components :collider)
-                        :app.ecs.systems.collisions/update
-                        (::ecs/time event))
-          :priority -1)
-   ;; pass delta-t to other components
+   ;; (assoc (ecs/mk-event (-> this ::ecs/components :collider)
+   ;;                      :app.ecs.systems.collisions/update
+   ;;                      (::ecs/time event))
+   ;;        :priority -1)
+
+   ;; pass delta-t to other components - let them propose a move
    (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :engine))
    (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :front))
    (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :rear))
-   ;; invoke the rest of the handler code
+   ;; invoke the rest of the handler code, which will check for collisions
    (assoc (ecs/mk-event this ::post-delta-t (::ecs/time event)) :priority -1)])
 
  (::post-delta-t

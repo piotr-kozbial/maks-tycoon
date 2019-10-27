@@ -4,12 +4,12 @@
    [gamebase.systems.drawing :as sys-drawing]
    [app.ecs.systems.movement.movement :as sys-move]
    [app.ecs.systems.movement.components.railway-roller :refer [mk-railway-roller]]
+   [app.ecs.systems.collisions :refer [mk-collider]]
    [gamebase-ecs.event-queue :as eq]
    [gamebase.geometry :as g]
    [app.ecs.operations :as ops]
    [app.tiles.general :as tiles]
    [gamebase.layers :as layers]
-   [app.world-interop :as wo]
    [app.state :as st]
    [app.ecs.common-events :as ci])
   (:require-macros
@@ -50,6 +50,83 @@
 
      :image "carriage1.png")))
 
+(defn mk-entity-alone [id tile-x tile-y]
+  (let [entity (ecs/mk-entity id ::carriage)]
+    (assoc
+     entity
+     :gamebase-ecs.core/components
+     {:front (mk-railway-roller
+              entity
+              :front
+              {:distance 0 ;; -32
+               :tile-x tile-x
+               :tile-y tile-y
+               :track [:w :e]
+               :length-on-track 32})
+
+      :center (mk-railway-roller
+                entity
+                :center
+                {:distance 0 ;; -32
+                 :tile-x tile-x
+                 :tile-y tile-y
+                 :track [:w :e]
+                 :length-on-track 16})
+
+      :back (mk-railway-roller
+              entity
+              :back
+              {:distance 0 ;; -32
+               :tile-x tile-x
+               :tile-y tile-y
+               :track [:w :e]
+               :length-on-track 0})
+
+      :collider (mk-collider entity
+                             :collider
+                             {:tile-xy-kvss [(ecs/ck-kvs :front :path ::sys-move/tile-xy)
+                                             (ecs/ck-kvs :center :path ::sys-move/tile-xy)
+                                             (ecs/ck-kvs :back :path ::sys-move/tile-xy)
+                                             ]})
+
+
+      :img (sys-drawing/mk-static-image2-component
+            entity
+            :img
+            {:point-query :get-center
+             :angle-query :get-angle
+             :center [16 8]
+             :resource-name-query :get-image})
+
+      :dot-front (sys-drawing/mk-dot-component
+                  entity
+                  :dot-front
+                  {:point-kvs (ecs/ck-kvs :front :position)
+                   :color "#5ae5ed"})
+
+      :dot-back (sys-drawing/mk-dot-component
+                  entity
+                  :dot-back
+                  {:point-kvs (ecs/ck-kvs :back :position)
+                   :color "#c85aed"})
+
+
+      })))
+
+(defmethod ecs/query [:entity ::carriage :get-center]
+  [this _]
+  (:position (-> this ::ecs/components :center)))
+
+(defmethod ecs/query [:entity ::carriage :get-angle]
+  [this _]
+  (:angle (-> this ::ecs/components :center)))
+
+(defmethod ecs/query [:entity ::carriage :get-image]
+  [this _]
+  "carriage1.png")
+
+
+
 (defmethod ops/get-central-point-kvs ::carriage
   [_]
   [(ecs/ck-kvs :point :path)
@@ -60,11 +137,44 @@
 
  (::ecs/init
   [world event this]
-  nil)
+  [(ecs/retarget event (-> this ::ecs/components :front))
+   (ecs/retarget event (-> this ::ecs/components :center))
+   (ecs/retarget event (-> this ::ecs/components :back))])
 
  (::ci/delta-t
   [world event this]
-  nil)
+  (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :front))
+  (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :center))
+  (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :back))
+  (assoc (ecs/mk-event this ::post-delta-t (::ecs/time event)) :priority -1))
+
+ (::post-delta-t
+  [world event this]
+ (let [my-id (ecs/id this)
+        center (-> this :gamebase-ecs.core/components :center)
+        front  (-> this :gamebase-ecs.core/components :front)
+        back (-> this :gamebase-ecs.core/components :back)
+        tile-xys (apply hash-set (for [component [center front back]]
+                                   (get-in component [:path ::sys-move/tile-xy])))
+        tile-entities-map (:tile-entities-map
+                           (get-in world [::ecs/systems
+                                          :app.ecs.systems.collisions/collisions]))]
+    (if (every? (fn [tile-xy] (empty? (disj (or (tile-entities-map tile-xy) #{}) my-id))) tile-xys)
+      [(dissoc center :backup)
+       (dissoc front :backup)
+       (dissoc back :backup)
+       (assoc (ecs/mk-event (-> this ::ecs/components :collider)
+                            :app.ecs.systems.collisions/update
+                            (::ecs/time event))
+              :priority -1)]
+      (do
+        [(:backup center )
+         (:backup front)
+         (:backup back)
+         (assoc (ecs/mk-event this ::ci/stop (::ecs/time event))
+                :priority -1)])))
+
+  )
 
  (::ci/connect-to
   [world event this]

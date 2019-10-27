@@ -4,6 +4,7 @@
    [gamebase-ecs.event-queue :as eq]
    [app.ecs.common-events :as ci]
    [gamebase.geometry :as g]
+   [app.tiles.general :as tiles]
    [app.ecs.systems.movement.components.roller :as rol]
    [app.ecs.systems.movement.movement :as sys]) 
   )
@@ -14,7 +15,7 @@
 (defn mk-railway-roller [entity-or-id key
                          & [{:as args
                              :keys
-                             [tile-x tile-y track
+                             [tile-x tile-y track length-on-track
                               reference-entity-or-id
                               reference-path-kvs
                               reference-length-on-path-kvs
@@ -24,7 +25,11 @@
            ::ecs/type ::railway-roller
            :reference-entity-id (ecs/id reference-entity-or-id)
            :reference-path-kvs reference-path-kvs
-           :reference-length-on-path-kvs reference-length-on-path-kvs)]
+           :reference-length-on-path-kvs reference-length-on-path-kvs
+           :path (assoc (tiles/track-path track tile-x tile-y)
+                        ::sys/tile-xy [tile-x tile-y]
+                        ::sys/track track)
+           :length-on-path length-on-track)]
     (if :gamebase-ecs.core/*with-xprint*
       (vary-meta v
                  update-in [:app.xprint.core/key-order]
