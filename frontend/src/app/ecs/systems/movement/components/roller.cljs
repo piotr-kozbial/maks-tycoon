@@ -38,8 +38,12 @@
       v)))
 
 (defn roller-full-update [world this time]
+  ;; (when (= (::ecs/entity-id this) "car1")
+  ;;   (.log js/console (str "FULL UPDATE! " (pr-str (::ecs/entity-id this)) "!")))
   (if-let [r (roller-get-reference world this)]
     (let [[ref-path ref-length] r]
+      ;; (when (= (::ecs/entity-id this) "car1")
+      ;;   (.log js/console (str "GOT REFERENCE! " (pr-str (::ecs/entity-id this)) "!")))
       (when (and ref-path ref-length)
         (let [{:keys [at-path-end]} this
               [path length error]
@@ -75,6 +79,9 @@
 
 (defmethod ecs/handle-event [:to-component ::roller ::ci/delta-t]
   [world event this]
+  ;; (when (= (::ecs/entity-id this) "car1")
+  ;;   (.log js/console (str "DELTA-T! " (pr-str (::ecs/entity-id this)) "!")))
+
   (roller-full-update world this (::ecs/time event)))
 
     ;; TODO: to bedzie wlasnie taki, co wie, ze ma toczyc sie po torach,

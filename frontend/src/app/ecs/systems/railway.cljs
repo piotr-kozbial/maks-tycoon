@@ -18,3 +18,26 @@
   [world {:keys [tile-x tile-y]} system]
   (when (turnouts/is-turnout? tile-x tile-y)
     (turnouts/cycle-turnout-state2 world tile-x tile-y)))
+
+
+;; NOTE
+;;
+;; (defmethod ecs/query [:entity _ :railway/front]
+;;   [this _])
+;;
+;; Ta metoda, dla wszystkich kolejowych entities, powinna zwracac:
+;;
+;; {:tile-xy [tile-x tile-y]
+;;  :track # e.g. [:w :e]
+;;  :track-length
+;;  :length-on-track
+;;  :position [x y]
+;;  :connector? (bool)
+;;}
+
+;; NOTE
+;;
+;; Tak samo, tylny:
+;;
+;; (defmethod ecs/query [:entity _ :railway/rear]
+;;   [this _])

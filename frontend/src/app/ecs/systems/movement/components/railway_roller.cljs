@@ -10,7 +10,15 @@
   )
 
 
-(derive ::railway-roller ::rol/roller)
+;; (derive ::railway-roller :app.ecs.systems.movement.components.roller/roller)
+
+(defmethod ecs/handle-event [:to-component ::railway-roller ::ci/delta-t]
+  [world event this]
+  ;; (when (= (::ecs/entity-id this) "car1")
+  ;;   (.log js/console (str "RR DELTA-T! " (pr-str (::ecs/entity-id this)) "!")))
+  (rol/roller-full-update world this (::ecs/time event)))
+
+
 
 (defn mk-railway-roller [entity-or-id key
                          & [{:as args

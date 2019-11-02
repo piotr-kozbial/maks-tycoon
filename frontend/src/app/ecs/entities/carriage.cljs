@@ -59,10 +59,10 @@
               entity
               :front
               {:distance 0 ;; -32
-               :tile-x tile-x
+               :tile-x (inc tile-x)
                :tile-y tile-y
                :track [:w :e]
-               :length-on-track 32})
+               :length-on-track 14})
 
       :center (mk-railway-roller
                 entity
@@ -71,7 +71,7 @@
                  :tile-x tile-x
                  :tile-y tile-y
                  :track [:w :e]
-                 :length-on-track 16})
+                 :length-on-track 30})
 
       :back (mk-railway-roller
               entity
@@ -80,7 +80,7 @@
                :tile-x tile-x
                :tile-y tile-y
                :track [:w :e]
-               :length-on-track 0})
+               :length-on-track 14})
 
       :collider (mk-collider entity
                              :collider
@@ -126,6 +126,27 @@
   "carriage1.png")
 
 
+(defmethod ecs/query [:entity ::carriage :railway/front]
+  [this _]
+  (let [roller (-> this ::ecs/components :front)]
+    {:tile-xy (get-in roller [:path :app.ecs.systems.movement.movement/tile-xy])
+     :track (get-in roller [:path :app.ecs.systems.movement.movement/track])
+     :track-length (g/path-length (:path roller))
+     :length-on-track (get-in roller [:length-on-path])
+     :position (get-in roller [:position])
+     :connector? true}))
+
+(defmethod ecs/query [:entity ::carriage :railway/rear]
+  [this _]
+  (let [roller (-> this ::ecs/components :back)]
+    {:tile-xy (get-in roller [:path :app.ecs.systems.movement.movement/tile-xy])
+     :track (get-in roller [:path :app.ecs.systems.movement.movement/track])
+     :track-length (g/path-length (:path roller))
+     :length-on-track (get-in roller [:length-on-path])
+     :position (get-in roller [:position])
+     :connector? true}))
+
+
 
 (defmethod ops/get-central-point-kvs ::carriage
   [_]
@@ -143,10 +164,11 @@
 
  (::ci/delta-t
   [world event this]
-  (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :front))
-  (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :center))
-  (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :back))
-  (assoc (ecs/mk-event this ::post-delta-t (::ecs/time event)) :priority -1))
+  ;; (.log js/console "CARRIAGE - delta-t")
+  [(ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :front))
+   (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :center))
+   (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :back))
+   (assoc (ecs/mk-event this ::post-delta-t (::ecs/time event)) :priority -1)])
 
  (::post-delta-t
   [world event this]
@@ -159,7 +181,7 @@
         tile-entities-map (:tile-entities-map
                            (get-in world [::ecs/systems
                                           :app.ecs.systems.collisions/collisions]))]
-    (if (every? (fn [tile-xy] (empty? (disj (or (tile-entities-map tile-xy) #{}) my-id))) tile-xys)
+    (if true; (every? (fn [tile-xy] (empty? (disj (or (tile-entities-map tile-xy) #{}) my-id))) tile-xys)
       [(dissoc center :backup)
        (dissoc front :backup)
        (dissoc back :backup)
@@ -178,7 +200,7 @@
 
  (::ci/connect-to
   [world event this]
-  (ecs/retarget event (get-in this (ecs/ck-kvs :point))))
+  (ecs/retarget event (-> this ::ecs/components :front)))
 
  (::ci/disconnect-front
   [world event this]
