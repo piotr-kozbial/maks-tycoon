@@ -16,6 +16,7 @@
    [gamebase.helpers :refer [event-handlers]])
   )
 
+;; DON'T USE THIS CONSTRUCTOR!! IT IS OBSOLITE AND INCOMPATIBLE WITH NEW CODE
 (defn mk-entity [id tile-x tile-y puller]
   (let [entity (ecs/mk-entity id ::carriage)]
     (assoc
@@ -67,7 +68,7 @@
       :center (mk-railway-roller
                 entity
                 :center
-                {:distance 0 ;; -32
+                {:distance -16
                  :tile-x tile-x
                  :tile-y tile-y
                  :track [:w :e]
@@ -76,7 +77,7 @@
       :back (mk-railway-roller
               entity
               :back
-              {:distance 0 ;; -32
+              {:distance -16
                :tile-x tile-x
                :tile-y tile-y
                :track [:w :e]
@@ -200,7 +201,19 @@
 
  (::ci/connect-to
   [world event this]
-  (ecs/retarget event (-> this ::ecs/components :front)))
+  [(ecs/retarget event (-> this ::ecs/components :front))
+   (assoc (ecs/mk-event (-> this ::ecs/components :center)
+                        ::ci/connect-to
+                        (::ecs/time world))
+          :reference-entity-or-id (ecs/id this)
+          :reference-path-kvs [::ecs/components :front :path]
+          :reference-length-on-path-kvs [::ecs/components :front :length-on-path])
+   (assoc (ecs/mk-event (-> this ::ecs/components :back)
+                        ::ci/connect-to
+                        (::ecs/time world))
+          :reference-entity-or-id (ecs/id this)
+          :reference-path-kvs [::ecs/components :center :path]
+          :reference-length-on-path-kvs [::ecs/components :center :length-on-path])])
 
  (::ci/disconnect-front
   [world event this]

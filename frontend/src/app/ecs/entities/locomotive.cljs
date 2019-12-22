@@ -163,8 +163,8 @@
                    [(ecs/mk-event this ::ci/stop (::ecs/time world))
                     (assoc (ecs/mk-event entity ::ci/connect-to (::ecs/time world))
                            :reference-entity-or-id (ecs/id this)
-                           :reference-path-kvs [::ecs/components :engine :path]
-                           :reference-length-on-path-kvs [::ecs/components :engine :length-on-path])])
+                           :reference-path-kvs [::ecs/components :rear :path]
+                           :reference-length-on-path-kvs [::ecs/components :rear :length-on-path])])
                   world''
                   (ecs/insert-object
                    world'
@@ -200,8 +200,6 @@
    (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :rear))
    ;; invoke the rest of the handler code, which will check for collisions
    (assoc (ecs/mk-event this ::post-delta-t (::ecs/time event)) :priority -1)])
-
-
 
  (::post-delta-t
   [world event {:as this :keys [pulled touching-behind]}]
@@ -264,11 +262,8 @@
   [_ event {:keys [rear-coupling] :as this}]
   (ecs/retarget event (-> this ::ecs/components :engine)))
 
-
-
  (::sys-move/path-end
   [world event this]
-  (println "LOC: someone says path end")
   (ecs/mk-event this ::ci/stop (::ecs/time event)))
 
  (::ci/connect-pulled

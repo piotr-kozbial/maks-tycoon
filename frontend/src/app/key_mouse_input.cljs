@@ -92,7 +92,7 @@
                    tile-x (quot world-x 32)
                    tile-y (quot world-y 32)]
                (case key
-                 "a" (let [id (keyword (str "loc-" (get-fresh-entity-id)))
+                 "l" (let [id (keyword (str "loc-" (get-fresh-entity-id)))
                            loc (locomotive/mk-entity id 2 1)
                            car-id (keyword (str "car-" (get-fresh-entity-id)))
                            car (carriage/mk-entity car-id 1 1 loc)
@@ -128,6 +128,12 @@
                        ;;                    :pulled-entity-or-id car2)
                        )
 
+                "c" (let [car-id (keyword (str "car-" (get-fresh-entity-id)))
+                          car (carriage/mk-entity-alone car-id 1 1)]
+                       (wo/inject-entity car)
+                       (wo/send-to-entity car ::ecs/init))
+
+                 
                  "w" (run-train)
 
                  " " (when (turnouts/is-turnout? tile-x tile-y)
