@@ -99,17 +99,17 @@
              :center [16 8]
              :resource-name-query :get-image})
 
-      :dot-front (sys-drawing/mk-dot-component
-                  entity
-                  :dot-front
-                  {:point-kvs (ecs/ck-kvs :front :position)
-                   :color "#5ae5ed"})
+      ;; :dot-front (sys-drawing/mk-dot-component
+      ;;             entity
+      ;;             :dot-front
+      ;;             {:point-kvs (ecs/ck-kvs :front :position)
+      ;;              :color "#5ae5ed"})
 
-      :dot-back (sys-drawing/mk-dot-component
-                  entity
-                  :dot-back
-                  {:point-kvs (ecs/ck-kvs :back :position)
-                   :color "#c85aed"})
+      ;; :dot-back (sys-drawing/mk-dot-component
+      ;;             entity
+      ;;             :dot-back
+      ;;             {:point-kvs (ecs/ck-kvs :back :position)
+      ;;              :color "#c85aed"})
 
 
       }
