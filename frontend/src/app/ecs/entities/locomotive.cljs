@@ -170,24 +170,9 @@
 
  (::ci/delta-t
   [_ event {:as this :keys [pulled touching-behind connected-at-rear]}]
-  #_(js/console.log (str "pulled: " (pr-str pulled)
-                       "  touching-behind: " (pr-str touching-behind)
-                       "  connected-at-rear: " (pr-str connected-at-rear)))
   (let [{:keys [driving? speed]} (-> this ::ecs/components :engine)]
-    [;; update collider
-     ;; (assoc (ecs/mk-event (-> this ::ecs/components :collider)
-     ;;                      :app.ecs.systems.collisions/update
-     ;;                      (::ecs/time event))
-     ;;        :priority -1)
-
-     ;; pass delta-t to other components - let them propose a move
-
-     
-
-     (when (and driving? (> speed 0) touching-behind (not connected-at-rear))
-       (js/console.log "ODPADA!")
+    [(when (and driving? (> speed 0) touching-behind (not connected-at-rear))
        (assoc this :touching-behind nil))
-     
      (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :engine))
      (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :front))
      (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :rear))

@@ -74,9 +74,9 @@
                  :track [:w :e]
                  :length-on-track 30})
 
-      :back (mk-railway-roller
+      :rear (mk-railway-roller
               entity
-              :back
+              :rear
               {:distance -16
                :tile-x tile-x
                :tile-y tile-y
@@ -87,7 +87,7 @@
                              :collider
                              {:tile-xy-kvss [(ecs/ck-kvs :front :path ::sys-move/tile-xy)
                                              (ecs/ck-kvs :center :path ::sys-move/tile-xy)
-                                             (ecs/ck-kvs :back :path ::sys-move/tile-xy)
+                                             (ecs/ck-kvs :rear :path ::sys-move/tile-xy)
                                              ]})
 
 
@@ -105,10 +105,10 @@
       ;;             {:point-kvs (ecs/ck-kvs :front :position)
       ;;              :color "#5ae5ed"})
 
-      ;; :dot-back (sys-drawing/mk-dot-component
+      ;; :dot-rear (sys-drawing/mk-dot-component
       ;;             entity
-      ;;             :dot-back
-      ;;             {:point-kvs (ecs/ck-kvs :back :position)
+      ;;             :dot-rear
+      ;;             {:point-kvs (ecs/ck-kvs :rear :position)
       ;;              :color "#c85aed"})
 
 
@@ -141,7 +141,7 @@
 
 (defmethod ecs/query [:entity ::carriage :railway/rear]
   [this _]
-  (let [roller (-> this ::ecs/components :back)]
+  (let [roller (-> this ::ecs/components :rear)]
     {:tile-xy (get-in roller [:path :app.ecs.systems.movement.movement/tile-xy])
      :track (get-in roller [:path :app.ecs.systems.movement.movement/track])
      :track-length (g/path-length (:path roller))
@@ -163,14 +163,14 @@
   [world event this]
   [(ecs/retarget event (-> this ::ecs/components :front))
    (ecs/retarget event (-> this ::ecs/components :center))
-   (ecs/retarget event (-> this ::ecs/components :back))])
+   (ecs/retarget event (-> this ::ecs/components :rear))])
 
  (::ci/delta-t
   [world event this]
   ;; (.log js/console "CARRIAGE - delta-t")
   [(ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :front))
    (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :center))
-   (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :back))
+   (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :rear))
    (assoc (ecs/mk-event this ::post-delta-t (::ecs/time event)) :priority -1)])
 
  (::post-delta-t
@@ -178,8 +178,8 @@
  (let [my-id (ecs/id this)
         center (-> this :gamebase-ecs.core/components :center)
         front  (-> this :gamebase-ecs.core/components :front)
-        back (-> this :gamebase-ecs.core/components :back)
-        tile-xys (apply hash-set (for [component [center front back]]
+        rear (-> this :gamebase-ecs.core/components :rear)
+        tile-xys (apply hash-set (for [component [center front rear]]
                                    (get-in component [:path ::sys-move/tile-xy])))
         tile-entities-map (:tile-entities-map
                            (get-in world [::ecs/systems
@@ -187,7 +187,7 @@
     (if true; (every? (fn [tile-xy] (empty? (disj (or (tile-entities-map tile-xy) #{}) my-id))) tile-xys)
       [(dissoc center :backup)
        (dissoc front :backup)
-       (dissoc back :backup)
+       (dissoc rear :backup)
        (assoc (ecs/mk-event (-> this ::ecs/components :collider)
                             :app.ecs.systems.collisions/update
                             (::ecs/time event))
@@ -195,7 +195,7 @@
       (do
         [(:backup center )
          (:backup front)
-         (:backup back)
+         (:backup rear)
          (assoc (ecs/mk-event this ::ci/stop (::ecs/time event))
                 :priority -1)])))
 
@@ -210,7 +210,7 @@
           :reference-entity-or-id (ecs/id this)
           :reference-path-kvs [::ecs/components :front :path]
           :reference-length-on-path-kvs [::ecs/components :front :length-on-path])
-   (assoc (ecs/mk-event (-> this ::ecs/components :back)
+   (assoc (ecs/mk-event (-> this ::ecs/components :rear)
                         ::ci/connect-to
                         (::ecs/time world))
           :reference-entity-or-id (ecs/id this)
