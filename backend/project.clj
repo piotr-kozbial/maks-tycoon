@@ -20,6 +20,7 @@
                  [rum "0.11.2"]
 
                  [gamebase "0.1.1-SNAPSHOT"]
+                 [gamebase-layouts "0.1.0-SNAPSHOT"]
                  ;; AND THESE ARE ALSO FOR gamebase:
                  [org.clojure/data.xml "0.2.0-alpha2"]
                  [hiccup "1.0.5"]

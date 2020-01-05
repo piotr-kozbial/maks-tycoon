@@ -2,7 +2,7 @@
 
 (
 	cd frontend
-	rm -fr target && lein fig:myprod && rm -rf resources/public/cljs-out && mkdir -p resources/public/maks-tycoon/ && cp -r target/public/cljs-out resources/public/maks-tycoon/ && cp resources/public/p5.min.js resources/public/maks-tycoon/
+	rm -fr target && lein fig:myprod && rm -rf resources/public/cljs-out && mkdir -p resources/public/maks-tycoon/ && cp -r target/public/cljs-out resources/public/maks-tycoon/
 ) && (
 	cd backend
 	lein clean

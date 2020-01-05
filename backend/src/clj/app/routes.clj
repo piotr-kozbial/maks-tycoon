@@ -7,8 +7,8 @@
 
             [gamebase.local-redis-saveload-server]
             [gamebase.root-page]
-            [gamebase-layouts.sidebar-and-bottombar
-             :as our-layout]))
+            
+            ))
 
 ;; (defn home-routes [endpoint]
 ;;   (routes

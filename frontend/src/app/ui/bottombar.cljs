@@ -164,7 +164,7 @@
       (->>
        (iterate
         (fn [[entity _]]
-          (let [pulled-id (:pulled entity)
+          (let [pulled-id (:connected-at-rear entity)
                 touching-behind-id (:touching-behind entity)]
             (cond
               pulled-id

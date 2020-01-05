@@ -19,6 +19,16 @@
   (when (turnouts/is-turnout? tile-x tile-y)
     (turnouts/cycle-turnout-state2 world tile-x tile-y)))
 
+(defmethod ecs/handle-event [:to-system ::railway ::connect]
+  [world {:keys [puller-id pulled-id]} system]
+  [(assoc (ecs/mk-event (ecs/to-entity pulled-id) ::ci/connect-to (::ecs/time world))
+          :reference-entity-or-id puller-id
+          :reference-path-kvs [::ecs/components :rear :path]
+          :reference-length-on-path-kvs [::ecs/components :rear :length-on-path])
+   (assoc (ecs/mk-event (ecs/to-entity puller-id) ::ci/connect-pulled (::ecs/time world))
+          :pulled-entity-or-id pulled-id)])
+
+
 
 ;; NOTE
 ;;

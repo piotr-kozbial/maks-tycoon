@@ -6,6 +6,7 @@
    [app.ecs.systems.collisions :refer [mk-collider]]
    [app.ecs.systems.movement.components.railway-roller :refer [mk-railway-roller]]
    [app.ecs.systems.movement.components.railway-engine :refer [mk-railway-engine]]
+   [app.ecs.systems.railway :as sys-railway]
    [gamebase-ecs.event-queue :as eq]
    [gamebase.geometry :as g]
    [app.tiles.general :as tiles]
@@ -119,8 +120,9 @@
       (>= my-length its-length)
       (<= my-length its-length))))
 
-(defn consider-colliding-entity [world this entity-id]
-  (let [entity (ecs/get-entity-by-key world entity-id)
+(defn consider-colliding-entity [world this entity-key]
+  (let [entity (ecs/get-entity-by-key world entity-key)
+        {:keys [driving? speed]} (-> this ::ecs/components :engine)
         my-front (assoc (ecs/query this :railway/front) :side :front)
         my-rear (assoc (ecs/query this :railway/rear) :side :rear)
         its-front (assoc (ecs/query entity :railway/front) :side :front)
@@ -133,17 +135,7 @@
                              [my-rear its-rear]]]
                [my its (distance-squared (:position my) (:position its))])
              (sort-by #(nth % 2))
-             (first))
-        this' (assoc
-               this
-               "my front" my-front
-               "my rear" my-rear
-               (str entity-id " front") its-front
-               (str entity-id " rear") its-rear
-               "MY CLOSEST" my-closest
-               "ITS CLOSEST" its-closest
-               "CLOSEST DIST. ^2" closest-distance-sq
-               )]
+             (first))]
 
     (cond
       (not (:connector? its-closest)) nil ;; can't connect, stop!
@@ -153,31 +145,21 @@
       ;; i na tym samym tracku (lub odwrotnym)
       (and (= (:tile-xy my-closest) (:tile-xy its-closest))
            (= (sort (:track my-closest)) (sort (:track its-closest))))
-      ,   (if (should-connect? my-closest its-closest)
-            ;;nil ;; TODO - tak naprawde connect
-            ;; TODO - i w dodatku musimy sie ustawic na rowniutko, tzn. nasze length-on-path
-            ;; zeby bylo rowne jego length-on-path (lub odwrotnie, jesli on stoi odwrotnie)
-            (let [world'
-                  (ecs/put-all-events
-                   world
-                   [(ecs/mk-event this ::ci/stop (::ecs/time world))
-                    (assoc (ecs/mk-event entity ::ci/connect-to (::ecs/time world))
-                           :reference-entity-or-id (ecs/id this)
-                           :reference-path-kvs [::ecs/components :rear :path]
-                           :reference-length-on-path-kvs [::ecs/components :rear :length-on-path])])
-                  world''
-                  (ecs/insert-object
-                   world'
-                   (assoc this
-                          :connected-at-rear entity-id))]
-              world'')
-            (ecs/insert-object world this'))
+      ,   (if (and
+               driving?
+               (< speed 0)
+               (should-connect? my-closest its-closest))
 
-      :else nil
-      )
+            (ecs/put-all-events
+             world
+             [(ecs/mk-event this ::ci/stop (::ecs/time world))
+              (assoc (ecs/mk-event sys-railway/to-system ::sys-railway/connect (::ecs/time world))
+                     :puller-id (ecs/id this)
+                     :pulled-id (ecs/id entity))])
 
+            (ecs/insert-object world this))
 
-    ))
+      :else nil)))
 
 (event-handlers
  [:to-entity ::locomotive]
@@ -187,19 +169,30 @@
   (ecs/retarget event (-> this ::ecs/components :engine)))
 
  (::ci/delta-t
-  [_ event {:as this :keys [pulled touching-behind]}]
-  [;; update collider
-   ;; (assoc (ecs/mk-event (-> this ::ecs/components :collider)
-   ;;                      :app.ecs.systems.collisions/update
-   ;;                      (::ecs/time event))
-   ;;        :priority -1)
+  [_ event {:as this :keys [pulled touching-behind connected-at-rear]}]
+  #_(js/console.log (str "pulled: " (pr-str pulled)
+                       "  touching-behind: " (pr-str touching-behind)
+                       "  connected-at-rear: " (pr-str connected-at-rear)))
+  (let [{:keys [driving? speed]} (-> this ::ecs/components :engine)]
+    [;; update collider
+     ;; (assoc (ecs/mk-event (-> this ::ecs/components :collider)
+     ;;                      :app.ecs.systems.collisions/update
+     ;;                      (::ecs/time event))
+     ;;        :priority -1)
 
-   ;; pass delta-t to other components - let them propose a move
-   (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :engine))
-   (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :front))
-   (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :rear))
-   ;; invoke the rest of the handler code, which will check for collisions
-   (assoc (ecs/mk-event this ::post-delta-t (::ecs/time event)) :priority -1)])
+     ;; pass delta-t to other components - let them propose a move
+
+     
+
+     (when (and driving? (> speed 0) touching-behind (not connected-at-rear))
+       (js/console.log "ODPADA!")
+       (assoc this :touching-behind nil))
+     
+     (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :engine))
+     (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :front))
+     (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :rear))
+     ;; invoke the rest of the handler code, which will check for collisions
+     (assoc (ecs/mk-event this ::post-delta-t (::ecs/time event)) :priority -1)]))
 
  (::post-delta-t
   [world event {:as this :keys [pulled touching-behind]}]
@@ -255,7 +248,8 @@
   (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :engine)))
 
  (::ci/drive
-  [_ event {:keys [rear-coupling] :as this}]
+  [_ event {:keys [rear-coupling touching-behind connected-at-rear] :as this}]
+  
   (ecs/retarget event (-> this ::ecs/components :engine)))
 
  (::ci/reverse-drive
@@ -268,10 +262,11 @@
 
  (::ci/connect-pulled
   [world {:keys [pulled-entity-or-id]} this]
+  (js/console.log "CONNECT!")
   (assoc this
-         :pulled (ecs/id pulled-entity-or-id)
+         :connected-at-rear (ecs/id pulled-entity-or-id)
          :touching-behind (ecs/id pulled-entity-or-id)))
 
  (::ci/disconnect-pulled
   [world {:keys [pulled-entity-or-id]} this]
-  (assoc this :pulled nil)))
+  (assoc this :connected-at-rear nil)))

@@ -4,6 +4,7 @@
    [gamebase-resources.core :as resources]
    [gamebase.systems.drawing :as sys-drawing]
    [app.ecs.systems.collisions :as sys-collisions]
+   [app.ecs.systems.railway :as sys-railway]
    [app.ecs.common-events :as ci]
    [app.ecs.operations :as ops]
    [app.ecs.systems.movement.movement :as sys-move]
@@ -278,13 +279,9 @@
 ;; railway operations
 
 (defn connect [world puller pulled]
-  (let [[path-kvs length-on-path-kvs]
-        (ops/get-central-point-kvs (ecs/get-entity-by world puller))]
-    (send-to-entity puller ::ci/connect-pulled :pulled-entity-or-id pulled)
-    (send-to-entity pulled ::ci/connect-to
-                       :reference-entity-or-id puller
-                       :reference-path-kvs path-kvs
-                       :reference-length-on-path-kvs length-on-path-kvs)))
+  (send-to-system ::sys-railway/railway ::sys-railway/connect 
+                  :puller-id (ecs/id puller)
+                  :pulled-id (ecs/id pulled)))
 
 (defn disconnect [puller pulled]
   (send-to-entity puller ::ci/disconnect-pulled)

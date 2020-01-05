@@ -1,5 +1,4 @@
 ^{:watch-dirs ["src"]
-  :css-dirs ["resources/public/css"]
-  :auto-testing true}
+  :css-dirs ["resources/public/css"]}
 {:main app.core
  :asset-path "maks-tycoon/cljs-out/prod"}

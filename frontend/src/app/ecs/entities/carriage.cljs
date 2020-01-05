@@ -112,7 +112,9 @@
                    :color "#c85aed"})
 
 
-      })))
+      }
+     :image "carriage1.png"
+     )))
 
 (defmethod ecs/query [:entity ::carriage :get-center]
   [this _]
@@ -217,7 +219,7 @@
 
  (::ci/disconnect-front
   [world event this]
-  (ecs/retarget event (get-in this (ecs/ck-kvs :point))))
+  (ecs/retarget event (get-in this (ecs/ck-kvs :front))))
 
  (::ci/connect-pulled
   [world {:keys [pulled-entity-or-id]} this]
