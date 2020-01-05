@@ -101,6 +101,15 @@
      :position (get-in roller [:position])
      :connector? true}))
 
+(defmethod ecs/query [:entity ::locomotive :railway/driving?]
+  [this _]
+  (-> this ::ecs/components :engine :driving?))
+
+(defmethod ecs/query [:entity ::locomotive :railway/speed]
+  [this _]
+  (-> this ::ecs/components :engine :speed))
+
+
 (defn distance-squared [[x y] [x' y']]
   (+
    (* (- x x') (- x x'))
@@ -207,10 +216,6 @@
                   (if-let [wrl' (consider-colliding-entity wrl this (first entity-ids))]
                     (recur wrl' (rest entity-ids))
                     nil)))]
-    ;; (when (and (not pulled) touching-behind)
-    ;;   (assoc this :touching-behind nil))
-    ;; (print (pr-str tile-xys))
-
     (if world'
       ;; good, we can accept this progress and update our collider
       [world'
@@ -230,6 +235,7 @@
 
  (::ci/stop
   [_ event this]
+  (js/console.log "loc stop!")
   (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :engine)))
 
  (::ci/drive
