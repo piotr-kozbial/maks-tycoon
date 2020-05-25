@@ -118,20 +118,20 @@
      )))
 
 (defmethod ecs/query [:entity ::carriage :get-center]
-  [this _]
+  [_ this _]
   (:position (-> this ::ecs/components :center)))
 
 (defmethod ecs/query [:entity ::carriage :get-angle]
-  [this _]
+  [_ this _]
   (:angle (-> this ::ecs/components :center)))
 
 (defmethod ecs/query [:entity ::carriage :get-image]
-  [this _]
+  [_ this _]
   "carriage1.png")
 
 
 (defmethod ecs/query [:entity ::carriage :railway/front]
-  [this _]
+  [_ this _]
   (let [roller (-> this ::ecs/components :front)]
     {:tile-xy (get-in roller [:path :app.ecs.systems.movement.movement/tile-xy])
      :track (get-in roller [:path :app.ecs.systems.movement.movement/track])
@@ -141,7 +141,7 @@
      :connector? true}))
 
 (defmethod ecs/query [:entity ::carriage :railway/rear]
-  [this _]
+  [_ this _]
   (let [roller (-> this ::ecs/components :rear)]
     {:tile-xy (get-in roller [:path :app.ecs.systems.movement.movement/tile-xy])
      :track (get-in roller [:path :app.ecs.systems.movement.movement/track])
@@ -151,7 +151,7 @@
      :connector? true}))
 
 (defmethod ecs/query [:entity ::carriage :railway/driving?]
-  [{:keys [puller-entity-id]} _]
+  [world {:keys [puller-entity-id]} _]
   ;; JESZCZE NIE ZROBIONE!!!
   ;; BO DO TEGO TRZEBA BY WZIAC (ecs/get-entity-by-key world puller-entity-id),
   ;; a nie mamy world!
@@ -159,7 +159,7 @@
 )
 
 (defmethod ecs/query [:entity ::carriage :railway/speed]
-  [{:keys [puller-entity-id]} _]
+  [world {:keys [puller-entity-id]} _]
   ;; JESZCZE NIE ZROBIONE!!!
   ;; BO DO TEGO TRZEBA BY WZIAC (ecs/get-entity-by-key world puller-entity-id),
   ;; a nie mamy world!
@@ -195,16 +195,18 @@
   (let [entity (ecs/get-entity-by-key world entity-key)
         driving? (when puller-entity-id
                    (ecs/query
+                    world
                     (ecs/get-entity-by-key world puller-entity-id)
                     :railway/driving?))
         speed  (when puller-entity-id
-                   (ecs/query
+                 (ecs/query
+                  world
                     (ecs/get-entity-by-key world puller-entity-id)
                     :railway/speed))
-        my-front (assoc (ecs/query this :railway/front) :side :front)
-        my-rear (assoc (ecs/query this :railway/rear) :side :rear)
-        its-front (assoc (ecs/query entity :railway/front) :side :front)
-        its-rear (assoc (ecs/query entity :railway/rear) :side :rear)
+        my-front (assoc (ecs/query world this :railway/front) :side :front)
+        my-rear (assoc (ecs/query world this :railway/rear) :side :rear)
+        its-front (assoc (ecs/query world entity :railway/front) :side :front)
+        its-rear (assoc (ecs/query world entity :railway/rear) :side :rear)
         [my-closest its-closest closest-distance-sq]
         ,   (->>
              (for [[my its] [[my-front its-front]

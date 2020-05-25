@@ -33,7 +33,7 @@
 ;; NOTE
 ;;
 ;; (defmethod ecs/query [:entity _ :railway/front]
-;;   [this _])
+;;   [_ this _])
 ;;
 ;; Ta metoda, dla wszystkich kolejowych entities, powinna zwracac:
 ;;
@@ -50,4 +50,4 @@
 ;; Tak samo, tylny:
 ;;
 ;; (defmethod ecs/query [:entity _ :railway/rear]
-;;   [this _])
+;;   [_ this _])

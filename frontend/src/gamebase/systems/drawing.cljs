@@ -228,10 +228,10 @@
      {:keys [point-query angle-query center resource-name-query] :as component}]
 
     (let [entity (ecs/get-entity world component)
-          [point-x point-y] (ecs/query entity point-query)
+          [point-x point-y] (ecs/query world entity point-query)
           [center-x center-y] center
-          angle (ecs/query entity angle-query)
-          resource-name (ecs/query entity resource-name-query)]
+          angle (ecs/query world entity angle-query)
+          resource-name (ecs/query world entity resource-name-query)]
       (when-let [img (resources/get-resource resource-name)]
         (.save canvas-context) ;; (js/push)
 

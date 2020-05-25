@@ -82,7 +82,7 @@
    (ecs/ck-kvs :engine :length-on-path)])
 
 (defmethod ecs/query [:entity ::locomotive :railway/front]
-  [this _]
+  [_ this _]
   (let [roller (-> this ::ecs/components :front)]
     {:tile-xy (get-in roller [:path :app.ecs.systems.movement.movement/tile-xy])
      :track (get-in roller [:path :app.ecs.systems.movement.movement/track])
@@ -92,7 +92,7 @@
      :connector? false}))
 
 (defmethod ecs/query [:entity ::locomotive :railway/rear]
-  [this _]
+  [_ this _]
   (let [roller (-> this ::ecs/components :rear)]
     {:tile-xy (get-in roller [:path :app.ecs.systems.movement.movement/tile-xy])
      :track (get-in roller [:path :app.ecs.systems.movement.movement/track])
@@ -102,11 +102,11 @@
      :connector? true}))
 
 (defmethod ecs/query [:entity ::locomotive :railway/driving?]
-  [this _]
+  [_ this _]
   (-> this ::ecs/components :engine :driving?))
 
 (defmethod ecs/query [:entity ::locomotive :railway/speed]
-  [this _]
+  [_ this _]
   (-> this ::ecs/components :engine :speed))
 
 
@@ -132,10 +132,10 @@
 (defn consider-colliding-entity [world this entity-key]
   (let [entity (ecs/get-entity-by-key world entity-key)
         {:keys [driving? speed]} (-> this ::ecs/components :engine)
-        my-front (assoc (ecs/query this :railway/front) :side :front)
-        my-rear (assoc (ecs/query this :railway/rear) :side :rear)
-        its-front (assoc (ecs/query entity :railway/front) :side :front)
-        its-rear (assoc (ecs/query entity :railway/rear) :side :rear)
+        my-front (assoc (ecs/query world this :railway/front) :side :front)
+        my-rear (assoc (ecs/query world this :railway/rear) :side :rear)
+        its-front (assoc (ecs/query world entity :railway/front) :side :front)
+        its-rear (assoc (ecs/query world entity :railway/rear) :side :rear)
         [my-closest its-closest closest-distance-sq]
         ,   (->>
              (for [[my its] [[my-front its-front]

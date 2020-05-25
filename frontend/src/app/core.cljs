@@ -92,7 +92,8 @@
   (let [{:keys [world timer]} @app-state]
     (when world
   ;;; Handle pending events...
-      (let [world' (try (if (wo/running?)
+      (let [world'
+          (if (wo/running?)
                           (let [time (wo/get-time)]
                             (-> world
                                 (ecs/advance-until-time time)
@@ -102,11 +103,7 @@
 
                                 ))
                           world)
-                        (catch :default e
-                          (println  (str "E Error in advance-simulation-and-draw (during advance)" "\n"
-                                         e))
-
-                          world))]
+]
   ;;; validate...
         ;;(s/validate st/s-world world')
   ;;; and put new world in state.
