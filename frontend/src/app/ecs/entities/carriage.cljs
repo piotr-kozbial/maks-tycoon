@@ -152,18 +152,19 @@
 
 (defmethod ecs/query [:entity ::carriage :railway/driving?]
   [world {:keys [puller-entity-id]} _]
-  ;; JESZCZE NIE ZROBIONE!!!
-  ;; BO DO TEGO TRZEBA BY WZIAC (ecs/get-entity-by-key world puller-entity-id),
-  ;; a nie mamy world!
-  (assert false)
-)
+  (if puller-entity-id
+    (ecs/query world
+               (ecs/get-entity-by-key world puller-entity-id)
+               :railway/driving?)
+    false))
 
 (defmethod ecs/query [:entity ::carriage :railway/speed]
   [world {:keys [puller-entity-id]} _]
-  ;; JESZCZE NIE ZROBIONE!!!
-  ;; BO DO TEGO TRZEBA BY WZIAC (ecs/get-entity-by-key world puller-entity-id),
-  ;; a nie mamy world!
-  (assert false))
+  (if puller-entity-id
+    (ecs/query world
+               (ecs/get-entity-by-key world puller-entity-id)
+               :railway/speed)
+    0))
 
 (defmethod ops/get-central-point-kvs ::carriage
   [_]
@@ -217,8 +218,8 @@
              (sort-by #(nth % 2))
              (first))]
     (cond
-      (not (:connector? its-closest)) nil ;; can't connect, stop!
-      (= (:side my-closest) :front) nil ;; can't connect to our front, stop!
+      (not (:connector? its-closest)) (do (println "STOP A") nil) ;; can't connect, stop!
+      (= (:side my-closest) :front) (do (println "STOP B") nil) ;; can't connect to our front, stop!
 
       ;; TODO - teraz sprawdzic, czy oba konektory sa na tym samym kafelku (chyba musza?)
       ;; i na tym samym tracku (lub odwrotnym)
@@ -231,14 +232,39 @@
 
               (ecs/put-all-events
                world
-               [(ecs/mk-event this ::ci/stop (::ecs/time world))
+               [(assoc
+                 (ecs/mk-event this ::ci/stop (::ecs/time world))
+                 :sender-comment "tutaj"
+                 )
                 (assoc (ecs/mk-event sys-railway/to-system ::sys-railway/connect (::ecs/time world))
                        :puller-id (ecs/id this)
                        :pulled-id (ecs/id entity))])
 
               (ecs/insert-object world this))
 
-      :else nil)))
+      :else (println "STOP C" nil))))
+
+
+(defn entities-behind-me [world {:keys [connected-at-rear]}]
+  (if connected-at-rear
+    (into [connected-at-rear]
+          (entities-behind-me world (ecs/get-entity-by-key world connected-at-rear)))
+    []))
+
+(defn entities-before-me [world {:keys [puller-entity-id]}]
+  (if puller-entity-id
+    (into [puller-entity-id]
+          (entities-before-me world (ecs/get-entity-by-key world puller-entity-id)))
+    []))
+
+(defn entities-of-my-train [world this]
+  ;; Collect all entities (carriages and loc) from my whole train.
+  ;; Return a *set* of *entity ids*.
+  (apply hash-set
+         (concat [(::ecs/entity-id this)]
+                 (entities-behind-me world this)
+                 (entities-before-me world this))))
+
 
 
 (event-handlers
@@ -262,7 +288,8 @@
      (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :front))
      (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :rear))
      ;; invoke the rest of the handler code, which will check for collisions
-     (assoc (ecs/mk-event this ::post-delta-t (::ecs/time event)) :priority -1)])
+     (assoc (ecs/mk-event this ::post-delta-t (::ecs/time event)) :priority -1
+            :caused-by event)])
 
   )
 
@@ -279,14 +306,13 @@
                            (get-in world [::ecs/systems
                                           :app.ecs.systems.collisions/collisions]))
 
-
+        non-colliding (entities-of-my-train world this)
         colliding-entity-ids (->> tile-xys
                                   (map #(vector % (tile-entities-map %)))
                                   (map (fn [[tile-xy entities]] [tile-xy (disj entities my-id)]))
                                   (remove (comp empty? second))
                                   (mapcat second)
-                                  (remove #(= % connected-at-rear))
-                                  (remove #(= % puller-entity-id)))
+                                  (remove #(non-colliding %)))
 
         world'(loop [wrl world
                      entity-ids colliding-entity-ids]
@@ -294,7 +320,8 @@
                   wrl
                   (if-let [wrl' (consider-colliding-entity wrl this (first entity-ids))]
                     (recur wrl' (rest entity-ids))
-                    nil)))]
+                    (do (println "COLLISION! " (pr-str (::ecs/entity-id this))  " with " (pr-str (first entity-ids)))
+                        nil))))]
 
 
     (if world'
@@ -312,6 +339,8 @@
        (:backup front)
        (:backup rear)
        (assoc (ecs/mk-event this ::ci/stop (::ecs/time event))
+              :sender-comment (str "albo tutaj, me: " (pr-str this))
+              :caused-by event
               :priority -1)])))
 
  ;; to sie moze powinno nazywac connect-front
@@ -352,7 +381,10 @@
 
 
   [(when puller-entity-id
-     (ecs/retarget event (ecs/to-entity puller-entity-id)))])
+     (assoc
+      (ecs/retarget event (ecs/to-entity puller-entity-id))
+      :caused-by event
+      :sender-comment "carriage stop => puller stop"))])
 
  (::sys-move/path-end
   [world event this]

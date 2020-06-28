@@ -13,7 +13,9 @@
    [gamebase.layers :as layers]
    [app.state :as st]
    [app.ecs.common-events :as ci]
-   [app.ecs.operations :as ops])
+   [app.ecs.operations :as ops]
+   [app.utils.events :as eu]
+   )
   (:require-macros
    [gamebase.helpers :refer [event-handlers]]))
 
@@ -235,7 +237,8 @@
 
  (::ci/stop
   [_ event this]
-  (js/console.log "loc stop!")
+  (js/console.log (str "loc stop! BECAUSE "))
+  (eu/print-event-long event)
   (ecs/retarget (assoc event :priority -1) (-> this ::ecs/components :engine)))
 
  (::ci/drive
